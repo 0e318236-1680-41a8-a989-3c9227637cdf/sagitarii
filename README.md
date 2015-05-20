@@ -4,7 +4,7 @@ Processador de Workflows Sagitarii
 
 Site:
 =========
-http://icemagno.github.io/sagitarii/
+http://eic-cefet-rj.github.io/sagitarii/
 
 
 
