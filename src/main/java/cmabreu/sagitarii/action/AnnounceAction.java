@@ -18,7 +18,7 @@ import com.opensymphony.xwork2.ActionContext;
 )   
 
 @ParentPackage("default")
-public class AnnounceAction extends BasicActionClass {
+public class AnnounceAction  {
 	private String soName;
 	private String macAddress;
 	private String machineName;
@@ -40,6 +40,7 @@ public class AnnounceAction extends BasicActionClass {
 			//
 		}
 		
+		
 		try {
 			ClustersManager.getInstance().addOrUpdateCluster( javaVersion, soFamily, macAddress, localIpAddress, machineName, cpu,	soName, availableProcessors, maxAllowedTasks );
 			resposta = ClustersManager.getInstance().getTask( macAddress );
@@ -47,6 +48,7 @@ public class AnnounceAction extends BasicActionClass {
 			e.printStackTrace();
 			resposta = "NO_ANSWER";
 		}
+		
 		
 		try { 
 			HttpServletResponse response = (HttpServletResponse)ActionContext.getContext().get(StrutsStatics.HTTP_RESPONSE);
@@ -102,8 +104,6 @@ public class AnnounceAction extends BasicActionClass {
 	public void setMaxAllowedTasks(Integer maxAllowedTasks) {
 		this.maxAllowedTasks = maxAllowedTasks;
 	}
-	
-	
 	
 
 }

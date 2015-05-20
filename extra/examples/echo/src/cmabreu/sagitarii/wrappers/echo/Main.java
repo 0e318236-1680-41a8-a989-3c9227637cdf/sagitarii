@@ -54,7 +54,7 @@ public class Main {
 		*/
 		
 		try {
-			Thread.sleep( 2000 );
+			Thread.sleep( 20000 );
 		} catch (Exception e) {
 			// TODO: handle exception
 		}

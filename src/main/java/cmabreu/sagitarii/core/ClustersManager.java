@@ -132,22 +132,32 @@ public class ClustersManager {
 		return pipeline.getContent().replace("##TAG_ID_PIPELINE##", String.valueOf( pipeline.getIdPipeline() ) );
 	}
 	
-	public String getTask(String macAddress) {
+	
+	private synchronized String getNextInstance( Cluster cluster ) {
+		String resposta = "";
+		String macAddress = cluster.getMacAddress();
+		Pipeline pipe = Sagitarii.getInstance().getNextPipeline();
+		if ( pipe != null ) {
+			logger.debug( "sending instance "+ pipe.getType() + " (" + pipe.getExecutorAlias() + ") "+ pipe.getSerial() +" data to node " + macAddress );
+			pipe.setStatus( PipelineStatus.WAITING );
+			cluster.addPipeline(pipe);
+			resposta = fillPipelineID ( pipe );
+			pipe.setContent( resposta );
+			InstanceDeliveryControl.getInstance().addUnit(pipe, macAddress);
+		} 
+		return resposta;
+	}
+	
+	public  String getTask(String macAddress) {
+		logger.debug("node " + macAddress + " requesting task");
 		String resposta = "";
 		Cluster cluster = cm.getCluster(macAddress);
 		if ( (cluster != null)  ) {
 			// if it is allowed to receive new tasks...
 			if ( ( !cluster.isReloadWrappersSignal() ) && ( !cluster.isQuitSignal() ) && ( !cluster.isRestartSignal() ) && ( !cluster.isCleanWorkspaceSignal() ) ) {
-				Pipeline pipe = Sagitarii.getInstance().getNextPipeline();
-				if ( pipe != null ) {
-					logger.debug( "sending instance "+ pipe.getType() + " (" + pipe.getExecutorAlias() + ") "+ pipe.getSerial() +" data to node " + macAddress );
-					pipe.setStatus( PipelineStatus.WAITING );
-					cluster.addPipeline(pipe);
-					resposta = fillPipelineID ( pipe );
-					pipe.setContent( resposta );
-					InstanceDeliveryControl.getInstance().addUnit(pipe, macAddress);
-				} 
+				resposta = getNextInstance( cluster );
 			} else {
+				logger.warn("node " + macAddress + " not allowed to run tasks for now");
 				// if not...
 				if ( !cluster.isMainCluster() ) {
 					if ( cluster.isReloadWrappersSignal() ) {
@@ -167,6 +177,7 @@ public class ClustersManager {
 			}
 			
 		}
+		logger.debug("task sent to node " + macAddress );
 		return resposta;
 	}
 	
@@ -179,7 +190,7 @@ public class ClustersManager {
 	}
 	
 	public List<Cluster> getClusterList() {
-		return clusterList;
+		return new ArrayList<Cluster>( clusterList );
 	}
 	
 	/**
@@ -190,7 +201,7 @@ public class ClustersManager {
 	}
 	
 	private Cluster getCluster(String macAddress) {
-		for ( Cluster clu : clusterList  ) {
+		for ( Cluster clu : getClusterList()  ) {
 			if ( clu.getMacAddress().equalsIgnoreCase( macAddress ) ) {
 				return clu;
 			}

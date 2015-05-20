@@ -370,10 +370,10 @@ public class Sagitarii {
 	 * 
 	 * @return Pipeline
 	 */
-	public synchronized Pipeline getNextPipeline() {
+	public  Pipeline getNextPipeline() {
 		Pipeline next = pipelineInputBuffer.poll();
 		if ( next != null ) {
-			pipelineOutputBuffer.add(next);
+			pipelineOutputBuffer.add( next );
 		}
 		return next;
 	}

@@ -17,7 +17,7 @@ import com.opensymphony.xwork2.ActionContext;
 		)
 
 @ParentPackage("default")
-public class ActivityManagerReceiverAction extends BasicActionClass {
+public class ActivityManagerReceiverAction  {
 	private String response;
 	private String pipelineId;
 	private String node;
