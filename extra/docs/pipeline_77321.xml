@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+	<pipeline workflow='SPECTRAL_PORTAL' experiment='18418435-175C-494' serial='F0FC188B-0222-4' id='77321' fragment='8B52DBEB'>
+	<activity>
+		<order>0</order>
+		<serial>42666252</serial>
+		<executorType>MAP</executorType>
+		<executor>GENGRAPHP</executor>
+		<type>MAP</type>
+		<inputData>
+			maxdegree,biptonly,optifunc,mindegree,trianglefree,eigsolveoption,gorder,allowdiscgraphs,caixa1
+			8,on,,1,on,A,2,on,min
+		</inputData>
+		<files></files>
+		<targetTable>gengraph_out</targetTable>
+		<command>gengraph.jar</command>
+	</activity>
+	
+	<activity>
+		<order>1</order>
+		<serial>9044B111</serial>
+		<executorType>SPLIT_MAP</executorType>
+		<executor>SPLTMATRIX</executor>
+		<type>SPLIT_MAP</type>
+		<inputData></inputData>
+		<files></files>
+		<targetTable>awk_out</targetTable
+		><command>splitmatrix.jar</command>
+	</activity>
+	
+</pipeline>
