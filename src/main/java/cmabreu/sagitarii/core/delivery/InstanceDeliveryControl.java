@@ -19,7 +19,7 @@ public class InstanceDeliveryControl {
 	}
 	
 	public synchronized List<DeliveryUnit> getUnits() {
-		return units;
+		return new ArrayList<DeliveryUnit>( units );
 	}
 	
 	private InstanceDeliveryControl() {

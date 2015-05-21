@@ -63,6 +63,7 @@
 													<th>Workflow</th>
 													<th>Experiment</th>
 													<th>Fragment</th>
+													<th>Serial</th>
 													<th>Command</th>
 												</tr>
 												<c:forEach var="activation" items="${unit.activations}">
@@ -70,6 +71,7 @@
 														<td>${activation.workflow}</td>
 														<td>${activation.experiment}</td>
 														<td>${activation.fragment}</td>
+														<td>${activation.activitySerial}</td>
 														<td>${activation.command}</td>
 													</tr>
 												</c:forEach>

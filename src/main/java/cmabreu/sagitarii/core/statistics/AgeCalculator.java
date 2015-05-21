@@ -21,7 +21,6 @@ public class AgeCalculator {
 	}
 	
 	public List<Accumulator> getList() {
-		// Required for concurrent access by JSP "foreach" JSTL 
 		return new ArrayList<Accumulator>(lista);
 	}
 	

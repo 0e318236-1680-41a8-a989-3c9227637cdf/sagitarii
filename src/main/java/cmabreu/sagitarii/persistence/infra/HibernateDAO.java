@@ -28,8 +28,8 @@ public class HibernateDAO<T> implements IDao<T>  {
 	private String sqlDLL;
 	private boolean globalWithCommit;
 
-	long startTime;    
-	long estimatedTime;	
+	private long startTime;    
+	private long estimatedTime;	
 	
 	public HibernateDAO(Session session, Class<T> classe) {
 		logger.debug("open DAO for entity " + classe.getSimpleName() );
