@@ -47,7 +47,8 @@ public class ExperimentService {
 		List<Activity> activities = new ArrayList<Activity>();
 		
 		newTransaction();
-		Experiment newExperiment = generateExperiment( source.getWorkflow().getIdWorkflow(), loggedUser );
+		Experiment newExperiment = generateExperiment( source, loggedUser );
+		
 		
 		for ( Fragment frag : source.getFragments()  ) {
 			activities.addAll( frag.getActivities() );
@@ -237,6 +238,26 @@ public class ExperimentService {
 		return ex;
 	}
 
+	/**
+	 * Copy an Experiment
+	 * @param source Experiment to copy
+	 * @param owner logged User ( owner of this copy may not be the same of the source Experiment )
+	 * @return the new experiment
+	 * @throws InsertException in case of error
+	 */
+	public Experiment generateExperiment( Experiment source, User owner ) throws InsertException {
+		Experiment ex = new Experiment();
+		try {
+			ex.setWorkflow( source.getWorkflow() );
+			ex.setActivitiesSpecs( source.getActivitiesSpecs() );
+			ex.setImagePreviewData( source.getImagePreviewData() );
+			ex.setOwner( owner );
+			ex = insertExperiment(ex);
+		} catch ( Exception e ) {
+			throw new InsertException( e.getMessage() );
+		}
+		return ex;
+	}
 	
 	public void deleteExperiment( int idExperiment ) throws DeleteException {
 		logger.debug( "deleting experiment " + idExperiment );

@@ -38,7 +38,7 @@
 											<th style='width:100px'>Active Tasks</th>
 											<th style='width:80px'>Finished Tasks</th>
 											<th style='width:80px'>CPU Load</th>
-											<th style='width:80px'>Memory Use</th>
+											<th style='width:80px'>Memory Use (VM)</th>
 										</tr>
 										<tr>
 											<td>${cluster.soName}</td>
