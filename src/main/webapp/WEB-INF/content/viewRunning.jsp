@@ -16,9 +16,9 @@
 						<div style="margin : 0 auto; width : 95%; margin-top:10px;margin-bottom:50px;" >
 							<table>
 								<tr>
-									<th>Free Instances input buffer size</th>
-									<th>Blocking Instances input buffer size</th>
-									<th>Now processing</th>
+									<th>Instances in output buffer</th>
+									<th>SELECT type Instances in output buffer</th>
+									<th>Instances with nodes</th>
 									<th>Buffers capacity</th>
 									<th>Selected Experiments (Common / Blocking)</th>
 								</tr>
