@@ -54,6 +54,9 @@
 											<c:if test="${experiment.status != 'RUNNING'}">
 												<img class="miniButton dicas" title="Delete experiment" src="img/delete.png">
 											</c:if>
+											<c:if test="${experiment.status == 'STOPPED'}">
+												<img class="miniButton dicas" onclick="clone('${experiment.idExperiment}')" title="Clone experiment and data" src="img/clone.png">
+											</c:if>
 											<img class="miniButton dicas" title="View More" onclick="view('${experiment.idExperiment}')" src="img/search.png">
 											<img class="miniButton dicas" title="Edit Experiment" onclick="activity('${experiment.idExperiment}')" src="img/family3.png">
 											<img class="miniButton dicas" title="Edit Custom Queries" onclick="queries('${experiment.idExperiment}')" src="img/sql.png">
@@ -73,6 +76,10 @@
 
 	function view(idExp) {
 		window.location.href="viewExperiment?idExperiment=" + idExp;
+	}
+
+	function clone(idExp) {
+		window.location.href="cloneExperiment?idExperiment=" + idExp;
 	}
 
 	function queries(idExp) {

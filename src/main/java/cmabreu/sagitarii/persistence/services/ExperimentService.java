@@ -1,5 +1,6 @@
 package cmabreu.sagitarii.persistence.services;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
@@ -13,6 +14,7 @@ import cmabreu.sagitarii.core.Genesis;
 import cmabreu.sagitarii.core.Sagitarii;
 import cmabreu.sagitarii.core.types.ExperimentStatus;
 import cmabreu.sagitarii.misc.FragmentComparator;
+import cmabreu.sagitarii.persistence.entity.Activity;
 import cmabreu.sagitarii.persistence.entity.Experiment;
 import cmabreu.sagitarii.persistence.entity.Fragment;
 import cmabreu.sagitarii.persistence.entity.Relation;
@@ -33,6 +35,37 @@ public class ExperimentService {
 		this.rep = new ExperimentRepository();
 	}
 
+
+	public Experiment cloneExperiment( int idExperiment, User loggedUser )  throws Exception {
+		
+		Experiment source = previewExperiment( idExperiment );
+		
+		if ( source.getStatus() != ExperimentStatus.STOPPED  ) {
+			throw new Exception("Only STOPPED experiments can be cloned");
+		}
+		
+		List<Activity> activities = new ArrayList<Activity>();
+		
+		newTransaction();
+		Experiment newExperiment = generateExperiment( source.getWorkflow().getIdWorkflow(), loggedUser );
+		
+		for ( Fragment frag : source.getFragments()  ) {
+			activities.addAll( frag.getActivities() );
+		}
+
+		RelationService rs = new RelationService();
+		for ( Activity act : activities  ) {
+			if ( act.getPreviousActivities().size() == 0 ) {
+				for ( Relation rel : act.getInputRelations() ) {
+					String inputTable = rel.getName();
+					rs.newTransaction();
+					rs.copy( inputTable, source.getIdExperiment(), newExperiment.getIdExperiment() );
+				}
+			}
+		}
+		return newExperiment;
+		
+	}
 	
 	/**
 	 * Gera as atividades e os fragmentos para um experimento mas não salva no banco de dados.

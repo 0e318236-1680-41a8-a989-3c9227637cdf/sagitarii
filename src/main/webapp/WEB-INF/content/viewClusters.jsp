@@ -21,9 +21,9 @@
 								<div style="position:relative" id="${cluster.macAddress}" class="clusterBar">
 								
 									<table style="margin-bottom: 5px;width:98%; margin-left:10px; margin-top: 5px">
-										<c:if test="${not fn:contains(cluster.macAddress, 'S0-A0-G0-I0-T0-A0-R0')}">
+										<c:if test="${not fn:contains(cluster.macAddress, 'S0-A0-G0-I0-T0-A0-RI')}">
 											<tr>
-												<td colspan="8" >
+												<td colspan="9" >
 													<img onclick="shutdown('${cluster.macAddress}')" class="dicas" title="Shutdown this node (no confirmation)" src="img/shutdown.png" style="width:24px;height:24px">
 													<img onclick="restart('${cluster.macAddress}')" class="dicas" title="Restart this node (no confirmation)" src="img/refresh.png" style="width:24px;height:24px">
 												</td>
@@ -36,8 +36,9 @@
 											<th style='width:100px'>IP Address</th>
 											<th style='width:60px'>Java</th>
 											<th style='width:100px'>Active Tasks</th>
-											<th style='width:100px'>Finished Tasks</th>
-											<th style='width:130px'>Cluster CPU Load</th>
+											<th style='width:80px'>Finished Tasks</th>
+											<th style='width:80px'>CPU Load</th>
+											<th style='width:80px'>Memory Use</th>
 										</tr>
 										<tr>
 											<td>${cluster.soName}</td>
@@ -45,11 +46,16 @@
 											<td >${cluster.macAddress}</td>
 											<td>${cluster.ipAddress}</td>
 											<td>${cluster.javaVersion}</td>
-											<td><span class="clusterInfo1">${fn:length(cluster.runningPipelines)}</span></td>
+											<td><span class="clusterInfo1">${fn:length(cluster.runningInstances)}</span></td>
 											<td>${cluster.processedPipes}</td>
 											<td>
 												<div title="${cluster.cpuLoad}%" class="clusterCpuOut">
-													<div class="clusterCpuIn" style="width:${cluster.cpuLoad}%">&nbsp;</div>
+													<div class="clusterCpuIn" style="background-color:#0266C8; width:${cluster.cpuLoad}%">&nbsp;</div>
+												</div> 
+											</td>
+											<td>
+												<div title="${cluster.memoryPercent}% of ${cluster.totalMemory}Mb" class="clusterCpuOut">
+													<div class="clusterCpuIn" style="width:${cluster.memoryPercent}%">&nbsp;</div>
 												</div> 
 											</td>
 										</tr>
@@ -61,7 +67,7 @@
 											<th>Status</th>
 											<th>Signaled</th>
 											<th>Age</th>
-											<th colspan="2">Last Error</th>
+											<th colspan="3">Last Error</th>
 										</tr>
 										<tr>
 											<td>${cluster.lastAnnounce}</td>
@@ -86,23 +92,12 @@
 											
 											</td>
 											<td>${cluster.age}&nbsp;</td>
-											<td colspan="2" style="color:#F90101">${cluster.lastError}&nbsp;</td>
+											<td colspan="3" style="color:#F90101">${cluster.lastError}&nbsp;</td>
 										</tr>
 										
 										
 									</table>
 
-									<div style="width:99%;margin-left: 10px;">
-										<c:forEach items="${cluster.runningPipelines}" var="pipeline">
-											<div id="${pipeline.type}" style="margin-bottom: 5px;" class="clusterBoard" >
-												<div class="userBoardT1" style="margin:2px;padding:2px;height:10px;text-align:center;width:95%">${pipeline.serial} - ${pipeline.status}</div>
-												<div class="userBoardT2" style="color:#F90101;height:10px; text-align:center;width:95%">${pipeline.qtdActivations}</div>
-												<div class="userBoardT3" style="height:8px;text-align:center;width:95%">${pipeline.finishedActivities}</div>
-											</div>
-										</c:forEach>
-									</div>
-
-									
 								</div>
 						
 						</c:forEach>

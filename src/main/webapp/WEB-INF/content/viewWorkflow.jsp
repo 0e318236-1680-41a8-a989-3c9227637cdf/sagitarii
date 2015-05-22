@@ -95,6 +95,9 @@
 											<c:if test="${experiment.status != 'RUNNING'}">
 												<img class="miniButton dicas" title="Delete Experiment" onclick="deleteExperiment('${experiment.idExperiment}','${workflow.idWorkflow}')" src="img/delete.png">
 											</c:if>
+											<c:if test="${experiment.status == 'STOPPED'}">
+												<img class="miniButton dicas" onclick="clone('${experiment.idExperiment}')" title="Clone experiment and data" src="img/clone.png">
+											</c:if>
 											<img class="miniButton dicas" title="More Details" onclick="viewExperiment('${experiment.idExperiment}')" src="img/search.png">
 											<img class="miniButton dicas" title="Manage Activities" onclick="activity('${experiment.idExperiment}')" src="img/family3.png">
 											<img class="miniButton dicas" title="Edit Custom Queries" onclick="queries('${experiment.idExperiment}')" src="img/sql.png">
@@ -119,6 +122,10 @@
 		var cyImage = "${workflow.imagePreviewData}";
 	    var image = "<img name='compman' style='border-radius:5px;margin:0px;height:100%;width:100%' src='"+cyImage+"' />";
 	    $("#imageCanvas").html(image);
+	}
+
+	function clone(idExp) {
+		window.location.href="cloneExperiment?idExperiment=" + idExp;
 	}
 
 	$(document).ready(function() {

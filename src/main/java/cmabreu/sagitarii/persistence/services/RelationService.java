@@ -40,6 +40,29 @@ public class RelationService {
 		this.rep = new RelationRepository();
 	}
 	
+	public void copy( String table, int sourceExperiment, int targetExperiment ) throws Exception {
+		logger.debug("copy table from experiment " + sourceExperiment + " to " + targetExperiment );
+		Set<UserTableEntity> structure = getTableStructure( table );
+		
+		String tableColumns = "";
+		for ( UserTableEntity ute : structure ) {
+			String columnName = ute.getData("column_name");
+			if ( ( !columnName.equals("id_experiment") ) && ( !columnName.equals("index_id") ) ) {
+				tableColumns = tableColumns + columnName + ",";
+			}
+		}
+		tableColumns = tableColumns.substring(0, tableColumns.length()-1);
+		String selectSourceData = "select " + targetExperiment + " as id_experiment," + 
+				tableColumns + " from " + table + " where id_experiment = " + sourceExperiment;
+		
+		String insertTargetData = "insert into " + table + "(id_experiment," + tableColumns + ")" + selectSourceData;
+		logger.debug("transfer query: " + insertTargetData );
+		
+		newTransaction();
+		executeQuery( insertTargetData );
+		
+	}
+	
 	public void commitAndClose() throws Exception {
 		try {
 			rep.commit();

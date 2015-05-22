@@ -66,11 +66,11 @@
 			<appender-ref ref="Console"/> 
 		</Logger>
 
-		<Logger name="cmabreu.sagitarii.persistence.services.RelationService" level="error" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.persistence.services.RelationService" level="debug" additivity="false"> 
 			<appender-ref ref="Console"/> 
 		</Logger>
 
-		<Logger name="cmabreu.sagitarii.persistence.services.ExperimentService" level="error" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.persistence.services.ExperimentService" level="debug" additivity="false"> 
 			<appender-ref ref="Console"/> 
 		</Logger>
 

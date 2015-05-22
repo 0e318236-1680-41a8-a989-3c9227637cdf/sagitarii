@@ -28,27 +28,23 @@ public class AnnounceAction  {
 	private String cpuLoad;
 	private Integer availableProcessors;
 	private Integer maxAllowedTasks;
+	private Long totalMemory;
+	private Long freeMemory;
 	
 	
 	public String execute(){
 		String resposta = "";
-		
 		Double cpu = 0.0;
+
 		try {
 			cpu = Double.valueOf( cpuLoad );
-		} catch ( Exception e ) {
-			//
-		}
-		
-		
-		try {
-			ClustersManager.getInstance().addOrUpdateCluster( javaVersion, soFamily, macAddress, localIpAddress, machineName, cpu,	soName, availableProcessors, maxAllowedTasks );
+			ClustersManager.getInstance().addOrUpdateCluster( javaVersion, soFamily, macAddress, 
+					localIpAddress, machineName, cpu, soName, availableProcessors, 
+					maxAllowedTasks, freeMemory, totalMemory );
 			resposta = ClustersManager.getInstance().getTask( macAddress );
 		} catch ( Exception e ) {
 			e.printStackTrace();
-			resposta = "NO_ANSWER";
 		}
-		
 		
 		try { 
 			HttpServletResponse response = (HttpServletResponse)ActionContext.getContext().get(StrutsStatics.HTTP_RESPONSE);
@@ -105,5 +101,12 @@ public class AnnounceAction  {
 		this.maxAllowedTasks = maxAllowedTasks;
 	}
 	
-
+	public void setFreeMemory(Long freeMemory) {
+		this.freeMemory = freeMemory;
+	}
+	
+	public void setTotalMemory(Long totalMemory) {
+		this.totalMemory = totalMemory;
+	}
+	
 }

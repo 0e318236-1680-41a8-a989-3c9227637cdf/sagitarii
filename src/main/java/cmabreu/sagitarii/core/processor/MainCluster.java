@@ -36,7 +36,10 @@ public class MainCluster implements Runnable {
 	
 	@Override
 	public void run() {
-		Cluster cluster = ClustersManager.getInstance().addOrUpdateCluster("0.0", "Local System", macAddress, "Local Machine", "Sagitarii Server", 0.0, "Main Cluster", 8, maxAllowedTasks );
+		long freeMemory = Runtime.getRuntime().freeMemory();
+		long totalMemory = Runtime.getRuntime().totalMemory();
+		
+		Cluster cluster = ClustersManager.getInstance().addOrUpdateCluster("0.0", "Local System", macAddress, "Local Machine", "Sagitarii Server", 0.0, "Main Cluster", 8, maxAllowedTasks, freeMemory, totalMemory );
 		try {
 			if ( cluster != null ) {
 				cluster.setAsMainCluster();

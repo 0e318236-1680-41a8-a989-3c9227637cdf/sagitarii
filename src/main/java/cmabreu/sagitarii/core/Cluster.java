@@ -32,12 +32,15 @@ public class Cluster {
     private int maxAllowedTasks;
     private int processedPipes = 0;
     private String lastError = "";
-	private List<Pipeline> runningPipelines;
+	private List<Pipeline> runningInstances;
 	private boolean restartSignal = false;
 	private boolean quitSignal = false;
 	private boolean cleanWorkspaceSignal = false;
 	private boolean reloadWrappersSignal = false;
 	private boolean mainCluster = false;
+	private long freeMemory;
+	private long totalMemory;
+	
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 
 	public void quit() {
@@ -46,6 +49,19 @@ public class Cluster {
 
 	public void reloadWrappers() {
 		reloadWrappersSignal = true;
+	}
+	
+	public double getMemoryPercent() {
+		double percent = Math.round( (freeMemory * 100 ) / totalMemory );
+		return percent;
+	}
+	
+	public void setTotalMemory(long totalMemory) {
+		this.totalMemory = totalMemory;
+	}
+	
+	public void setFreeMemory(long freeMemory) {
+		this.freeMemory = freeMemory;
 	}
 	
 	public void cleanWorkspace() {
@@ -87,6 +103,14 @@ public class Cluster {
 		reloadWrappersSignal = false;
 	}
 	
+	public long getTotalMemory() {
+		return totalMemory / 1048576;
+	}
+	
+	public long getFreeMemory() {
+		return freeMemory / 1048576;
+	}
+	
 	public synchronized boolean confirmReceiveData( ReceivedData rd ) throws Exception {
 		setLastAnnounce( Calendar.getInstance().getTime() );
 		setPipelineAsDone( rd.getPipeline().getSerial(), rd.getActivity() );
@@ -108,7 +132,7 @@ public class Cluster {
 	
 	public void setPipelineAsDone( String pipelineSerial, Activity actvt ) {
 		logger.debug("checking if instance " + pipelineSerial + " (" + actvt.getTag() + ") is done");
-		for( Pipeline pipe : runningPipelines ) {
+		for( Pipeline pipe : runningInstances ) {
 			if ( pipe.getSerial().equals( pipelineSerial ) ) {
 				pipe.decreaseQtdActivations();
 				String finished = pipe.getFinishedActivities();
@@ -131,27 +155,27 @@ public class Cluster {
 		}
 	}
 	
-	public List<Pipeline> getRunningPipelines() {
-		return new ArrayList<Pipeline>( runningPipelines );
+	public List<Pipeline> getRunningInstances() {
+		return new ArrayList<Pipeline>( runningInstances );
 	}
 	
 	public void addPipeline( Pipeline pipe ) {
 		pipe.setStartDateTime( Calendar.getInstance().getTime() );
-		runningPipelines.add( pipe ); 
+		runningInstances.add( pipe ); 
 	}
 
-	public void cancelAndRemovePipeline( String pipelineSerial ) {
-		for ( Pipeline pipe : getRunningPipelines() ) {
-			if ( pipe.getSerial().equalsIgnoreCase( pipelineSerial ) ) {
-				pipe.setStatus( PipelineStatus.PIPELINED );
-				runningPipelines.remove( pipe ); 
+	public void cancelAndRemovePipeline( String instanceSerial ) {
+		for ( Pipeline instance : getRunningInstances() ) {
+			if ( instance.getSerial().equalsIgnoreCase( instanceSerial ) ) {
+				instance.setStatus( PipelineStatus.PIPELINED );
+				runningInstances.remove( instance ); 
 				break;
 			}
 		}
 	}
 
 	public Cluster(String javaVersion, String soFamily, String macAddress, String ipAddress, String machineName, Double cpuLoad, 
-			String soName, int availableProcessors,  int maxAllowedTasks) {
+			String soName, int availableProcessors,  int maxAllowedTasks, long freeMemory, long totalMemory) {
 		this.soName = soName;
 		this.macAddress = macAddress;
 		this.ipAddress = ipAddress;
@@ -162,9 +186,11 @@ public class Cluster {
 		this.age = 0;
 		this.javaVersion = javaVersion;
 		this.soFamily = soFamily;
+		this.freeMemory = freeMemory;
+		this.totalMemory = totalMemory;
 		this.status = ClusterStatus.IDLE;
 		this.maxAllowedTasks = maxAllowedTasks;
-		runningPipelines = new ArrayList<Pipeline>();
+		runningInstances = new ArrayList<Pipeline>();
 	}
 	
 
@@ -215,10 +241,10 @@ public class Cluster {
 			this.status = ClusterStatus.DEAD;
 			clearSignals();
 		} else { 
-			if ( runningPipelines.size() == 0 ) {
+			if ( runningInstances.size() == 0 ) {
 				this.status = ClusterStatus.IDLE;
 			}		
-			if ( runningPipelines.size() > 0 ) {
+			if ( runningInstances.size() > 0 ) {
 				this.status = ClusterStatus.ACTIVE;
 			}
 		}
@@ -230,7 +256,7 @@ public class Cluster {
 	}
 
 	private synchronized Pipeline getFinishedTask() {
-		for ( Pipeline pipe : runningPipelines ) {
+		for ( Pipeline pipe : runningInstances ) {
 			if ( ( pipe.getQtdActivations() == 0 ) || ( pipe.getStatus() == PipelineStatus.FINISHED ) ) {
 				return pipe;
 			}
@@ -241,7 +267,7 @@ public class Cluster {
 	private void cleanUp() {
 		Pipeline pipe = getFinishedTask();
 		while ( pipe != null ) {
-			runningPipelines.remove( pipe );
+			runningInstances.remove( pipe );
 			pipe = getFinishedTask();
 		}
 	}

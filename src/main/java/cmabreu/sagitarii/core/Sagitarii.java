@@ -2,6 +2,7 @@ package cmabreu.sagitarii.core;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -31,7 +32,7 @@ public class Sagitarii {
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 	private static Sagitarii sagitarii;
 	private List<Experiment> runningExperiments;
-	private Queue<Pipeline> pipelineInputBuffer;
+	private Queue<Pipeline> instanceInputBuffer;
 	private Queue<Pipeline> pipelineJoinInputBuffer;
 	private Queue<Pipeline> pipelineOutputBuffer;
 	private int maxInputBufferCapacity;
@@ -118,7 +119,7 @@ public class Sagitarii {
 				}
 			}
 			
-			for( Pipeline pipe : pipelineInputBuffer  ) {
+			for( Pipeline pipe : instanceInputBuffer  ) {
 				if( pipe.getIdFragment() == frag.getIdFragment() ) {
 					return true;
 				}
@@ -370,14 +371,37 @@ public class Sagitarii {
 	 * 
 	 * @return Pipeline
 	 */
-	public  Pipeline getNextPipeline() {
-		Pipeline next = pipelineInputBuffer.poll();
+	public Pipeline getNextInstance() {
+		Pipeline next = instanceInputBuffer.poll();
 		if ( next != null ) {
 			pipelineOutputBuffer.add( next );
+		} else {
+			if ( instanceInputBuffer.size() > 0 ) {
+				logger.error("null instance detected in output buffer. Run sanitization...");
+				sanitizeBuffer();
+			} 
 		}
 		return next;
 	}
 
+	/**
+	 * Remove all null elements of buffer
+	 * Note: The buffer cannot have null elements, so
+	 * if we're here, something very bad is in course...
+	 * 
+	 */
+	private void sanitizeBuffer() {
+		int total = 0;
+		Iterator<Pipeline> i = instanceInputBuffer.iterator();
+		while ( i.hasNext() ) {
+			Pipeline req = i.next(); 
+			if ( req == null ) {
+				i.remove();
+				total++;
+			}
+		}
+		logger.warn(total + " null instances removed from buffer. This is not a normal behaviour.");
+	}
 	
 	/**
 	 * Retorna um pipeline que estava na fila de processamento mas foi 
@@ -390,7 +414,7 @@ public class Sagitarii {
 			if ( pipeline.getType().isJoin() ) {
 				pipelineJoinInputBuffer.add( pipeline );
 			} else {
-				pipelineInputBuffer.add( pipeline );
+				instanceInputBuffer.add( pipeline );
 			}
 		}
 	}
@@ -423,7 +447,7 @@ public class Sagitarii {
 				pipelineJoinInputBuffer.add(pipe);
 			} else {
 				// Os demais vão para os nós.
-				pipelineInputBuffer.add(pipe);
+				instanceInputBuffer.add(pipe);
 			}
 		}
 	}
@@ -442,7 +466,7 @@ public class Sagitarii {
 			try {
 				PipelineService pipelineService = new PipelineService();
 				processAndInclude( pipelineService.recoverFromCrash() );
-				logger.debug( pipelineInputBuffer.size() + " common pipelines recovered.");
+				logger.debug( instanceInputBuffer.size() + " common pipelines recovered.");
 				logger.debug( pipelineJoinInputBuffer.size() + " JOIN pipelines recovered.");
 			} catch ( NotFoundException e ) {
 				logger.debug("no pipelines to recover");
@@ -480,8 +504,8 @@ public class Sagitarii {
 		
 		logger.debug("loading common buffer...");
 
-		if( pipelineInputBuffer.size() < maxInputBufferCapacity ) {
-			int diff = maxInputBufferCapacity - pipelineInputBuffer.size();
+		if( instanceInputBuffer.size() < maxInputBufferCapacity ) {
+			int diff = maxInputBufferCapacity - instanceInputBuffer.size();
 			try {
 				Fragment running = getRunningFragment( experimentOnTable );
 				if ( running == null ) {
@@ -499,8 +523,8 @@ public class Sagitarii {
 			} catch ( Exception e) {
 				logger.error( e.getMessage() );
 			} 
-			if ( pipelineInputBuffer.size() > 0 ) {
-				logger.debug("common buffer size: " + pipelineInputBuffer.size() );
+			if ( instanceInputBuffer.size() > 0 ) {
+				logger.debug("common buffer size: " + instanceInputBuffer.size() );
 			}
 		}
 	}
@@ -583,7 +607,7 @@ public class Sagitarii {
 		if ( ClustersManager.getInstance().hasClusters() ) {
 			logger.debug("COMMON buffer...");
 			// Se o buffer comum está com 1/3 de sua capacidade, é hora de ler mais pipelines do banco
-			if ( pipelineInputBuffer.size() < ( maxInputBufferCapacity / 3 ) ) {
+			if ( instanceInputBuffer.size() < ( maxInputBufferCapacity / 3 ) ) {
 				// ... mas antes rodamos a roleta de experimentos para processar o próximo da lista (comum)
 				int mark = 0;
 				do {
@@ -633,7 +657,7 @@ public class Sagitarii {
 				logger.error( "update fragments error: " + e.getMessage() );
 			}
 		
-			if( ( pipelineJoinInputBuffer.size() == 0 ) && ( pipelineInputBuffer.size() == 0 ) ) {
+			if( ( pipelineJoinInputBuffer.size() == 0 ) && ( instanceInputBuffer.size() == 0 ) ) {
 				checkFinished();
 			}
 
@@ -671,7 +695,7 @@ public class Sagitarii {
 	private Sagitarii() {
 		
 		runningExperiments = new ArrayList<Experiment>();
-		pipelineInputBuffer = new LinkedList<Pipeline>();
+		instanceInputBuffer = new LinkedList<Pipeline>();
 		pipelineJoinInputBuffer = new LinkedList<Pipeline>();
 		pipelineOutputBuffer = new LinkedList<Pipeline>();
 	}
@@ -746,7 +770,7 @@ public class Sagitarii {
 	}
 
 	public Queue<Pipeline> getPipelineInputBuffer() {
-		return new LinkedList<Pipeline>( pipelineInputBuffer );
+		return new LinkedList<Pipeline>( instanceInputBuffer );
 	}
 
 	public Queue<Pipeline> getPipelineOutputBuffer() {

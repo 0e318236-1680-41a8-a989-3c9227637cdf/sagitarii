@@ -25,11 +25,11 @@ public class ClustersManager {
 	}
 	
 	public void acceptTask( String pipelineId, String macAddress) {
-		logger.debug( "node " + macAddress + " accepted task in pipeline " + pipelineId );
+		logger.debug( "node " + macAddress + " accepted task in instance " + pipelineId );
 		Cluster clu = cm.getCluster(macAddress);
-		for ( Pipeline pipe : clu.getRunningPipelines() ) {
-			if ( pipe.getSerial().equalsIgnoreCase( pipelineId ) ) {
-				pipe.setStatus( PipelineStatus.RUNNING );
+		for ( Pipeline instance : clu.getRunningInstances() ) {
+			if ( instance.getSerial().equalsIgnoreCase( pipelineId ) ) {
+				instance.setStatus( PipelineStatus.RUNNING );
 				break;
 			}
 		}
@@ -136,14 +136,14 @@ public class ClustersManager {
 	private synchronized String getNextInstance( Cluster cluster ) {
 		String resposta = "";
 		String macAddress = cluster.getMacAddress();
-		Pipeline pipe = Sagitarii.getInstance().getNextPipeline();
-		if ( pipe != null ) {
-			logger.debug( "sending instance "+ pipe.getType() + " (" + pipe.getExecutorAlias() + ") "+ pipe.getSerial() +" data to node " + macAddress );
-			pipe.setStatus( PipelineStatus.WAITING );
-			cluster.addPipeline(pipe);
-			resposta = fillPipelineID ( pipe );
-			pipe.setContent( resposta );
-			InstanceDeliveryControl.getInstance().addUnit(pipe, macAddress);
+		Pipeline instance = Sagitarii.getInstance().getNextInstance();
+		if ( instance != null ) {
+			logger.debug( "sending instance "+ instance.getType() + " (" + instance.getExecutorAlias() + ") "+ instance.getSerial() +" data to node " + macAddress );
+			instance.setStatus( PipelineStatus.WAITING );
+			cluster.addPipeline(instance);
+			resposta = fillPipelineID ( instance );
+			instance.setContent( resposta );
+			InstanceDeliveryControl.getInstance().addUnit(instance, macAddress);
 		} 
 		return resposta;
 	}
@@ -177,7 +177,11 @@ public class ClustersManager {
 			}
 			
 		}
-		logger.debug("task sent to node " + macAddress );
+		if ( resposta.length() == 0 ) {
+			logger.warn("empty instance sent to node " + macAddress + ". System idle.");
+		} else {
+			logger.debug("task sent to node " + macAddress );
+		}
 		return resposta;
 	}
 	
@@ -217,7 +221,9 @@ public class ClustersManager {
 	}
 
 	
-	public Cluster addOrUpdateCluster(String javaVersion, String soFamily, String macAddress, String ipAddress, String machineName, Double cpuLoad, String soName, int availableProcessors, int maxAllowedTasks) {
+	public Cluster addOrUpdateCluster(String javaVersion, String soFamily, String macAddress, 
+			String ipAddress, String machineName, Double cpuLoad, String soName, 
+			int availableProcessors, int maxAllowedTasks, long freeMemory, long totalMemory) {
 		Cluster retorno = null;
 		Cluster clu = cm.getCluster(macAddress);
 		if ( clu != null ) {
@@ -228,10 +234,13 @@ public class ClustersManager {
 			clu.setLastAnnounce( Calendar.getInstance().getTime() );
 			clu.setCpuLoad( cpuLoad );
 			clu.setMaxAllowedTasks( maxAllowedTasks );
+			clu.setTotalMemory(totalMemory);
+			clu.setFreeMemory(freeMemory);
 			clu.updateStatus();
 			retorno = clu;
 		} else {
-			Cluster c1 = new Cluster(javaVersion,soFamily,macAddress,ipAddress,machineName,cpuLoad,soName,availableProcessors,maxAllowedTasks);
+			Cluster c1 = new Cluster(javaVersion,soFamily,macAddress,ipAddress,machineName,
+					cpuLoad,soName,availableProcessors,maxAllowedTasks,freeMemory,totalMemory);
 			clusterList.add( c1 );
 			retorno = c1;
 		}
