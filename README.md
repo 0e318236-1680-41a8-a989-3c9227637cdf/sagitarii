@@ -1,6 +1,6 @@
 sagitarii
 =========
-Processador de Workflows Sagitarii
+Data Science Workflow System
 
 Site:
 =========
