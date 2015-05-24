@@ -1,7 +1,5 @@
 package cmabreu.sagitarii.action;
 
-import java.io.IOException;
-
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts2.StrutsStatics;
@@ -23,13 +21,14 @@ public class ExternalApiAction extends BasicActionClass {
 	
 	public String execute(){
 
-		String resposta = new ExternalApi().execute( externalForm ); 
-		
 		try { 
+			String resposta = new ExternalApi().execute( externalForm );
+			
 			HttpServletResponse response = (HttpServletResponse)ActionContext.getContext().get(StrutsStatics.HTTP_RESPONSE);
 			response.setCharacterEncoding("UTF-8"); 
 			response.getWriter().write(resposta);  
-		} catch (IOException ex) {
+		} catch (Exception ex) {
+			ex.printStackTrace();
 			
 		}
 		return "ok";

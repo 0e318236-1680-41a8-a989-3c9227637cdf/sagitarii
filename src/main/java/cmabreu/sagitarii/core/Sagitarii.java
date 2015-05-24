@@ -431,6 +431,9 @@ public class Sagitarii {
 			logger.debug("serving join pipeline " + next.getSerial() );
 			pipelineOutputBuffer.add(next);
 		}
+		
+		
+		
 		return next;
 	}
 

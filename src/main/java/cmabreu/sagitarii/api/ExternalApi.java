@@ -30,7 +30,7 @@ public class ExternalApi {
 
 
 	@SuppressWarnings("unchecked")
-	public String execute( String data ) {
+	public String execute( String data ) throws Exception {
 		logger.debug("external API called");
 		
 		if ( data != null  ) {
