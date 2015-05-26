@@ -52,7 +52,7 @@
 										<td class="tableCellFormRight">${experiment.status}&nbsp;</td>
 										<td class="tableCellFormRight">
 											<c:if test="${experiment.status != 'RUNNING'}">
-												<img class="miniButton dicas" title="Delete experiment" src="img/delete.png">
+												<img class="miniButton dicas" title="Delete experiment" onclick="deleteExperiment('${experiment.idExperiment}','-1')"  src="img/delete.png">
 											</c:if>
 											<c:if test="${experiment.status == 'STOPPED'}">
 												<img class="miniButton dicas" onclick="clone('${experiment.idExperiment}')" title="Clone experiment and data" src="img/clone.png">
@@ -102,7 +102,10 @@
 		window.location.href="editExperiment?idExperiment=" + idWf;
 	}
 	
-	
+	function deleteExperiment(idExp, idWf) {
+		showDialogBox( "This will delete Experiment and all its related data.<br><br>ARE YOU SURE?", "deleteExperiment?idExperiment=" + idExp + "&idWorkflow=" + idWf );
+	}
+
 </script>				
 <%@ include file="../../footer.jsp" %>
 				

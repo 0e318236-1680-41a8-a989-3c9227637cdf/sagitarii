@@ -26,18 +26,18 @@ public class InstanceDeliveryControl {
 		units = new ArrayList<DeliveryUnit>();
 	}
 	
-	public synchronized void addUnit( Pipeline pipeline, String macAddress ) {
+	public synchronized void addUnit( Pipeline instance, String macAddress ) {
 		DeliveryUnit du = new DeliveryUnit();
 		du.setMacAddress(macAddress);
-		du.setPipeline(pipeline);
+		du.setPipeline(instance);
 		du.setDeliverTime( Calendar.getInstance().getTime() );
 		units.add(du);
 	}
 
 	
-	public void removeUnit( String pipelineSerial ) {
+	public void removeUnit( String instanceSerial ) {
 		for ( DeliveryUnit du : units ) {
-			if ( du.getPipeline().getSerial().equalsIgnoreCase( pipelineSerial ) ) {
+			if ( du.getPipeline().getSerial().equalsIgnoreCase( instanceSerial ) ) {
 				units.remove( du );
 				du.setReceiveTime( Calendar.getInstance().getTime() );
 				AgeCalculator.getInstance().addToStatistics( du );

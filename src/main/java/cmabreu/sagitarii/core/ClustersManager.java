@@ -69,12 +69,13 @@ public class ClustersManager {
 	public void confirmReceiveData( ReceivedData rd ) throws Exception {
 		Cluster cluster = cm.getCluster( rd.getMacAddress() );
 		if ( cluster != null ) {
-			logger.debug( "receiving instance "+ rd.getPipeline().getSerial() +" data from cluster " + rd.getMacAddress() );
+			logger.debug( "receiving instance "+ rd.getInstance().getSerial() +" data from cluster " + rd.getMacAddress() );
 			try {
 				cluster.confirmReceiveData( rd );
 			} catch ( Exception e ) {
-				logger.error("activity " + rd.getPipeline().getSerial() + ": " + e.getMessage() );
-				cluster.setLastError( "activity " + rd.getPipeline().getSerial() + ": " + e.getMessage()  );
+				e.printStackTrace();
+				logger.error("activity " + rd.getInstance().getSerial() + ": " + e.getMessage() );
+				cluster.setLastError( "activity " + rd.getInstance().getSerial() + ": " + e.getMessage()  );
 				throw e;
 			}
 		}

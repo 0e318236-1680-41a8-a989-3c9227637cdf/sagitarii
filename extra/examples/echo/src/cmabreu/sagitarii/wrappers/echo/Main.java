@@ -40,6 +40,8 @@ public class Main {
 		workFolder = args[0];		 
 		List<String> inputData = readFile( workFolder + "/sagi_input.txt" );
 		
+		System.out.println("Echo Wrapper");
+		
 		/*
 
 		String previousOutbox = workFolder + "/inbox";
@@ -58,6 +60,8 @@ public class Main {
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
+		
+		System.out.println("Echoed " + outputData.size() + " lines of data");
 		
 		outputData.addAll( inputData );
 		saveOutput();

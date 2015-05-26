@@ -1,5 +1,8 @@
 package cmabreu.sagitarii.core.sockets;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ReceivedFile {
 	private String experimentSerial;
 	private String sessionSerial;
@@ -10,7 +13,40 @@ public class ReceivedFile {
 	private String instance;
 	private String macAddress;
 	private String fragment;
+	private String taskId;
+	private String exitCode;
+	private List<String> console;
+
+	public ReceivedFile() {
+		exitCode = "0";
+		console = new ArrayList<String>();
+		
+	}
 	
+	public String getTaskId() {
+		return taskId;
+	}
+
+	public void setTaskId(String taskId) {
+		this.taskId = taskId;
+	}
+
+	public String getExitCode() {
+		return exitCode;
+	}
+
+	public void setExitCode(String exitCode) {
+		this.exitCode = exitCode;
+	}
+
+	public List<String> getConsole() {
+		return console;
+	}
+
+	public void setConsole(List<String> console) {
+		this.console = console;
+	}
+
 	public String getFragment() {
 		return fragment;
 	}

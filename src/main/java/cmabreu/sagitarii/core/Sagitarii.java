@@ -248,7 +248,12 @@ public class Sagitarii {
 							logger.debug("experiment " + exp.getTagExec() + " is finished.");
 							
 							MailService ms = new MailService();
-							ms.notifyExperimentFinished( exp );
+							try {
+								ms.notifyExperimentFinished( exp );
+							} catch ( Exception ex ) {
+								logger.error("Cannot send notification mail: " + ex.getMessage() );
+							}
+							
 							return;
 					} else {
 						logger.debug("cannot finish experiment " + exp.getTagExec() + ": found open sessions receiving files");

@@ -1,7 +1,10 @@
 package cmabreu.sagitarii.core;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
+import cmabreu.sagitarii.core.sockets.ReceivedFile;
 import cmabreu.sagitarii.persistence.entity.Activity;
 import cmabreu.sagitarii.persistence.entity.Pipeline;
 import cmabreu.sagitarii.persistence.entity.Relation;
@@ -9,11 +12,16 @@ import cmabreu.sagitarii.persistence.entity.Relation;
 public class ReceivedData {
 
 	private Activity activity;
-	private Pipeline pipeline;
+	private Pipeline instance;
 	private String macAddress;
-	private String experimentSerial;
 	private List<String> contentLines;
 	private Relation table;
+	private ReceivedFile csvDataFile;
+	private Date time;
+	
+	public Date getTime() {
+		return time;
+	}
 	
 	public Relation getTable() {
 		return table;
@@ -23,15 +31,20 @@ public class ReceivedData {
 		return contentLines.size() > 0;
 	}
 	
+	public ReceivedFile getCsvDataFile() {
+		return csvDataFile;
+	}
+	
 	public ReceivedData( List<String> contentLines, String macAddress, Pipeline pipeline, Activity activity, Relation table, 
-			String experimentSerial ) throws Exception {
+			ReceivedFile csvDataFile ) throws Exception {
 
 		this.activity = activity;
-		this.pipeline = pipeline;
+		this.instance = pipeline;
 		this.contentLines = contentLines;
 		this.macAddress = macAddress;
-		this.experimentSerial = experimentSerial;
+		this.csvDataFile = csvDataFile;
 		this.table = table;
+		this.time = Calendar.getInstance().getTime();
 		
 	}
 	
@@ -39,24 +52,17 @@ public class ReceivedData {
 		return contentLines;
 	}
 
-
-	public String getExperimentSerial() {
-		return experimentSerial;
-	}
-
-
 	public String getMacAddress() {
 		return macAddress;
 	}
-
 
 	public Activity getActivity() {
 		return activity;
 	}
 	
-	public Pipeline getPipeline() {
-		return pipeline;
+	public Pipeline getInstance() {
+		return instance;
 	}
 	
-	
+
 }

@@ -16,7 +16,7 @@ import cmabreu.sagitarii.persistence.entity.Experiment;
 public class MailService {
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 	
-	public void notifyExperimentFinished( Experiment experiment ) {
+	public void notifyExperimentFinished( Experiment experiment ) throws Exception {
 		logger.debug("notify " + experiment.getOwner().getUserMail() + ": experiment finished.");
 		Properties props = new Properties();
         Session session = Session.getDefaultInstance(props, null);

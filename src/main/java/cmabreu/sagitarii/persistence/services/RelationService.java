@@ -428,10 +428,14 @@ public class RelationService {
 	 * 
 	 * @throws Exception
 	 */
-	public void importCSVData(ReceivedData rd, Experiment owner, FileImporter importer) throws Exception {
+	public void importCSVData(ReceivedData rd, FileImporter importer) throws Exception {
 		String sql = "";
 		List<String> contentLines = rd.getContentLines();
-
+		
+		ExperimentService es = new ExperimentService();
+		Experiment owner = es.getExperiment( rd.getCsvDataFile().getExperimentSerial() );
+		
+		
 		// Get table schema: Time consuming + One more database hit!! Need to find a way to avoid this.
 		String output = rd.getActivity().getOutputRelation().getName();
 		Set<UserTableEntity> structure = getTableStructure(output);
@@ -442,7 +446,7 @@ public class RelationService {
 		}
 		
 		
-		logger.debug("received " + contentLines.size() + " lines of data from teapot. pipeline " + rd.getPipeline().getIdPipeline() + " | activity " + rd.getActivity().getIdActivity() );
+		logger.debug("received " + contentLines.size() + " lines of data from teapot. pipeline " + rd.getInstance().getIdPipeline() + " | activity " + rd.getActivity().getIdActivity() );
 		for ( int x = 1; x < contentLines.size(); x++ ) {
 			
 			String ss = contentLines.get(x);
@@ -473,7 +477,7 @@ public class RelationService {
 			}
 
 			sql = "insert into " + rd.getTable().getName() + "("+columns.substring(0, columns.length()-1).toLowerCase()+") values ("+ owner.getIdExperiment() + 
-					"," + rd.getActivity().getIdActivity() + "," + rd.getPipeline().getIdPipeline() + "," + values + ");";
+					"," + rd.getActivity().getIdActivity() + "," + rd.getInstance().getIdPipeline() + "," + values + ");";
 			
 			executeQueryAndKeepOpen(sql);
 			if ( importer != null ) {

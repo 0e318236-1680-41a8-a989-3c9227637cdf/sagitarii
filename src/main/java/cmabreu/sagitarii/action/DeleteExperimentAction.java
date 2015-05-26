@@ -29,7 +29,11 @@ public class DeleteExperimentAction extends BasicActionClass {
 	
 	
 	public String execute () {
-		destiny = "viewWorkflow?idWorkflow=" + idWorkflow;
+		if ( idWorkflow >= 0 ) {
+			destiny = "viewWorkflow?idWorkflow=" + idWorkflow;
+		} else {
+			destiny = "viewExperiments";
+		}
 		try {
 			setMessageText("Deleting experiment. This can take some time. You can close this message or wait until the experiment is deleted.");
 			new ExperimentService().deleteExperiment( idExperiment );

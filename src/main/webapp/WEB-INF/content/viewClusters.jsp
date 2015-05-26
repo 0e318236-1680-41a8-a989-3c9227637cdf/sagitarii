@@ -18,7 +18,7 @@
 					<div id="promoBar" style="height:220px;display:table;width:100%">
 						<c:forEach var="cluster" items="${clusterList}">
 						
-								<div style="position:relative" id="${cluster.macAddress}" class="clusterBar">
+								<div onclick="showNodeLog('${cluster.macAddress}')" style="position:relative" id="${cluster.macAddress}" class="clusterBar">
 								
 									<table style="margin-bottom: 5px;width:98%; margin-left:10px; margin-top: 5px">
 										<c:if test="${not fn:contains(cluster.macAddress, 'S0-A0-G0-I0-T0-A0-RI')}">
@@ -97,7 +97,7 @@
 										
 										
 									</table>
-
+									
 								</div>
 						
 						</c:forEach>
@@ -134,6 +134,10 @@
 
 	function reloadWrappers() {
 		window.location.href="clusterControl?command=reloadWrappers";
+	}
+
+	function showNodeLog( node ) {
+		window.location.href="showNodeLog?macAddress=" + node;
 	}
 
 	$(document).ready(function() {

@@ -113,13 +113,18 @@ public class Cluster {
 	
 	public synchronized boolean confirmReceiveData( ReceivedData rd ) throws Exception {
 		setLastAnnounce( Calendar.getInstance().getTime() );
-		setPipelineAsDone( rd.getPipeline().getSerial(), rd.getActivity() );
+		
+		setPipelineAsDone( rd );
 		
 		if ( rd.hasData() ) {
-			logger.debug( "[" + this.macAddress +  "] data received from instance " + rd.getPipeline().getSerial() + " (" + rd.getActivity().getTag() + ") is done");
+			logger.debug( "[" + this.macAddress +  "] data received from instance " + rd.getInstance().getSerial() + " (" + rd.getActivity().getTag() + ") is done");
 		} else {
-			logger.error( "[" + this.macAddress +  "] no data produced by instance " + rd.getPipeline().getSerial() + " (" + rd.getActivity().getTag() + ")" );
-			lastError = "No data produced by instance " + rd.getPipeline().getSerial() + " (" + rd.getActivity().getTag() + ")";
+			logger.error( "[" + this.macAddress +  "] no data produced by instance " + rd.getInstance().getSerial() + " (" + rd.getActivity().getTag() + ")" );
+			lastError = "No data produced by instance " + rd.getInstance().getSerial() + " (" + rd.getActivity().getTag() + ")";
+		}
+		
+		if ( !rd.getCsvDataFile().getExitCode().equals("0") ) {
+			lastError = "Exit Error: " + rd.getInstance().getSerial() + " (" + rd.getActivity().getTag() + ")";
 		}
 		
 		MetricController.getInstance().hit( this.machineName, MetricType.NODE );
@@ -129,11 +134,19 @@ public class Cluster {
 		return true;
 	}
 	
+
+	public void setPipelineAsDone( ReceivedData rd ) {
+		String instanceSerial = rd.getInstance().getSerial();
+		Activity actvt = rd.getActivity();
+		MainLog.getInstance().storeLog( rd );
+		setPipelineAsDone( instanceSerial, actvt );
+	}
 	
-	public void setPipelineAsDone( String pipelineSerial, Activity actvt ) {
-		logger.debug("checking if instance " + pipelineSerial + " (" + actvt.getTag() + ") is done");
+	
+	public void setPipelineAsDone( String instanceSerial, Activity actvt ) {
+		logger.debug("checking if instance " + instanceSerial + " (" + actvt.getTag() + ") is done");
 		for( Pipeline pipe : runningInstances ) {
-			if ( pipe.getSerial().equals( pipelineSerial ) ) {
+			if ( pipe.getSerial().equals( instanceSerial ) ) {
 				pipe.decreaseQtdActivations();
 				String finished = pipe.getFinishedActivities();
 				if ( finished == null ) { finished = ""; }
@@ -141,14 +154,14 @@ public class Cluster {
 					pipe.setFinishedActivities( finished + " " + actvt.getTag() );
 				}
 				if( pipe.getQtdActivations() == 0 ) {
-					logger.debug("instance " + pipelineSerial + " finished");
+					logger.debug("instance " + instanceSerial + " finished");
 					processedPipes++;
 					pipe.setStatus( PipelineStatus.FINISHED );
 					
 					Sagitarii.getInstance().finishPipeline( pipe );
-					InstanceDeliveryControl.getInstance().removeUnit( pipelineSerial );
+					InstanceDeliveryControl.getInstance().removeUnit( instanceSerial );
 				} else {
-					logger.debug("instance " + pipelineSerial + " (" + actvt.getTag() + ") have " + pipe.getQtdActivations() + " tasks running");
+					logger.debug("instance " + instanceSerial + " (" + actvt.getTag() + ") have " + pipe.getQtdActivations() + " tasks running");
 				}
 				break;
 			}

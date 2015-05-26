@@ -28,7 +28,7 @@ public class AgeCalculator {
 		// do nothing for while
 	}
 	
-	public synchronized void addToStatistics( DeliveryUnit du ) {
+	public void addToStatistics( DeliveryUnit du ) {
 		boolean found = false;
 		for ( Accumulator accumulator : lista  ) {
 			if( accumulator.getAlias().equals( du.getPipeline().getExecutorAlias() )  ) {

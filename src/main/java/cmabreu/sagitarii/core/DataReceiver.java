@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import cmabreu.sagitarii.core.sockets.FileImporter;
+import cmabreu.sagitarii.core.sockets.ReceivedFile;
 import cmabreu.sagitarii.core.types.ActivityStatus;
 import cmabreu.sagitarii.core.types.ActivityType;
 import cmabreu.sagitarii.core.types.PipelineStatus;
@@ -73,29 +74,31 @@ public class DataReceiver {
 		Activity activity = newActivity( table );
 		Pipeline instance = newInstance( activity );
 		logger.debug("passing thru original receive method...");
-		return receive( contentLines, "API CALL", instance, activity, table, experimentSerial, null, true);
+		
+		ReceivedFile csvDataFile = new ReceivedFile();
+		csvDataFile.setExperimentSerial( experimentSerial );
+		
+		return receive( contentLines, "API CALL", instance, activity, table, csvDataFile, null, true);
 	}
 	
 	public String receive( List<String> contentLines, String macAddress, Pipeline instance, Activity activity, Relation table, 
-			String experimentSerial, FileImporter importer, boolean initialLoad ) {
+			ReceivedFile csvDataFile, FileImporter importer, boolean initialLoad ) {
 
 		try {
 			logger.debug("receiving data from " + macAddress + " pipeline " + instance.getSerial() + " activity " + activity.getSerial() );
 	
-			ReceivedData rd = new ReceivedData(contentLines, macAddress, instance, activity, table, experimentSerial);
-			ExperimentService es = new ExperimentService();
-			Experiment ex = es.getExperiment( rd.getExperimentSerial() );
+			ReceivedData rd = new ReceivedData(contentLines, macAddress, instance, activity, table, csvDataFile);
 			
 			RelationService relationService = new RelationService();
-			relationService.importCSVData( rd, ex, importer );
+			relationService.importCSVData( rd, importer );
 	
 			if ( !initialLoad ) {
 				logger.debug("node data");
 				ClustersManager.getInstance().confirmReceiveData( rd );
 			}		
 			
-			logger.debug("done. pipeline | activity:  " + rd.getPipeline().getSerial() + "|" + rd.getActivity().getSerial() );
-			return rd.getPipeline().getSerial() + ";" + rd.getActivity().getSerial();
+			logger.debug("done. pipeline | activity:  " + rd.getInstance().getSerial() + "|" + rd.getActivity().getSerial() );
+			return rd.getInstance().getSerial() + ";" + rd.getActivity().getSerial();
 			
 		} catch ( Exception e ) {
 			logger.error( e.getMessage() );

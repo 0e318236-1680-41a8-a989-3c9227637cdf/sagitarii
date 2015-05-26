@@ -1,6 +1,7 @@
 package cmabreu.sagitarii.core.sockets;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -14,7 +15,7 @@ import org.w3c.dom.NodeList;
 public class FileXMLParser {
 	private Document doc;
 	
-	/*
+	
 	private String getTagValue(String sTag, Element eElement) throws Exception{
 		try {
 			NodeList nlList = eElement.getElementsByTagName(sTag).item(0).getChildNodes();
@@ -24,7 +25,7 @@ public class FileXMLParser {
 			throw e;
 		}
 	}
-	*/
+	
 	
 	public List<ReceivedFile> parseDescriptor( String xmlFile ) throws Exception {
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -43,6 +44,12 @@ public class FileXMLParser {
 		String activity = pipeElement.getAttribute("activity");
 		String macAddress = pipeElement.getAttribute("macAddress");
 		String fragment = pipeElement.getAttribute("fragment");
+
+		String taskId = pipeElement.getAttribute("taskId");
+		String exitCode = pipeElement.getAttribute("exitCode");
+
+		String console = getTagValue("console", pipeElement);
+		List<String> consoleLines = Arrays.asList( console.split("\n") );
 		
 		List<ReceivedFile> resp = new ArrayList<ReceivedFile>();
 		NodeList mapconfig = doc.getElementsByTagName("file");
@@ -64,6 +71,10 @@ public class FileXMLParser {
 				receivedFile.setInstance(instance);
 				receivedFile.setActivity(activity);
 				receivedFile.setFragment(fragment);
+				
+				receivedFile.setConsole( consoleLines );
+				receivedFile.setExitCode( exitCode );
+				receivedFile.setTaskId( taskId );
 				
 				resp.add(receivedFile);
 				

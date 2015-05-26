@@ -121,7 +121,7 @@ public class FileImporter extends Thread {
 		return sessionSerial;
 	}
 	
-	public FileImporter( String sessionSerial, Server server ) throws Exception {
+	public FileImporter(  String sessionSerial, Server server ) throws Exception {
 		this.server = server;
 		this.startTime = Calendar.getInstance().getTime();
 		this.sessionSerial = sessionSerial;
@@ -344,9 +344,11 @@ public class FileImporter extends Thread {
 		if ( contentLines.size() > 1 ) {
 			log = "Inserting CSV data into table " + csvDataFile.getTargetTable() + "...";
 			logger.debug("inserting "+contentLines.size()+" lines of CSV data into table " + table.getName() + "..." );
+			
 			new DataReceiver().receive( contentLines, macAddress, instance, activity, table, 
-					csvDataFile.getExperimentSerial(), this, initialLoad );
+					csvDataFile, this, initialLoad );
 	
+			
 			insertedLines = importedLines;
 			logger.debug("done inserting CSV data into table " + table.getName() );
 		} else {
@@ -394,12 +396,14 @@ public class FileImporter extends Thread {
 		
 		logger.debug("parsing descriptor " + newDescriptor + "...");
 		FileXMLParser parser = new FileXMLParser();
+		
 		receivedFiles = parser.parseDescriptor( newDescriptor );
 		ReceivedFile csvDataFile = null;
+		
 		// Find the main CSV data file (sagi_output.txt for Teapot or any other if user manual load)
 		logger.debug("files received on session " + sessionSerial );
 		for( ReceivedFile receivedFile : receivedFiles ) {
-			logger.debug(" > " + receivedFile.getInstance() + "/" + receivedFile.getFragment() + "/" + receivedFile.getActivity() + "/" + receivedFile.getFileName() );
+			logger.debug(" > " + receivedFile.getInstance() + "/" + receivedFile.getFragment() + "/" + receivedFile.getActivity() + "/" + receivedFile.getFileName() + " Exit: " + receivedFile.getExitCode() );
 			if ( receivedFile.getType().equals("FILE_TYPE_CSV") ) {
 				logger.debug("will process csv from " + receivedFile.getFileName() );
 				csvDataFile = receivedFile;
