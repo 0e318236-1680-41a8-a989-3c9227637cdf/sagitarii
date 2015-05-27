@@ -66,7 +66,7 @@
 	        "oLanguage": {
 	            "sUrl": "js/pt_BR.txt"
 	        },	
-	        "iDisplayLength" : 20,
+	        "iDisplayLength" : 10,
 			"bLengthChange": false,
 			"fnInitComplete": function(oSettings, json) {
 				doTableComplete();

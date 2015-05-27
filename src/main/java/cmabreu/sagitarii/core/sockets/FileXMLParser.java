@@ -48,8 +48,13 @@ public class FileXMLParser {
 		String taskId = pipeElement.getAttribute("taskId");
 		String exitCode = pipeElement.getAttribute("exitCode");
 
-		String console = getTagValue("console", pipeElement);
-		List<String> consoleLines = Arrays.asList( console.split("\n") );
+		List<String> consoleLines = new ArrayList<String>();
+		try {
+			String console = getTagValue("console", pipeElement);
+			consoleLines = Arrays.asList( console.split("\n") );
+		} catch ( Exception e ) {
+			// Just an empty node. Nothing dangerous.
+		}
 		
 		List<ReceivedFile> resp = new ArrayList<ReceivedFile>();
 		NodeList mapconfig = doc.getElementsByTagName("file");
