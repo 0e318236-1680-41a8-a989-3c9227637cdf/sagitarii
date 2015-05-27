@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import cmabreu.sagitarii.persistence.entity.Experiment;
+import cmabreu.sagitarii.persistence.entity.User;
 import cmabreu.sagitarii.persistence.exceptions.DatabaseConnectException;
 import cmabreu.sagitarii.persistence.exceptions.DeleteException;
 import cmabreu.sagitarii.persistence.exceptions.InsertException;
@@ -20,13 +21,22 @@ public class ExperimentRepository extends BasicRepository {
 		logger.debug("init");
 	}
 
+
 	public Set<Experiment> getList() throws NotFoundException {
+		return getList( null );
+	}
+	
+	public Set<Experiment> getList( User user ) throws NotFoundException {
 		logger.debug("get list" );
 		DaoFactory<Experiment> df = new DaoFactory<Experiment>();
 		IDao<Experiment> fm = df.getDao(this.session, Experiment.class);
 		Set<Experiment> experiments = null;
 		try {
-			experiments = new HashSet<Experiment>( fm.getList("select * from experiments") );
+			if ( user == null ) {
+				experiments = new HashSet<Experiment>( fm.getList("select * from experiments") );
+			} else {
+				experiments = new HashSet<Experiment>( fm.getList("select * from experiments where id_user = " + user.getIdUser() ) );
+			}
 		} catch ( Exception e ) {
 			closeSession();
 			throw e;

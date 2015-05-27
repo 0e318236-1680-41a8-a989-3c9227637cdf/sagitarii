@@ -1,6 +1,7 @@
 package cmabreu.sagitarii.api;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -11,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 
 import cmabreu.sagitarii.core.DataReceiver;
 import cmabreu.sagitarii.core.TableAttribute;
+import cmabreu.sagitarii.misc.DateLibrary;
 import cmabreu.sagitarii.persistence.entity.Experiment;
 import cmabreu.sagitarii.persistence.entity.File;
 import cmabreu.sagitarii.persistence.entity.Relation;
@@ -58,6 +60,10 @@ public class ExternalApi {
 					
 					if ( command.equals("apiCreateExperiment") ) {
 						return createExperiment( map, user );
+					}
+
+					if ( command.equals("apiGetExperiments") ) {
+						return getExperiments( map, user );
 					}
 					
 					if ( command.equals("apiStartExperiment") ) {
@@ -212,6 +218,44 @@ public class ExternalApi {
 			}
 		}
 		return "RETURN_INVALID_WORKFLOW";
+	}
+
+	private String addArray(String paramName, String arrayValue) {
+		return "\"" + paramName + "\":" + arrayValue ; 
+	}
+
+	private String getExperiments( Map<String, Object> map, User user ) {
+		Set<Experiment> experiments = new HashSet<Experiment>();
+		try {
+			ExperimentService es = new ExperimentService();
+			experiments = es.getList( user );
+			
+			StringBuilder data = new StringBuilder();
+			String dataPrefix = "";
+			data.append("[");
+			for ( Experiment experiment : experiments ) {
+				String startDate = DateLibrary.getInstance().getDateHourTextHuman( experiment.getLastExecutionDate() ); 
+				data.append(dataPrefix + "{");
+				data.append( generateJsonPair( "tagExec", experiment.getTagExec() ) + "," );
+				data.append( generateJsonPair( "startDate", startDate ) + "," );
+				data.append( generateJsonPair( "status", experiment.getStatus().toString() ) );
+				dataPrefix = ",";
+				data.append("}");
+			}
+			data.append("]");
+			
+			StringBuilder sb = new StringBuilder();
+			sb.append("{");
+			sb.append( addArray("data", data.toString() ) );
+			sb.append("}");
+			
+			return formatMessage( sb.toString() );
+			
+		} catch ( Exception e ) {
+			logger.error( e.getMessage() );
+			return formatMessage( e.getMessage() );
+		}
+		
 	}
 	
 	private String receiveData( Map<String, Object> map ) {

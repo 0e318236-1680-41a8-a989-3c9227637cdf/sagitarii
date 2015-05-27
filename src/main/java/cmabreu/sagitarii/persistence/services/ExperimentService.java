@@ -355,5 +355,10 @@ public class ExperimentService {
 		Set<Experiment> preList = rep.getList();
 		return preList;	
 	}
-	
+
+	public Set<Experiment> getList( User user ) throws NotFoundException {
+		Set<Experiment> preList = rep.getList( user );
+		return preList;	
+	}
+
 }
