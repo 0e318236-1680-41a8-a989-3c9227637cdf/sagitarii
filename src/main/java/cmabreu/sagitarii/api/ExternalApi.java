@@ -72,7 +72,6 @@ public class ExternalApi {
 					if ( command.equals("apiGetFilesExperiment") ) {
 						return getFilesExperiment( map );
 					}
-					
 					if ( command.equals("apiCreateTable") ) {
 						return createTable( map );
 					}
@@ -149,11 +148,44 @@ public class ExternalApi {
 		return "RETURN_INVALID_EXPERIMENT_SERIAL";
 	}
 	
+	private String getExperiments( Map<String, Object> map, User user ) {
+		Set<Experiment> experiments = new HashSet<Experiment>();
+		try {
+			ExperimentService es = new ExperimentService();
+			experiments = es.getList( user );
+			
+			StringBuilder data = new StringBuilder();
+			String dataPrefix = "";
+			data.append("[");
+			for ( Experiment experiment : experiments ) {
+				String startDate = DateLibrary.getInstance().getDateHourTextHuman( experiment.getLastExecutionDate() ); 
+				data.append(dataPrefix + "{");
+				data.append( generateJsonPair( "tagExec", experiment.getTagExec() ) + "," );
+				data.append( generateJsonPair( "startDate", startDate ) + "," );
+				data.append( generateJsonPair( "status", experiment.getStatus().toString() ) );
+				dataPrefix = ",";
+				data.append("}");
+			}
+			data.append("]");
+			
+			StringBuilder sb = new StringBuilder();
+			sb.append("{");
+			sb.append( addArray("data", data.toString() ) );
+			sb.append("}");
+			
+			return formatMessage( sb.toString() );
+			
+		} catch ( Exception e ) {
+			logger.error( e.getMessage() );
+			return formatMessage( e.getMessage() );
+		}
+		
+	}
 
 	private String getFilesExperiment( Map<String, Object> map ) {
 		try {
 			String experimentSerial = (String)map.get("experimentSerial");
-			if( !experimentSerial.equals("") ) {
+			if( ( experimentSerial != null ) && (!experimentSerial.equals("") ) ) {
 				ExperimentService es = new ExperimentService();
 				Experiment experiment = es.getExperiment( experimentSerial );
 				
@@ -164,24 +196,35 @@ public class ExternalApi {
 				FileService fs = new FileService();
 				Set<File> files = fs.getList( experiment.getIdExperiment(), activityTag, rangeStart, rangeEnd );
 				
+				StringBuilder data = new StringBuilder();
+				String dataPrefix = "";
+				data.append("[");
+				for ( File file : files ) {
+					data.append( dataPrefix + "{");
+					data.append( generateJsonPair( "fileName" , file.getFileName() ) + "," ); 
+					data.append( generateJsonPair( "fileId", String.valueOf( file.getIdFile() ) ) ); 
+					dataPrefix = ",";
+					data.append("}");
+				}
+				data.append("]");
+				
 				StringBuilder sb = new StringBuilder();
 				sb.append("{");
-				for ( File file : files ) {
-					sb.append( generateJsonPair( file.getFileName(), String.valueOf( file.getIdFile() ) ) + "," ); 
-				}
-				sb.append( generateJsonPair("experimentSerial", experiment.getTagExec())  ); 
+				sb.append( addArray("data", data.toString() ) ); 
 				sb.append("}");
 
 				return sb.toString();
+			} else {
+				return "RETURN_INVALID_EXPERIMENT_SERIAL";
 			}
+			
 		} catch ( Exception e ) {
+			e.printStackTrace();
 			logger.error( e.getMessage() );
 			return formatMessage( e.getMessage() );
 		}
-		return "RETURN_INVALID_EXPERIMENT_SERIAL";
 	}
 
-	
 	private String getToken( Map<String, Object> map ) {
 		String token = "";
 		try {
@@ -224,40 +267,6 @@ public class ExternalApi {
 		return "\"" + paramName + "\":" + arrayValue ; 
 	}
 
-	private String getExperiments( Map<String, Object> map, User user ) {
-		Set<Experiment> experiments = new HashSet<Experiment>();
-		try {
-			ExperimentService es = new ExperimentService();
-			experiments = es.getList( user );
-			
-			StringBuilder data = new StringBuilder();
-			String dataPrefix = "";
-			data.append("[");
-			for ( Experiment experiment : experiments ) {
-				String startDate = DateLibrary.getInstance().getDateHourTextHuman( experiment.getLastExecutionDate() ); 
-				data.append(dataPrefix + "{");
-				data.append( generateJsonPair( "tagExec", experiment.getTagExec() ) + "," );
-				data.append( generateJsonPair( "startDate", startDate ) + "," );
-				data.append( generateJsonPair( "status", experiment.getStatus().toString() ) );
-				dataPrefix = ",";
-				data.append("}");
-			}
-			data.append("]");
-			
-			StringBuilder sb = new StringBuilder();
-			sb.append("{");
-			sb.append( addArray("data", data.toString() ) );
-			sb.append("}");
-			
-			return formatMessage( sb.toString() );
-			
-		} catch ( Exception e ) {
-			logger.error( e.getMessage() );
-			return formatMessage( e.getMessage() );
-		}
-		
-	}
-	
 	private String receiveData( Map<String, Object> map ) {
 		String messageResult = "";
 		List<String> contentLines = new ArrayList<String>();

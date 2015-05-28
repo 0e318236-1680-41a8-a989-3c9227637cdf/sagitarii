@@ -44,9 +44,9 @@ public class FileRepository extends BasicRepository {
 
 		Set<File> files = null;
 		try {
-			files = new HashSet<File>( fm.getList("select f.* from files f where f.id_experiment = " + idExperiment + 
-					" join activities a on f.id_activity = a.id_activity where a.tag = '"+ activityTag +"' limit " +
-					rangeStart + "," + rangeEnd ) );
+			files = new HashSet<File>( fm.getList("select f.* from files f "
+					+ "join activities a on f.id_activity = a.id_activity where f.id_experiment = " + idExperiment + 
+					" and a.tag = '"+ activityTag +"' offset " +	rangeStart + " limit " + rangeEnd ) );
 		} catch ( Exception e ) {
 			closeSession();
 			throw e;
