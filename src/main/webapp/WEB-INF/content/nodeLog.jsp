@@ -14,7 +14,7 @@
 							<div class="basicCentralPanelBarText">View Node ${macAddress} Log</div>
 						</div>
 
-						<div style="display:table; width:95%; margin:0 auto;margin-top:10px;margin-bottom:10px;">
+						<div style="margin : 0 auto; width : 95%; margin-top:10px;" id="dtTableContainer">
 							<table class="tableForm"  id="example">
 								<thead>
 									<tr>

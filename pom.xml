@@ -6,8 +6,8 @@
   <artifactId>Sagitarii</artifactId>
   <packaging>war</packaging>
   <version>1.0.345</version>
-  <name>Sagitarii Workflow Processor</name>
-  <url>https://github.com/icemagno/sagitarii/</url>
+  <name>Sagitarii Data Science Workflow System</name>
+  <url>https://github.com/eic-cefet-rj/sagitarii/</url>
 
 	<properties>
 		<jdk.version>1.7</jdk.version>
@@ -229,11 +229,11 @@
 	</organization>
 	<issueManagement>
 		<system>Github</system>
-		<url>https://github.com/icemagno/sagitarii/issues</url>
+		<url>https://github.com/eic-cefet-rj/sagitarii/issues</url>
 	</issueManagement>
 	<ciManagement>
 		<system>Github</system>
-		<url>https://github.com/icemagno/sagitarii</url>
+		<url>https://github.com/eic-cefet-rj/sagitarii</url>
 	</ciManagement>
 	
 </project>
