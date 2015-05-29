@@ -39,7 +39,7 @@
 		</Logger>
 
 		<Logger name="cmabreu.sagitarii.core.Orchestrator" level="error" additivity="false"> 
-			<appender-ref ref="Consoe"/> 
+			<appender-ref ref="Console"/> 
 		</Logger>
 
 		<Logger name="cmabreu.sagitarii.core.ReceivedData" level="error" additivity="false"> 
@@ -70,7 +70,7 @@
 			<appender-ref ref="Console"/> 
 		</Logger>
 
-		<Logger name="cmabreu.sagitarii.persistence.services.ExperimentService" level="error" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.persistence.services.ExperimentService" level="debug" additivity="false"> 
 			<appender-ref ref="Console"/> 
 		</Logger>
 
@@ -88,7 +88,7 @@
 			<appender-ref ref="Console"/> 
 		</Logger>
 
-		<Logger name="cmabreu.sagitarii.core.Sagitarii" level="debug" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.core.Sagitarii" level="error" additivity="false"> 
 			<appender-ref ref="Console"/> 
 		</Logger>
 
@@ -145,7 +145,7 @@
 			<appender-ref ref="Console"/> 
 		</Logger>
 		
-		<Logger name="cmabreu.sagitarii.core.processor.MainClusterQueryWrapper" level="debug" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.core.processor.MainClusterQueryWrapper" level="error" additivity="false"> 
 			<appender-ref ref="Console"/> 
 		</Logger>
 

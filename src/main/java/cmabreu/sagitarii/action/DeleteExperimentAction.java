@@ -27,7 +27,6 @@ public class DeleteExperimentAction extends BasicActionClass {
 	private String destiny;
 	private List<Activity> activities = new ArrayList<Activity>();
 	
-	
 	public String execute () {
 		if ( idWorkflow >= 0 ) {
 			destiny = "viewWorkflow?idWorkflow=" + idWorkflow;
@@ -39,7 +38,6 @@ public class DeleteExperimentAction extends BasicActionClass {
 			new ExperimentService().deleteExperiment( idExperiment );
 		} catch (DatabaseConnectException e) {
 			setMessageText("Database Error.");
-			return "ok";
 		} catch (Exception e) {
 			setMessageText("Error: " + e.getMessage() );
 		}

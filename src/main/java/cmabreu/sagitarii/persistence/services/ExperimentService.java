@@ -262,20 +262,24 @@ public class ExperimentService {
 	public void deleteExperiment( int idExperiment ) throws DeleteException {
 		logger.debug( "deleting experiment " + idExperiment );
 		
+		Sagitarii.getInstance().stopProcessing();
 		
 		try {
 
 			Experiment experiment = fillExperiment ( rep.getExperiment(idExperiment) );
 
+			
 			if ( experiment.getStatus() == ExperimentStatus.RUNNING ) {
 				logger.error( "deletion of running experiment " + idExperiment + " not allowed." );
 				throw new DeleteException("You cannot delete a running experiment.");
 			}
-			
+
+			/*
 			if ( Sagitarii.getInstance().experimentIsStillQueued( experiment ) ) {
 				logger.error( "deletion of buffered experiment " + idExperiment + " not allowed." );
 				throw new DeleteException("This experiment still have buffered pipelines. Try again when experiment is finished or buffer flushed.");
 			}
+			*/
 
 			RelationService rs = new RelationService();
 			List<Relation> tables = rs.getList();
@@ -302,7 +306,7 @@ public class ExperimentService {
 				sql = "delete from dependencies where id_slave in ( select id_activity from activities where id_fragment = " + frag.getIdFragment() + ")";
 				rs.executeQuery( sql );
 				
-				logger.debug("removing activity dependencies...");
+				logger.debug("removing activity relationship...");
 				sql = "delete from relationship where id_activity in ( select id_activity from activities where id_fragment = " + frag.getIdFragment() + ")";
 				rs.executeQuery( sql );
 				
@@ -329,8 +333,11 @@ public class ExperimentService {
 			rep.newTransaction();
 			rep.deleteExperiment(experiment);
 			Sagitarii.getInstance().removeExperiment( experiment );
+			Sagitarii.getInstance().resumeProcessing();
 		} catch ( Exception e ) {
+			e.printStackTrace();
 			logger.error( e.getMessage() );
+			Sagitarii.getInstance().resumeProcessing();
 			throw new DeleteException( e.getMessage() );
 		}
 		logger.debug("experiment deleted.");

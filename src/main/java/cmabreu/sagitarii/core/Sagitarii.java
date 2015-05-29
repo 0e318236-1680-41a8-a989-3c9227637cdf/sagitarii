@@ -370,6 +370,19 @@ public class Sagitarii {
 		logger.debug("done updating fragments.");
 	}
 	
+
+	private boolean hasOwner( Pipeline instance ) {
+		for ( Experiment exp : runningExperiments ) {
+			for( Fragment frag : exp.getFragments() ) {
+				if ( instance.getIdFragment() == frag.getIdFragment() ) {
+					return true;
+				}
+			}
+		}
+		logger.warn("owner of instance " + instance.getSerial() + " not found. Will discard this instance.");
+		return false;
+	}
+	
 	
 	/**
 	 * Entrega um pipeline a um cluster
@@ -379,7 +392,11 @@ public class Sagitarii {
 	public Pipeline getNextInstance() {
 		Pipeline next = instanceInputBuffer.poll();
 		if ( next != null ) {
-			pipelineOutputBuffer.add( next );
+			if ( hasOwner(next) ) {
+				pipelineOutputBuffer.add( next );
+			} else {
+				return getNextInstance();
+			}
 		} else {
 			if ( instanceInputBuffer.size() > 0 ) {
 				logger.error("null instance detected in output buffer. Run sanitization...");
@@ -689,10 +706,12 @@ public class Sagitarii {
 
 	
 	public void stopProcessing() {
+		logger.warn("Sagitarii was stopped.");
 		stopped = true;
 	}
 
 	public void resumeProcessing() {
+		logger.warn("Sagitarii was resumed.");
 		stopped = false;
 	}
 
