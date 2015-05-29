@@ -490,11 +490,16 @@ td input {
 	display : none;
 }
 
+.badge {
+	width:40px;
+	height:45px;
+}
+
 #bottomBar {
 	border-top : 1px dotted #ADADAD;
 	margin-left : 5px;
 	margin-right : 5px;
-	height: 70px;
+	height: 90px;
 	text-align : center;
 	font-size: 10px;
 	position: relative;

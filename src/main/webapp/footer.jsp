@@ -8,16 +8,22 @@
 		</div>
 
 		<div class="clear" />
-		<div id="bottomBar">
+		<div id="bottomBar" style="height:70px">
 			<div class="footerDivLeft">
 				&nbsp;
 			</div> 
 
-			<div class="footerDivRight" style="width:350px; text-align:right;">
-				<a class="dicas" title="Cytoscape.js" target="_BLANK" href="http://cytoscape.github.io/cytoscape.js/"><img src="img/logos/cytoscape_badge.png" style="width:80px;height:64px"></a>
-				<a class="dicas" title="Download Code" target="_BLANK" href="https://github.com/eic-cefet-rj"><img src="img/logos/git_badge.png" style="width:80px;height:64px"></a>
-				<a class="dicas" title="Code Mirror" target="_BLANK" href="http://codemirror.net/"><img src="img/logos/codemirror_badge.png" style="width:80px;height:64px"/></a>
-				<a class="dicas" title="jQuery" target="_BLANK" href="https://jquery.com/"><img src="img/logos/jquery.png" style="width:80px;height:64px"/></a>
+			<div class="footerDivRight" style="width:600px; text-align:right;">
+				<a class="dicas" title="CEFET-RJ" target="_BLANK" href="http://eic.cefet-rj.br/portal/"><img src="img/logos/cefet_badge.png" class="badge"></a>
+				<a class="dicas" title="Cytoscape.js" target="_BLANK" href="http://cytoscape.github.io/cytoscape.js/"><img src="img/logos/cytoscape_badge.png" class="badge"></a>
+				<a class="dicas" title="Download Code" target="_BLANK" href="https://github.com/eic-cefet-rj"><img src="img/logos/git_badge.png" class="badge"></a>
+				<a class="dicas" title="Code Mirror" target="_BLANK" href="http://codemirror.net/"><img src="img/logos/codemirror_badge.png" class="badge"/></a>
+				<a class="dicas" title="jQuery" target="_BLANK" href="https://jquery.com/"><img src="img/logos/jquery.png"  class="badge"/></a>
+				<a class="dicas" title="Hibernate" target="_BLANK" href="http://hibernate.org/"><img src="img/logos/hibernate_badge.png" class="badge"/></a>
+				<a class="dicas" title="Apache Log4j" target="_BLANK" href="http://logging.apache.org/log4j/2.x/"><img src="img/logos/log4j_badge.png" class="badge"/></a>
+				<a class="dicas" title="PostgreSQL" target="_BLANK" href="http://www.postgresql.org/"><img src="img/logos/postgres_badge.png" class="badge"/></a>
+				<a class="dicas" title="Java" target="_BLANK" href="http://www.oracle.com/"><img src="img/logos/java_badge.png" class="badge"/></a>
+				<a class="dicas" title="Eclipse Luna" target="_BLANK" href="https://www.eclipse.org/luna/"><img src="img/logos/eclipse_badge.png" class="badge"/></a>
 			</div> 
 
 

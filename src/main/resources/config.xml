@@ -3,7 +3,7 @@
 <!-- 
 	Arquivo de configuração do Sagitarii
 	Versão	: 5.0 
-	Por		: Carlos Magno Abreu em 01/09/2014
+	Por		: Carlos Magno Abreu em 29/05/2015
  -->
 
 <!DOCTYPE configuration [
@@ -26,3 +26,4 @@
 	</orchestrator>
 	
 </configuration>
+
