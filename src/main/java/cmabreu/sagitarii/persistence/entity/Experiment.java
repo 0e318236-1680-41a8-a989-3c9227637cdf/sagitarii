@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,6 +25,7 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Type;
 
 import cmabreu.sagitarii.core.types.ExperimentStatus;
+import cmabreu.sagitarii.misc.DateLibrary;
 import cmabreu.sagitarii.misc.ZipUtil;
 
 @Entity
@@ -68,6 +70,9 @@ public class Experiment {
 	@Column
 	@Type(type="timestamp")
 	private Date lastExecutionDate;
+
+	@Column(length=15, name="elapsed_time")
+	private String elapsedTime;
 
 	@Column
 	@Type(type="timestamp")
@@ -217,7 +222,38 @@ public class Experiment {
 
 	public void setFinishDateTime(Date finishDateTime) {
 		this.finishDateTime = finishDateTime;
+		elapsedTime = evaluateElapsedTime();
 	}
 
 	
+	private String evaluateElapsedTime() {
+		DateLibrary dl = DateLibrary.getInstance();
+		dl.setTo( lastExecutionDate );
+		Calendar cl = Calendar.getInstance();
+		
+		if ( finishDateTime != null ) {
+			cl.setTime( finishDateTime );
+		} else {
+			cl.setTime( Calendar.getInstance().getTime() );
+		}
+		
+		long millis = dl.getDiferencaMilisAte( cl ) ;
+		
+		String time = String.format("%02d %02d:%02d:%02d", 
+				TimeUnit.MILLISECONDS.toDays( millis ),
+				TimeUnit.MILLISECONDS.toHours(millis),
+				TimeUnit.MILLISECONDS.toMinutes(millis) -  
+				TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)), 
+				TimeUnit.MILLISECONDS.toSeconds(millis) - 
+				TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
+		
+		return time;
+		
+	}
+	
+	public String getElapsedTime() {
+		elapsedTime = evaluateElapsedTime();
+		return elapsedTime;
+	}
+
 }

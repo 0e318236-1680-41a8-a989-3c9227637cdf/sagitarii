@@ -50,6 +50,11 @@ public class DateLibrary {
 	public void increaseDay(int days){
 		calendar.add(Calendar.DATE, days);
 	}
+
+	public void increaseMillis(long millis) {
+		Integer i = (int) (long) millis;
+		calendar.add(Calendar.MILLISECOND, i );
+	}
 	
 	public long getDiferencaDiasAte(Calendar data) {
 		long diferenca = 0;

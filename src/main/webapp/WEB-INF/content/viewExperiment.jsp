@@ -59,9 +59,10 @@
 											<fmt:formatDate type="both" timeStyle="short" value="${experiment.finishDateTime}" />&nbsp;
 										</td>
 									</tr>
-
-
-
+									<tr>
+										<td class="tableCellFormLeft">Elapsed Time</td>
+										<td class="tableCellFormRight">${experiment.elapsedTime}</td>
+									</tr>
 									<tr>
 										<td class="tableCellFormLeft">Fragments</td>
 										<td class="tableCellFormRight"> 

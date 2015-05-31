@@ -21,9 +21,9 @@
 									<th>Workflow</th>
 									<th>Created</th>
 									<th>Owner</th>
-									<th>Last Edit</th>
 									<th>Last Run</th>
 									<th>Finish Date</th>
+									<th>Evaluated Time</th>
 									<th>Status</th>
 									<th>&nbsp;</th>
 									
@@ -33,9 +33,6 @@
 										<td class="tableCellFormRight">${experiment.tagExec}&nbsp;</td>
 										<td class="tableCellFormRight">
 											<a class="dicas" title="View Workflow" href="viewWorkflow?idWorkflow=${experiment.workflow.idWorkflow}">${experiment.workflow.tag}</a>
-										</td>
-										<td class="tableCellFormRight">
-											<fmt:formatDate type="both" timeStyle="short" value="${experiment.creationDate}"/>&nbsp;
 										</td>
 										<td class="tableCellFormRight">
 											${experiment.owner.loginName}
@@ -49,6 +46,7 @@
 										<td class="tableCellFormRight">
 											<fmt:formatDate type="both" timeStyle="short" value="${experiment.finishDateTime}"/>&nbsp;
 										</td>
+										<td class="tableCellFormRight">${experiment.elapsedTime}&nbsp;</td>
 										<td class="tableCellFormRight">${experiment.status}&nbsp;</td>
 										<td class="tableCellFormRight">
 											<c:if test="${experiment.status != 'RUNNING'}">
