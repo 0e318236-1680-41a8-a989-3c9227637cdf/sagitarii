@@ -9,6 +9,7 @@ encoding//src/main/java/cmabreu/sagitarii/action/PauseExperimentAction.java=UTF-
 encoding//src/main/java/cmabreu/sagitarii/action/ResumeExperimentAction.java=UTF-8
 encoding//src/main/java/cmabreu/sagitarii/action/RunExperimentAction.java=UTF-8
 encoding//src/main/java/cmabreu/sagitarii/action/SaveExecutorAction.java=UTF-8
+encoding//src/main/java/cmabreu/sagitarii/action/UpdateExecutorAction.java=UTF-8
 encoding//src/main/java/cmabreu/sagitarii/action/ViewWorkflowAction.java=UTF-8
 encoding//src/main/java/cmabreu/sagitarii/core/Cluster.java=UTF-8
 encoding//src/main/java/cmabreu/sagitarii/core/ClustersManager.java=UTF-8

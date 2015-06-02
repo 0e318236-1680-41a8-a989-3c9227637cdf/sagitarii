@@ -49,8 +49,12 @@ public class ExecutorService {
 		} catch (NotFoundException e) {
 			throw new UpdateException( e.getMessage() );
 		}
-		oldExecutor.setExecutorAlias( executor.getExecutorAlias() );
+		
 		oldExecutor.setSelectStatement( executor.getSelectStatement() );
+		if( ( executor.getActivationWrapper() != null ) && ( !executor.getActivationWrapper().equals("") )) {
+			oldExecutor.setActivationWrapper( executor.getActivationWrapper()  );
+		}
+		
 		newTransaction();
 		rep.updateActivationExecutor(oldExecutor);
 	}	

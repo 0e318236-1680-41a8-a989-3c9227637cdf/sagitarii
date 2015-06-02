@@ -43,19 +43,6 @@
 							</div>
 						</form>
 						
-						<div id="typeSelectPanel" class="menuBarMain" style="display:table;height:150px;margin-top:5px;font-size:11px !important;">
-							<table style="margin-top:10px;width:450px;margin-left:10px" >
-								<tr>
-									<td>Grouping Attributes (comma separated attributes)</td>
-								</tr>	
-							</table>							
-							
-							<div class="menuBarMain" style="height:100px;margin-top:5px;font-size:11px !important;">
-								<textarea style="border:0px;height:140px" id="code" name="code">${executor.selectStatement}</textarea>
-							</div>
-							
-						</div>
-						
 						<div style="margin : 0 auto; height:910px; width : 95%; margin-top:10px;" id="dtTableContainer">
 							<table class="tableForm"  id="example" >
 								<thead>
@@ -110,16 +97,6 @@
 
 
 	$(document).ready(function() {
-				
-		codeMirrorEditor = CodeMirror.fromTextArea(document.getElementById("code"), { 
-			mode: "text/x-sql", 
-			indentWithTabs: true,
-			smartIndent: true,
-			matchBrackets : true,
-			readOnly: false,
-			lineNumbers: true,
-			lineWrapping:true
-        });
 		
 		$('#example').dataTable({
 	        "oLanguage": {
@@ -155,7 +132,6 @@
 			return;
 		}
 		
-		$("#stmtField").val( codeMirrorEditor.getDoc().getValue()  );
 		$("#frmSave").submit();
 		
 	}
