@@ -32,7 +32,10 @@ public class EditExecutorAction extends BasicActionClass {
 			executor = es.getExecutor(idExecutor);
 			
 			if ( (executor.getType() == ExecutorType.MAP) || (executor.getType() == ExecutorType.RSCRIPT) || (executor.getType() == ExecutorType.LIBRARY) ) {
-				dest = "editExecutor.jsp";
+				dest = "editExecutorMap.jsp";
+			}
+			if ( executor.getType() == ExecutorType.SELECT ) {
+				dest = "editExecutorSelect.jsp";
 			}
 			
 			

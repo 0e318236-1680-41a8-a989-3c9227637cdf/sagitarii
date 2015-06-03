@@ -1,11 +1,14 @@
 package cmabreu.sagitarii.persistence.services;
 
+import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import cmabreu.sagitarii.core.types.ExecutorType;
+import cmabreu.sagitarii.misc.PathFinder;
 import cmabreu.sagitarii.persistence.entity.ActivationExecutor;
 import cmabreu.sagitarii.persistence.exceptions.DatabaseConnectException;
 import cmabreu.sagitarii.persistence.exceptions.DeleteException;
@@ -83,7 +86,14 @@ public class ExecutorService {
 			ActivationExecutor executor = rep.getActivationExecutor(idExecutor);
 			rep.newTransaction();
 			rep.excluiActivationExecutor(executor);
-		} catch (NotFoundException e) {
+
+			if ( (executor.getActivationWrapper() != null) && ( !executor.getActivationWrapper().equals("") ) ) {
+				String executorFile = PathFinder.getInstance().getPath() + "/repository/" + executor.getActivationWrapper();
+				File file = new File( executorFile );
+				file.delete();
+			}
+			
+		} catch (NotFoundException | UnsupportedEncodingException e) {
 			logger.error( e.getMessage() );
 			throw new DeleteException( e.getMessage() );
 		}

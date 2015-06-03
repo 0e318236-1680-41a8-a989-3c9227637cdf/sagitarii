@@ -13,8 +13,7 @@ import cmabreu.sagitarii.misc.PathFinder;
 import cmabreu.sagitarii.persistence.entity.ActivationExecutor;
 import cmabreu.sagitarii.persistence.services.ExecutorService;
 
-@Action (value = "updateExecutor", results = { @Result (type="redirect", location = "viewExecutors", name = "ok"),
-		 @Result (type="redirect", location = "viewExecutors", name = "error") }, interceptorRefs= { @InterceptorRef("seguranca")	 } ) 
+@Action (value = "updateExecutor", results = { @Result (type="redirect", location = "viewExecutors", name = "ok") }, interceptorRefs= { @InterceptorRef("seguranca")	 } ) 
 
 @ParentPackage("default")
 public class UpdateExecutorAction extends BasicActionClass {
@@ -22,6 +21,7 @@ public class UpdateExecutorAction extends BasicActionClass {
 	private File wrapperFile;
 	private String wrapperFileFileName;
 	private int idExecutor;
+	private String executorTarget;
 	
 	public String execute () {
 		
@@ -29,20 +29,25 @@ public class UpdateExecutorAction extends BasicActionClass {
 
 			executor.setIdActivationExecutor( idExecutor );
 			
-			if ( wrapperFile != null ) {
-				String filePath = PathFinder.getInstance().getPath() + "/repository";			  
-				File fileToCreate = new File(filePath, wrapperFileFileName);
-		        FileUtils.copyFile( wrapperFile, fileToCreate);
-				executor.setActivationWrapper( wrapperFileFileName );
-				new ExecutorService().updateExecutor( executor );
-				setMessageText( "Executor updated.");	
-			} else {
-				setMessageText( "You need to upload a wrapper file." );	
+			if ( !executorTarget.equals("SELECT") ) {
+				if ( wrapperFile != null ) {
+					String filePath = PathFinder.getInstance().getPath() + "/repository";			  
+					File fileToCreate = new File(filePath, wrapperFileFileName);
+			        FileUtils.copyFile( wrapperFile, fileToCreate);
+					executor.setActivationWrapper( wrapperFileFileName );
+				} else {
+					if ( !executorTarget.equals("REDUCE") ) {
+						setMessageText( "You need to upload a wrapper file." );
+						return "ok";
+					}
+				}
 			}
+			
+			new ExecutorService().updateExecutor( executor );
+			setMessageText( "Executor updated.");	
 			
 		} catch ( Exception e ) {
 			setMessageText( "Error: " + e.getMessage() );
-			return "error";
 		}
 		
 		return "ok";
@@ -62,6 +67,10 @@ public class UpdateExecutorAction extends BasicActionClass {
 
 	public void setIdExecutor(int idExecutor) {
 		this.idExecutor = idExecutor;
+	}
+	
+	public void setExecutorTarget(String executorTarget) {
+		this.executorTarget = executorTarget;
 	}
 	
 }
