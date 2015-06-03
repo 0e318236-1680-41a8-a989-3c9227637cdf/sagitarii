@@ -238,12 +238,12 @@
 	function save() {
 		var query = codeMirrorEditor.getDoc().getValue();
 		
-		if ( query.indexOf( "(id_pipeline, id_experiment, id_activity," ) == -1) {
-			showMessageBox( "You must keep the system attributes 'id_pipeline, id_experiment, id_activity' as untouchables in your query." );
+		if ( query.indexOf( "(id_instance, id_experiment, id_activity," ) == -1) {
+			showMessageBox( "You must keep the system attributes 'id_instance, id_experiment, id_activity' as untouchables in your query." );
 			return;
 		}
 
-		if ( query.indexOf( "(id_pipeline, id_experiment, id_activity," ) == -1) {
+		if ( query.indexOf( "(id_instance, id_experiment, id_activity," ) == -1) {
 			showMessageBox( "You must keep the system tags '%ID_PIP%, %ID_EXP%, %ID_ACT%' as untouchables in your query." );
 			return;
 		}

@@ -58,8 +58,12 @@
 	
 									<tr>
 										<td class="tableCellFormLeft">Description</td>
-										<td class="tableCellFormRight" colspan="3"> 
+										<td class="tableCellFormRight"> 
 											${experiment.workflow.description} 
+										</td>
+										<td class="tableCellFormLeft">Elapsed Time</td>
+										<td class="tableCellFormRight">
+											${experiment.elapsedTime}
 										</td>
 									</tr>
 									
@@ -122,7 +126,7 @@
 									<tr>
 										<td>${fragment.indexOrder}</td>
 										<td>${fragment.serial}</td>
-										<td>${fragment.totalPipelines}</td>
+										<td>${fragment.totalInstances}</td>
 										<td>
 											<table id="subActivity" style="width:250px">
 											<tr>
@@ -166,7 +170,7 @@
 										<td>${file.activity.tag}</td>
 										<td>${file.instance.serial}</td>
 										<td>
-											<img class="miniButton dicas" title="Delete" onclick="deleteFile('pipelines')" src="img/delete.png">
+											<img class="miniButton dicas" title="Delete" onclick="deleteFile('${file.idFile}')" src="img/delete.png">
 										</td>
 									</tr>
 									</c:forEach>

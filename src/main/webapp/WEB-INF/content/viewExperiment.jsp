@@ -191,7 +191,7 @@
 										<td>${fragment.indexOrder}</td>
 										<td>${fragment.type}</td>
 										<td>${fragment.status}</td>
-										<td>${fragment.remainingPipelines}</td>
+										<td>${fragment.remainingInstances}</td>
 										<td>
 											<c:forEach var="fragActivity" items="${fragment.activities}">
 												<span style="cursor:pointer" onmouseover="higlight('${fragActivity.serial}')" >${fragActivity.tag}</span>&nbsp;

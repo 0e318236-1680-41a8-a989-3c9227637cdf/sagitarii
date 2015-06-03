@@ -24,17 +24,17 @@ import cmabreu.sagitarii.core.DataReceiver;
 import cmabreu.sagitarii.core.config.Configurator;
 import cmabreu.sagitarii.core.types.ActivityStatus;
 import cmabreu.sagitarii.core.types.ActivityType;
-import cmabreu.sagitarii.core.types.PipelineStatus;
+import cmabreu.sagitarii.core.types.InstanceStatus;
 import cmabreu.sagitarii.misc.PathFinder;
 import cmabreu.sagitarii.persistence.entity.Activity;
 import cmabreu.sagitarii.persistence.entity.Experiment;
-import cmabreu.sagitarii.persistence.entity.Pipeline;
+import cmabreu.sagitarii.persistence.entity.Instance;
 import cmabreu.sagitarii.persistence.entity.Relation;
 import cmabreu.sagitarii.persistence.exceptions.NotFoundException;
 import cmabreu.sagitarii.persistence.services.ActivityService;
 import cmabreu.sagitarii.persistence.services.ExperimentService;
 import cmabreu.sagitarii.persistence.services.FileService;
-import cmabreu.sagitarii.persistence.services.PipelineService;
+import cmabreu.sagitarii.persistence.services.InstanceService;
 import cmabreu.sagitarii.persistence.services.RelationService;
 
 public class FileImporter extends Thread {
@@ -158,7 +158,7 @@ public class FileImporter extends Thread {
 	}
 	
 	
-	private int importFile( String experimentSerial, String fileName, Activity activity, Pipeline instance ) {
+	private int importFile( String experimentSerial, String fileName, Activity activity, Instance instance ) {
 		log = "Storing file " + fileName + " to database";
 		int response = -1;
 		try {
@@ -220,25 +220,25 @@ public class FileImporter extends Thread {
 		return activity;
 	}
 	
-	private Pipeline retrievePipeline( String pipelineSerial, Activity activity ) throws Exception {
-		PipelineService ps = new PipelineService();
-		Pipeline pipeline = null;
+	private Instance retrieveInstance( String instanceSerial, Activity activity ) throws Exception {
+		InstanceService ps = new InstanceService();
+		Instance instance = null;
 		try {
-			pipeline = ps.getPipeline( pipelineSerial );
-			logger.debug("found pipeline " + pipeline.getSerial() );
+			instance = ps.getInstance( instanceSerial );
+			logger.debug("found instance " + instance.getSerial() );
 		} catch ( NotFoundException nf ) {
-			pipeline = new Pipeline();
-			pipeline.setExecutorAlias( activity.getSerial() );
-			pipeline.setType( ActivityType.LOADER );
-			pipeline.setStatus( PipelineStatus.NEW_DATA );
-			pipeline.setStartDateTime( Calendar.getInstance().getTime() );
-			pipeline.setFinishDateTime( Calendar.getInstance().getTime() );
+			instance = new Instance();
+			instance.setExecutorAlias( activity.getSerial() );
+			instance.setType( ActivityType.LOADER );
+			instance.setStatus( InstanceStatus.NEW_DATA );
+			instance.setStartDateTime( Calendar.getInstance().getTime() );
+			instance.setFinishDateTime( Calendar.getInstance().getTime() );
 
 			ps.newTransaction();
-			ps.insertPipeline(pipeline);
-			logger.debug("pipeline " + pipelineSerial + " not found. New ID generated: " + pipeline.getSerial() );
+			ps.insertInstance(instance);
+			logger.debug("instance " + instanceSerial + " not found. New ID generated: " + instance.getSerial() );
 		}
-		return pipeline;
+		return instance;
 	}
 	
 	/**
@@ -287,7 +287,7 @@ public class FileImporter extends Thread {
 		}
 
 		Activity activity = retrieveActivity(activitySerial,macAddress, table); // Resp. por sinalizar initialLoad
-		Pipeline instance = retrievePipeline(instanceSerial, activity);
+		Instance instance = retrieveInstance(instanceSerial, activity);
 
 		List<String> contentLines = new ArrayList<String>();
 		StringBuilder sb = new StringBuilder();

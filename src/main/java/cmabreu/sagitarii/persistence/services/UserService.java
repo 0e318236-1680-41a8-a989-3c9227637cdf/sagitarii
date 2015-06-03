@@ -59,6 +59,9 @@ public class UserService {
 
 	public User login( String loginName, String password ) throws Exception {
 		String sha1Password = convertPassword( password.getBytes() );
+		
+		System.out.println("UserService:Login " + sha1Password );
+		
 		return rep.login( loginName, sha1Password);
 	}
 	

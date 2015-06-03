@@ -10,15 +10,13 @@ import cmabreu.sagitarii.core.sockets.FileImporter;
 import cmabreu.sagitarii.core.sockets.ReceivedFile;
 import cmabreu.sagitarii.core.types.ActivityStatus;
 import cmabreu.sagitarii.core.types.ActivityType;
-import cmabreu.sagitarii.core.types.PipelineStatus;
+import cmabreu.sagitarii.core.types.InstanceStatus;
 import cmabreu.sagitarii.persistence.entity.Activity;
-import cmabreu.sagitarii.persistence.entity.Experiment;
-import cmabreu.sagitarii.persistence.entity.Pipeline;
+import cmabreu.sagitarii.persistence.entity.Instance;
 import cmabreu.sagitarii.persistence.entity.Relation;
 import cmabreu.sagitarii.persistence.exceptions.NotFoundException;
 import cmabreu.sagitarii.persistence.services.ActivityService;
-import cmabreu.sagitarii.persistence.services.ExperimentService;
-import cmabreu.sagitarii.persistence.services.PipelineService;
+import cmabreu.sagitarii.persistence.services.InstanceService;
 import cmabreu.sagitarii.persistence.services.RelationService;
 
 public class DataReceiver {
@@ -36,16 +34,16 @@ public class DataReceiver {
 		return table;
 	}
 
-	private Pipeline newInstance( Activity activity ) throws Exception {
-		PipelineService ps = new PipelineService();
-		Pipeline instance = null;
-		instance = new Pipeline();
+	private Instance newInstance( Activity activity ) throws Exception {
+		InstanceService ps = new InstanceService();
+		Instance instance = null;
+		instance = new Instance();
 		instance.setExecutorAlias( activity.getSerial() );
 		instance.setType( ActivityType.LOADER );
-		instance.setStatus( PipelineStatus.NEW_DATA );
+		instance.setStatus( InstanceStatus.NEW_DATA );
 		instance.setStartDateTime( Calendar.getInstance().getTime() );
 		instance.setFinishDateTime( Calendar.getInstance().getTime() );
-		ps.insertPipeline(instance);
+		ps.insertInstance(instance);
 		logger.debug("new instance generated: " + instance.getSerial() );
 		return instance;
 	}
@@ -72,7 +70,7 @@ public class DataReceiver {
 		logger.debug("receiving initial load data from API call to table " + tableName + " and experiment " + experimentSerial);
 		Relation table = getRelation( tableName );
 		Activity activity = newActivity( table );
-		Pipeline instance = newInstance( activity );
+		Instance instance = newInstance( activity );
 		logger.debug("passing thru original receive method...");
 		
 		ReceivedFile csvDataFile = new ReceivedFile();
@@ -81,11 +79,11 @@ public class DataReceiver {
 		return receive( contentLines, "API CALL", instance, activity, table, csvDataFile, null, true);
 	}
 	
-	public String receive( List<String> contentLines, String macAddress, Pipeline instance, Activity activity, Relation table, 
+	public String receive( List<String> contentLines, String macAddress, Instance instance, Activity activity, Relation table, 
 			ReceivedFile csvDataFile, FileImporter importer, boolean initialLoad ) {
 
 		try {
-			logger.debug("receiving data from " + macAddress + " pipeline " + instance.getSerial() + " activity " + activity.getSerial() );
+			logger.debug("receiving data from " + macAddress + " instance " + instance.getSerial() + " activity " + activity.getSerial() );
 	
 			ReceivedData rd = new ReceivedData(contentLines, macAddress, instance, activity, table, csvDataFile);
 			
@@ -97,7 +95,7 @@ public class DataReceiver {
 				ClustersManager.getInstance().confirmReceiveData( rd );
 			}		
 			
-			logger.debug("done. pipeline | activity:  " + rd.getInstance().getSerial() + "|" + rd.getActivity().getSerial() );
+			logger.debug("done. instance | activity:  " + rd.getInstance().getSerial() + "|" + rd.getActivity().getSerial() );
 			return rd.getInstance().getSerial() + ";" + rd.getActivity().getSerial();
 			
 		} catch ( Exception e ) {

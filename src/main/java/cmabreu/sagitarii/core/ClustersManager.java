@@ -8,8 +8,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import cmabreu.sagitarii.core.delivery.InstanceDeliveryControl;
-import cmabreu.sagitarii.core.types.PipelineStatus;
-import cmabreu.sagitarii.persistence.entity.Pipeline;
+import cmabreu.sagitarii.core.types.InstanceStatus;
+import cmabreu.sagitarii.persistence.entity.Instance;
 
 public class ClustersManager {
 	private List<Cluster> clusterList;
@@ -24,12 +24,12 @@ public class ClustersManager {
 		return cm;
 	}
 	
-	public void acceptTask( String pipelineId, String macAddress) {
-		logger.debug( "node " + macAddress + " accepted task in instance " + pipelineId );
+	public void acceptTask( String instanceId, String macAddress) {
+		logger.debug( "node " + macAddress + " accepted task in instance " + instanceId );
 		Cluster clu = cm.getCluster(macAddress);
-		for ( Pipeline instance : clu.getRunningInstances() ) {
-			if ( instance.getSerial().equalsIgnoreCase( pipelineId ) ) {
-				instance.setStatus( PipelineStatus.RUNNING );
+		for ( Instance instance : clu.getRunningInstances() ) {
+			if ( instance.getSerial().equalsIgnoreCase( instanceId ) ) {
+				instance.setStatus( InstanceStatus.RUNNING );
 				break;
 			}
 		}
@@ -58,11 +58,11 @@ public class ClustersManager {
 		return ( result && hasAliveNodes );
 	}
 	
-	public void refuseTask( String pipelineId, String macAddress ) {
-		logger.debug( "node " + macAddress + " refused task in instance " + pipelineId );
+	public void refuseTask( String instanceId, String macAddress ) {
+		logger.debug( "node " + macAddress + " refused task in instance " + instanceId );
 		Cluster clu = cm.getCluster(macAddress);
-		clu.setLastError("Cannot run task in instance " + pipelineId );
-		clu.cancelAndRemovePipeline( pipelineId );
+		clu.setLastError("Cannot run task in instance " + instanceId );
+		clu.cancelAndRemoveInstance( instanceId );
 	}
 
 	
@@ -120,29 +120,29 @@ public class ClustersManager {
 	}
 
 	/**
-	 * Troca a TAG ##TAG_ID_PIPELINE## pelo ID do pipeline.
-	 * Isto é necessário pois não se possuía o ID do pipeline quando o XML foi
+	 * Troca a TAG ##TAG_ID_INSTANCE## pelo ID do instance.
+	 * Isto é necessário pois não se possuía o ID do instance quando o XML foi
 	 * gerado (antes de gravar no banco) e é necessário enviar este ID ao Nó
-	 * para facilitar o encontro do mesmo pipeline quando a tarefa for concluída.
+	 * para facilitar o encontro do mesmo instance quando a tarefa for concluída.
 	 * (O nó não precisa do ID, ele vai devolver ao Sagitarii junto com os dados).
 	 * 
-	 * @param pipeline
+	 * @param instance
 	 * @return
 	 */
-	private String fillPipelineID( Pipeline pipeline ) {
-		return pipeline.getContent().replace("##TAG_ID_PIPELINE##", String.valueOf( pipeline.getIdPipeline() ) );
+	private String fillInstanceID( Instance instance ) {
+		return instance.getContent().replace("##TAG_ID_INSTANCE##", String.valueOf( instance.getIdInstance() ) );
 	}
 	
 	
 	private synchronized String getNextInstance( Cluster cluster ) {
 		String resposta = "";
 		String macAddress = cluster.getMacAddress();
-		Pipeline instance = Sagitarii.getInstance().getNextInstance();
+		Instance instance = Sagitarii.getInstance().getNextInstance();
 		if ( instance != null ) {
 			logger.debug( "sending instance "+ instance.getType() + " (" + instance.getExecutorAlias() + ") "+ instance.getSerial() +" data to node " + macAddress );
-			instance.setStatus( PipelineStatus.WAITING );
-			cluster.addPipeline(instance);
-			resposta = fillPipelineID ( instance );
+			instance.setStatus( InstanceStatus.WAITING );
+			cluster.addInstance(instance);
+			resposta = fillInstanceID ( instance );
 			instance.setContent( resposta );
 			InstanceDeliveryControl.getInstance().addUnit(instance, macAddress);
 		} 

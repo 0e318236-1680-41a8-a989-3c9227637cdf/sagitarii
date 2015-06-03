@@ -14,7 +14,7 @@ public class Activation implements Comparable<Activation> {
 	private String workflow;
 	private String activitySerial;
 	private String command;
-	private String pipelineSerial;
+	private String instanceSerial;
 	private List<String> sourceData = new ArrayList<String>();
 	private Activation previousActivation;
 	private String xmlOriginalData;
@@ -22,7 +22,7 @@ public class Activation implements Comparable<Activation> {
 	private String executor;
 	private String executorType;
 	private String targetTable;
-	int pipelineId;
+	int instanceId;
 	
 	public int getOrder() {
 		return order;
@@ -55,12 +55,12 @@ public class Activation implements Comparable<Activation> {
 		this.command = command;
 	}
 	
-	public String getPipelineSerial() {
-		return pipelineSerial;
+	public String getInstanceSerial() {
+		return instanceSerial;
 	}
 	
-	public void setPipelineSerial(String pipelineSerial) {
-		this.pipelineSerial = pipelineSerial;
+	public void setInstanceSerial(String instanceSerial) {
+		this.instanceSerial = instanceSerial;
 	}
 	
 	@Override
@@ -156,12 +156,12 @@ public class Activation implements Comparable<Activation> {
 		this.executorType = executorType;
 	}
 
-	public int getPipelineId() {
-		return pipelineId;
+	public int getInstanceId() {
+		return instanceId;
 	}
 
-	public void setPipelineId(int pipelineId) {
-		this.pipelineId = pipelineId;
+	public void setInstanceId(int instanceId) {
+		this.instanceId = instanceId;
 	}
 
 	

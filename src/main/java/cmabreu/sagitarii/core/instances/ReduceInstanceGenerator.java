@@ -1,4 +1,4 @@
-package cmabreu.sagitarii.core.pipelines;
+package cmabreu.sagitarii.core.instances;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -13,21 +13,21 @@ import cmabreu.sagitarii.persistence.entity.ActivationExecutor;
 import cmabreu.sagitarii.persistence.entity.Activity;
 import cmabreu.sagitarii.persistence.entity.Consumption;
 import cmabreu.sagitarii.persistence.entity.Fragment;
-import cmabreu.sagitarii.persistence.entity.Pipeline;
+import cmabreu.sagitarii.persistence.entity.Instance;
 import cmabreu.sagitarii.persistence.services.ExecutorService;
 import cmabreu.sagitarii.persistence.services.RelationService;
 
-public class ReducePipelineGenerator implements IPipelineGenerator {
+public class ReduceInstanceGenerator implements IInstanceGenerator {
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 	
 	@Override
-	public List<Pipeline> generatePipelines(Activity activity, Fragment frag) throws Exception {
+	public List<Instance> generateInstances(Activity activity, Fragment frag) throws Exception {
 		String relation = activity.getInputRelation().getName();
 		logger.debug( "Activity '" + activity.getTag() + "' allowed to run. Fetching data from source table " + relation );
-		logger.debug("generating pipelines...");		
+		logger.debug("generating instances...");		
 
-		PipelineCreator pc = new PipelineCreator();
-		List<Pipeline> pipes = new ArrayList<Pipeline>();
+		InstanceCreator pc = new InstanceCreator();
+		List<Instance> pipes = new ArrayList<Instance>();
 		RelationService ts = new RelationService();
 
 		ExecutorService cs = new ExecutorService();
@@ -43,7 +43,7 @@ public class ReducePipelineGenerator implements IPipelineGenerator {
 
 			String correctSql = "select u.* "
 					+ " from experiments exp left join " + relation + " u on u.id_experiment = exp.id_experiment"  
-					+ " left join pipelines p on p.id_pipeline = u.id_pipeline"
+					+ " left join instances p on p.id_instance = u.id_instance"
 					+ " where exp.id_experiment = " + frag.getExperiment().getIdExperiment();
 			
 			String groupingSql = "select distinct "+ fieldsDef + " from (" + correctSql + ") r1 order by " + fieldsDef;
@@ -55,7 +55,7 @@ public class ReducePipelineGenerator implements IPipelineGenerator {
 			String selectionSql = "";
 			String prefix = "";
 			if ( (fields != null) && ( fields.length > 0 ) && ( groupedFields.size() > 0 ) ) {
-				logger.debug("'REDUCE' type detected: " + groupedFields.size() + " pipelines will be created for activity " + activity.getTag());
+				logger.debug("'REDUCE' type detected: " + groupedFields.size() + " instances will be created for activity " + activity.getTag());
 				StringBuilder sb = new StringBuilder();
 				for ( UserTableEntity ute : groupedFields ) {
 					sb.setLength(0);
@@ -69,9 +69,9 @@ public class ReducePipelineGenerator implements IPipelineGenerator {
 					// Para cada registro do agrupado, repete enquando os campos do agrupamento forem iguais:
 					// Ex: UF,SEXO
 					// Repete: 
-					// SP,MASCULINO : 8 pipelines gerados
-					// SP,FEMININO  : 12 pipelines gerados
-					// RJ,MASCULINO : 3 pipelines gerados
+					// SP,MASCULINO : 8 instances gerados
+					// SP,FEMININO  : 12 instances gerados
+					// RJ,MASCULINO : 3 instances gerados
 					selectionSql = "select * from (" + correctSql + ") r1 where " + queryDef;
 					
 					logger.debug( selectionSql );
@@ -101,7 +101,7 @@ public class ReducePipelineGenerator implements IPipelineGenerator {
 							// ===============================
 							
 						}
-						Pipeline pipe = pc.createPipeline(activity, frag, parameter);
+						Instance pipe = pc.createInstance(activity, frag, parameter);
 						
 						pipe.setConsumptions(consumptions);
 						
@@ -109,7 +109,7 @@ public class ReducePipelineGenerator implements IPipelineGenerator {
 					} 
 					
 				}
-				logger.debug("done. " + pipes.size() + " pipelines generated.");
+				logger.debug("done. " + pipes.size() + " instance generated.");
 				
 			} else {
 				logger.error("Empty grouping fields descriptor for " + executor.getExecutorAlias() );

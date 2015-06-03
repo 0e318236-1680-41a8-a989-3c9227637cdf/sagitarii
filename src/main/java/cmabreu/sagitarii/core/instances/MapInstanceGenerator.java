@@ -1,4 +1,4 @@
-package cmabreu.sagitarii.core.pipelines;
+package cmabreu.sagitarii.core.instances;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,30 +11,30 @@ import cmabreu.sagitarii.core.UserTableEntity;
 import cmabreu.sagitarii.persistence.entity.Activity;
 import cmabreu.sagitarii.persistence.entity.Consumption;
 import cmabreu.sagitarii.persistence.entity.Fragment;
-import cmabreu.sagitarii.persistence.entity.Pipeline;
+import cmabreu.sagitarii.persistence.entity.Instance;
 import cmabreu.sagitarii.persistence.services.RelationService;
 
-public class MapPipelineGenerator implements IPipelineGenerator {
+public class MapInstanceGenerator implements IInstanceGenerator {
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 	
 	@Override
-	public List<Pipeline> generatePipelines(Activity activity, Fragment frag) throws Exception {
+	public List<Instance> generateInstances(Activity activity, Fragment frag) throws Exception {
 		String relation = activity.getInputRelation().getName();
 		logger.debug( "Activity '" + activity.getTag() + "' allowed to run. Fetching data from source table " + relation );
-		logger.debug("generating pipelines...");		
+		logger.debug("generating instances...");		
 
-		PipelineCreator pc = new PipelineCreator();
-		List<Pipeline> pipes = new ArrayList<Pipeline>();
+		InstanceCreator pc = new InstanceCreator();
+		List<Instance> pipes = new ArrayList<Instance>();
 		RelationService ts = new RelationService();
 		
 		String correctSql = "select u.* "
 				+ " from experiments exp left join " + relation + " u on u.id_experiment = exp.id_experiment"  
-				+ " left join pipelines p on p.id_pipeline = u.id_pipeline"
+				+ " left join instances p on p.id_instance = u.id_instance"
 				+ " where exp.id_experiment = " + frag.getExperiment().getIdExperiment();
 
 		Set<UserTableEntity> utes = ts.genericFetchList( correctSql );
 		
-		logger.debug("'MAP' type detected: " + utes.size() + " pipelines will be created for activity " + activity.getTag() );
+		logger.debug("'MAP' type detected: " + utes.size() + " instances will be created for activity " + activity.getTag() );
 		
 		for ( UserTableEntity ute : utes ) {
 			String parameter = pc.generateInputData( ute );
@@ -48,7 +48,7 @@ public class MapPipelineGenerator implements IPipelineGenerator {
 			con.setIdTable(idTable);
 			// ===============================
 			
-			Pipeline pipe = pc.createPipeline(activity, frag, parameter );
+			Instance pipe = pc.createInstance(activity, frag, parameter );
 			pipe.addConsumption(con);
 			
 			pipes.add(pipe);

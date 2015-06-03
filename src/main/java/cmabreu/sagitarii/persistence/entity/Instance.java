@@ -24,20 +24,20 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Type;
 
 import cmabreu.sagitarii.core.types.ActivityType;
-import cmabreu.sagitarii.core.types.PipelineStatus;
+import cmabreu.sagitarii.core.types.InstanceStatus;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name="pipelines", indexes = {
-        @Index(columnList = "id_pipeline", name = "instance_id_hndx"),
+@Table(name="instances", indexes = {
+        @Index(columnList = "id_instance", name = "instance_id_hndx"),
         @Index(columnList = "serial", name = "instance_serial_hndx")
 }) 
-public class Pipeline implements Serializable {
+public class Instance implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="id_pipeline")
-	private int idPipeline;
+	@Column(name="id_instance")
+	private int idInstance;
 	
 	@Column(name="start_date_time")
 	@Type(type="timestamp")
@@ -56,7 +56,7 @@ public class Pipeline implements Serializable {
 	@Column(length=250)
 	private String executorAlias;
 	
-    @OneToMany(orphanRemoval=true,  mappedBy="pipeline", fetch = FetchType.LAZY)
+    @OneToMany(orphanRemoval=true,  mappedBy="instance", fetch = FetchType.LAZY)
     @OrderBy("id_table, id_row ASC")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private Set<Consumption> consumptions = new HashSet<Consumption>();
@@ -69,7 +69,7 @@ public class Pipeline implements Serializable {
 
 	@Column(length=50)
 	@Enumerated(EnumType.STRING)
-	private PipelineStatus status;	
+	private InstanceStatus status;	
 	
 	@Column(length=50)
 	@Enumerated(EnumType.STRING)
@@ -83,18 +83,18 @@ public class Pipeline implements Serializable {
 			qtdActivations--;
 		}
 		if ( qtdActivations == 0 ) {
-			status = PipelineStatus.FINISHED;
+			status = InstanceStatus.FINISHED;
 		}
 	}
 
-	public Pipeline() {
+	public Instance() {
         UUID uuid = UUID.randomUUID();
         serial = uuid.toString().toUpperCase().substring(0,15);
-        status = PipelineStatus.PIPELINED;
+        status = InstanceStatus.PIPELINED;
 	}
 	
 	public void addConsumption( Consumption consumption) {
-		consumption.setPipeline( this );
+		consumption.setInstance( this );
 		consumptions.add( consumption );
 	}
 	
@@ -106,12 +106,12 @@ public class Pipeline implements Serializable {
 		return qtdActivations;
 	}
 
-	public int getIdPipeline() {
-		return idPipeline;
+	public int getIdInstance() {
+		return idInstance;
 	}
 
-	public void setIdPipeline(int idPipeline) {
-		this.idPipeline = idPipeline;
+	public void setIdInstance(int idInstance) {
+		this.idInstance = idInstance;
 	}
 
 	public int getIdFragment() {
@@ -154,11 +154,11 @@ public class Pipeline implements Serializable {
 		this.finishedActivities = finishedActivities;
 	}
 
-	public PipelineStatus getStatus() {
+	public InstanceStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(PipelineStatus status) {
+	public void setStatus(InstanceStatus status) {
 		this.status = status;
 	}
 
@@ -176,7 +176,7 @@ public class Pipeline implements Serializable {
 
 	public void setConsumptions(Set<Consumption> consumptions) {
 		for ( Consumption con : consumptions ) {
-			con.setPipeline( this );
+			con.setInstance( this );
 		}
 		this.consumptions = consumptions;
 	}

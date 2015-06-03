@@ -46,8 +46,8 @@ public class ConsumptionService {
 		}
 	}
 
-	public Set<Consumption> getList( int idPipeline ) throws NotFoundException {
-		return rep.getList( idPipeline );
+	public Set<Consumption> getList( int idInstance ) throws NotFoundException {
+		return rep.getList( idInstance );
 	}
 	
 }

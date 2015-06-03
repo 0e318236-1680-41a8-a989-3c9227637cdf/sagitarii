@@ -42,9 +42,9 @@
 											<td>${executor.type}</td>
 											<td>${executor.activationWrapper}&nbsp;</td>
 											<td>${executor.selectStatement}&nbsp;</td>
-											<td>
-												<img class="miniButton dicas" title="Edit" onclick="edit('${executor.idActivationExecutor}');" src="img/edit.png">
+											<td>&nbsp;
 												<c:if test="${executor.type != 'RRUNNER'}">
+													<img class="miniButton dicas" title="Edit" onclick="edit('${executor.idActivationExecutor}');" src="img/edit.png">
 													<img class="miniButton dicas" title="Delete" onclick="deleteExecutor('${executor.idActivationExecutor}','${executor.executorAlias}')" src="img/delete.png">
 												</c:if>
 											</td>

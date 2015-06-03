@@ -21,20 +21,20 @@ import cmabreu.sagitarii.core.types.ExperimentStatus;
 import cmabreu.sagitarii.core.types.FragmentStatus;
 import cmabreu.sagitarii.persistence.entity.Experiment;
 import cmabreu.sagitarii.persistence.entity.Fragment;
-import cmabreu.sagitarii.persistence.entity.Pipeline;
+import cmabreu.sagitarii.persistence.entity.Instance;
 import cmabreu.sagitarii.persistence.exceptions.NotFoundException;
 import cmabreu.sagitarii.persistence.services.ExperimentService;
 import cmabreu.sagitarii.persistence.services.FragmentService;
-import cmabreu.sagitarii.persistence.services.PipelineService;
+import cmabreu.sagitarii.persistence.services.InstanceService;
 
 
 public class Sagitarii {
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 	private static Sagitarii sagitarii;
 	private List<Experiment> runningExperiments;
-	private Queue<Pipeline> instanceInputBuffer;
-	private Queue<Pipeline> pipelineJoinInputBuffer;
-	private Queue<Pipeline> pipelineOutputBuffer;
+	private Queue<Instance> instanceInputBuffer;
+	private Queue<Instance> instanceJoinInputBuffer;
+	private Queue<Instance> instanceOutputBuffer;
 	private int maxInputBufferCapacity;
 	private int spinPointer = 0;
 	private int spinPointerJoin = 0;
@@ -56,7 +56,7 @@ public class Sagitarii {
 	}
 	
 	/** 
-	 * A cada ciclo, elege um experimento para ter seus pipelines processados.
+	 * A cada ciclo, elege um experimento para ter seus instances processados.
 	 * No momento estou usando uma roleta simples, onde todos os experimentos
 	 * possuem igual preferência. A cada ciclo de verificação, o ponteiro (spinPointer) 
 	 * é incrementado até atingir o fim da fila, quando retorna para o primeiro da fila.
@@ -81,11 +81,11 @@ public class Sagitarii {
 
 	/**
 	 * O mesmo que electExperiment(), mas
-	 * trata de pipelines que serão processados pelo MainCluster
+	 * trata de instances que serão processados pelo MainCluster
 	 * ou seja, atividades que envolvam SQL (JOIN).
-	 * Dessa forma, posso ter pipelines de dois experimentos
+	 * Dessa forma, posso ter instances de dois experimentos
 	 * sendo lidos para o buffer simultaneamente, um com
-	 * pipelines de SQL e outro com pipelines SQL (MainCluster) 
+	 * instances de SQL e outro com instances SQL (MainCluster) 
 	 * 
 	 */
 	private synchronized void electExperimentJoin() {
@@ -104,7 +104,7 @@ public class Sagitarii {
 	}
 	
 	/**
-	 * Dado um experimento, verifica se existe ainda algum pipeline pertencente a um de seus
+	 * Dado um experimento, verifica se existe ainda algum instance pertencente a um de seus
 	 * fragmentos nos buffers de entrada ou de saida.
 	 * 
 	 * @param exp Um experimento
@@ -113,18 +113,18 @@ public class Sagitarii {
 	public boolean experimentIsStillQueued( Experiment exp ) {
 		for( Fragment frag : exp.getFragments() ) {
 
-			for( Pipeline pipe : pipelineOutputBuffer  ) {
+			for( Instance pipe : instanceOutputBuffer  ) {
 				if( pipe.getIdFragment() == frag.getIdFragment() ) {
 					return true;
 				}
 			}
 			
-			for( Pipeline pipe : instanceInputBuffer  ) {
+			for( Instance pipe : instanceInputBuffer  ) {
 				if( pipe.getIdFragment() == frag.getIdFragment() ) {
 					return true;
 				}
 			}
-			for( Pipeline pipe : pipelineJoinInputBuffer  ) {
+			for( Instance pipe : instanceJoinInputBuffer  ) {
 				if( pipe.getIdFragment() == frag.getIdFragment() ) {
 					return true;
 				}
@@ -134,24 +134,24 @@ public class Sagitarii {
 	}
 	
 	/**
-	 * Marca um pipeline como encerrado ( já foi entregue a um nó e este já o 
+	 * Marca um instance como encerrado ( já foi entregue a um nó e este já o 
 	 * processou e já entregou os dados produzidos de todas as tarefas)
 	 *  
-	 * @param pipeline um pipeline
+	 * @param instance um instance
 	 */
-	public synchronized void finishPipeline( Pipeline pipeline ) {
-		logger.debug("instance " + pipeline.getSerial() + " is finished");
+	public synchronized void finishInstance( Instance instance ) {
+		logger.debug("instance " + instance.getSerial() + " is finished");
 		try {
 
 			// Set as finished (database)
 
-			PipelineService pipelineService = new PipelineService();
-			pipelineService.finishPipeline( pipeline );
+			InstanceService instanceService = new InstanceService();
+			instanceService.finishInstance( instance );
 			
 			// Remove from output buffer if any
-			for ( Pipeline pipe : pipelineOutputBuffer ) {
-				if ( pipe.getSerial().equals( pipeline.getSerial() ) ) {
-					pipelineOutputBuffer.remove( pipe );
+			for ( Instance pipe : instanceOutputBuffer ) {
+				if ( pipe.getSerial().equals( instance.getSerial() ) ) {
+					instanceOutputBuffer.remove( pipe );
 					break;
 				}
 			}
@@ -166,7 +166,7 @@ public class Sagitarii {
 	 * foram todos executados ( todas as instancias do fragmento encerraram).
 	 * 
 	 * Em caso positivo, verifica se o próximo fragmento na ordem de execução pode ser
-	 * executado (atividades iniciais já estão desbloqueadas). Se puder, gera os pipelines
+	 * executado (atividades iniciais já estão desbloqueadas). Se puder, gera os instances
 	 * do próximo fragmento.
 	 * 
 	 * Se não há mais fragmentos no experimento ou os que restam ainda estiverem bloqueados
@@ -176,13 +176,13 @@ public class Sagitarii {
 	 * As condições para um fragmento ser executado são: a) Todos os fragmentos com ordem de execução menor que ele precisam
 	 * ter terminado; b) Todas as tabelas de entrada da atividade de entrada do fragmento precisam possuir dados.
 	 * 
-	 * experimentIsStillQueued é verdadeiro quando não há mais pipelines do fragmento enfileirados no banco, porém
+	 * experimentIsStillQueued é verdadeiro quando não há mais instances do fragmento enfileirados no banco, porém
 	 * ainda existem alguns no buffer da saída aguardando serem processados pelos nós.
 	 * 
-	 * Um fragmento é gerado com status READY. Quando for possível gerar pipelines para o fragmento, ele se torna 
-	 * PIPELINED (os pipelines foram gerados mas nenhum foi pego ainda para o buffer). Quando os pipelines deste 
+	 * Um fragmento é gerado com status READY. Quando for possível gerar instances para o fragmento, ele se torna 
+	 * PIPELINED (os instances foram gerados mas nenhum foi pego ainda para o buffer). Quando os instances deste 
 	 * fragmento forem pegos do banco para o buffer de saída, então o fragmento está RUNNING. Então, quando não houverem
-	 * mais pipelines deste fragmento NO BANCO, então ele estará FINISHED. 
+	 * mais instances deste fragmento NO BANCO, então ele estará FINISHED. 
 	 * 
 	 * Mais detalhes em updateFragments()
 	 * 
@@ -193,7 +193,7 @@ public class Sagitarii {
 			boolean haveReady = false;
 			for ( Fragment frag : exp.getFragments() ) {
 				// allFinished é verdadeiro quando não há mais fragmentos RUNNING (somente READY e FINISHED).
-				// Os READY vão se tornar PIPELINED quando forem gerados novos pipelines. E se tornarão RUNNING
+				// Os READY vão se tornar PIPELINED quando forem gerados novos instances. E se tornarão RUNNING
 				// quando esta rotina for executada novamente.
 				if ( frag.getStatus() != FragmentStatus.READY ) {
 					allFinished = ( allFinished && ( frag.getStatus() == FragmentStatus.FINISHED ) );
@@ -204,35 +204,35 @@ public class Sagitarii {
 			}
 			
 			// Se todos os fragmentos que estavam RUNNING já estiverem terminado e não houverem mais
-			// pipelines a serem processados, então é hora de gerar os pipelines dos fragmentos 
+			// instances a serem processados, então é hora de gerar os instances dos fragmentos 
 			// que dependiam destes e iniciar sua execução. 
-			// Condição: Não existem pipelines de nenhum fragmento deste 
-			// experimento no banco e nem nos buffers. *** PERIGOSO QUANDO UM PIPELINE FOI PERDIDO PELO NÓ ***
+			// Condição: Não existem instances de nenhum fragmento deste 
+			// experimento no banco e nem nos buffers.
 			// pois se não houver uma recuperação eficiente ele ficará tempo demais no buffer de saída, impedindo
 			// o prosseguimento da execução do experimento.
 			// Deve haver ao menos um fragmento READY ( provavelmente é um BLOQUEANTE que 
 			// dependia dos que estavam rodando ).
 			if ( allFinished && haveReady && !experimentIsStillQueued( exp ) ) {
-				logger.debug("generating pipelines for next fragment in experiment " + exp.getTagExec() );
+				logger.debug("generating instances for next fragment in experiment " + exp.getTagExec() );
 				try {
-					FragmentPipeliner fp = new FragmentPipeliner( exp );
+					FragmentInstancer fp = new FragmentInstancer( exp );
 					fp.generate();
-					int pips = fp.getPipelines().size();
+					int pips = fp.getInstances().size();
 					if ( pips == 0) {
-						logger.error("experiment " + exp.getTagExec() + " generate empty pipeline list" );
+						logger.error("experiment " + exp.getTagExec() + " generate empty instance list" );
 					} else {
 						canLoadJoinBuffer = true;
 					}
 				} catch (Exception e) {
-					logger.error("cannot generate pipelines for experiment " + exp.getTagExec() + ": " + e.getMessage() );
+					logger.error("cannot generate instances for experiment " + exp.getTagExec() + ": " + e.getMessage() );
 					haveReady = false;
 				}
-				logger.debug("done generating pipelines (" + exp.getTagExec() + ")");
+				logger.debug("done generating instances (" + exp.getTagExec() + ")");
 			}
 
-			// Se todos os pipelines deste experimento foram concluídos ( allFinished ) e 
+			// Se todos os instances deste experimento foram concluídos ( allFinished ) e 
 			// não há nenhum por processar ( not haveReady ) e 
-			// nenhum pipeline está no buffer ( not experimentIsStillQueued ) então o experimento 
+			// nenhum instance está no buffer ( not experimentIsStillQueued ) então o experimento 
 			// está totalmente concluído!! 
 			if ( allFinished && !haveReady && !experimentIsStillQueued( exp ) ) {
 				
@@ -286,7 +286,7 @@ public class Sagitarii {
 				
 				FragmentStatus oldStatus = frag.getStatus();
 				
-				int count = frag.getRemainingPipelines();
+				int count = frag.getRemainingInstances();
 
 				logger.debug("Frag: " + frag.getSerial() + " Status: " + frag.getStatus() + " Instances: " + count );
 				
@@ -299,28 +299,28 @@ public class Sagitarii {
 
 				// Case 2 --------------------------------------------------------------------
 				if ( frag.getStatus() == FragmentStatus.RUNNING ) {
-					logger.debug(" > updating pipeline count");
+					logger.debug(" > updating instance count");
 					
 					// TODO: Check buffers BEFORE check databbase.
 					// If we still have instances in buffers, no need to hit database, right?
 					
 					try {
-						PipelineService pipelineService = new PipelineService(); 
-						count = pipelineService.getPipelinedList( frag.getIdFragment() ).size();
+						InstanceService instanceService = new InstanceService(); 
+						count = instanceService.getPipelinedList( frag.getIdFragment() ).size();
 						logger.debug(" > found " + count + " instances in database");
 					} catch ( NotFoundException e) {
 						logger.debug(" > this fragment have no instances in database");
 						count = 0;
 					} 
 					
-					frag.setRemainingPipelines( count );
+					frag.setRemainingInstances( count );
 					if ( count == 0 ) {	
 						logger.debug(" > no instances found: can I set fragment status to finished?");
 
 						// TODO: Check this BEFORE hit database... In memory check is less costly...
 						logger.debug("Instances in Delivery Control:");
 						for( DeliveryUnit du : InstanceDeliveryControl.getInstance().getUnits()  ) {
-							logger.debug( " > Instance: " + du.getPipeline().getSerial() + " FragID: " + du.getPipeline().getIdFragment() );
+							logger.debug( " > Instance: " + du.getInstance().getSerial() + " FragID: " + du.getInstance().getIdFragment() );
 							logger.debug(" > Tasks: ");
 							for( Activation act : du.getActivations() ) {
 								logger.debug("    > " + act.getActivitySerial()	);
@@ -328,7 +328,7 @@ public class Sagitarii {
 						}
 
 						logger.debug("Instances in Output buffer:");
-						for ( Pipeline pip : pipelineOutputBuffer ) {
+						for ( Instance pip : instanceOutputBuffer ) {
 							logger.debug(" > Instance: " + pip.getSerial() + " FragID: " + pip.getIdFragment() );
 						}
 						
@@ -371,7 +371,7 @@ public class Sagitarii {
 	}
 	
 
-	private boolean hasOwner( Pipeline instance ) {
+	private boolean hasOwner( Instance instance ) {
 		for ( Experiment exp : runningExperiments ) {
 			for( Fragment frag : exp.getFragments() ) {
 				if ( instance.getIdFragment() == frag.getIdFragment() ) {
@@ -385,15 +385,15 @@ public class Sagitarii {
 	
 	
 	/**
-	 * Entrega um pipeline a um cluster
+	 * Entrega um instance a um cluster
 	 * 
-	 * @return Pipeline
+	 * @return Instance
 	 */
-	public Pipeline getNextInstance() {
-		Pipeline next = instanceInputBuffer.poll();
+	public Instance getNextInstance() {
+		Instance next = instanceInputBuffer.poll();
 		if ( next != null ) {
 			if ( hasOwner(next) ) {
-				pipelineOutputBuffer.add( next );
+				instanceOutputBuffer.add( next );
 			} else {
 				return getNextInstance();
 			}
@@ -414,9 +414,9 @@ public class Sagitarii {
 	 */
 	private void sanitizeBuffer() {
 		int total = 0;
-		Iterator<Pipeline> i = instanceInputBuffer.iterator();
+		Iterator<Instance> i = instanceInputBuffer.iterator();
 		while ( i.hasNext() ) {
-			Pipeline req = i.next(); 
+			Instance req = i.next(); 
 			if ( req == null ) {
 				i.remove();
 				total++;
@@ -426,32 +426,32 @@ public class Sagitarii {
 	}
 	
 	/**
-	 * Retorna um pipeline que estava na fila de processamento mas foi 
+	 * Retorna um instance que estava na fila de processamento mas foi 
 	 * perdido (foi entregue para um nó mas não retornou dentro do tempo esperado)
 	 * 
-	 * @param pipeline
+	 * @param instance
 	 */
-	public synchronized void returnToBuffer( Pipeline pipeline ) {
-		if ( pipelineOutputBuffer.remove( pipeline ) ) {
-			if ( pipeline.getType().isJoin() ) {
-				pipelineJoinInputBuffer.add( pipeline );
+	public synchronized void returnToBuffer( Instance instance ) {
+		if ( instanceOutputBuffer.remove( instance ) ) {
+			if ( instance.getType().isJoin() ) {
+				instanceJoinInputBuffer.add( instance );
 			} else {
-				instanceInputBuffer.add( pipeline );
+				instanceInputBuffer.add( instance );
 			}
 		}
 	}
 	
 	
 	/**
-	 * Entrega um pipeline JOIN (SQL) ao MainCluster
+	 * Entrega um instance JOIN (SQL) ao MainCluster
 	 * 
-	 * @return Pipeline
+	 * @return Instance
 	 */
-	public synchronized Pipeline getNextJoinPipeline() {
-		Pipeline next = pipelineJoinInputBuffer.poll();
+	public synchronized Instance getNextJoinInstance() {
+		Instance next = instanceJoinInputBuffer.poll();
 		if ( next != null ) {
-			logger.debug("serving join pipeline " + next.getSerial() );
-			pipelineOutputBuffer.add(next);
+			logger.debug("serving join instance " + next.getSerial() );
+			instanceOutputBuffer.add(next);
 		}
 		
 		
@@ -460,16 +460,16 @@ public class Sagitarii {
 	}
 
 	/**
-	 * Dada uma lista de pipelines, separa os que serão entregues ao cluster e os que serão
+	 * Dada uma lista de instances, separa os que serão entregues ao cluster e os que serão
 	 * processados no servidor ( MainCluster ) e adiciona nas listas apropriadas.
 	 * 
 	 * @param pipes
 	 */
-	private synchronized void processAndInclude( List<Pipeline> pipes ) {
-		for( Pipeline pipe : pipes ) {
+	private synchronized void processAndInclude( List<Instance> pipes ) {
+		for( Instance pipe : pipes ) {
 			if( pipe.getType().isJoin() ) {
 				// Os SELECT vão para o MainCluster
-				pipelineJoinInputBuffer.add(pipe);
+				instanceJoinInputBuffer.add(pipe);
 			} else {
 				// Os demais vão para os nós.
 				instanceInputBuffer.add(pipe);
@@ -479,7 +479,7 @@ public class Sagitarii {
 
 	
 	/**
-	 * Recarrega os pipelines que ficaram nomo RUNNING no banco após
+	 * Recarrega os instances que ficaram nomo RUNNING no banco após
 	 * o servidor ser reiniciado.
 	 * Este método é chamado pelo Orchestrator após recuperar os experimentos 
 	 * interrompidos.
@@ -489,12 +489,12 @@ public class Sagitarii {
 		logger.debug("after crash reloading " + runningExperiments.size() + " experiments.");
 		try {
 			try {
-				PipelineService pipelineService = new PipelineService();
-				processAndInclude( pipelineService.recoverFromCrash() );
-				logger.debug( instanceInputBuffer.size() + " common pipelines recovered.");
-				logger.debug( pipelineJoinInputBuffer.size() + " JOIN pipelines recovered.");
+				InstanceService instanceService = new InstanceService();
+				processAndInclude( instanceService.recoverFromCrash() );
+				logger.debug( instanceInputBuffer.size() + " common instances recovered.");
+				logger.debug( instanceJoinInputBuffer.size() + " JOIN instances recovered.");
 			} catch ( NotFoundException e ) {
-				logger.debug("no pipelines to recover");
+				logger.debug("no instances to recover");
 			}
 			
 		} catch ( Exception e) {
@@ -519,7 +519,7 @@ public class Sagitarii {
 	}
 	
 	/**
-	 * Carrega do banco de dados uma lista com os primeiros N pipelines disponíveis
+	 * Carrega do banco de dados uma lista com os primeiros N instances disponíveis
 	 * que possam ser processados por clusters.
 	 * 
 	 * *** ESTE MÉTODO PRECISA SER APRIMORADO PARA SER MAIS EFICIENTE ***
@@ -539,12 +539,12 @@ public class Sagitarii {
 				}
 
 				logger.debug("running fragment found: " + running.getSerial() );
-				PipelineService ps = new PipelineService();
-				List<Pipeline> pipes = ps.getHead( diff, running.getIdFragment() );
+				InstanceService ps = new InstanceService();
+				List<Instance> pipes = ps.getHead( diff, running.getIdFragment() );
 				processAndInclude( pipes );
 				
 			} catch (NotFoundException e) {
-				logger.debug("no running pipelines found for experiment " + experimentOnTable.getTagExec() );
+				logger.debug("no running instances found for experiment " + experimentOnTable.getTagExec() );
 			} catch ( Exception e) {
 				logger.error( e.getMessage() );
 			} 
@@ -556,17 +556,17 @@ public class Sagitarii {
 	
 
 	/**
-	 * Carrega do banco de dados uma lista com os primeiros N pipelines disponíveis
+	 * Carrega do banco de dados uma lista com os primeiros N instances disponíveis
 	 * que possam ser processados pelo cluster local ( MainCluster )
 	 * 
 	 * *** ESTE MÉTODO PRECISA SER APRIMORADO PARA SER MAIS EFICIENTE ***
 	 */
 	private synchronized void loadJoinBuffer() {
 		logger.debug("loading SELEC buffer");
-		if( pipelineJoinInputBuffer.size() < maxInputBufferCapacity ) {
-			int diff = maxInputBufferCapacity - pipelineJoinInputBuffer.size();
+		if( instanceJoinInputBuffer.size() < maxInputBufferCapacity ) {
+			int diff = maxInputBufferCapacity - instanceJoinInputBuffer.size();
 			try {
-				PipelineService ps = new PipelineService();
+				InstanceService ps = new InstanceService();
 				Fragment running = getRunningFragment( experimentOnTableJoin );
 				if ( running == null ) {
 					logger.debug("no SELECT fragments running");
@@ -579,8 +579,8 @@ public class Sagitarii {
 			} catch (Exception e) {
 				//logger.error( e.getMessage() );
 			} 
-			if ( pipelineJoinInputBuffer.size() > 0 ) {
-				logger.debug("SELECT buffer size: " + pipelineJoinInputBuffer.size() );
+			if ( instanceJoinInputBuffer.size() > 0 ) {
+				logger.debug("SELECT buffer size: " + instanceJoinInputBuffer.size() );
 			}
 		} 
 	}
@@ -593,20 +593,20 @@ public class Sagitarii {
 	 * que configura o tempo em segundos que este método é chamado.
 	 * 
 	 * Um tempo muito curto o sistema fica mais rápido, mas pode ocasionar
-	 * mais lidas no banco de dados sem necessidade (para verificar se existem pipelines
+	 * mais lidas no banco de dados sem necessidade (para verificar se existem instances
 	 * produzidos).
 	 * 
 	 * Um tempo muito longo faz com que menos acessos ao banco sejam feitos, mas
 	 * o sistema pode demorar a encher o buffer de saída, fazendo com que os nós 
 	 * fiquem desocupados.
 	 * 
-	 * Este método faz um acesso ao banco para carregar pipelines ao buffer quando este atinge
+	 * Este método faz um acesso ao banco para carregar instances ao buffer quando este atinge
 	 * menos de 1/3 de sua capacidade (comum) ou 1/5 da capacidade (SQL). No caso no buffer de JOIN, 
-	 * este acesso é quase constante, pois é um tipo de pipeline escasso e de processamento rápido, 
+	 * este acesso é quase constante, pois é um tipo de instance escasso e de processamento rápido, 
 	 * o que faz com que o buffer fique quase sempre vazio (por isso o limite de 1/5 e não de 1/3).
 	 * 
 	 * Este método também gira a roleta de experimentos, escalonando os experimentos em ordem numa
-	 * fila para terem seus pipelines processados de forma homogênea.
+	 * fila para terem seus instances processados de forma homogênea.
 	 * 
 	 * Se necessitar aumentar a velocidade, coloque um buffer pequeno, assim ele esvazia rápido
 	 * o suficiente para a próxima verificação justificar o acesso ao banco.
@@ -617,7 +617,7 @@ public class Sagitarii {
 	 * 
 	 * Um buffer grande com poucos nós fará com que ele fique sempre cheio. Esta rotina fará acessos
 	 * injustificados ao banco e fará a roleta de experimentos girar devagar, carregando uma quantidade muito
-	 * grande de pipelines do mesmo experimento no buffer e causando inanição nos demais.
+	 * grande de instances do mesmo experimento no buffer e causando inanição nos demais.
 	 * 
 	 * Procure um balanço ideal entre "poolIntervalSeconds", "maxInputBufferCapacity" e a quantidade
 	 * de nós de processamento em sua rede.
@@ -631,7 +631,7 @@ public class Sagitarii {
 		
 		if ( ClustersManager.getInstance().hasClusters() ) {
 			logger.debug("COMMON buffer...");
-			// Se o buffer comum está com 1/3 de sua capacidade, é hora de ler mais pipelines do banco
+			// Se o buffer comum está com 1/3 de sua capacidade, é hora de ler mais instances do banco
 			if ( instanceInputBuffer.size() < ( maxInputBufferCapacity / 3 ) ) {
 				// ... mas antes rodamos a roleta de experimentos para processar o próximo da lista (comum)
 				int mark = 0;
@@ -651,8 +651,8 @@ public class Sagitarii {
 		
 			if ( canLoadJoinBuffer ) {
 				logger.debug("JOIN buffer...");
-				// Se o buffer JOIN (SQL) está com 1/5 de sua capacidade, é hora de ler mais pipelines do banco
-				if ( pipelineJoinInputBuffer.size() < ( maxInputBufferCapacity / 5 ) ) {
+				// Se o buffer JOIN (SQL) está com 1/5 de sua capacidade, é hora de ler mais instances do banco
+				if ( instanceJoinInputBuffer.size() < ( maxInputBufferCapacity / 5 ) ) {
 					// ... mas antes rodamos a roleta de experimentos para processar o próximo da lista (JOIN)
 					int mark = 0;
 					do {
@@ -669,7 +669,7 @@ public class Sagitarii {
 					} 
 					
 				}
-				if ( pipelineJoinInputBuffer.size() == 0 ) {
+				if ( instanceJoinInputBuffer.size() == 0 ) {
 					canLoadJoinBuffer = false;
 				}
 			} else {
@@ -682,7 +682,7 @@ public class Sagitarii {
 				logger.error( "update fragments error: " + e.getMessage() );
 			}
 		
-			if( ( pipelineJoinInputBuffer.size() == 0 ) && ( instanceInputBuffer.size() == 0 ) ) {
+			if( ( instanceJoinInputBuffer.size() == 0 ) && ( instanceInputBuffer.size() == 0 ) ) {
 				checkFinished();
 			}
 
@@ -722,9 +722,9 @@ public class Sagitarii {
 	private Sagitarii() {
 		
 		runningExperiments = new ArrayList<Experiment>();
-		instanceInputBuffer = new LinkedList<Pipeline>();
-		pipelineJoinInputBuffer = new LinkedList<Pipeline>();
-		pipelineOutputBuffer = new LinkedList<Pipeline>();
+		instanceInputBuffer = new LinkedList<Instance>();
+		instanceJoinInputBuffer = new LinkedList<Instance>();
+		instanceOutputBuffer = new LinkedList<Instance>();
 	}
 	
 	/**
@@ -796,13 +796,13 @@ public class Sagitarii {
 		}
 	}
 
-	public Queue<Pipeline> getPipelineInputBuffer() {
-		return new LinkedList<Pipeline>( instanceInputBuffer );
+	public Queue<Instance> getInstanceInputBuffer() {
+		return new LinkedList<Instance>( instanceInputBuffer );
 	}
 
-	public Queue<Pipeline> getPipelineOutputBuffer() {
+	public Queue<Instance> getInstanceOutputBuffer() {
 		// To avoid concurrency on frontend showing 
-		return new LinkedList<Pipeline>( pipelineOutputBuffer );
+		return new LinkedList<Instance>( instanceOutputBuffer );
 	}
 
 	public void setMaxInputBufferCapacity(int maxInputBufferCapacity) {
@@ -813,8 +813,8 @@ public class Sagitarii {
 		return maxInputBufferCapacity;
 	}
 
-	public Queue<Pipeline> getPipelineJoinInputBuffer() {
-		return new LinkedList<Pipeline>( pipelineJoinInputBuffer );
+	public Queue<Instance> getInstanceJoinInputBuffer() {
+		return new LinkedList<Instance>( instanceJoinInputBuffer );
 	}
 	
 	public Experiment getExperimentOnTable() {

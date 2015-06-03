@@ -37,10 +37,10 @@ public class SchemaGenerator {
 		String primaryKey = " CONSTRAINT " + tableName + "_pkey PRIMARY KEY (index_id)";
 		String foreignKeyEX = " CONSTRAINT " + tableName +  "_fkex FOREIGN KEY (id_experiment) REFERENCES experiments (id_experiment)";
 		String foreignKeyAC = " CONSTRAINT " + tableName +  "_fkac FOREIGN KEY (id_activity) REFERENCES activities (id_activity)";
-		String foreignKeyPI = " CONSTRAINT " + tableName +  "_fkpi FOREIGN KEY (id_pipeline) REFERENCES pipelines (id_pipeline)";
+		String foreignKeyPI = " CONSTRAINT " + tableName +  "_fkpi FOREIGN KEY (id_instance) REFERENCES instances (id_instance)";
 		String foreignKeyFiles = "";
 		 
-		String attributeDef = "index_id serial NOT NULL,id_experiment integer,id_activity integer,id_pipeline integer,";
+		String attributeDef = "index_id serial NOT NULL,id_experiment integer,id_activity integer,id_instance integer,";
 		for( TableAttribute attr : attributes ) {
 			switch ( attr.getType() ) {
 				case FILE : 

@@ -49,11 +49,11 @@ public class Fragment  {
 	@Column(name="index_order")
 	private Integer indexOrder = 0;
 
-	@Column(name="remaining_pipelines")
-	private Integer remainingPipelines = 0;
+	@Column(name="remaining_instances")
+	private Integer remainingInstances = 0;
 
-	@Column(name="total_pipelines")
-	private Integer totalPipelines = 0;
+	@Column(name="total_instances")
+	private Integer totalInstances = 0;
 	
     @OneToMany(orphanRemoval=true,  mappedBy="fragment", fetch = FetchType.EAGER)
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
@@ -163,20 +163,20 @@ public class Fragment  {
 		this.status = status;
 	}
 
-	public Integer getRemainingPipelines() {
-		return remainingPipelines;
+	public Integer getRemainingInstances() {
+		return remainingInstances;
 	}
 
-	public void setRemainingPipelines(Integer remainingPipelines) {
-		this.remainingPipelines = remainingPipelines;
+	public void setRemainingInstances(Integer remainingInstances) {
+		this.remainingInstances = remainingInstances;
 	}
 
-	public Integer getTotalPipelines() {
-		return totalPipelines;
+	public Integer getTotalInstances() {
+		return totalInstances;
 	}
 
-	public void setTotalPipelines(Integer totalPipelines) {
-		this.totalPipelines = totalPipelines;
+	public void setTotalInstances(Integer totalInstances) {
+		this.totalInstances = totalInstances;
 	}
 
 	

@@ -2,6 +2,7 @@ package cmabreu.sagitarii.persistence.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,17 +27,17 @@ public class File {
 	private int idFile;
 	
 	@ManyToOne
-	@JoinColumn(name="id_activity")
+	@JoinColumn(name="id_activity", foreignKey = @ForeignKey(name = "fk_file_activity"))
 	@Fetch(FetchMode.JOIN)
 	private Activity activity;
 	
 	@ManyToOne
-	@JoinColumn(name="id_instance")
+	@JoinColumn(name="id_instance", foreignKey = @ForeignKey(name = "fk_file_instance"))
 	@Fetch(FetchMode.JOIN)
-	private Pipeline instance;
+	private Instance instance;
 	
 	@ManyToOne
-	@JoinColumn(name="id_experiment")
+	@JoinColumn(name="id_experiment", foreignKey = @ForeignKey(name = "fk_file_exp"))
 	@Fetch(FetchMode.JOIN)
 	private Experiment experiment;
 	
@@ -86,11 +87,11 @@ public class File {
 		this.activity = activity;
 	}
 
-	public Pipeline getInstance() {
+	public Instance getInstance() {
 		return instance;
 	}
 
-	public void setInstance(Pipeline instance) {
+	public void setInstance(Instance instance) {
 		this.instance = instance;
 	}
 

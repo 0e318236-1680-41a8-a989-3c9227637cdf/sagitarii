@@ -200,7 +200,7 @@ public class RelationRepository extends BasicRepository {
 		logger.debug("create internal index for table " + tableName);
 
 		String sql = "CREATE INDEX " + tableName + "_indx ON "+tableName + 
-				" (index_id, id_experiment, id_activity, id_pipeline)";
+				" (index_id, id_experiment, id_activity, id_instance)";
 		
 		DaoFactory<Relation> df = new DaoFactory<Relation>();
 		IDao<Relation> fm = df.getDao(this.session, Relation.class);

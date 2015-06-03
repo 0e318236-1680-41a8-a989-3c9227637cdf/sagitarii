@@ -11,7 +11,7 @@
 
 						<div class="basicCentralPanelBar">
 							<img src="img/connection.png">
-							<div class="basicCentralPanelBarText">View Instance ${pipeline.serial}</div>
+							<div class="basicCentralPanelBarText">View Instance ${instance.serial}</div>
 						</div>
 						
 						<div id="pannel" style="width:95%; margin:0 auto;margin-top:10px;margin-bottom:20px;">
@@ -20,19 +20,19 @@
 									<tr>
 										<td class="tableCellFormLeft">Executor</td>
 										<td class="tableCellFormRight"> 
-											${pipeline.executorAlias}
+											${instance.executorAlias}
 										</td>
 									</tr>
 									<tr>
 										<td class="tableCellFormLeft">Start</td>
 										<td class="tableCellFormRight"> 
-											${pipeline.startDateTime}
+											${instance.startDateTime}
 										</td>
 									</tr>
 									<tr>
 										<td class="tableCellFormLeft">Finish</td>
 										<td class="tableCellFormRight"> 
-											${pipeline.finishDateTime}
+											${instance.finishDateTime}
 										</td>
 									</tr>
 								</table>

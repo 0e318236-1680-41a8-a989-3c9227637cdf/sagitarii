@@ -123,13 +123,13 @@ public class RelationService {
 		if ( !sortColumn.equals("ERROR") ) {
 			result = genericFetchList( sql );
 			
-			// Show ID pipeline as a link
+			// Show ID instance as a link
 			for ( UserTableEntity ute : result  ) {
-				String idPipeline = ute.getData("id_pipeline"); 
-				if ( (idPipeline != null) && ( !idPipeline.equals("") ) ) {
-					ute.setData("id_pipeline", "<a href='viewPipeline?tableName="+tableName+"&idExperiment="+idExperiment+"&idPipeline="+idPipeline+"'>"+idPipeline+"</a>");
+				String idInstance = ute.getData("id_instance"); 
+				if ( (idInstance != null) && ( !idInstance.equals("") ) ) {
+					ute.setData("id_instance", "<a href='viewInstance?tableName="+tableName+"&idExperiment="+idExperiment+"&idInstance="+idInstance+"'>"+idInstance+"</a>");
 				} else {
-					ute.setData("id_pipeline", "n/e");
+					ute.setData("id_instance", "n/e");
 				}
 			}
 			
@@ -163,16 +163,16 @@ public class RelationService {
 					Domain domain = DomainStorage.getInstance().getDomain( domainName );
 					if ( domain != null ) {
 						String idFile = ute.getData( columnName ); 
-						ute.setData(columnName, "<a href='viewPipeline?tableName="+idFile+"'>"+columnName+"</a>");
+						ute.setData(columnName, "<a href='viewInstance?tableName="+idFile+"'>"+columnName+"</a>");
 					}
 				}
 				
 				
-				String idPipeline = ute.getData("id_pipeline"); 
-				if ( (idPipeline != null) && ( !idPipeline.equals("") ) ) {
-					ute.setData("id_pipeline", "<a href='viewPipeline?tableName="+tableName+"&idExperiment="+experiment.getIdExperiment()+"&idPipeline="+idPipeline+"'>"+idPipeline+"</a>");
+				String idInstance = ute.getData("id_instance"); 
+				if ( (idInstance != null) && ( !idInstance.equals("") ) ) {
+					ute.setData("id_instance", "<a href='viewInstance?tableName="+tableName+"&idExperiment="+experiment.getIdExperiment()+"&idInstance="+idInstance+"'>"+idInstance+"</a>");
 				} else {
-					ute.setData("id_pipeline", "n/e");
+					ute.setData("id_instance", "n/e");
 				}
 			}
 			
@@ -218,21 +218,21 @@ public class RelationService {
 	}
 
 	
-	public Set<UserTableEntity> getGeneratedData( String tableName, int idPipeline, int idExperiment ) throws Exception {
-		String sql = "select * from " + tableName + " where id_pipeline = " + idPipeline;
+	public Set<UserTableEntity> getGeneratedData( String tableName, int idInstance, int idExperiment ) throws Exception {
+		String sql = "select * from " + tableName + " where id_instance = " + idInstance;
 		Set<UserTableEntity> result = genericFetchList( sql );
 		if ( result.size() == 0 ) {
 			Map<String,String> data = new HashMap<String,String>();
-			data.put("ERROR",  "No data in table '" + tableName + "' for this pipeline");
+			data.put("ERROR",  "No data in table '" + tableName + "' for this instance");
 			UserTableEntity ute = new UserTableEntity(data);
 			result.add(ute);
 		} else {
 			for ( UserTableEntity ute : result ) {
-				String sIdPipeline = ute.getData("id_pipeline"); 
-				if ( (sIdPipeline != null) && ( !sIdPipeline.equals("") ) ) {
-					ute.setData("id_pipeline", "<a href='viewPipeline?tableName="+tableName+"&idExperiment="+idExperiment+"&idPipeline="+sIdPipeline+"'>"+sIdPipeline+"</a>");
+				String sIdInstance = ute.getData("id_instance"); 
+				if ( (sIdInstance != null) && ( !sIdInstance.equals("") ) ) {
+					ute.setData("id_instance", "<a href='viewInstance?tableName="+tableName+"&idExperiment="+idExperiment+"&idInstance="+sIdInstance+"'>"+sIdInstance+"</a>");
 				} else {
-					ute.setData("id_pipeline", "n/e");
+					ute.setData("id_instance", "n/e");
 				}					
 			}
 		}
@@ -253,14 +253,14 @@ public class RelationService {
 		
 		if ( result.size() == 0 ) {
 			Map<String,String> data = new HashMap<String,String>();
-			data.put("ERROR",  "No consumptions found for this pipeline");
+			data.put("ERROR",  "No consumptions found for this instance");
 			UserTableEntity ute = new UserTableEntity(data);
 			result.add(ute);
 		} else {
 			for ( UserTableEntity ute : result ) {
-				String sIdPipeline = ute.getData("id_pipeline"); 
-				if ( (sIdPipeline == null) || ( sIdPipeline.equals("") ) ) {
-					ute.setData("id_pipeline", "n/e");
+				String sIdInstance = ute.getData("id_instance"); 
+				if ( (sIdInstance == null) || ( sIdInstance.equals("") ) ) {
+					ute.setData("id_instance", "n/e");
 				}					
 			}
 		}
@@ -446,7 +446,7 @@ public class RelationService {
 		}
 		
 		
-		logger.debug("received " + contentLines.size() + " lines of data from teapot. pipeline " + rd.getInstance().getIdPipeline() + " | activity " + rd.getActivity().getIdActivity() );
+		logger.debug("received " + contentLines.size() + " lines of data from teapot. instance " + rd.getInstance().getIdInstance() + " | activity " + rd.getActivity().getIdActivity() );
 		for ( int x = 1; x < contentLines.size(); x++ ) {
 			
 			String ss = contentLines.get(x);
@@ -454,7 +454,7 @@ public class RelationService {
 			logger.debug("data: " + ss);
 			
 			String values = "";
-			String columns = "id_experiment,id_activity,id_pipeline," ;
+			String columns = "id_experiment,id_activity,id_instance," ;
 			
 			String[] columnsArray = contentLines.get(0).split( String.valueOf( Configurator.getInstance().getCSVDelimiter() ) );
 			String[] valuesArray = contentLines.get(x).split( String.valueOf( Configurator.getInstance().getCSVDelimiter() ) );
@@ -477,7 +477,7 @@ public class RelationService {
 			}
 
 			sql = "insert into " + rd.getTable().getName() + "("+columns.substring(0, columns.length()-1).toLowerCase()+") values ("+ owner.getIdExperiment() + 
-					"," + rd.getActivity().getIdActivity() + "," + rd.getInstance().getIdPipeline() + "," + values + ");";
+					"," + rd.getActivity().getIdActivity() + "," + rd.getInstance().getIdInstance() + "," + values + ");";
 			
 			executeQueryAndKeepOpen(sql);
 			if ( importer != null ) {

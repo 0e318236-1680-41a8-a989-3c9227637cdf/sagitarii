@@ -8,10 +8,10 @@ import java.util.concurrent.TimeUnit;
 import cmabreu.sagitarii.core.processor.Activation;
 import cmabreu.sagitarii.core.processor.XMLParser;
 import cmabreu.sagitarii.misc.DateLibrary;
-import cmabreu.sagitarii.persistence.entity.Pipeline;
+import cmabreu.sagitarii.persistence.entity.Instance;
 
 public class DeliveryUnit {
-	private Pipeline pipeline;
+	private Instance instance;
 	private List<Activation> activations;
 	private String macAddress;
 	private Date deliverTime;
@@ -21,14 +21,14 @@ public class DeliveryUnit {
 		return activations;
 	}
 	
-	public Pipeline getPipeline() {
-		return pipeline;
+	public Instance getInstance() {
+		return instance;
 	}
 
-	public void setPipeline(Pipeline pipeline) {
-		this.pipeline = pipeline;
+	public void setInstance(Instance instance) {
+		this.instance = instance;
 		try {
-			this.activations = new XMLParser().parseActivations( pipeline.getContent() );
+			this.activations = new XMLParser().parseActivations( instance.getContent() );
 		} catch (Exception e) { }
 	}
 

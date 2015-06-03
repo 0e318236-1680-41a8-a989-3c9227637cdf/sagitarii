@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -65,7 +66,7 @@ public class Activity implements Comparable<Activity> {
 	private String executorAlias;
 	
 	@ManyToOne
-	@JoinColumn(name="id_fragment")
+	@JoinColumn(name="id_fragment", foreignKey = @ForeignKey(name = "fk_activity_frag") )
 	@Fetch(FetchMode.JOIN)
 	private Fragment fragment;	
 
@@ -76,6 +77,7 @@ public class Activity implements Comparable<Activity> {
     private Set<Relation> inputRelations = new HashSet<Relation>();	
 	
 	@OneToOne
+	@JoinColumn( foreignKey = @ForeignKey(name = "fk_activity_table") )
 	private Relation outputRelation;	
 	
     @ManyToMany(cascade=CascadeType.ALL, fetch = FetchType.EAGER)

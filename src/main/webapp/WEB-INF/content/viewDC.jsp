@@ -52,10 +52,10 @@
 								</tr>
 								<c:forEach var="unit" items="${units}">
 									<tr>
-										<td class="tableCellFormRight">${unit.pipeline.serial}</td>
+										<td class="tableCellFormRight">${unit.instance.serial}</td>
 										<td class="tableCellFormRight">${unit.macAddress}</td>
-										<td class="tableCellFormRight">${unit.pipeline.executorAlias}</td>
-										<td class="tableCellFormRight">${unit.pipeline.type}</td>
+										<td class="tableCellFormRight">${unit.instance.executorAlias}</td>
+										<td class="tableCellFormRight">${unit.instance.type}</td>
 										<td class="tableCellFormRight">${unit.ageTime}</td>
 										<td class="tableCellFormRight">
 											<table>

@@ -6,13 +6,13 @@ import java.util.List;
 
 import cmabreu.sagitarii.core.sockets.ReceivedFile;
 import cmabreu.sagitarii.persistence.entity.Activity;
-import cmabreu.sagitarii.persistence.entity.Pipeline;
+import cmabreu.sagitarii.persistence.entity.Instance;
 import cmabreu.sagitarii.persistence.entity.Relation;
 
 public class ReceivedData {
 
 	private Activity activity;
-	private Pipeline instance;
+	private Instance instance;
 	private String macAddress;
 	private List<String> contentLines;
 	private Relation table;
@@ -35,11 +35,11 @@ public class ReceivedData {
 		return csvDataFile;
 	}
 	
-	public ReceivedData( List<String> contentLines, String macAddress, Pipeline pipeline, Activity activity, Relation table, 
+	public ReceivedData( List<String> contentLines, String macAddress, Instance instance, Activity activity, Relation table, 
 			ReceivedFile csvDataFile ) throws Exception {
 
 		this.activity = activity;
-		this.instance = pipeline;
+		this.instance = instance;
 		this.contentLines = contentLines;
 		this.macAddress = macAddress;
 		this.csvDataFile = csvDataFile;
@@ -60,7 +60,7 @@ public class ReceivedData {
 		return activity;
 	}
 	
-	public Pipeline getInstance() {
+	public Instance getInstance() {
 		return instance;
 	}
 	

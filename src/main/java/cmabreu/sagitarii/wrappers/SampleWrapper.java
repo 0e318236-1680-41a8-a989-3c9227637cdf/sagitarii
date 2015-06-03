@@ -9,7 +9,7 @@ package cmabreu.sagitarii.wrappers;
  * to do an Activity job. You decide what to do.
  * 
  * Sagitarii Teapot will receive some data as CSV, save on disk ( args[0] file in args[1] folder ) 
- * and call this wrapper as specified in XML pipeline file.
+ * and call this wrapper as specified in XML instance file.
  * Your program must read this CSV data, do your job and print results as CSV data to
  * console, so Teapot can send it back to Sagitarii server with any file you may save in outbox folder. 
  * 

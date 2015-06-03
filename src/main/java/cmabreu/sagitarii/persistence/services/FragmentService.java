@@ -42,8 +42,8 @@ public class FragmentService {
 			throw new UpdateException( e.getMessage() );
 		}
 		oldFragment.setStatus( fragment.getStatus() );
-		oldFragment.setRemainingPipelines( fragment.getRemainingPipelines() );
-		oldFragment.setTotalPipelines( fragment.getTotalPipelines() );
+		oldFragment.setRemainingInstances( fragment.getRemainingInstances() );
+		oldFragment.setTotalInstances( fragment.getTotalInstances() );
 		rep.newTransaction();
 		rep.updateFragment(oldFragment);
 	}

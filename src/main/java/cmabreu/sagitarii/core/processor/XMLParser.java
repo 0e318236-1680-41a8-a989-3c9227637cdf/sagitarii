@@ -56,14 +56,14 @@ public class XMLParser {
 		doc = dBuilder.parse( is );
 		doc.getDocumentElement().normalize();
 		
-		NodeList pipeTag = doc.getElementsByTagName("pipeline");
+		NodeList pipeTag = doc.getElementsByTagName("instance");
 		Node pipeConf = pipeTag.item( 0 );
 		Element pipeElement = (Element) pipeConf;
 		String pipeSerial = pipeElement.getAttribute("serial");
 		String fragment = pipeElement.getAttribute("fragment");
 		String experiment = pipeElement.getAttribute("experiment");
 		String workflow = pipeElement.getAttribute("workflow");
-		int pipelineId = Integer.valueOf( pipeElement.getAttribute("id") );
+		int instanceId = Integer.valueOf( pipeElement.getAttribute("id") );
 		
 		List<Activation> resp = new ArrayList<Activation>();
 		NodeList mapconfig = doc.getElementsByTagName("activity");
@@ -87,8 +87,8 @@ public class XMLParser {
 				activation.setWorkflow(workflow);
 				activation.setType(type);
 				activation.setExperiment(experiment);
-				activation.setPipelineSerial(pipeSerial);
-				activation.setPipelineId( pipelineId );
+				activation.setInstanceSerial(pipeSerial);
+				activation.setInstanceId( instanceId );
 				activation.setSourceData( getSourceData( sourceData ) );
 				activation.setCommand(command);
 				activation.setFragment(fragment);

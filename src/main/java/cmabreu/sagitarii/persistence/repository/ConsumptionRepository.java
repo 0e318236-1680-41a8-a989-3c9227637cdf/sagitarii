@@ -18,13 +18,13 @@ public class ConsumptionRepository extends BasicRepository {
 		logger.debug("init");
 	}
 
-	public Set<Consumption> getList(int idPipeline) throws NotFoundException {
+	public Set<Consumption> getList(int idInstance) throws NotFoundException {
 		logger.debug("get list" );
 		DaoFactory<Consumption> df = new DaoFactory<Consumption>();
 		IDao<Consumption> fm = df.getDao(this.session, Consumption.class);
 		Set<Consumption> consumptions = null;
 		try {
-			consumptions = new HashSet<Consumption>( fm.getList("select * from consumptions where id_pipeline = " + idPipeline) );
+			consumptions = new HashSet<Consumption>( fm.getList("select * from consumptions where id_instance = " + idInstance) );
 		} catch ( Exception e ) {
 			closeSession();
 			throw e;

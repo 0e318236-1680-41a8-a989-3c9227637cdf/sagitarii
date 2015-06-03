@@ -5,16 +5,16 @@ import java.util.Queue;
 
 import cmabreu.sagitarii.core.Sagitarii;
 import cmabreu.sagitarii.persistence.entity.Experiment;
-import cmabreu.sagitarii.persistence.entity.Pipeline;
+import cmabreu.sagitarii.persistence.entity.Instance;
 import cmabreu.sagitarii.persistence.entity.User;
 
 import com.opensymphony.xwork2.ActionContext;
 
 public class BasicActionClass {
 	private List<Experiment> runningExperiments;
-	private Queue<Pipeline> pipelineInputBuffer;
-	private Queue<Pipeline> pipelineJoinInputBuffer;
-	private Queue<Pipeline> pipelineOutputBuffer;	
+	private Queue<Instance> instanceInputBuffer;
+	private Queue<Instance> instanceJoinInputBuffer;
+	private Queue<Instance> instanceOutputBuffer;	
 	private Experiment experimentOnTable;
 	private Experiment experimentOnTableJoin;
 	int maxBufferCapacity;
@@ -39,9 +39,9 @@ public class BasicActionClass {
 	public BasicActionClass() {
 		Sagitarii sagi = Sagitarii.getInstance();
 		runningExperiments = sagi.getRunningExperiments();
-		pipelineInputBuffer = sagi.getPipelineInputBuffer();
-		pipelineJoinInputBuffer = sagi.getPipelineJoinInputBuffer();
-		pipelineOutputBuffer = sagi.getPipelineOutputBuffer();
+		instanceInputBuffer = sagi.getInstanceInputBuffer();
+		instanceJoinInputBuffer = sagi.getInstanceJoinInputBuffer();
+		instanceOutputBuffer = sagi.getInstanceOutputBuffer();
 		experimentOnTable = sagi.getExperimentOnTable();
 		experimentOnTableJoin = sagi.getExperimentOnTableJoin();
 		maxBufferCapacity = sagi.getMaxInputBufferCapacity();
@@ -51,16 +51,16 @@ public class BasicActionClass {
 		return runningExperiments;
 	}
 
-	public Queue<Pipeline> getPipelineInputBuffer() {
-		return pipelineInputBuffer;
+	public Queue<Instance> getInstanceInputBuffer() {
+		return instanceInputBuffer;
 	}
 
-	public Queue<Pipeline> getPipelineJoinInputBuffer() {
-		return pipelineJoinInputBuffer;
+	public Queue<Instance> getInstanceJoinInputBuffer() {
+		return instanceJoinInputBuffer;
 	}
 
-	public Queue<Pipeline> getPipelineOutputBuffer() {
-		return pipelineOutputBuffer;
+	public Queue<Instance> getInstanceOutputBuffer() {
+		return instanceOutputBuffer;
 	}
 
 	public int getMaxBufferCapacity() {

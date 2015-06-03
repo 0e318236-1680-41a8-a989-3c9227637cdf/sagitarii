@@ -2,6 +2,7 @@ package cmabreu.sagitarii.persistence.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,7 +29,7 @@ public class CustomQuery {
 	private String name;
 
 	@ManyToOne
-	@JoinColumn(name="id_experiment")
+	@JoinColumn(name="id_experiment", foreignKey = @ForeignKey(name = "fk_customq_experiment"))
 	@Fetch(FetchMode.JOIN)
 	private Experiment experiment;    
 	

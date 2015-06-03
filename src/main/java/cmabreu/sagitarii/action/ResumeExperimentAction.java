@@ -23,7 +23,7 @@ public class ResumeExperimentAction extends BasicActionClass {
 				
 		try {
 			Sagitarii.getInstance().resume( idExperiment );
-			setMessageText("Experiment will resume. Wait until pipeline buffer is filled.");
+			setMessageText("Experiment will resume. Wait until instance buffer is filled.");
 		} catch (Exception e) {
 			setMessageText("Erro: " + e.getMessage() );
 		}

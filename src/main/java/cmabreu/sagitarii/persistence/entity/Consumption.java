@@ -2,6 +2,7 @@ package cmabreu.sagitarii.persistence.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,7 +16,7 @@ import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Table(name="consumptions", indexes = {
-        @Index(columnList = "id_consumption,id_row,id_table,id_pipeline", name = "consumption_hndx")
+        @Index(columnList = "id_consumption,id_row,id_table,id_instance", name = "consumption_hndx")
 })    
 public class Consumption {
 
@@ -34,9 +35,9 @@ public class Consumption {
 	private int idActivity;
 	
 	@ManyToOne
-	@JoinColumn(name="id_pipeline")
+	@JoinColumn(name="id_instance", foreignKey = @ForeignKey(name = "fk_consumption_instance"))
 	@Fetch(FetchMode.JOIN)
-	private Pipeline pipeline;	
+	private Instance instance;	
 
 	public int getIdConsumption() {
 		return idConsumption;
@@ -62,12 +63,12 @@ public class Consumption {
 		this.idTable = idTable;
 	}
 
-	public Pipeline getPipeline() {
-		return pipeline;
+	public Instance getInstance() {
+		return instance;
 	}
 
-	public void setPipeline(Pipeline pipeline) {
-		this.pipeline = pipeline;
+	public void setInstance(Instance instance) {
+		this.instance = instance;
 	}
 
 	public void setIdActivity(int idActivity) {

@@ -19,7 +19,7 @@ import com.opensymphony.xwork2.ActionContext;
 @ParentPackage("default")
 public class ActivityManagerReceiverAction  {
 	private String response;
-	private String pipelineId;
+	private String instanceId;
 	private String node;
 
 	public String execute () {
@@ -27,12 +27,12 @@ public class ActivityManagerReceiverAction  {
 			
 			if ( response.equals("RUNNING") ) {
 				ClustersManager cm = ClustersManager.getInstance();
-				cm.acceptTask( pipelineId, node );
+				cm.acceptTask( instanceId, node );
 			}
 			
 			if ( response.equals("CANNOT_EXEC") ) {
 				ClustersManager cm = ClustersManager.getInstance();
-				cm.refuseTask(pipelineId, node);
+				cm.refuseTask(instanceId, node);
 			}
 			
 		}
@@ -55,8 +55,8 @@ public class ActivityManagerReceiverAction  {
 		this.node = node;
 	}
 
-	public void setPipelineId(String pipelineId) {
-		this.pipelineId = pipelineId;
+	public void setInstanceId(String instanceId) {
+		this.instanceId = instanceId;
 	}
 	
 	

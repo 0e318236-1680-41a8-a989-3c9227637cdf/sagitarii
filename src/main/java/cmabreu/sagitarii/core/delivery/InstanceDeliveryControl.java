@@ -5,7 +5,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import cmabreu.sagitarii.core.statistics.AgeCalculator;
-import cmabreu.sagitarii.persistence.entity.Pipeline;
+import cmabreu.sagitarii.persistence.entity.Instance;
 
 public class InstanceDeliveryControl {
 	private List<DeliveryUnit> units;
@@ -26,10 +26,10 @@ public class InstanceDeliveryControl {
 		units = new ArrayList<DeliveryUnit>();
 	}
 	
-	public synchronized void addUnit( Pipeline instance, String macAddress ) {
+	public synchronized void addUnit( Instance instance, String macAddress ) {
 		DeliveryUnit du = new DeliveryUnit();
 		du.setMacAddress(macAddress);
-		du.setPipeline(instance);
+		du.setInstance(instance);
 		du.setDeliverTime( Calendar.getInstance().getTime() );
 		units.add(du);
 	}
@@ -37,7 +37,7 @@ public class InstanceDeliveryControl {
 	
 	public void removeUnit( String instanceSerial ) {
 		for ( DeliveryUnit du : units ) {
-			if ( du.getPipeline().getSerial().equalsIgnoreCase( instanceSerial ) ) {
+			if ( du.getInstance().getSerial().equalsIgnoreCase( instanceSerial ) ) {
 				units.remove( du );
 				du.setReceiveTime( Calendar.getInstance().getTime() );
 				AgeCalculator.getInstance().addToStatistics( du );

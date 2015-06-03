@@ -8,22 +8,22 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import cmabreu.sagitarii.core.pipelines.PipelineGeneratorFactory;
+import cmabreu.sagitarii.core.instances.InstanceGeneratorFactory;
 import cmabreu.sagitarii.core.types.FragmentStatus;
 import cmabreu.sagitarii.misc.FragmentComparator;
 import cmabreu.sagitarii.persistence.entity.Activity;
 import cmabreu.sagitarii.persistence.entity.Experiment;
 import cmabreu.sagitarii.persistence.entity.Fragment;
-import cmabreu.sagitarii.persistence.entity.Pipeline;
+import cmabreu.sagitarii.persistence.entity.Instance;
 import cmabreu.sagitarii.persistence.entity.Relation;
 import cmabreu.sagitarii.persistence.services.FragmentService;
-import cmabreu.sagitarii.persistence.services.PipelineService;
+import cmabreu.sagitarii.persistence.services.InstanceService;
 import cmabreu.sagitarii.persistence.services.RelationService;
 
-public class FragmentPipeliner {
+public class FragmentInstancer {
 	private List<Fragment> fragments;
 	private Experiment experiment;
-	List<Pipeline> pipes = new ArrayList<Pipeline>();
+	List<Instance> instances = new ArrayList<Instance>();
 	Logger logger = LogManager.getLogger( this.getClass().getName() );
 	
 	/**
@@ -76,7 +76,7 @@ public class FragmentPipeliner {
 	 * @param experiment o experimento a ser processado
 	 * 
 	 */
-	public FragmentPipeliner( Experiment experiment ) {
+	public FragmentInstancer( Experiment experiment ) {
 		this.experiment = experiment;
 		this.fragments = experiment.getFragments();
 		sort();
@@ -146,7 +146,7 @@ public class FragmentPipeliner {
 	
 	/**
 	 *	Para cada fragmento da lista verifica se sua atividade de entrada
-	 *	pode ser executada. Gera os pipelines, salva no banco e atualiza o 
+	 *	pode ser executada. Gera os instances, salva no banco e atualiza o 
 	 *	status do fragmento para PIPELINED
 	 * @throws Exception 
 	 */
@@ -161,19 +161,19 @@ public class FragmentPipeliner {
 						logger.debug("entrance point: activity " + act.getTag() );
 						if ( isAllowedToRun(act) ) {
 							
-							pipes = PipelineGeneratorFactory.getGenerator( act.getType() ).generatePipelines(act, frag);
+							instances = InstanceGeneratorFactory.getGenerator( act.getType() ).generateInstances(act, frag);
 	
-							if ( pipes.size() > 0 ) {
-								logger.debug("done. " + pipes.size() + " pipelines generated. Will store...");
-								new PipelineService().insertPipelineList(pipes);
-								logger.debug("done storing pipelines to database. Updating fragment status...");
+							if ( instances.size() > 0 ) {
+								logger.debug("done. " + instances.size() + " instances generated. Will store...");
+								new InstanceService().insertInstanceList(instances);
+								logger.debug("done storing instances to database. Updating fragment status...");
 								
 								frag.setStatus( FragmentStatus.PIPELINED );
-								frag.setRemainingPipelines( pipes.size() );
-								frag.setTotalPipelines( pipes.size() );
+								frag.setRemainingInstances( instances.size() );
+								frag.setTotalInstances( instances.size() );
 								
 							} else {
-								logger.debug("ERROR: no pipelines was created.");
+								logger.debug("ERROR: no instances was created.");
 							}
 							logger.debug("done");
 							
@@ -194,8 +194,8 @@ public class FragmentPipeliner {
 	}
 
 	
-	public List<Pipeline> getPipelines() {
-		return pipes;
+	public List<Instance> getInstances() {
+		return instances;
 	}
 	
 }

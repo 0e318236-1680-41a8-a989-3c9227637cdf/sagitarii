@@ -18,7 +18,7 @@ import cmabreu.sagitarii.core.Cluster;
 import cmabreu.sagitarii.core.ClustersManager;
 import cmabreu.sagitarii.core.Sagitarii;
 import cmabreu.sagitarii.persistence.entity.Activity;
-import cmabreu.sagitarii.persistence.entity.Pipeline;
+import cmabreu.sagitarii.persistence.entity.Instance;
 import cmabreu.sagitarii.persistence.exceptions.NotFoundException;
 import cmabreu.sagitarii.persistence.services.ActivityService;
 
@@ -68,16 +68,16 @@ public class MainCluster implements Runnable {
 			if ( cluster != null ) {
 				cluster.setAsMainCluster();
 				if ( currentTaskCount < maxAllowedTasks ) {
-					Pipeline pipe = Sagitarii.getInstance().getNextJoinPipeline();
+					Instance pipe = Sagitarii.getInstance().getNextJoinInstance();
 					if ( pipe != null ) {
 
-						String content = pipe.getContent().replace("##TAG_ID_PIPELINE##", String.valueOf( pipe.getIdPipeline() ) );
-						content = content.replace("%ID_PIP%", String.valueOf( pipe.getIdPipeline() ) ); 
+						String content = pipe.getContent().replace("##TAG_ID_INSTANCE##", String.valueOf( pipe.getIdInstance() ) );
+						content = content.replace("%ID_PIP%", String.valueOf( pipe.getIdInstance() ) ); 
 						pipe.setContent( content );
 						
 						currentTaskCount++;
-						logger.debug("will process pipeline " + pipe.getSerial() );
-						cluster.addPipeline(pipe);
+						logger.debug("will process instance " + pipe.getSerial() );
+						cluster.addInstance(pipe);
 						List<Activation> acts = parser.parseActivations( pipe.getContent() );
 						if ( acts.size() > 0 ) {
 							Activation act = acts.get(0);
@@ -89,9 +89,9 @@ public class MainCluster implements Runnable {
 							ActivityService as = new ActivityService();
 							try {
 								Activity activity = as.getActivity( act.getActivitySerial() );
-								cluster.setPipelineAsDone( pipe.getSerial(), activity );
+								cluster.setInstanceAsDone( pipe.getSerial(), activity );
 							} catch ( NotFoundException nf ) {	
-								logger.error("cannot finish pipeline " + pipe.getSerial() + ". Activity " + act.getActivitySerial() + " not found." );
+								logger.error("cannot finish instance " + pipe.getSerial() + ". Activity " + act.getActivitySerial() + " not found." );
 							}
 							
 						}

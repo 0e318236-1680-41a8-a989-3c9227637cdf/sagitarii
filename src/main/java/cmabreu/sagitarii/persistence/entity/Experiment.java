@@ -11,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -54,12 +55,12 @@ public class Experiment {
 	private String imagePreviewData;	
 	
 	@ManyToOne
-	@JoinColumn(name="id_workflow")
+	@JoinColumn(name="id_workflow", foreignKey = @ForeignKey(name = "fk_exp_wf"))
 	@Fetch(FetchMode.JOIN)
 	private Workflow workflow;    
 
 	@ManyToOne
-	@JoinColumn(name="id_user")
+	@JoinColumn(name="id_user", foreignKey = @ForeignKey(name = "fk_exp_user"))
 	@Fetch(FetchMode.JOIN)
 	private User owner;    
 	

@@ -23,7 +23,7 @@ public class PauseExperimentAction extends BasicActionClass {
 				
 		try {
 			Sagitarii.getInstance().pause(idExperiment);
-			setMessageText("Experiment will pause as soon pipeline buffer is empty. This may take several minutes depending on buffer size.");
+			setMessageText("Experiment will pause as soon instance buffer is empty. This may take several minutes depending on buffer size.");
 		} catch (Exception e) {
 			setMessageText("Error: " + e.getMessage() );
 			return "ok";

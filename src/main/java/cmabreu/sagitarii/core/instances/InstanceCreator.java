@@ -1,4 +1,4 @@
-package cmabreu.sagitarii.core.pipelines;
+package cmabreu.sagitarii.core.instances;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,14 +13,14 @@ import cmabreu.sagitarii.persistence.entity.Activity;
 import cmabreu.sagitarii.persistence.entity.Domain;
 import cmabreu.sagitarii.persistence.entity.File;
 import cmabreu.sagitarii.persistence.entity.Fragment;
-import cmabreu.sagitarii.persistence.entity.Pipeline;
+import cmabreu.sagitarii.persistence.entity.Instance;
 import cmabreu.sagitarii.persistence.entity.Relation;
 import cmabreu.sagitarii.persistence.exceptions.DatabaseConnectException;
 import cmabreu.sagitarii.persistence.exceptions.NotFoundException;
 import cmabreu.sagitarii.persistence.services.ExecutorService;
 import cmabreu.sagitarii.persistence.services.FileService;
 
-public class PipelineCreator {
+public class InstanceCreator {
 	private int order;
 	private Fragment fragment;
 	private List<String> nativeAttributes = new ArrayList<String>();
@@ -29,11 +29,11 @@ public class PipelineCreator {
 	FileService fs;
 	ExecutorService cs;
 	
-	public PipelineCreator() throws DatabaseConnectException {
+	public InstanceCreator() throws DatabaseConnectException {
 		nativeAttributes.add("id_activity");
 		nativeAttributes.add("index_id");
 		nativeAttributes.add("id_experiment");
-		nativeAttributes.add("id_pipeline");
+		nativeAttributes.add("id_instance");
 		fs = new FileService();
 		cs = new ExecutorService();
 	}
@@ -43,13 +43,13 @@ public class PipelineCreator {
 		return nativeAttributes.contains( attribute.toLowerCase() );
 	}
 
-	// Cria um pipeline para uma atividade (ou coloca v�rias atividades em um mesmo pipeline
-	// para serem executadas em sequencia pelo mesmo n�, caso activity.getNextActivities()
+	// Cria um instance para uma atividade (ou coloca varias atividades em uma mesma instancia
+	// para serem executadas em sequencia pelo mesmo nó, caso activity.getNextActivities()
 	// possua atividades a serem executadas em sequencia.
-	public Pipeline createPipeline( Activity activity, Fragment fragment, String parameter) throws Exception {
+	public Instance createInstance( Activity activity, Fragment fragment, String parameter) throws Exception {
 		this.fragment = fragment;
 		order = 0;
-		Pipeline pipe = new Pipeline();
+		Instance pipe = new Instance();
 		pipe.setIdFragment( fragment.getIdFragment() );
 		pipe.setContent( getXMLContent(activity, parameter, pipe.getSerial() )  );
 		pipe.setType( activity.getType() );
@@ -82,8 +82,8 @@ public class PipelineCreator {
 		return retorno;
 	}	
 
-	// Ap�s generateInputData criar uma linha com os nomes das colunas CSV e uma linha com dados,
-	// pode ser necess�rio adicionar mais linhas de dados.
+	// Apos generateInputData criar uma linha com os nomes das colunas CSV e uma linha com dados,
+	// pode ser necessario adicionar mais linhas de dados.
 	public String appendInputData( UserTableEntity parameter, String sourceInputData ) {
 		String retorno = "";
 		String secondLine = "";
@@ -101,9 +101,9 @@ public class PipelineCreator {
 	}	
 
 	/**
-	 * Para cada campo de cada tabela de entrada, verificar se � do tipo "File".
-	 * Se for, inserir uma entrada "File" no pipeline para o arquivo especificado e
-	 * trocar o �ndice pelo nome do arquivo no CSV de dados.
+	 * Para cada campo de cada tabela de entrada, verificar se eh do tipo "File".
+	 * Se for, inserir uma entrada "File" no instance para o arquivo especificado e
+	 * trocar o indice pelo nome do arquivo no CSV de dados.
 	 * 
 	 * Exemplo:
 	 * Trocar : 
@@ -115,7 +115,7 @@ public class PipelineCreator {
 	 * 		Joao,34,data1.zip
 	 * 		Maria,23,data3.zip
 	 * 
-	 * E criar no pipeline:
+	 * E criar no instance:
 	 * 	<file domain='clientes.dados' name='data1.zip' index='67' />
 	 * 	<file domain='clientes.dados' name='data3.zip' index='48' />
 	 * 
@@ -215,7 +215,7 @@ public class PipelineCreator {
 		StringBuilder sbu = new StringBuilder();
 		String command = "";
 		
-		// Verifica se h� colunas do tipo "File" e modifica os dados (troca o ID pelo nome).
+		// Verifica se ha colunas do tipo "File" e modifica os dados (troca o ID pelo nome).
 		parameter = getFilesAndConvertData( activity, parameter );
 
 		cs.newTransaction();
@@ -321,13 +321,13 @@ public class PipelineCreator {
 		return sbu.toString();
 	}
 	
-	private String getXMLContent( Activity act, String parameter, String pipelineSerial ) throws Exception {
-		logger.debug("will generate xml data for pipeline " + pipelineSerial + " with activity entry point " + act.getSerial() + " (" + act.getTag() + ")");
+	private String getXMLContent( Activity act, String parameter, String instanceSerial ) throws Exception {
+		logger.debug("will generate xml data for instance " + instanceSerial + " with activity entry point " + act.getSerial() + " (" + act.getTag() + ")");
 		StringBuilder sb = new StringBuilder();
 		sb.append( "<?xml version='1.0' encoding='UTF-8'?>" );
-		sb.append("<pipeline workflow='" +
+		sb.append("<instance workflow='" +
 				act.getFragment().getExperiment().getWorkflow().getTag() + "' experiment='" + 
-				act.getFragment().getExperiment().getTagExec() + "' serial='" + pipelineSerial + "' id='##TAG_ID_PIPELINE##'" +  
+				act.getFragment().getExperiment().getTagExec() + "' serial='" + instanceSerial + "' id='##TAG_ID_INSTANCE##'" +  
 				" fragment='" + fragment.getSerial() + "'>" );
 		sb.append( getActivityAsXML(act, parameter) );
 		
@@ -337,8 +337,8 @@ public class PipelineCreator {
 			sb.append( goDeep( next ) );
 		}
 		
-		logger.debug("pipeline " + pipelineSerial + " xml data generation is done");
-		sb.append( "</pipeline>" );
+		logger.debug("instance " + instanceSerial + " xml data generation is done");
+		sb.append( "</instance>" );
 		return sb.toString();
 	}
 

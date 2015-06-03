@@ -23,9 +23,9 @@
 									<th>Selected Experiments (Common / Blocking)</th>
 								</tr>
 								<tr>
-									<td>${fn:length(pipelineInputBuffer)}</td>
-									<td>${fn:length(pipelineJoinInputBuffer)}</td>
-									<td>${fn:length(pipelineOutputBuffer)}</td>
+									<td>${fn:length(instanceInputBuffer)}</td>
+									<td>${fn:length(instanceJoinInputBuffer)}</td>
+									<td>${fn:length(instanceOutputBuffer)}</td>
 									<td>${maxBufferCapacity}</td>
 									<td>${experimentOnTable.tagExec} / ${experimentOnTableJoin.tagExec}</td>
 								</tr>
@@ -67,8 +67,8 @@
 														<td>${fragment.serial}</td>
 														<td>${fragment.type}</td>
 														<td>${fragment.status}</td>
-														<td>${fragment.totalPipelines}</td>
-														<td>${fragment.remainingPipelines}</td>
+														<td>${fragment.totalInstances}</td>
+														<td>${fragment.remainingInstances}</td>
 														<td>
 															<c:forEach var="fragActivity" items="${fragment.activities}">
 																${fragActivity.tag}&nbsp;

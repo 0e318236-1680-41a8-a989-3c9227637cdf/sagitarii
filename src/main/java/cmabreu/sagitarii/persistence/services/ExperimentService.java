@@ -9,7 +9,7 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import cmabreu.sagitarii.core.FragmentPipeliner;
+import cmabreu.sagitarii.core.FragmentInstancer;
 import cmabreu.sagitarii.core.Genesis;
 import cmabreu.sagitarii.core.Sagitarii;
 import cmabreu.sagitarii.core.types.ExperimentStatus;
@@ -144,16 +144,16 @@ public class ExperimentService {
 		experiment.setStatus( ExperimentStatus.RUNNING );
 		experiment.setLastExecutionDate( Calendar.getInstance().getTime() );
 
-		// Gerar pipelines do primeiro fragmento que pode ser executado.
-		logger.debug("pipelining");
-		FragmentPipeliner fp = new FragmentPipeliner( experiment );
+		// Gerar instances do primeiro fragmento que pode ser executado.
+		logger.debug("creating instances");
+		FragmentInstancer fp = new FragmentInstancer( experiment );
 		fp.generate();
 		
-		int pips = fp.getPipelines().size();
+		int pips = fp.getInstances().size();
 		
 		logger.debug( acts + " activities generated." );
 		logger.debug( frgs + " fragments generated." );
-		logger.debug( pips + " pipelines generated." );
+		logger.debug( pips + " instances generated." );
 
 		logger.debug("saving experiment");
 		rep.newTransaction();
@@ -161,7 +161,7 @@ public class ExperimentService {
 
 		Sagitarii.getInstance().addRunningExperiment(experiment);
 		
-		logger.debug( "Experiment " + experiment.getTagExec() + " is now running with " + acts + " activities, " + frgs + " fragments and " + pips + " pipelines.");
+		logger.debug( "Experiment " + experiment.getTagExec() + " is now running with " + acts + " activities, " + frgs + " fragments and " + pips + " instances.");
 		return experiment;
 	}
 
@@ -286,7 +286,7 @@ public class ExperimentService {
 			/*
 			if ( Sagitarii.getInstance().experimentIsStillQueued( experiment ) ) {
 				logger.error( "deletion of buffered experiment " + idExperiment + " not allowed." );
-				throw new DeleteException("This experiment still have buffered pipelines. Try again when experiment is finished or buffer flushed.");
+				throw new DeleteException("This experiment still have buffered instances. Try again when experiment is finished or buffer flushed.");
 			}
 			*/
 
@@ -326,12 +326,12 @@ public class ExperimentService {
 
 				
 				logger.debug("removing consumptions...");
-				sql = "delete from consumptions where id_pipeline in ( select id_pipeline from pipelines where id_fragment = " + frag.getIdFragment() + ")";
+				sql = "delete from consumptions where id_instance in ( select id_instance from instances where id_fragment = " + frag.getIdFragment() + ")";
 				rs.executeQuery( sql );
 
 				
-				logger.debug("removing pipelines...");
-				sql = "delete from pipelines where id_fragment = " + idExperiment;
+				logger.debug("removing instances...");
+				sql = "delete from instances where id_fragment = " + idExperiment;
 				rs.executeQuery( sql );
 				
 				logger.debug("removing fragment " + frag.getSerial() + "...");

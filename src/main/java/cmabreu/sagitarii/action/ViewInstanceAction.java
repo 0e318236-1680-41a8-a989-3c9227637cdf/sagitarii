@@ -11,20 +11,20 @@ import org.apache.struts2.convention.annotation.Result;
 
 import cmabreu.sagitarii.core.UserTableEntity;
 import cmabreu.sagitarii.persistence.entity.Consumption;
-import cmabreu.sagitarii.persistence.entity.Pipeline;
+import cmabreu.sagitarii.persistence.entity.Instance;
 import cmabreu.sagitarii.persistence.exceptions.NotFoundException;
 import cmabreu.sagitarii.persistence.services.ConsumptionService;
-import cmabreu.sagitarii.persistence.services.PipelineService;
+import cmabreu.sagitarii.persistence.services.InstanceService;
 import cmabreu.sagitarii.persistence.services.RelationService;
 
-@Action (value = "viewPipeline", results = { @Result (location = "viewPipeline.jsp", name = "ok"),
+@Action (value = "viewInstance", results = { @Result (location = "viewInstance.jsp", name = "ok"),
 		@Result (type="redirect", location = "${destiny}", name = "error")
 }, interceptorRefs= { @InterceptorRef("seguranca")} ) 
 
 @ParentPackage("default")
-public class ViewPipelineAction extends BasicActionClass {
-	private Integer idPipeline;
-	private Pipeline pipeline;
+public class ViewInstanceAction extends BasicActionClass {
+	private Integer idInstance;
+	private Instance instance;
 	private String destiny;
 	private String tableName;
 	private int idExperiment;
@@ -37,23 +37,23 @@ public class ViewPipelineAction extends BasicActionClass {
 		
 		try {
 			
-			PipelineService ps = new PipelineService();
+			InstanceService ps = new InstanceService();
 			ConsumptionService cs = new ConsumptionService();
 			RelationService rs = new RelationService();
 
-			pipeline = ps.getPipeline( idPipeline );
-			products = rs.getGeneratedData(tableName, idPipeline, idExperiment);
+			instance = ps.getInstance( idInstance );
+			products = rs.getGeneratedData(tableName, idInstance, idExperiment);
 
 			// we must pass a valid not null Consumption list to getConsumptionsData
 			try {
-				pipeline.setConsumptions( cs.getList(idPipeline) );
+				instance.setConsumptions( cs.getList(idInstance) );
 			} catch ( NotFoundException ignored) {	
-				pipeline.setConsumptions( new HashSet<Consumption>() );
+				instance.setConsumptions( new HashSet<Consumption>() );
 			}
-			consumptions = rs.getConsumptionsData( pipeline.getConsumptions(), idExperiment );
+			consumptions = rs.getConsumptionsData( instance.getConsumptions(), idExperiment );
 			
 		} catch ( NotFoundException  e) {
-			setMessageText("Pipeline not found.");
+			setMessageText("Instance not found.");
 			return "error";
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -64,12 +64,12 @@ public class ViewPipelineAction extends BasicActionClass {
 	}
 
 
-	public Pipeline getPipeline() {
-		return pipeline;
+	public Instance getInstance() {
+		return instance;
 	}
 
-	public void setIdPipeline(Integer idPipeline) {
-		this.idPipeline = idPipeline;
+	public void setIdInstance(Integer idInstance) {
+		this.idInstance = idInstance;
 	}
 
 	public String getDestiny() {

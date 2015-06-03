@@ -31,7 +31,7 @@ public class AgeCalculator {
 	public void addToStatistics( DeliveryUnit du ) {
 		boolean found = false;
 		for ( Accumulator accumulator : lista  ) {
-			if( accumulator.getAlias().equals( du.getPipeline().getExecutorAlias() )  ) {
+			if( accumulator.getAlias().equals( du.getInstance().getExecutorAlias() )  ) {
 				accumulator.addToStack( du );
 				found = true;
 			}

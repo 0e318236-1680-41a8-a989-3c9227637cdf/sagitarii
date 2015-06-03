@@ -10,12 +10,12 @@ import org.apache.logging.log4j.Logger;
 
 import cmabreu.sagitarii.core.delivery.InstanceDeliveryControl;
 import cmabreu.sagitarii.core.types.ClusterStatus;
-import cmabreu.sagitarii.core.types.PipelineStatus;
+import cmabreu.sagitarii.core.types.InstanceStatus;
 import cmabreu.sagitarii.metrics.MetricController;
 import cmabreu.sagitarii.metrics.MetricType;
 import cmabreu.sagitarii.misc.DateLibrary;
 import cmabreu.sagitarii.persistence.entity.Activity;
-import cmabreu.sagitarii.persistence.entity.Pipeline;
+import cmabreu.sagitarii.persistence.entity.Instance;
 
 public class Cluster {
 	private String soName;
@@ -32,7 +32,7 @@ public class Cluster {
     private int maxAllowedTasks;
     private int processedPipes = 0;
     private String lastError = "";
-	private List<Pipeline> runningInstances;
+	private List<Instance> runningInstances;
 	private boolean restartSignal = false;
 	private boolean quitSignal = false;
 	private boolean cleanWorkspaceSignal = false;
@@ -114,7 +114,7 @@ public class Cluster {
 	public synchronized boolean confirmReceiveData( ReceivedData rd ) throws Exception {
 		setLastAnnounce( Calendar.getInstance().getTime() );
 		
-		setPipelineAsDone( rd );
+		setInstanceAsDone( rd );
 		
 		if ( rd.hasData() ) {
 			logger.debug( "[" + this.macAddress +  "] data received from instance " + rd.getInstance().getSerial() + " (" + rd.getActivity().getTag() + ") is done");
@@ -135,17 +135,17 @@ public class Cluster {
 	}
 	
 
-	public void setPipelineAsDone( ReceivedData rd ) {
+	public void setInstanceAsDone( ReceivedData rd ) {
 		String instanceSerial = rd.getInstance().getSerial();
 		Activity actvt = rd.getActivity();
 		MainLog.getInstance().storeLog( rd );
-		setPipelineAsDone( instanceSerial, actvt );
+		setInstanceAsDone( instanceSerial, actvt );
 	}
 	
 	
-	public void setPipelineAsDone( String instanceSerial, Activity actvt ) {
+	public void setInstanceAsDone( String instanceSerial, Activity actvt ) {
 		logger.debug("checking if instance " + instanceSerial + " (" + actvt.getTag() + ") is done");
-		for( Pipeline pipe : runningInstances ) {
+		for( Instance pipe : runningInstances ) {
 			if ( pipe.getSerial().equals( instanceSerial ) ) {
 				pipe.decreaseQtdActivations();
 				String finished = pipe.getFinishedActivities();
@@ -156,9 +156,9 @@ public class Cluster {
 				if( pipe.getQtdActivations() == 0 ) {
 					logger.debug("instance " + instanceSerial + " finished");
 					processedPipes++;
-					pipe.setStatus( PipelineStatus.FINISHED );
+					pipe.setStatus( InstanceStatus.FINISHED );
 					
-					Sagitarii.getInstance().finishPipeline( pipe );
+					Sagitarii.getInstance().finishInstance( pipe );
 					InstanceDeliveryControl.getInstance().removeUnit( instanceSerial );
 				} else {
 					logger.debug("instance " + instanceSerial + " (" + actvt.getTag() + ") have " + pipe.getQtdActivations() + " tasks running");
@@ -168,19 +168,19 @@ public class Cluster {
 		}
 	}
 	
-	public List<Pipeline> getRunningInstances() {
-		return new ArrayList<Pipeline>( runningInstances );
+	public List<Instance> getRunningInstances() {
+		return new ArrayList<Instance>( runningInstances );
 	}
 	
-	public void addPipeline( Pipeline pipe ) {
+	public void addInstance( Instance pipe ) {
 		pipe.setStartDateTime( Calendar.getInstance().getTime() );
 		runningInstances.add( pipe ); 
 	}
 
-	public void cancelAndRemovePipeline( String instanceSerial ) {
-		for ( Pipeline instance : getRunningInstances() ) {
+	public void cancelAndRemoveInstance( String instanceSerial ) {
+		for ( Instance instance : getRunningInstances() ) {
 			if ( instance.getSerial().equalsIgnoreCase( instanceSerial ) ) {
-				instance.setStatus( PipelineStatus.PIPELINED );
+				instance.setStatus( InstanceStatus.PIPELINED );
 				runningInstances.remove( instance ); 
 				break;
 			}
@@ -203,7 +203,7 @@ public class Cluster {
 		this.totalMemory = totalMemory;
 		this.status = ClusterStatus.IDLE;
 		this.maxAllowedTasks = maxAllowedTasks;
-		runningInstances = new ArrayList<Pipeline>();
+		runningInstances = new ArrayList<Instance>();
 	}
 	
 
@@ -268,9 +268,9 @@ public class Cluster {
 		return DateLibrary.getInstance().getDateHourTextHuman();
 	}
 
-	private synchronized Pipeline getFinishedTask() {
-		for ( Pipeline pipe : runningInstances ) {
-			if ( ( pipe.getQtdActivations() == 0 ) || ( pipe.getStatus() == PipelineStatus.FINISHED ) ) {
+	private synchronized Instance getFinishedTask() {
+		for ( Instance pipe : runningInstances ) {
+			if ( ( pipe.getQtdActivations() == 0 ) || ( pipe.getStatus() == InstanceStatus.FINISHED ) ) {
 				return pipe;
 			}
 		}
@@ -278,7 +278,7 @@ public class Cluster {
 	}
 	
 	private void cleanUp() {
-		Pipeline pipe = getFinishedTask();
+		Instance pipe = getFinishedTask();
 		while ( pipe != null ) {
 			runningInstances.remove( pipe );
 			pipe = getFinishedTask();

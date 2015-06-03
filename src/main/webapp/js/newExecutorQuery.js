@@ -74,7 +74,7 @@ function relationExists( relationName ) {
 function generateSql() {
 
 	//====================================================================
-	var sql = "insert into " + targetRelation + " (id_pipeline, id_experiment, id_activity, ";
+	var sql = "insert into " + targetRelation + " (id_instance, id_experiment, id_activity, ";
 	$.each( targetFields , function( index, value ) {
 		sql = sql + value + ", ";
 	});

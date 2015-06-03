@@ -14,8 +14,8 @@ public class Accumulator {
 	private long totalAgeMilis;
 	
 	public Accumulator( DeliveryUnit du  ) {
-		executorAlias = du.getPipeline().getExecutorAlias();
-		executorType = du.getPipeline().getType().toString();
+		executorAlias = du.getInstance().getExecutorAlias();
+		executorType = du.getInstance().getType().toString();
 		addToStack( du );
 	}
 	

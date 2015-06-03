@@ -13,26 +13,25 @@ public class ConnFactory {
 	private static void doLog( String s ) {
 		System.out.println(myClass + " " + s);
 	}
-	
+
 	public static Session getSession() {
 		if ( factory == null ) {
 			
 			try { 
-				doLog("starting Hibernate");  
-				Configuration configuration = new Configuration().configure();
-				doLog( configuration.getProperty("hibernate.connection.url") );
+				doLog("starting Hibernate");
 				
-				StandardServiceRegistryBuilder serviceRegistryBuilder = new StandardServiceRegistryBuilder();
-				serviceRegistryBuilder.applySettings(configuration.getProperties());
-
-				ServiceRegistry serviceRegistry = serviceRegistryBuilder.build();				
+				Configuration cfg1 = new Configuration();
+				cfg1.configure("hibernate.cfg.xml");
+				StandardServiceRegistryBuilder serviceRegistryBuilder1 = new StandardServiceRegistryBuilder();
+				serviceRegistryBuilder1.applySettings( cfg1.getProperties() );
+				ServiceRegistry serviceRegistry1 = serviceRegistryBuilder1.build();				
+				factory = cfg1.buildSessionFactory(serviceRegistry1);			
 				
-				factory = configuration.buildSessionFactory(serviceRegistry);
-
 			} catch (Throwable ex) { 
-				doLog("sessionFactory fail: " + ex.getMessage() );  
+				doLog("fail: " + ex.getMessage() );  
 			}
 		} 
+		
 		Session session = factory.openSession();
 		return session;
 	}
