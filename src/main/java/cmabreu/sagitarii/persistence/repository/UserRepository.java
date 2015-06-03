@@ -53,7 +53,6 @@ public class UserRepository extends BasicRepository {
 		return users.get(0);
 	}
 
-	
 	public User login( String loginName, String password ) throws NotFoundException {
 		logger.debug("login " + loginName );
 		DaoFactory<User> df = new DaoFactory<User>();
@@ -70,7 +69,6 @@ public class UserRepository extends BasicRepository {
 		logger.debug("allowed");
 		return users.get(0);
 	}
-	
 	
 	public void updateUser( User user ) throws UpdateException {
 		logger.debug("update");

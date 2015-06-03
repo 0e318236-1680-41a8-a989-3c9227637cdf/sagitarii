@@ -119,6 +119,15 @@ public class ExperimentService {
 		if ( experiment.getStatus() == ExperimentStatus.RUNNING ) {
 			throw new Exception("This experiment is already running.");
 		}
+		
+		if ( experiment.getStatus() == ExperimentStatus.STARTING ) {
+			throw new Exception("This experiment is already starting. Be patient.");
+		}
+		
+		logger.debug("setting experiment status to STARTING");
+		experiment.setStatus( ExperimentStatus.STARTING );
+		rep.newTransaction();
+		rep.updateExperiment(experiment);
 
 		logger.debug("Genesis is converting JSON specifications and fragmenting...");
 		// Gerar atividades basado na especificação JSON

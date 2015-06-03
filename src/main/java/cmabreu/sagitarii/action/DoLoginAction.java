@@ -7,7 +7,6 @@ import org.apache.struts2.convention.annotation.Result;
 
 import cmabreu.sagitarii.persistence.entity.User;
 import cmabreu.sagitarii.persistence.exceptions.DatabaseConnectException;
-import cmabreu.sagitarii.persistence.exceptions.NotFoundException;
 import cmabreu.sagitarii.persistence.services.UserService;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -32,7 +31,7 @@ public class DoLoginAction extends BasicActionClass {
 			
 		} catch ( DatabaseConnectException e ) {
 			setMessageText( e.getMessage() );
-		} catch ( NotFoundException e ) {
+		} catch ( Exception e ) {
 			setMessageText("Invalid username or password.");
 		} 
 		

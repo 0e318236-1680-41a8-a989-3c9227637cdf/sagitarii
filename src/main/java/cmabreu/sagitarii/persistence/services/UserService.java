@@ -1,5 +1,6 @@
 package cmabreu.sagitarii.persistence.services;
 
+import java.security.MessageDigest;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
@@ -21,15 +22,33 @@ public class UserService {
 		this.rep = new UserRepository();
 	}
 
+	private String convertPassword( byte[] password ) throws Exception {
+		MessageDigest md = MessageDigest.getInstance("SHA-1");
+		byte[] digest = md.digest( password );
+		
+		String result = "";
+		for (int i=0; i < digest.length; i++) {
+			result +=
+				Integer.toString( ( digest[i] & 0xff ) + 0x100, 16).substring( 1 );
+		}
+		return result;
+	}
+	
 	public void updateUser(User user) throws UpdateException {
 		User oldUser;
+		String sha1Password = "";
+		
 		try {
 			oldUser = rep.getUser( user.getIdUser() );
-		} catch (NotFoundException e) {
+			oldUser.setFullName( user.getFullName() );
+			if ( ( user.getPassword() != null ) && ( !user.getPassword().equals("") ) ) {
+				sha1Password = convertPassword( user.getPassword().getBytes() );
+				oldUser.setPassword( sha1Password );
+			}
+		} catch ( Exception e) {
 			throw new UpdateException( e.getMessage() );
 		}
-		oldUser.setFullName( user.getFullName() );
-		oldUser.setPassword( user.getPassword() );
+		
 		oldUser.setLoginName( user.getLoginName() );
 		oldUser.setType( user.getType() );
 		oldUser.setUserMail( user.getUserMail() );
@@ -38,8 +57,9 @@ public class UserService {
 		rep.updateUser(oldUser);
 	}	
 
-	public User login( String loginName, String password ) throws NotFoundException{
-		return rep.login( loginName, password);
+	public User login( String loginName, String password ) throws Exception {
+		String sha1Password = convertPassword( password.getBytes() );
+		return rep.login( loginName, sha1Password);
 	}
 	
 	public User getUser(int idUser) throws NotFoundException{
@@ -53,6 +73,13 @@ public class UserService {
 	}
 	
 	public User insertUser(User user) throws InsertException {
+		try {
+			String sha1Password = convertPassword( user.getPassword().getBytes() );
+			user.setPassword( sha1Password );
+		} catch ( Exception e ) {
+			throw new InsertException( e.getMessage() );
+		}
+
 		User expRet = rep.insertUser( user );
 		return expRet ;
 	}	

@@ -23,6 +23,7 @@ public class EditUserAction extends BasicActionClass {
 		try {
 			UserService us = new UserService();
 			user = us.getUser(idUser);
+			user.setPassword("");
 			
 		} catch ( NotFoundException  e) {
 			setMessageText("User not found.");

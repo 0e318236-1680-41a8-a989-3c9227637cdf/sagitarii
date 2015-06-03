@@ -40,7 +40,8 @@
 										</td>
 									</tr>
 									<tr>
-										<td class="tableCellFormLeft">Password</td>
+										<td class="tableCellFormLeft">Password<br>
+										<i>Leave blank if not change</i></td>
 										<td class="tableCellFormRight"> 
 											<input value="${user.password}" id="password" name="user.password" class="tableCellFormInputText" type="password"> 
 										</td>
@@ -91,8 +92,7 @@
 		var userName = $("#userName").val();
 		var fullName = $("#fullName").val();
 		var email = $("#email").val();
-		var password = $("#password").val();
-		if ( (userName == '') || ( fullName == '' ) || ( email == '' ) || ( password == '' ) ) {
+		if ( (userName == '') || ( fullName == '' ) || ( email == '' ) ) {
 			showMessageBox('Please fill all fields.');
 			return;
 		} 
