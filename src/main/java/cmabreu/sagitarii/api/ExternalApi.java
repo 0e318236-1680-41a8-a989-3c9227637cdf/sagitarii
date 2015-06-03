@@ -163,6 +163,7 @@ public class ExternalApi {
 				data.append( generateJsonPair( "tagExec", experiment.getTagExec() ) + "," );
 				data.append( generateJsonPair( "startDate", startDate ) + "," );
 				data.append( generateJsonPair( "status", experiment.getStatus().toString() ) );
+				data.append( generateJsonPair( "elapsedTime", experiment.getElapsedTime() ) );
 				dataPrefix = ",";
 				data.append("}");
 			}

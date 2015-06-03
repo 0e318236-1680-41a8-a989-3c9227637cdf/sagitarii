@@ -239,7 +239,7 @@ public class Experiment {
 		
 		long millis = dl.getDiferencaMilisAte( cl ) ;
 		
-		String time = String.format("%02d %02d:%02d:%02d", 
+		String time = String.format("%03d %02d:%02d:%02d", 
 				TimeUnit.MILLISECONDS.toDays( millis ),
 				TimeUnit.MILLISECONDS.toHours(millis),
 				TimeUnit.MILLISECONDS.toMinutes(millis) -  

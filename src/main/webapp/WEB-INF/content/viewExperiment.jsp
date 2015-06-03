@@ -16,7 +16,7 @@
 						
 						
 						<div id="pannel" style="width:95%; margin:0 auto;margin-top:10px;margin-bottom:60px;">
-							<div style="height:110px;">
+							<div style="height:130px;">
 								<table style="width:100%">
 									<tr>
 										<td class="tableCellFormLeft">Label</td>
