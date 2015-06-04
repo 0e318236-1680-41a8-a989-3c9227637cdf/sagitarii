@@ -125,10 +125,10 @@
 			"sPaginationType": "full_numbers",
 			"aoColumns": [ 
 				  { "sWidth": "10%" },
-				  { "sWidth": "5%" },
 				  { "sWidth": "10%" },
-				  { "sWidth": "40%" },
-				  { "sWidth": "5%" }]
+				  { "sWidth": "20%" },
+				  { "sWidth": "50%" },
+				  { "sWidth": "10%" }]
 			
 		}).fnSort( [[0,'desc']] );
 		

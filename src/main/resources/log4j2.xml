@@ -50,19 +50,19 @@
 			<appender-ref ref="Console"/> 
 		</Logger>
 
-		<Logger name="cmabreu.sagitarii.core.pipelines.ReducePipelineGenerator" level="error" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.core.Instances.ReduceInstanceGenerator" level="error" additivity="false"> 
 			<appender-ref ref="Console"/> 
 		</Logger>
 
-		<Logger name="cmabreu.sagitarii.core.pipelines.MapPipelineGenerator" level="error" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.core.Instances.MapInstanceGenerator" level="error" additivity="false"> 
 			<appender-ref ref="Console"/> 
 		</Logger>
 
-		<Logger name="cmabreu.sagitarii.core.pipelines.SplitPipelineGenerator" level="error" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.core.Instances.SplitInstanceGenerator" level="error" additivity="false"> 
 			<appender-ref ref="Console"/> 
 		</Logger>
 
-		<Logger name="cmabreu.sagitarii.core.pipelines.SelectPipelineGenerator" level="error" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.core.Instances.SelectInstanceGenerator" level="error" additivity="false"> 
 			<appender-ref ref="Console"/> 
 		</Logger>
 
@@ -70,16 +70,16 @@
 			<appender-ref ref="Console"/> 
 		</Logger>
 
-		<Logger name="cmabreu.sagitarii.persistence.services.ExperimentService" level="debug" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.persistence.services.ExperimentService" level="error" additivity="false"> 
 			<appender-ref ref="Console"/> 
 		</Logger>
 
 
-		<Logger name="cmabreu.sagitarii.core.FragmentPipeliner" level="error" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.core.FragmentInstancer" level="error" additivity="false"> 
 			<appender-ref ref="Console"/> 
 		</Logger>
 
-		<Logger name="cmabreu.sagitarii.core.pipelines.PipelineCreator" level="error" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.core.Instances.InstanceCreator" level="error" additivity="false"> 
 			<appender-ref ref="Console"/> 
 		</Logger>
 
@@ -150,7 +150,7 @@
 		</Logger>
 
 		
-		<Logger name="cmabreu.sagitarii.persistence.repository.PipelineRepository" level="error" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.persistence.repository.InstanceRepository" level="error" additivity="false"> 
 			<appender-ref ref="Console"/> 
 		</Logger>
 

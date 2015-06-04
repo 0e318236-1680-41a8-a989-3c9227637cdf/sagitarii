@@ -47,7 +47,9 @@ public class InstanceRepository extends BasicRepository {
 			
 			pipes = fm.getList( selectQuery );
 			
-			String update ="update instances set start_date_time = now(), status = 'RUNNING' where id_instance in (" + selectQuery + ")";
+			String update ="update instances set start_date_time = now(), status = 'RUNNING' where id_instance in (select id_instance from instances where status = 'PIPELINED' and type <> 'SELECT' and id_fragment = " + idFragment  
+					+ " order by id_instance limit " + howMany + ")";
+			
 			fm.executeQuery( update, true );
 		} catch (NotFoundException e) {
 			closeSession();
@@ -71,7 +73,8 @@ public class InstanceRepository extends BasicRepository {
 			
 			pipes = fm.getList(selectQuery);
 
-			String update ="update instances set status = 'RUNNING' where id_instance in (" + selectQuery + ")"; 
+			String update ="update instances set status = 'RUNNING' where id_instance in (select id_instance from instances where status = 'PIPELINED' and type = 'SELECT' and id_fragment = " + idFragment
+					+ " order by id_instance limit " + howMany + ")"; 
 			fm.executeQuery( update, true );
 			
 		} catch (NotFoundException  e) {
