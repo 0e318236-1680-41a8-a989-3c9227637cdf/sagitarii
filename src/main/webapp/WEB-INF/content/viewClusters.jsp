@@ -94,10 +94,20 @@
 											<td>${cluster.age}&nbsp;</td>
 											<td colspan="3" style="color:#F90101">${cluster.lastError}&nbsp;</td>
 										</tr>
-										
-										
 									</table>
-									
+
+									<c:if test="${not fn:contains(cluster.macAddress, 'S0-A0-G0-I0-T0-A0-RI')}">
+										<table style="margin-bottom: 5px;width:98%; margin-left:10px; margin-top: 5px">
+											<c:forEach var="task" items="${cluster.tasks}">
+												<tr>
+													<td>${task.taskId}</td>
+													<td>${task.executor}</td>
+													<td>${task.startTime}</td>
+													<td>${task.elapsedTime}s</td>
+												</tr>									
+											</c:forEach>
+										</table>
+									</c:if>
 								</div>
 						
 						</c:forEach>

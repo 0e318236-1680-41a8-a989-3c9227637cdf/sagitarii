@@ -9,7 +9,10 @@ import org.apache.logging.log4j.Logger;
 
 import cmabreu.sagitarii.core.delivery.InstanceDeliveryControl;
 import cmabreu.sagitarii.core.types.InstanceStatus;
+import cmabreu.sagitarii.misc.json.NodeTasks;
 import cmabreu.sagitarii.persistence.entity.Instance;
+
+import com.google.gson.Gson;
 
 public class ClustersManager {
 	private List<Cluster> clusterList;
@@ -26,7 +29,7 @@ public class ClustersManager {
 	
 	public void acceptTask( String instanceId, String macAddress) {
 		logger.debug( "node " + macAddress + " accepted task in instance " + instanceId );
-		Cluster clu = cm.getCluster(macAddress);
+		Cluster clu = getCluster(macAddress);
 		for ( Instance instance : clu.getRunningInstances() ) {
 			if ( instance.getSerial().equalsIgnoreCase( instanceId ) ) {
 				instance.setStatus( InstanceStatus.RUNNING );
@@ -36,10 +39,23 @@ public class ClustersManager {
 		
 	}
 
+	public void receiveNodeTasks( String data ) {
+		if ( data == null ) {
+			return;
+		}
+		try {
+			Gson gson = new Gson();
+			NodeTasks tasks = gson.fromJson( data, NodeTasks.class );
+			Cluster cluster = getCluster( tasks.getNodeId() );
+			cluster.setTasks( tasks.getData() );
+		} catch ( Exception e ) {
+			logger.error( e.getMessage() );
+		}
+	}
 
 	public void setErrorLog( String errorLog, String macAddress) {
 		logger.debug( "node " + macAddress + " report error: " + errorLog );
-		Cluster clu = cm.getCluster(macAddress);
+		Cluster clu = getCluster(macAddress);
 		clu.setLastError( errorLog );
 	}
 
@@ -47,7 +63,7 @@ public class ClustersManager {
 	public boolean hasClusters() {
 		boolean hasAliveNodes = false;
 		boolean result = false;
-		for ( Cluster clu : clusterList ) {
+		for ( Cluster clu : getClusterList() ) {
 			if ( !clu.isMainCluster() && !clu.isDead() ) {
 				hasAliveNodes = true;
 			}

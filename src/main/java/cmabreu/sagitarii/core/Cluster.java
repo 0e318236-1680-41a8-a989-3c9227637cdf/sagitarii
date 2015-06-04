@@ -14,6 +14,7 @@ import cmabreu.sagitarii.core.types.InstanceStatus;
 import cmabreu.sagitarii.metrics.MetricController;
 import cmabreu.sagitarii.metrics.MetricType;
 import cmabreu.sagitarii.misc.DateLibrary;
+import cmabreu.sagitarii.misc.json.NodeTask;
 import cmabreu.sagitarii.persistence.entity.Activity;
 import cmabreu.sagitarii.persistence.entity.Instance;
 
@@ -40,13 +41,25 @@ public class Cluster {
 	private boolean mainCluster = false;
 	private long freeMemory;
 	private long totalMemory;
-	
+	private List<NodeTask> tasks;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 
+	public void setTasks(List<NodeTask> tasks) {
+		this.tasks = tasks;
+	}
+	
+	public List<NodeTask> getTasks() {
+		if ( tasks == null ) {
+			tasks = new ArrayList<NodeTask>();
+			return tasks;
+		}
+		return new ArrayList<NodeTask>( tasks );
+	}
+	
 	public void quit() {
 		quitSignal = true;
 	}
-
+	
 	public void reloadWrappers() {
 		reloadWrappersSignal = true;
 	}
