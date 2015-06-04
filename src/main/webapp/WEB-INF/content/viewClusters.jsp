@@ -98,6 +98,18 @@
 
 									<c:if test="${not fn:contains(cluster.macAddress, 'S0-A0-G0-I0-T0-A0-RI')}">
 										<table style="margin-bottom: 5px;width:98%; margin-left:10px; margin-top: 5px">
+												<tr>
+													<th>Task ID</th>
+													<th>Executor</th>
+													<th>Start Time</th>
+													<th>Elapsed Time</th>
+												</tr>									
+												<tr>
+													<td>sdsads</td>
+													<td>sdsd</td>
+													<td>dsads</td>
+													<td>dffdsfds</td>
+												</tr>									
 											<c:forEach var="task" items="${cluster.tasks}">
 												<tr>
 													<td>${task.taskId}</td>
