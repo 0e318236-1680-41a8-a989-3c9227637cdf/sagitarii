@@ -19,12 +19,11 @@ import com.opensymphony.xwork2.ActionContext;
 
 @ParentPackage("default")
 public class ReceiveNodeTasksAction extends BasicActionClass {
-	private String data;
+	private String tasks;
 	
 	public String execute(){
 		String resposta = "OK";
-		
-		ClustersManager.getInstance().receiveNodeTasks( data );
+		ClustersManager.getInstance().receiveNodeTasks( tasks );
 		
 		try { 
 			HttpServletResponse response = (HttpServletResponse)ActionContext.getContext().get(StrutsStatics.HTTP_RESPONSE);
@@ -37,8 +36,8 @@ public class ReceiveNodeTasksAction extends BasicActionClass {
 		return "ok";
 	}
 
-	public void setData(String data) {
-		this.data = data;
+	public void setTasks(String tasks) {
+		this.tasks = tasks;
 	}
 	
 }
