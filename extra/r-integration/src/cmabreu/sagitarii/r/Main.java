@@ -1,5 +1,6 @@
 package cmabreu.sagitarii.r;
 
+import org.rosuda.JRI.REXP;
 import org.rosuda.JRI.Rengine;
 
 public class Main {
@@ -12,18 +13,27 @@ public class Main {
 		workFolder = args[1];		// Working folder 
 		
 		Rengine rengine = new Rengine(new String [] {"--vanilla"}, false, new TextConsole() );
-		
+
         if ( !rengine.waitForR() ) {
             System.out.println("Cannot load R");
             System.exit(1);
         }
 
+        System.out.println("running R Engine");
+        
         // Send the working folder to user's R script.
         rengine.eval("sagitariiWorkFolder <- \""+ workFolder +"\"");
         rengine.eval( "source( '" + rscript + "') " );
         
         rengine.end();
         
+        REXP message = rengine.eval("messageToSagitarii");
+        if ( message != null ) {
+        	System.out.println( message );
+        }
+        
+        System.out.println("done");
+
 	}
 
 }

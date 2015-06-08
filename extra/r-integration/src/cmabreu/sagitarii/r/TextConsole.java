@@ -6,7 +6,7 @@ import org.rosuda.JRI.Rengine;
 public class TextConsole implements RMainLoopCallbacks {
 	
     public void rWriteConsole(Rengine re, String text, int oType) {
-    	System.out.print( text );
+    	//System.out.print( text );
     }
     
     public void rBusy(Rengine re, int which) {
@@ -23,12 +23,13 @@ public class TextConsole implements RMainLoopCallbacks {
         } catch (Exception e) {
             System.out.println("jriReadConsole exception: "+e.getMessage());
         }
-        */
+         */
         return null;
+       
     }
     
     public void rShowMessage(Rengine re, String message) {
-    	//System.out.println("rShowMessage \""+message+"\"");
+    	System.out.println( message );
     }
 	
     public String rChooseFile(Rengine re, int newFile) {
