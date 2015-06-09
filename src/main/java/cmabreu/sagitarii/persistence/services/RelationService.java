@@ -453,6 +453,10 @@ public class RelationService {
 			
 			logger.debug("data: " + ss);
 			
+			if ( (ss == null) || (ss.equals("" )) ) {
+				continue;
+			}
+			
 			String values = "";
 			String columns = "id_experiment,id_activity,id_instance," ;
 			
