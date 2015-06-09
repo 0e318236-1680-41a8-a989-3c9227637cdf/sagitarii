@@ -3,13 +3,14 @@ cmabreu.sagitarii.api
 cmabreu.sagitarii.core
 cmabreu.sagitarii.core.config
 cmabreu.sagitarii.core.delivery
+cmabreu.sagitarii.core.instances
 cmabreu.sagitarii.core.mail
-cmabreu.sagitarii.core.pipelines
 cmabreu.sagitarii.core.processor
 cmabreu.sagitarii.core.sockets
 cmabreu.sagitarii.core.statistics
 cmabreu.sagitarii.core.types
 cmabreu.sagitarii.interceptor
+cmabreu.sagitarii.metrics
 cmabreu.sagitarii.misc
 cmabreu.sagitarii.misc.json
 cmabreu.sagitarii.persistence.entity
