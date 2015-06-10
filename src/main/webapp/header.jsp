@@ -31,15 +31,15 @@
 			<div id="topBar"> 
 			
 				<div style="margin-left:10px;float:left;margin-top:5px;height:70px;width:170px;" id="systemLogo">
-					<img src="img/logos/new-logo.png" style="background-color:white;padding-right:10px;padding-left:10px;border: 1px solid black; height:67;width:210;border-radius:5px;" > 
+					<img src="img/logos/new-logo.png" style="background-color:white;padding-right:10px;padding-left:10px; height:67px;" > 
 				</div>
 			
-				<div class="userBoard" style="background-color:#4D7A93; border:0px; height: 30px; margin-top: 0; position: absolute; right: 13px; top: 4px; width: 200px;">
+				<div class="userBoard" style="background-color:#FFF; border:0px; height: 30px; margin-top: 0; position: absolute; right: 13px; top: 4px; width: 200px;">
 					<div style="float:left;">
 						<a target="__BLANK" href="teapot.rar"><img style="width: 30px;height: 30px;" src="img/download.png"></a>
 					</div>
 					<div style="float:left; width:160px">
-						<div class="userBoardT1" style="color:white">Download Teapot Node</div>
+						<div class="userBoardT1" style="color:#ADADAD">Download Teapot Node</div>
 						<div class="userBoardT2" style="color:#ADADAD">Version 1.0.125</div>
 					</div>							
 				</div>
