@@ -18,7 +18,7 @@
 					<div id="promoBar" style="height:220px;display:table;width:100%">
 						<c:forEach var="cluster" items="${clusterList}">
 						
-								<div onclick="showNodeLog('${cluster.macAddress}')" style="position:relative" id="${cluster.macAddress}" class="clusterBar">
+								<div style="position:relative" id="${cluster.macAddress}" class="clusterBar">
 								
 									<table style="margin-bottom: 5px;width:98%; margin-left:10px; margin-top: 5px">
 										<c:if test="${not fn:contains(cluster.macAddress, 'S0-A0-G0-I0-T0-A0-RI')}">
@@ -26,6 +26,7 @@
 												<td colspan="9" >
 													<img onclick="shutdown('${cluster.macAddress}')" class="dicas" title="Shutdown this node (no confirmation)" src="img/shutdown.png" style="width:24px;height:24px">
 													<img onclick="restart('${cluster.macAddress}')" class="dicas" title="Restart this node (no confirmation)" src="img/refresh.png" style="width:24px;height:24px">
+													<img onclick="showNodeLog('${cluster.macAddress}')" class="dicas" title="View Node Activities Log" src="img/search.png" style="width:24px;height:24px">
 												</td>
 											</tr>
 										</c:if>

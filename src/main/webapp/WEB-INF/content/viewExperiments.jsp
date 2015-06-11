@@ -23,7 +23,7 @@
 									<th>Owner</th>
 									<th>Last Run</th>
 									<th>Finish Date</th>
-									<th>Evaluated Time</th>
+									<th>Elapsed Time</th>
 									<th>Status</th>
 									<th>&nbsp;</th>
 									

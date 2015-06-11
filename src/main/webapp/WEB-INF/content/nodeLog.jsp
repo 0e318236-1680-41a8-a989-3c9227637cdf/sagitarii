@@ -10,7 +10,7 @@
 					<div id="basicCentralPanel">
 
 						<div class="basicCentralPanelBar">
-							<img src="img/connection.png">
+							<img src="img/node.png">
 							<div class="basicCentralPanelBarText">View Node ${macAddress} Log</div>
 						</div>
 

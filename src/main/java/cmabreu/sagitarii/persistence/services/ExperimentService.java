@@ -331,7 +331,7 @@ public class ExperimentService {
 
 				
 				logger.debug("removing instances...");
-				sql = "delete from instances where id_fragment = " + idExperiment;
+				sql = "delete from instances where id_fragment = " + frag.getIdFragment();
 				rs.executeQuery( sql );
 				
 				logger.debug("removing fragment " + frag.getSerial() + "...");
