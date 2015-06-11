@@ -42,6 +42,7 @@
 		<mapping class="cmabreu.sagitarii.persistence.entity.Fragment"/>
 		<mapping class="cmabreu.sagitarii.persistence.entity.Instance"/>
 		<mapping class="cmabreu.sagitarii.persistence.entity.File"/>
+		<mapping class="cmabreu.sagitarii.persistence.entity.FileLight"/>
 		<mapping class="cmabreu.sagitarii.persistence.entity.ActivationExecutor"/>
 		<mapping class="cmabreu.sagitarii.persistence.entity.Domain"/>
 		<mapping class="cmabreu.sagitarii.persistence.entity.User"/>

@@ -8,7 +8,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -21,7 +20,7 @@ import org.hibernate.annotations.FetchMode;
         @Index(columnList = "id_experiment", name = "file_experiment_hndx"),
         @Index(columnList = "filename", name = "file_name_hndx")
 })
-public class File {
+public class FileLight {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -46,9 +45,6 @@ public class File {
 	@Column(length=250)
 	private String fileName;
 
-	@Lob
-	private byte[] file;
-	
 	public int getIdFile() {
 		return idFile;
 	}
@@ -71,14 +67,6 @@ public class File {
 
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
-	}
-
-	public byte[] getFile() {
-		return file;
-	}
-
-	public void setFile(byte[] file) {
-		this.file = file;
 	}
 
 	public Activity getActivity() {

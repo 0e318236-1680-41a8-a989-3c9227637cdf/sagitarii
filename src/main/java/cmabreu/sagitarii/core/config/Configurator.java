@@ -1,7 +1,15 @@
 package cmabreu.sagitarii.core.config;
 
 import java.io.InputStream;
+import java.lang.management.ManagementFactory;
 
+import javax.management.Attribute;
+import javax.management.AttributeList;
+import javax.management.InstanceNotFoundException;
+import javax.management.MBeanServer;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
+import javax.management.ReflectionException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -23,6 +31,21 @@ public class Configurator {
 	private int fileReceiverChunkBufferSize;
 	private char CSVDelimiter;
 	
+    public double getProcessCpuLoad() {
+    	try {
+	        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+	        ObjectName name = ObjectName.getInstance("java.lang:type=OperatingSystem");
+	        AttributeList list = mbs.getAttributes(name, new String[]{ "SystemCpuLoad" });
+	        if (list.isEmpty())  return 0;
+	        Attribute att = (Attribute)list.get(0);
+	        Double value = (Double)att.getValue();
+	        if (value == -1.0) return 0; 
+	        return ((int)(value * 1000) / 10.0);
+    	} catch (MalformedObjectNameException | ReflectionException | InstanceNotFoundException e) {
+    		return 0;
+    	}
+    }   	
+
 	public char getCSVDelimiter() {
 		return CSVDelimiter;
 	}
@@ -80,7 +103,14 @@ public class Configurator {
 		return tagValue;
 	}
 
-
+	public long getFreeMemory() {
+		return Runtime.getRuntime().freeMemory();
+	}
+	
+	public long getTotalMemory() {
+		return Runtime.getRuntime().totalMemory();
+	}
+	
 	public static Configurator getInstance() throws Exception {
 		if ( instance == null ) {
 			throw new Exception("Configurator not initialized");

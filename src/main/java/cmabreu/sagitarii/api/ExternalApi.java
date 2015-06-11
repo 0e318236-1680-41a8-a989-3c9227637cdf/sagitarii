@@ -14,7 +14,7 @@ import cmabreu.sagitarii.core.DataReceiver;
 import cmabreu.sagitarii.core.TableAttribute;
 import cmabreu.sagitarii.misc.DateLibrary;
 import cmabreu.sagitarii.persistence.entity.Experiment;
-import cmabreu.sagitarii.persistence.entity.File;
+import cmabreu.sagitarii.persistence.entity.FileLight;
 import cmabreu.sagitarii.persistence.entity.Relation;
 import cmabreu.sagitarii.persistence.entity.User;
 import cmabreu.sagitarii.persistence.entity.Workflow;
@@ -195,12 +195,12 @@ public class ExternalApi {
 				String rangeEnd = (String)map.get("rangeEnd");
 				
 				FileService fs = new FileService();
-				Set<File> files = fs.getList( experiment.getIdExperiment(), activityTag, rangeStart, rangeEnd );
+				Set<FileLight> files = fs.getList( experiment.getIdExperiment(), activityTag, rangeStart, rangeEnd );
 				
 				StringBuilder data = new StringBuilder();
 				String dataPrefix = "";
 				data.append("[");
-				for ( File file : files ) {
+				for ( FileLight file : files ) {
 					data.append( dataPrefix + "{");
 					data.append( generateJsonPair( "fileName" , file.getFileName() ) + "," ); 
 					data.append( generateJsonPair( "fileId", String.valueOf( file.getIdFile() ) ) ); 

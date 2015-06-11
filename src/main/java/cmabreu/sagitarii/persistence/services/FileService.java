@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import cmabreu.sagitarii.persistence.entity.File;
+import cmabreu.sagitarii.persistence.entity.FileLight;
 import cmabreu.sagitarii.persistence.exceptions.DatabaseConnectException;
 import cmabreu.sagitarii.persistence.exceptions.DeleteException;
 import cmabreu.sagitarii.persistence.exceptions.InsertException;
@@ -39,8 +40,8 @@ public class FileService {
 		return rep.getFile(idFile);
 	}
 
-	public File getFileByName(String fileName, String experiment) throws NotFoundException{
-		return rep.getFileByName(fileName, experiment);
+	public File getFile(String fileName, String experiment) throws NotFoundException{
+		return rep.getFile(fileName, experiment);
 	}
 	
 	public void newTransaction() {
@@ -65,13 +66,13 @@ public class FileService {
 		}
 	}
 
-	public Set<File> getList( int idExperiment ) throws NotFoundException {
-		Set<File> preList = rep.getList( idExperiment );
+	public Set<FileLight> getList( int idExperiment ) throws NotFoundException {
+		Set<FileLight> preList = rep.getList( idExperiment );
 		return preList;	
 	}
 
-	public Set<File> getList( int idExperiment, String activityTag, String rangeStart, String rangeEnd ) throws NotFoundException {
-		Set<File> preList = rep.getList( idExperiment, activityTag, rangeStart, rangeEnd );
+	public Set<FileLight> getList( int idExperiment, String activityTag, String rangeStart, String rangeEnd ) throws NotFoundException {
+		Set<FileLight> preList = rep.getList( idExperiment, activityTag, rangeStart, rangeEnd );
 		return preList;	
 	}
 

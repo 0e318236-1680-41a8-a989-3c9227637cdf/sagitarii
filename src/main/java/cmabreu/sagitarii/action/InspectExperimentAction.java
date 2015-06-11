@@ -12,7 +12,7 @@ import org.apache.struts2.convention.annotation.Result;
 import cmabreu.sagitarii.core.UserTableEntity;
 import cmabreu.sagitarii.persistence.entity.CustomQuery;
 import cmabreu.sagitarii.persistence.entity.Experiment;
-import cmabreu.sagitarii.persistence.entity.File;
+import cmabreu.sagitarii.persistence.entity.FileLight;
 import cmabreu.sagitarii.persistence.entity.Relation;
 import cmabreu.sagitarii.persistence.exceptions.NotFoundException;
 import cmabreu.sagitarii.persistence.services.CustomQueryService;
@@ -31,7 +31,7 @@ public class InspectExperimentAction extends BasicActionClass {
 	private Set<UserTableEntity> result;
 	private String sql;
 	private List<Relation> customTables;
-	private Set<File> files;
+	private Set<FileLight> files;
 	private Set<CustomQuery> queries;
 	
 	public String execute () {
@@ -86,7 +86,7 @@ public class InspectExperimentAction extends BasicActionClass {
 		return customTables;
 	}
 
-	public Set<File> getFiles() {
+	public Set<FileLight> getFiles() {
 		return files;
 	}
 	

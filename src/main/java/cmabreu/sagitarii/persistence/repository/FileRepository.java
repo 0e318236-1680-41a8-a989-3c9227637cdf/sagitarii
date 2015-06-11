@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import cmabreu.sagitarii.persistence.entity.File;
+import cmabreu.sagitarii.persistence.entity.FileLight;
 import cmabreu.sagitarii.persistence.exceptions.DatabaseConnectException;
 import cmabreu.sagitarii.persistence.exceptions.DeleteException;
 import cmabreu.sagitarii.persistence.exceptions.InsertException;
@@ -20,13 +21,13 @@ public class FileRepository extends BasicRepository {
 		logger.debug("init");
 	}
 
-	public Set<File> getList( int idExperiment ) throws NotFoundException {
+	public Set<FileLight> getList( int idExperiment ) throws NotFoundException {
 		logger.debug("get list" );
-		DaoFactory<File> df = new DaoFactory<File>();
-		IDao<File> fm = df.getDao(this.session, File.class);
-		Set<File> files = null;
+		DaoFactory<FileLight> df = new DaoFactory<FileLight>();
+		IDao<FileLight> fm = df.getDao(this.session, FileLight.class);
+		Set<FileLight> files = null;
 		try {
-			files = new HashSet<File>( fm.getList("select * from files where id_experiment = " + idExperiment ) );
+			files = new HashSet<FileLight>( fm.getList("select * from files where id_experiment = " + idExperiment ) );
 		} catch ( Exception e ) {
 			closeSession();
 			throw e;
@@ -37,14 +38,14 @@ public class FileRepository extends BasicRepository {
 	}
 
 	
-	public Set<File> getList( int idExperiment, String activityTag, String rangeStart, String rangeEnd ) throws NotFoundException {
+	public Set<FileLight> getList( int idExperiment, String activityTag, String rangeStart, String rangeEnd ) throws NotFoundException {
 		logger.debug("get list from " + rangeStart + " to" + rangeEnd + " and activity " + activityTag );
-		DaoFactory<File> df = new DaoFactory<File>();
-		IDao<File> fm = df.getDao(this.session, File.class);
+		DaoFactory<FileLight> df = new DaoFactory<FileLight>();
+		IDao<FileLight> fm = df.getDao(this.session, FileLight.class);
 
-		Set<File> files = null;
+		Set<FileLight> files = null;
 		try {
-			files = new HashSet<File>( fm.getList("select f.* from files f "
+			files = new HashSet<FileLight>( fm.getList("select f.* from files f "
 					+ "join activities a on f.id_activity = a.id_activity where f.id_experiment = " + idExperiment + 
 					" and a.tag = '"+ activityTag +"' offset " +	rangeStart + " limit " + rangeEnd ) );
 		} catch ( Exception e ) {
@@ -52,12 +53,12 @@ public class FileRepository extends BasicRepository {
 			throw e;
 		}
 		closeSession();
-		logger.debug("done: " + files.size() + " files.");
+		logger.debug("done: " + files.size() + " light files.");
 		return files;
 	}
 	
 	
-	public File getFileByName( String fileName, String experiment ) throws NotFoundException {
+	public File getFile( String fileName, String experiment ) throws NotFoundException {
 		logger.debug("get file by name " + fileName + " for experiment " + experiment );
 		DaoFactory<File> df = new DaoFactory<File>();
 		IDao<File> fm = df.getDao(this.session, File.class);

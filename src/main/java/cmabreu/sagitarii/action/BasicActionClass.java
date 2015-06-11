@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Queue;
 
 import cmabreu.sagitarii.core.Sagitarii;
+import cmabreu.sagitarii.core.config.Configurator;
 import cmabreu.sagitarii.persistence.entity.Experiment;
 import cmabreu.sagitarii.persistence.entity.Instance;
 import cmabreu.sagitarii.persistence.entity.User;
@@ -17,8 +18,28 @@ public class BasicActionClass {
 	private Queue<Instance> instanceOutputBuffer;	
 	private Experiment experimentOnTable;
 	private Experiment experimentOnTableJoin;
-	int maxBufferCapacity;
+	private int maxBufferCapacity;
 	private User loggedUser;
+	private long freeMemory = 0;
+	private long totalMemory = 0;
+	private double cpuLoad = 0;
+	
+	public double getMemoryPercent() {
+		double percent = Math.round( (freeMemory * 100 ) / totalMemory );
+		return percent;
+	}
+
+	public long getFreeMemory() {
+		return freeMemory / 1048576;
+	}
+	
+	public long getTotalMemory() {
+		return totalMemory / 1048576;
+	}
+	
+	public double getCpuLoad() {
+		return cpuLoad;
+	}
 	
 	public User getLoggedUser() {
 		loggedUser = (User)ActionContext.getContext().getSession().get("loggedUser");
@@ -45,6 +66,13 @@ public class BasicActionClass {
 		experimentOnTable = sagi.getExperimentOnTable();
 		experimentOnTableJoin = sagi.getExperimentOnTableJoin();
 		maxBufferCapacity = sagi.getMaxInputBufferCapacity();
+		
+		try {
+			freeMemory = Configurator.getInstance().getFreeMemory();
+			totalMemory = Configurator.getInstance().getTotalMemory();
+			cpuLoad = Configurator.getInstance().getProcessCpuLoad();
+		} catch ( Exception e ) {  }	
+		
 	}
 
 	public List<Experiment> getRunningExperiments() {

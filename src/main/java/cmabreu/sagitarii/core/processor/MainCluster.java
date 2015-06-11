@@ -1,15 +1,6 @@
 package cmabreu.sagitarii.core.processor;
 
-import java.lang.management.ManagementFactory;
 import java.util.List;
-
-import javax.management.Attribute;
-import javax.management.AttributeList;
-import javax.management.InstanceNotFoundException;
-import javax.management.MBeanServer;
-import javax.management.MalformedObjectNameException;
-import javax.management.ObjectName;
-import javax.management.ReflectionException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import cmabreu.sagitarii.core.Cluster;
 import cmabreu.sagitarii.core.ClustersManager;
 import cmabreu.sagitarii.core.Sagitarii;
+import cmabreu.sagitarii.core.config.Configurator;
 import cmabreu.sagitarii.persistence.entity.Activity;
 import cmabreu.sagitarii.persistence.entity.Instance;
 import cmabreu.sagitarii.persistence.exceptions.NotFoundException;
@@ -44,25 +36,24 @@ public class MainCluster implements Runnable {
 	
 	
     private double getProcessCpuLoad() {
+    	double result = 0;
     	try {
-	        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-	        ObjectName name = ObjectName.getInstance("java.lang:type=OperatingSystem");
-	        AttributeList list = mbs.getAttributes(name, new String[]{ "SystemCpuLoad" });
-	        if (list.isEmpty())  return 0;
-	        Attribute att = (Attribute)list.get(0);
-	        Double value = (Double)att.getValue();
-	        if (value == -1.0) return 0; 
-	        return ((int)(value * 1000) / 10.0);
-    	} catch (MalformedObjectNameException | ReflectionException | InstanceNotFoundException e) {
-    		return 0;
+    		result = Configurator.getInstance().getProcessCpuLoad();
+    	} catch ( Exception e ) {
+    		
     	}
+    	return result;
     }   	
 	
 	@Override
 	public void run() {
-		long freeMemory = Runtime.getRuntime().freeMemory();
-		long totalMemory = Runtime.getRuntime().totalMemory();
-		
+		long freeMemory = 0;
+		long totalMemory = 0;
+		try {
+			freeMemory = Configurator.getInstance().getFreeMemory();
+			totalMemory = Configurator.getInstance().getTotalMemory();
+		} catch ( Exception e ) {  }
+			
 		Cluster cluster = ClustersManager.getInstance().addOrUpdateCluster("0.0", "Local System", macAddress, "Local Machine", "Sagitarii Server", getProcessCpuLoad(), "Main Cluster", 8, maxAllowedTasks, freeMemory, totalMemory );
 		try {
 			if ( cluster != null ) {

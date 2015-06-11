@@ -16,3 +16,29 @@
 	</div>
 </div>
 
+<div class="userBoard">
+	<div class="userBoardT1" style="text-align:center;width:95%">Virtual Machine Status</div>
+	<div class="userBoardT2" style="text-align:center;width:95%">
+		<table>
+			<tr>
+				<td>CPU</td>
+				<td>
+					<div class="clusterCpuOut" style="width:90px">
+						<div class="clusterCpuIn" style="background-color:#0266C8; width:${cpuLoad}%">&nbsp;</div>
+					</div> 
+				</td>
+				<td>${cpuLoad}%</td>
+			</tr>
+			<tr>
+				<td>VM RAM</td>
+				<td>
+					<div class="clusterCpuOut" style="width:90px">
+						<div class="clusterCpuIn" style="width:${memoryPercent}%">&nbsp;</div>
+					</div> 
+				</td>
+				<td>${memoryPercent}% / ${totalMemory}Mb</td>
+			</tr>
+		</table>
+	</div>
+</div>
+

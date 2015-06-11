@@ -7,12 +7,16 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Table;
 
 import cmabreu.sagitarii.core.types.UserType;
 
 @Entity
-@Table(name="users") 
+@Table(name="users", indexes = {
+	       @Index(columnList = "id_user", name = "user_hndx"),
+	       @Index(columnList = "loginname,password", name = "user_login_hndx")
+	}) 
 public class User {
 
 	@Id

@@ -27,7 +27,11 @@ public class ExperimentRepository extends BasicRepository {
 	}
 	
 	public Set<Experiment> getList( User user ) throws NotFoundException {
-		logger.debug("get list" );
+		if ( user == null ) {
+			logger.debug("get list for no user" );
+		} else {
+			logger.debug("get list for user " + user.getLoginName() );
+		}
 		DaoFactory<Experiment> df = new DaoFactory<Experiment>();
 		IDao<Experiment> fm = df.getDao(this.session, Experiment.class);
 		Set<Experiment> experiments = null;
