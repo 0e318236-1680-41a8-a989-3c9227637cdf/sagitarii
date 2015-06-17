@@ -8,8 +8,8 @@ import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 
+import cmabreu.sagitarii.metrics.IMetricEntity;
 import cmabreu.sagitarii.metrics.MetricController;
-import cmabreu.sagitarii.metrics.MetricEntity;
 import cmabreu.sagitarii.metrics.MetricType;
 
 @Action (value = "viewMetrics", 
@@ -19,7 +19,7 @@ import cmabreu.sagitarii.metrics.MetricType;
 
 @ParentPackage("default")
 public class ViewMetricsAction extends BasicActionClass {
-	private List<MetricEntity> metrics;
+	private List<IMetricEntity> metrics;
 	private MetricType type;
 	
 	public String execute () {
@@ -27,7 +27,7 @@ public class ViewMetricsAction extends BasicActionClass {
 		return "ok";
 	}
 
-	public List<MetricEntity> getMetrics() {
+	public List<IMetricEntity> getMetrics() {
 		return metrics;
 	}
 	

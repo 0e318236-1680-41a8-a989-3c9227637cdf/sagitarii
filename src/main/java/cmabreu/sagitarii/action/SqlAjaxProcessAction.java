@@ -54,7 +54,6 @@ public class SqlAjaxProcessAction extends BasicActionClass {
 					iDisplayLength, sEcho);
 			
 			resp = resp.replace("\\", "\\\\");
-			System.out.println( resp );
 			
 		} catch (Exception e) {
 			e.printStackTrace();

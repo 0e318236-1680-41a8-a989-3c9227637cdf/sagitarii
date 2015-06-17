@@ -10,12 +10,12 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.StandardChartTheme;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.data.time.Hour;
 import org.jfree.data.time.Minute;
+import org.jfree.data.time.Second;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 
-public class MetricEntity {
+public class MetricValueEntity implements IMetricEntity {
 	private double totalHits;
 	private double hitsPerSecond;
 	private String name;
@@ -24,26 +24,39 @@ public class MetricEntity {
 	private final int HISTOGRAM_PERIOD = 100;
 	private MetricType type;
 	
+	public void set( double value ) {
+		addHistogram( value );
+	}
+	
+	@Override
+	public void calc() {
+		// do nothing;
+	}
+	
+	@Override
 	public String getName() {
 		return name;
 	}
 	
+	@Override
 	public MetricType getType() {
 		return type;
 	}
 	
+	@Override
 	public void setTimeSpent( double time ) {
 		this.time = time;
 	}
 	
+	@Override
 	public double getTimeSpent() {
 		return time;
 	}
-	
+
 	private void addHistogram( double value ) {
 		for ( int x = 0; x < HISTOGRAM_PERIOD-1; x++ ) {
 			double val = histogram.get(x+1);
-			histogram.set(x, val  );
+			histogram.set( x, val );
 		}
 		histogram.set(HISTOGRAM_PERIOD-1, value);
 	}
@@ -63,7 +76,7 @@ public class MetricEntity {
 	}
 	
 
-	public MetricEntity( String name, MetricType type ) {
+	public MetricValueEntity( String name, MetricType type ) {
 		this.name = name;
 		this.type = type;
 		totalHits = 0;
@@ -73,20 +86,20 @@ public class MetricEntity {
 		}
 	}
 	
-	
+	@Override
 	public JFreeChart getImage() {
-        final TimeSeries series = new TimeSeries("Database hits per second");
-        final Hour hour = new Hour();
-        
-		for ( int x = 0; x < HISTOGRAM_PERIOD; x++ ) {
-	        series.add(new Minute(x+1, hour), histogram.get(x) );
+        final TimeSeries series = new TimeSeries("");
+        final Minute minute = new Minute();
+
+        for ( int x = 0; x < HISTOGRAM_PERIOD; x++ ) {
+	        series.add(new Second(x+1, minute), histogram.get(x) );
 		}
-		
-		
+        
         final TimeSeriesCollection dataset = new TimeSeriesCollection(series);
         final JFreeChart retChart = ChartFactory.createTimeSeriesChart(
-            name, "Time", "Hits",  dataset,  false,  false, false
-        );	
+            name, "Time", "",  dataset,  false,  false, false
+        );
+       	
         
         StandardChartTheme chartTheme = (StandardChartTheme)org.jfree.chart.StandardChartTheme.createJFreeTheme();
         

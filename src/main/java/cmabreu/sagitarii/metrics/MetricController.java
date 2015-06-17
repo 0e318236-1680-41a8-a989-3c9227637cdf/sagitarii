@@ -5,20 +5,26 @@ import java.util.List;
 
 public class MetricController {
 	private static MetricController instance;
-	private List<MetricEntity> entities; 
+	private List<IMetricEntity> entities; 
 
-	public MetricEntity addEntity( String name, MetricType type ) {
-		MetricEntity entity = new MetricEntity( name, type );
+	public IMetricEntity addHitEntity( String name, MetricType type ) {
+		IMetricEntity entity = new MetricHitEntity( name, type );
 		entities.add( entity );
 		return entity;
 	}
-	
+
+	public IMetricEntity addValueEntity( String name, MetricType type ) {
+		IMetricEntity entity = new MetricValueEntity( name, type );
+		entities.add( entity );
+		return entity;
+	}
+
 	public void reset() {
-		entities = new ArrayList<MetricEntity>();
+		entities = new ArrayList<IMetricEntity>();
 	}
 	
-	public List<MetricEntity> getEntities() {
-		return new ArrayList<MetricEntity>( entities );
+	public List<IMetricEntity> getEntities() {
+		return new ArrayList<IMetricEntity>( entities );
 	}
 	
 	public static MetricController getInstance() {
@@ -29,18 +35,18 @@ public class MetricController {
 	}
 	
 	private MetricController() {
-		entities = new ArrayList<MetricEntity>();
+		entities = new ArrayList<IMetricEntity>();
 	}
 	
 	public void computeMetrics() {
-		for ( MetricEntity entity : getEntities() ) {
-			entity.calcHitsPerSecond();
+		for ( IMetricEntity entity : getEntities() ) {
+			entity.calc();
 		}
 		
 	}
 
-	public MetricEntity getEntity( String name ) {
-		for ( MetricEntity entity : getEntities() ) {
+	public IMetricEntity getEntity( String name ) {
+		for ( IMetricEntity entity : getEntities() ) {
 			if ( entity.getName().equals( name ) ) {
 				return entity;
 			}
@@ -49,7 +55,7 @@ public class MetricController {
 	}
 
 	public void setTimeSpent( String name, double time ) {
-		for ( MetricEntity entity : getEntities() ) {
+		for ( IMetricEntity entity : getEntities() ) {
 			if ( entity.getName().equals( name ) ) {
 				entity.setTimeSpent(time);	
 			}
@@ -58,16 +64,34 @@ public class MetricController {
 
 	public synchronized void hit( String name, MetricType type ) {
 		boolean found = false;
-		for ( MetricEntity entity : getEntities() ) {
+		for ( IMetricEntity entity : getEntities() ) {
 			if ( entity.getName().equals( name ) ) {
-				entity.hit();
+				( (MetricHitEntity)entity ).hit();
 				found = true;
 				break;
 			}
 		}
 		if ( !found ) {
-			addEntity(name,type).hit();
+			IMetricEntity entity = addHitEntity(name,type);
+			( (MetricHitEntity)entity ).hit();
 		}
 	}
+
+	
+	public synchronized void set(double value, String name, MetricType type ) {
+		boolean found = false;
+		for ( IMetricEntity entity : getEntities() ) {
+			if ( entity.getName().equals( name ) ) {
+				( (MetricValueEntity)entity ).set(value);
+				found = true;
+				break;
+			}
+		}
+		if ( !found ) {
+			IMetricEntity entity = addValueEntity(name,type);
+			( (MetricValueEntity)entity ).set(value);
+		}
+	}
+
 	
 }
