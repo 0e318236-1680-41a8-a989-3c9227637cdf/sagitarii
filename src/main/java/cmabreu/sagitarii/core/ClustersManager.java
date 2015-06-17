@@ -97,15 +97,11 @@ public class ClustersManager {
 		}
 	}
 
-	public void reloadWrappers() throws Exception {
-		if ( Sagitarii.getInstance().isRunning() ) {
-			for ( Cluster clu : cm.getClusterList() ) {
-				if ( !clu.isMainCluster() ) {
-					clu.reloadWrappers();
-				}
+	public void reloadWrappers() {
+		for ( Cluster clu : cm.getClusterList() ) {
+			if ( !clu.isMainCluster() ) {
+				clu.reloadWrappers();
 			}
-		} else {
-			throw new Exception("Cannot reload wrappers when experiments are running.");
 		}
 	}
 	

@@ -7,6 +7,7 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import cmabreu.sagitarii.core.ClustersManager;
 import cmabreu.sagitarii.core.types.ExecutorType;
 import cmabreu.sagitarii.misc.PathFinder;
 import cmabreu.sagitarii.persistence.entity.ActivationExecutor;
@@ -78,7 +79,8 @@ public class ExecutorService {
 	
 	public ActivationExecutor insertExecutor(ActivationExecutor executor) throws InsertException {
 		ActivationExecutor expRet = rep.insereActivationExecutor( executor );
-		return expRet ;
+		ClustersManager.getInstance().reloadWrappers();
+		return expRet;
 	}	
 	
 	public void deleteExecutor( int idExecutor ) throws DeleteException {
