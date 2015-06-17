@@ -65,7 +65,10 @@ public class Cluster {
 	}
 	
 	public double getMemoryPercent() {
-		double percent = Math.round( (freeMemory * 100 ) / totalMemory );
+		double percent = 0;
+		try {
+			percent = Math.round( (freeMemory * 100 ) / totalMemory );
+		} catch ( Exception ignored ) {}
 		return percent;
 	}
 	

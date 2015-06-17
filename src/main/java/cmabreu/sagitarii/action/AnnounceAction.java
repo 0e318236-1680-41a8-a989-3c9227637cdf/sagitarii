@@ -35,6 +35,12 @@ public class AnnounceAction  {
 	public String execute(){
 		String resposta = "";
 		Double cpu = 0.0;
+		if ( freeMemory == null ) {
+			freeMemory = Long.valueOf(0);
+		}
+		if ( totalMemory == null ) {
+			totalMemory = Long.valueOf(0);
+		}
 
 		try {
 			cpu = Double.valueOf( cpuLoad );
