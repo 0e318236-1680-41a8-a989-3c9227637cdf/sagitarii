@@ -13,7 +13,7 @@
 					<div id="basicCentralPanel">
 					
 						<div class="basicCentralPanelBar">
-							<img alt="" src="img/table.png" />
+							<img alt="" src="img/reduce.png" />
 							<div class="basicCentralPanelBarText">Create new Executor REDUCE</div>
 						</div>
 						

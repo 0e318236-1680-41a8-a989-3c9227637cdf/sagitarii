@@ -10,7 +10,7 @@
 					<div id="basicCentralPanel">
 
 						<div class="basicCentralPanelBar">
-							<img src="img/gears.png">
+							<img src="img/table.png">
 							<div class="basicCentralPanelBarText">Orchestrator Buffer Status</div>
 						</div>
 						<div style="margin : 0 auto; width : 95%; margin-top:10px;margin-bottom:50px;" >
@@ -35,7 +35,7 @@
 
 					
 						<div class="basicCentralPanelBar">
-							<img src="img/experiment.png">
+							<img src="img/running.png">
 							<div class="basicCentralPanelBarText">Experiments Running</div>
 						</div>
 

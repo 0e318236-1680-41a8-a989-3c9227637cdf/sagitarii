@@ -11,7 +11,7 @@
 					<div id="basicCentralPanel">
 					
 						<div class="basicCentralPanelBar">
-							<img src="img/table.png">
+							<img src="img/gears.png">
 							<div class="basicCentralPanelBarText">View Executors</div>
 						</div>
 						

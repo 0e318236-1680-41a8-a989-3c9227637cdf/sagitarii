@@ -4,9 +4,9 @@
 <img onclick="askLogout()" title="Logout" class="menuButton dicas" src="img/shutdown.png">
 <c:if test="${loggedUser.type == 'ADMIN'}">
 	<a target="_BLANK" href="logs/sagitarii.log"><img title="View Log" class="menuButton dicas" src="img/log.png"></a>
-	<a href="viewRunning"><img title="Running Experiments" class="menuButton dicas" src="img/gears.png"></a>
+	<a href="viewRunning"><img title="Running Experiments" class="menuButton dicas" src="img/running.png"></a>
 	<a href="viewDeliveryControl"><img title="View Instance Delivery Control" class="menuButton dicas" src="img/fragment.png"></a>
-	<a href="viewExecutors"><img title="View Executors" class="menuButton dicas" src="img/table.png"></a>
+	<a href="viewExecutors"><img title="View Executors" class="menuButton dicas" src="img/gears.png"></a>
 	<a href="viewExperiments"><img title="Experiments" class="menuButton dicas" src="img/experiment.png"></a>
 	<a href="tablesmanager"><img title="Custom Tables" class="menuButton dicas" src="img/tables.png"></a>
 	<a href="viewClusters"><img title="View Running Nodes" class="menuButton dicas" src="img/node.png"></a>
