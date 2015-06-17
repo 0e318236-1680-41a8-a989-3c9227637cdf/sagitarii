@@ -5,6 +5,10 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import cmabreu.sagitarii.persistence.entity.Activity;
+import cmabreu.sagitarii.persistence.entity.Experiment;
+import cmabreu.sagitarii.persistence.entity.Fragment;
+import cmabreu.sagitarii.persistence.entity.Relation;
 import cmabreu.sagitarii.persistence.entity.Workflow;
 import cmabreu.sagitarii.persistence.exceptions.DatabaseConnectException;
 import cmabreu.sagitarii.persistence.exceptions.DeleteException;
@@ -94,6 +98,69 @@ public class WorkflowService {
 	 */
 	public Workflow getWorkflow(int idWorkflow) throws NotFoundException{
 		return rep.getWorkflow(idWorkflow);
+	}
+
+
+	public String getXML(int idWorkflow) throws Exception {
+		Workflow wf = rep.getWorkflow(idWorkflow);
+		StringBuilder sb = new StringBuilder();
+		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+		sb.append("<workflow tag=\""+wf.getTag()+"\">\n");
+		
+		for( Experiment exp : wf.getExperiments() ) {
+			exp = new ExperimentService().previewExperiment( exp.getIdExperiment() );
+			sb.append("<experiment tag=\""+exp.getTagExec()+"\">\n");
+			
+			sb.append("<fragments>\n");
+			for( Fragment frag : exp.getFragments() ) {
+				sb.append("<fragment executionOrder=\""+ frag.getIndexOrder() +"\">\n");
+				for ( Activity act : frag.getActivities() ) {
+					sb.append("<activity type=\""+act.getType()+"\" executor=\""+act.getExecutorAlias()+"\" name=\""+act.getTag()+"\">\n");
+					
+					sb.append("<inputTables>\n");
+					for( Relation rel : act.getInputRelations() ){
+						sb.append("<table name=\""+ rel.getName() +"\"/>\n");
+					}
+					sb.append("</inputTables>\n");
+					
+					sb.append("<outputTable name=\""+  act.getOutputRelation().getName() +"\" />\n");
+					
+					sb.append("<nextActivities>");
+					for( Activity next : act.getNextActivities() ) {
+						sb.append("<activity type=\""+next.getType()+"\" executor=\""+next.getExecutorAlias()+"\" name=\""+next.getTag()+"\" />\n");
+					}
+					sb.append("</nextActivities>");
+
+					sb.append("<previousActivities>");
+					for( Activity previous : act.getPreviousActivities() ) {
+						sb.append("<activity type=\""+previous.getType()+"\" executor=\""+previous.getExecutorAlias()+"\" name=\""+previous.getTag()+"\" />\n");
+					}
+					sb.append("</previousActivities>");
+					
+					sb.append("</activity>\n");
+				}
+				sb.append("</fragment>\n");
+			}
+			sb.append("</fragments>\n");
+			
+			sb.append("<tables>\n");
+			for( Relation rel : exp.getUsedTables() ){
+				sb.append("<table name=\""+ rel.getName() +"\">\n");
+				sb.append("<schema>\n");
+				sb.append( rel.getSchema() );
+				sb.append("</schema>\n");
+				sb.append("</table>\n");
+			}
+			sb.append("</tables>\n");
+			
+			sb.append("</experiment>\n");
+		}
+		
+		
+		
+		
+		sb.append("</workflow>\n\n");
+		return sb.toString();
 	}
 
 	

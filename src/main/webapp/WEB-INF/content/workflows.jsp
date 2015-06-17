@@ -98,6 +98,7 @@
 													<img class="miniButton dicas" style="opacity:0.3" title="New Experiment: Missing Activities" src="img/experiment.png">
 												</c:if>
 												<img class="miniButton dicas" title="Details" onclick="viewWorkflow('${workflow.idWorkflow}')" src="img/search.png">
+												<img class="miniButton dicas" title="Export as XML" onclick="exportWf('${workflow.idWorkflow}')" src="img/xml.png">
 												<img class="miniButton dicas" title="Manage Activities" onclick="activity('${workflow.idWorkflow}')" src="img/family3.png">
 											</td>
 											
@@ -169,6 +170,10 @@
 
 	function viewWorkflow(idWf) {
 		window.location.href="viewWorkflow?idWorkflow=" + idWf;
+	}
+	
+	function exportWf(idWf) {
+		window.open("getXMLWorkflow?idWorkflow=" + idWf);
 	}
 	
 	function newExperiment(idWf) {
