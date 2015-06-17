@@ -7,14 +7,15 @@
  -->
 
 <!DOCTYPE configuration [
-	<!ELEMENT configuration (orchestrator) >
-	<!ELEMENT orchestrator (poolIntervalSeconds,pseudoClusterIntervalSeconds,pseudoMaxTasks, 
-		maxInputBufferCapacity,mainNodesQuant,fileReceiverPort,fileReceiverChunkBufferSize,CSVDelimiter)>
+	<!ELEMENT configuration (sagitarii) >
+	<!ELEMENT sagitarii (poolIntervalSeconds,pseudoClusterIntervalSeconds,pseudoMaxTasks, 
+		maxInputBufferCapacity,mainNodesQuant,fileReceiverPort,fileReceiverChunkBufferSize,CSVDelimiter,
+		runLocalTeapot,localTeapotFolder)>
 ]>
 
 <configuration>
 	
-	<orchestrator>
+	<sagitarii>
 		<poolIntervalSeconds>1</poolIntervalSeconds>
 		<pseudoClusterIntervalSeconds>5</pseudoClusterIntervalSeconds>
 		<pseudoMaxTasks>5</pseudoMaxTasks>
@@ -23,7 +24,9 @@
 		<fileReceiverPort>3333</fileReceiverPort>
 		<fileReceiverChunkBufferSize>100</fileReceiverChunkBufferSize>
 		<CSVDelimiter>,</CSVDelimiter>
-	</orchestrator>
+		<runLocalTeapot>false</runLocalTeapot>
+		<localTeapotFolder>/home/sagitarii/teapot/</localTeapotFolder>
+	</sagitarii>
 	
 </configuration>
 

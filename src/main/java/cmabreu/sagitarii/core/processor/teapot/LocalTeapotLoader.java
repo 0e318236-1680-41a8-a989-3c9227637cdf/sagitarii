@@ -8,6 +8,10 @@ public class LocalTeapotLoader {
 		
 	}
 	
+	public boolean isRunning() {
+		return running;
+	}
+	
 	public void notifyFinish() {
 		 running = false;
 	}

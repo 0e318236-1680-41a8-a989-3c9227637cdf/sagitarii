@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import cmabreu.sagitarii.misc.PathFinder;
+import cmabreu.sagitarii.core.config.Configurator;
 
 
 public class LocalTeapot extends Thread  {
@@ -23,21 +23,16 @@ public class LocalTeapot extends Thread  {
 	public void run() {
 		Process process = null;
         try {
-        	process = Runtime.getRuntime().exec(  "java -jar " + PathFinder.getInstance().getPath() + "/localnode/teapot.jar",
-        			null, new File( PathFinder.getInstance().getPath() + "/localnode/") );
+        	process = Runtime.getRuntime().exec(  "java -jar " + Configurator.getInstance().getLocalTeapotFolder() + "/teapot.jar",
+        			null, new File( Configurator.getInstance().getLocalTeapotFolder() ) );
         	
         	InputStream in = process.getInputStream(); 
         	BufferedReader br = new BufferedReader( new InputStreamReader(in) );
         	String line = null;
         	while( ( line=br.readLine() )!=null ) {
-        		
-        		System.out.println( line );
-        		
         		logger.debug( line );
         	}        	
-        	
             process.waitFor();
-            
         } catch ( Exception e ) {
         	logger.error( e.getMessage() );
         }
