@@ -18,6 +18,7 @@ import cmabreu.sagitarii.metrics.MetricController;
 public class GetMetricsAction extends BasicActionClass {
 	private JFreeChart retChart;
 	private String metricName;
+	private String time;
 	
 	public String execute () {
 		retChart = MetricController.getInstance().getEntity(metricName).getImage();
@@ -35,5 +36,9 @@ public class GetMetricsAction extends BasicActionClass {
 	
 	public void setMetricName(String metricName) {
 		this.metricName = metricName;
+	}
+	
+	public void setTime(String time) {
+		this.time = time;
 	}
 }

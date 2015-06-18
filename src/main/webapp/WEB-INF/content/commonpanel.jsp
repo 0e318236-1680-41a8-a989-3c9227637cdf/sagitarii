@@ -21,29 +21,28 @@
 	<div class="userBoardT2" style="text-align:center;width:95%">
 		<table>
 			<tr>
-				<td>VM RAM</td>
-				<td>
-					<div class="clusterCpuOut" style="width:90px">
-						<div class="clusterCpuIn" style="width:${memoryPercent}%">&nbsp;</div>
-					</div> 
-				</td>
-				<td>${memoryPercent}% / ${totalMemory}Mb</td>
+				<td>Total Memory</td>
+				<td>${totalMemory}Mb</td>
 			</tr>
 			<tr>
-				<td colspan="3"><img style="width:210px;height:110px;margin:0px;padding:0px;" src="getMetrics?metricName=Memory"></td>
-			</tr>
-			<tr>
-				<td>CPU</td>
-				<td>
-					<div class="clusterCpuOut" style="width:90px">
-						<div class="clusterCpuIn" style="background-color:#0266C8; width:${cpuLoad}%">&nbsp;</div>
-					</div> 
-				</td>
-				<td>${cpuLoad}%</td>
+				<td colspan="3"><img id="imgRam" style="width:210px;height:110px;margin:0px;padding:0px;" src="getMetrics?metricName=Memory"></td>
 			</tr>
 			<tr> 
-				<td colspan="3"><img style="width:210px;height:110px;margin:0px;padding:0px;" src="getMetrics?metricName=CPU"></td>
+				<td colspan="3"><img id="imgCpu" style="width:210px;height:110px;margin:0px;padding:0px;" src="getMetrics?metricName=CPU"></td>
 			</tr>
 		</table>
 	</div>
 </div>
+
+<script>
+
+	function reloadImages() {
+		d = new Date();
+		$("#imgCpu").attr("src", "getMetrics?metricName=CPU&time=ABC"+d.getTime());
+		$("#imgRam").attr("src", "getMetrics?metricName=Memory&time=ABC"+d.getTime());
+	}
+
+	$(document).ready(function() {
+		window.setInterval(reloadImages, 4000);
+	});
+</script>

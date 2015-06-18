@@ -27,7 +27,7 @@
 							<c:forEach var="metric" items="${metrics}">
 								<c:if test="${metric.type == type}">
 								<div style="float:left">
-									<img style="width:330px;height:140px" src="getMetrics?metricName=${metric.name}">
+									<img id="ID${metric.name}" style="width:280px;height:110px" src="getMetrics?metricName=${metric.name}">
 								</div>
 								</c:if>
 							</c:forEach>
@@ -43,7 +43,15 @@
 <script>
 	
 	function reloadPage() {
-		location.reload();
+		d = new Date();
+		
+		<c:forEach var="metric" items="${metrics}">
+			<c:if test="${metric.type == type}">
+				$("#ID${metric.name}").attr("src", "getMetrics?metricName=${metric.name}&time=ABC"+d.getTime());
+			</c:if>
+		</c:forEach>
+		
+		
 	}
 
 	$(document).ready(function() {

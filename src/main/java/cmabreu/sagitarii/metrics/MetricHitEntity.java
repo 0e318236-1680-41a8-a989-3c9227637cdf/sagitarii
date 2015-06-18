@@ -9,6 +9,7 @@ import java.util.List;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.StandardChartTheme;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.time.Minute;
 import org.jfree.data.time.Second;
@@ -21,7 +22,7 @@ public class MetricHitEntity implements IMetricEntity {
 	private String name;
 	private double time;
 	private List<Double> histogram;
-	private final int HISTOGRAM_PERIOD = 100;
+	private final int HISTOGRAM_PERIOD = 60;
 	private MetricType type;
 	
 	@Override
@@ -92,7 +93,7 @@ public class MetricHitEntity implements IMetricEntity {
         
         final TimeSeriesCollection dataset = new TimeSeriesCollection(series);
         final JFreeChart retChart = ChartFactory.createTimeSeriesChart(
-            name, "Time", "",  dataset,  false,  false, false
+            name, "", "",  dataset,  false,  false, false
         );
        	
         
@@ -126,6 +127,9 @@ public class MetricHitEntity implements IMetricEntity {
         
         plot.getRenderer().setSeriesPaint( 0, new Color( 200, 2, 3) );
         plot.getRenderer().setSeriesStroke( 0, new BasicStroke( 2 ) );
+        
+        ValueAxis domain = plot.getDomainAxis();
+        domain.setVisible(false);
         
         return retChart;
     	

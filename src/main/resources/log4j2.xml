@@ -14,151 +14,151 @@
 	
 	<loggers>
 
-		<Logger name="cmabreu.sagitarii.core.sockets.FileReceiverManager" level="debug" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.core.sockets.FileReceiverManager" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 		
-		<Logger name="cmabreu.sagitarii.core.sockets.FileImporter" level="debug" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.core.sockets.FileImporter" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 		
-		<Logger name="cmabreu.sagitarii.api.ExternalApi" level="debug" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.api.ExternalApi" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 
-		<Logger name="cmabreu.sagitarii.core.mail.MailService" level="debug" additivity="false"> 
-			<appender-ref ref="File"/> 
-		</Logger>
-		
-		<Logger name="cmabreu.sagitarii.core.sockets.FileSaver" level="debug" additivity="false"> 
-			<appender-ref ref="File"/> 
-		</Logger>
-
-		<Logger name="cmabreu.sagitarii.core.sockets.Server" level="debug" additivity="false"> 
-			<appender-ref ref="File"/> 
-		</Logger>
-
-		<Logger name="cmabreu.sagitarii.core.Orchestrator" level="debug" additivity="false"> 
-			<appender-ref ref="File"/> 
-		</Logger>
-
-		<Logger name="cmabreu.sagitarii.core.ReceivedData" level="debug" additivity="false"> 
-			<appender-ref ref="File"/> 
-		</Logger>
-
-		<Logger name="cmabreu.sagitarii.core.DataReceiver" level="debug" additivity="false"> 
-			<appender-ref ref="File"/> 
-		</Logger>
-
-		<Logger name="cmabreu.sagitarii.core.Instances.ReduceInstanceGenerator" level="debug" additivity="false"> 
-			<appender-ref ref="File"/> 
-		</Logger>
-
-		<Logger name="cmabreu.sagitarii.core.Instances.MapInstanceGenerator" level="debug" additivity="false"> 
-			<appender-ref ref="File"/> 
-		</Logger>
-
-		<Logger name="cmabreu.sagitarii.core.Instances.SplitInstanceGenerator" level="debug" additivity="false"> 
-			<appender-ref ref="File"/> 
-		</Logger>
-
-		<Logger name="cmabreu.sagitarii.core.Instances.SelectInstanceGenerator" level="debug" additivity="false"> 
-			<appender-ref ref="File"/> 
-		</Logger>
-
-		<Logger name="cmabreu.sagitarii.persistence.services.RelationService" level="debug" additivity="false"> 
-			<appender-ref ref="File"/> 
-		</Logger>
-
-		<Logger name="cmabreu.sagitarii.persistence.services.ExperimentService" level="debug" additivity="false"> 
-			<appender-ref ref="File"/> 
-		</Logger>
-
-
-		<Logger name="cmabreu.sagitarii.core.FragmentInstancer" level="debug" additivity="false"> 
-			<appender-ref ref="File"/> 
-		</Logger>
-
-		<Logger name="cmabreu.sagitarii.core.Instances.InstanceCreator" level="debug" additivity="false"> 
-			<appender-ref ref="File"/> 
-		</Logger>
-
-
-		<Logger name="cmabreu.sagitarii.persistence.infra.HibernateDAO" level="debug" additivity="false"> 
-			<appender-ref ref="File"/> 
-		</Logger>
-
-		<Logger name="cmabreu.sagitarii.core.Sagitarii" level="debug" additivity="false"> 
-			<appender-ref ref="File"/> 
-		</Logger>
-
-		<Logger name="cmabreu.sagitarii.core.ClustersManager" level="debug" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.core.mail.MailService" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 		
-		<Logger name="cmabreu.sagitarii.core.Cluster" level="debug" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.core.sockets.FileSaver" level="error" additivity="false"> 
+			<appender-ref ref="File"/> 
+		</Logger>
+
+		<Logger name="cmabreu.sagitarii.core.sockets.Server" level="error" additivity="false"> 
+			<appender-ref ref="File"/> 
+		</Logger>
+
+		<Logger name="cmabreu.sagitarii.core.Orchestrator" level="error" additivity="false"> 
+			<appender-ref ref="File"/> 
+		</Logger>
+
+		<Logger name="cmabreu.sagitarii.core.ReceivedData" level="error" additivity="false"> 
+			<appender-ref ref="File"/> 
+		</Logger>
+
+		<Logger name="cmabreu.sagitarii.core.DataReceiver" level="error" additivity="false"> 
+			<appender-ref ref="File"/> 
+		</Logger>
+
+		<Logger name="cmabreu.sagitarii.core.Instances.ReduceInstanceGenerator" level="error" additivity="false"> 
+			<appender-ref ref="File"/> 
+		</Logger>
+
+		<Logger name="cmabreu.sagitarii.core.Instances.MapInstanceGenerator" level="error" additivity="false"> 
+			<appender-ref ref="File"/> 
+		</Logger>
+
+		<Logger name="cmabreu.sagitarii.core.Instances.SplitInstanceGenerator" level="error" additivity="false"> 
+			<appender-ref ref="File"/> 
+		</Logger>
+
+		<Logger name="cmabreu.sagitarii.core.Instances.SelectInstanceGenerator" level="error" additivity="false"> 
+			<appender-ref ref="File"/> 
+		</Logger>
+
+		<Logger name="cmabreu.sagitarii.persistence.services.RelationService" level="error" additivity="false"> 
+			<appender-ref ref="File"/> 
+		</Logger>
+
+		<Logger name="cmabreu.sagitarii.persistence.services.ExperimentService" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 
 
-		<Logger name="cmabreu.sagitarii.persistence.repository.ActivityRepository" level="debug" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.core.FragmentInstancer" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 
-		<Logger name="cmabreu.sagitarii.persistence.repository.CustomQueryRepository" level="debug" additivity="false"> 
-			<appender-ref ref="File"/> 
-		</Logger>
-
-		<Logger name="cmabreu.sagitarii.persistence.repository.WorkflowRepository" level="debug" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.core.Instances.InstanceCreator" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 
 
-		<Logger name="cmabreu.sagitarii.persistence.repository.ExecutorRepository" level="debug" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.persistence.infra.HibernateDAO" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 
-		<Logger name="cmabreu.sagitarii.persistence.repository.ExecutorService" level="debug" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.core.Sagitarii" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 
-
-		<Logger name="cmabreu.sagitarii.persistence.repository.FileRepository" level="debug" additivity="false"> 
-			<appender-ref ref="File"/> 
-		</Logger>
-
-		<Logger name="cmabreu.sagitarii.persistence.repository.ConsumptionRepository" level="debug" additivity="false"> 
-			<appender-ref ref="File"/> 
-		</Logger>
-
-
-		<Logger name="cmabreu.sagitarii.persistence.repository.UserRepository" level="debug" additivity="false"> 
-			<appender-ref ref="File"/> 
-		</Logger>
-
-		<Logger name="cmabreu.sagitarii.persistence.repository.ExperimentRepository" level="debug" additivity="false"> 
-			<appender-ref ref="File"/> 
-		</Logger>
-
-
-		<Logger name="cmabreu.sagitarii.persistence.repository.RelationRepository" level="debug" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.core.ClustersManager" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 		
-		<Logger name="cmabreu.sagitarii.core.processor.MainClusterQueryWrapper" level="debug" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.core.Cluster" level="error" additivity="false"> 
+			<appender-ref ref="File"/> 
+		</Logger>
+
+
+		<Logger name="cmabreu.sagitarii.persistence.repository.ActivityRepository" level="error" additivity="false"> 
+			<appender-ref ref="File"/> 
+		</Logger>
+
+		<Logger name="cmabreu.sagitarii.persistence.repository.CustomQueryRepository" level="error" additivity="false"> 
+			<appender-ref ref="File"/> 
+		</Logger>
+
+		<Logger name="cmabreu.sagitarii.persistence.repository.WorkflowRepository" level="error" additivity="false"> 
+			<appender-ref ref="File"/> 
+		</Logger>
+
+
+		<Logger name="cmabreu.sagitarii.persistence.repository.ExecutorRepository" level="error" additivity="false"> 
+			<appender-ref ref="File"/> 
+		</Logger>
+
+		<Logger name="cmabreu.sagitarii.persistence.repository.ExecutorService" level="error" additivity="false"> 
+			<appender-ref ref="File"/> 
+		</Logger>
+
+
+		<Logger name="cmabreu.sagitarii.persistence.repository.FileRepository" level="error" additivity="false"> 
+			<appender-ref ref="File"/> 
+		</Logger>
+
+		<Logger name="cmabreu.sagitarii.persistence.repository.ConsumptionRepository" level="error" additivity="false"> 
+			<appender-ref ref="File"/> 
+		</Logger>
+
+
+		<Logger name="cmabreu.sagitarii.persistence.repository.UserRepository" level="error" additivity="false"> 
+			<appender-ref ref="File"/> 
+		</Logger>
+
+		<Logger name="cmabreu.sagitarii.persistence.repository.ExperimentRepository" level="error" additivity="false"> 
+			<appender-ref ref="File"/> 
+		</Logger>
+
+
+		<Logger name="cmabreu.sagitarii.persistence.repository.RelationRepository" level="error" additivity="false"> 
+			<appender-ref ref="File"/> 
+		</Logger>
+		
+		<Logger name="cmabreu.sagitarii.core.processor.MainClusterQueryWrapper" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 
 		
-		<Logger name="cmabreu.sagitarii.persistence.repository.InstanceRepository" level="debug" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.persistence.repository.InstanceRepository" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 
-		<Logger name="cmabreu.sagitarii.persistence.repository.FragmentRepository" level="debug" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.persistence.repository.FragmentRepository" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 	
-		<root level="debug">
+		<root level="error">
 			<appender-ref ref="File" />
 		</root>
 		

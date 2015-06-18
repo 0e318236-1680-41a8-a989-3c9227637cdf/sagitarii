@@ -9,6 +9,7 @@ import java.util.List;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.StandardChartTheme;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.time.Minute;
 import org.jfree.data.time.Second;
@@ -16,15 +17,15 @@ import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 
 public class MetricValueEntity implements IMetricEntity {
-	private double totalHits;
-	private double hitsPerSecond;
 	private String name;
 	private double time;
 	private List<Double> histogram;
-	private final int HISTOGRAM_PERIOD = 100;
+	private final int HISTOGRAM_PERIOD = 60;
 	private MetricType type;
+	private double value;
 	
 	public void set( double value ) {
+		this.value = value;
 		addHistogram( value );
 	}
 	
@@ -61,25 +62,10 @@ public class MetricValueEntity implements IMetricEntity {
 		histogram.set(HISTOGRAM_PERIOD-1, value);
 	}
 	
-	public void calcHitsPerSecond() {
-		hitsPerSecond = totalHits;
-		totalHits = 0;
-		addHistogram( hitsPerSecond );
-	}
 	
-	public double getHitsPerSecond() {
-		return hitsPerSecond;
-	}
-	
-	public void hit() {
-		totalHits++;
-	}
-	
-
 	public MetricValueEntity( String name, MetricType type ) {
 		this.name = name;
 		this.type = type;
-		totalHits = 0;
 		histogram = new ArrayList<Double>();
 		for ( int x = 0; x < HISTOGRAM_PERIOD; x++ ) {
 			histogram.add( 0.0 );
@@ -97,7 +83,7 @@ public class MetricValueEntity implements IMetricEntity {
         
         final TimeSeriesCollection dataset = new TimeSeriesCollection(series);
         final JFreeChart retChart = ChartFactory.createTimeSeriesChart(
-            name, "Time", "",  dataset,  false,  false, false
+            name + " (" + value + "%)", "", "",  dataset,  false,  false, false
         );
        	
         
@@ -131,6 +117,10 @@ public class MetricValueEntity implements IMetricEntity {
         
         plot.getRenderer().setSeriesPaint( 0, new Color( 200, 2, 3) );
         plot.getRenderer().setSeriesStroke( 0, new BasicStroke( 2 ) );
+        
+        ValueAxis domain = plot.getDomainAxis();
+        domain.setVisible(false);
+        
         
         return retChart;
     	
