@@ -39,7 +39,7 @@
 	function reloadImages() {
 		d = new Date();
 		$("#imgCpu").attr("src", "getMetrics?metricName=CPU&time=ABC"+d.getTime());
-		$("#imgRam").attr("src", "getMetrics?metricName=Memory&time=ABC"+d.getTime());
+		$("#imgRam").attr("src", "getMetrics?metricName=Memory&time=XYZ"+d.getTime());
 	}
 
 	$(document).ready(function() {

@@ -34,6 +34,7 @@ public class MapInstanceGenerator implements IInstanceGenerator {
 
 		Set<UserTableEntity> utes = ts.genericFetchList( correctSql );
 		
+		logger.debug( correctSql );
 		logger.debug("'MAP' type detected: " + utes.size() + " instances will be created for activity " + activity.getTag() );
 		
 		for ( UserTableEntity ute : utes ) {
@@ -47,7 +48,6 @@ public class MapInstanceGenerator implements IInstanceGenerator {
 			con.setIdActivity( activity.getIdActivity() );
 			con.setIdTable(idTable);
 			// ===============================
-			
 			Instance pipe = pc.createInstance(activity, frag, parameter );
 			pipe.addConsumption(con);
 			

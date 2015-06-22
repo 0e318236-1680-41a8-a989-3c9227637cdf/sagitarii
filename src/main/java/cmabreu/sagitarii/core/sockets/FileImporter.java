@@ -148,11 +148,15 @@ public class FileImporter extends Thread {
 		boolean result = false;
 		for( ReceivedFile receivedFile : receivedFiles ) {
 			String fileName = receivedFile.getFileName().replace(".gz", "");
+			logger.debug("is file " + fileName + " -> " + value);
 			if ( fileName.equals(value) ) {
-				logger.debug(value + " is a file.");
+				logger.debug(" > " + value + " is a file.");
 				result = true;
 				break;
 			}
+		}
+		if ( !result ) {
+			logger.debug(" > " + value + " is not a file.");
 		}
 		return result;
 	}

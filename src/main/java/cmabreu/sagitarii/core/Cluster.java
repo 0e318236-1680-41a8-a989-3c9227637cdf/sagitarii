@@ -84,6 +84,12 @@ public class Cluster {
 		cleanWorkspaceSignal = true;
 	}
 
+
+	public void inform( String instanceSerial ) {
+		logger.warn("remember to ask Teapot for instance " + instanceSerial );
+		//logger.warn( "INFORM#" + instanceSerial );
+	}
+	
 	public void restart() {
 		restartSignal = true;
 	}

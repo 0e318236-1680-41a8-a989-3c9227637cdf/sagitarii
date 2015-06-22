@@ -9,29 +9,28 @@ import org.jfree.chart.JFreeChart;
 import cmabreu.sagitarii.metrics.MetricController;
 
 @Action (value = "getMetrics", results = { 
-		@Result ( type="chart", params = {"width", "660", "height", "225"} , name = "ok"),
-	} 
-) 
-
+		@Result ( type="chart", params = {"width", "420", "height", "220"} , name = "ok") } ) 
 
 @ParentPackage("chart")
-public class GetMetricsAction extends BasicActionClass {
-	private JFreeChart retChart;
+public class GetMetricsAction  {
+	private JFreeChart chart;
 	private String metricName;
 	private String time;
 	
 	public String execute () {
-		retChart = MetricController.getInstance().getEntity(metricName).getImage();
+		try {
+			if ( metricName != null ) {
+				chart = MetricController.getInstance().getEntity(metricName).getImage();
+			}
+		} catch ( Exception e ) {
+			//
+		}
 		return "ok";
 	}
 
 	
 	public JFreeChart getChart() {
-		return retChart;
-	}
-
-	public JFreeChart getRetChart() {
-		return retChart;
+		return chart;
 	}
 	
 	public void setMetricName(String metricName) {

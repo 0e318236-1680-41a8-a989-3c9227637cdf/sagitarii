@@ -11,7 +11,7 @@ import cmabreu.sagitarii.persistence.services.FileService;
 
 @Action(value="getFile", results= {  
 	    @Result(name="ok", type="stream", params = {
-                "contentType", "${contentType}",
+                "contentType", "application/octet-stream",
                 "inputName", "fileInputStream",
                 "contentDisposition", "filename=\"${fileName}\"",
                 "bufferSize", "1024"
@@ -39,7 +39,7 @@ public class GetFileAction extends BasicActionClass {
 		        fileInputStream = new ByteArrayInputStream( theFile );
 		        fileName = file.getFileName();
 			} else {
-				System.out.println("FILE IS NULL");
+				//
 			}
 			
 		} catch ( Exception e ) {

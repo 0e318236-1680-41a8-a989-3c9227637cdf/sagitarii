@@ -28,9 +28,6 @@
 				</div>
 				<div id="rightBox"> 
 
-					<%@ include file="commonpanel.jsp" %>
-
-					
 					<div id="insertBox" class="userBoard" style="display: block;height: 25px;overflow: hidden;">
 						<div id="newPannel" style="height:160px; width:95%; margin:0 auto;margin-top:10px;margin-bottom:10px;">
 						<div class="userBoardT1" onclick="showInsertBox()" style="cursor:pointer; text-align:center;width:95%; padding-bottom: 5px;">New Activity</div>
@@ -403,10 +400,12 @@
 
 	
 	function viewImageCanvas() {
-		var cyImage = cy.png( {'bg':'white','full':true,'scale':5} ); 
-	    var image = "<img name='compman' style='border-radius:5px;margin:0px;height: 150px;width:100%' src='"+cyImage+"' />";
-	    $("#imageCanvas").html(image);
-	    $("#txtImage").val( cyImage );
+		var cyImage = cy.png( {'bg':'white','full':true,'scale':5} );
+		if ( cyImage != 'data:,') {
+		    var image = "<img name='compman' style='border-radius:5px;margin:0px;height: 150px;width:100%' src='"+cyImage+"' />";
+		    $("#imageCanvas").html(image);
+		    $("#txtImage").val( cyImage );
+		}
 	    clearInterval(refreshIntervalId);
 	}
 	

@@ -11,7 +11,6 @@ import cmabreu.sagitarii.persistence.exceptions.DatabaseConnectException;
 import cmabreu.sagitarii.persistence.exceptions.DeleteException;
 import cmabreu.sagitarii.persistence.exceptions.InsertException;
 import cmabreu.sagitarii.persistence.exceptions.NotFoundException;
-import cmabreu.sagitarii.persistence.exceptions.UpdateException;
 import cmabreu.sagitarii.persistence.repository.FileRepository;
 
 public class FileService {
@@ -22,28 +21,14 @@ public class FileService {
 		this.rep = new FileRepository();
 	}
 
-	
-	public void updateFile(File file) throws UpdateException {
-		File oldFile;
-		try {
-			oldFile = rep.getFile( file.getIdFile() );
-		} catch (NotFoundException e) {
-			throw new UpdateException( e.getMessage() );
-		}
-		oldFile.setFileName( file.getFileName() );
-		rep.newTransaction();
-		rep.updateFile(oldFile);
-	}	
-	
-	
-	public File getFile(int idFile) throws NotFoundException{
-		return rep.getFile(idFile);
+	public FileLight getFileLight(int idFile) throws NotFoundException{
+		return rep.getFileLight(idFile);
 	}
 
-	public File getFile(String fileName, String experiment) throws NotFoundException{
-		return rep.getFile(fileName, experiment);
+	public File getFile(int idFile) throws NotFoundException{
+		return rep.getFile(idFile); 
 	}
-	
+
 	public void newTransaction() {
 		if( !rep.isOpen() ) {
 			rep.newTransaction();
@@ -57,7 +42,7 @@ public class FileService {
 	
 	public void deleteFile( int idFile ) throws DeleteException {
 		try {
-			File file = rep.getFile(idFile);
+			FileLight file = rep.getFileLight(idFile);
 			rep.newTransaction();
 			rep.deleteFile(file);
 		} catch (NotFoundException e) {

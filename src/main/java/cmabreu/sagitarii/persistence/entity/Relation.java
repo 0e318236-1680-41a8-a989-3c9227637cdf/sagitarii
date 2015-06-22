@@ -44,7 +44,7 @@ public class Relation {
     private Set<Domain> domains;		
 
 	@Transient
-	private boolean isEmpty;
+	private boolean isEmpty = true;
 	
 	@Transient
 	private int size;

@@ -1,5 +1,6 @@
 package cmabreu.sagitarii.core.delivery;
 
+import java.security.MessageDigest;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -16,19 +17,41 @@ public class DeliveryUnit {
 	private String macAddress;
 	private Date deliverTime;
 	private Date receiveTime;
+	private String hash;
 	
 	public List<Activation> getActivations() {
 		return activations;
+	}
+	
+	public String getHash() {
+		return hash;
 	}
 	
 	public Instance getInstance() {
 		return instance;
 	}
 
+	private String getHashSHA1( byte[] subject ) throws Exception {
+		MessageDigest md = MessageDigest.getInstance("SHA-1");
+		byte[] digest = md.digest( subject );
+		
+		String result = "";
+		for (int i=0; i < digest.length; i++) {
+			result +=
+				Integer.toString( ( digest[i] & 0xff ) + 0x100, 16).substring( 1 );
+		}
+		return result;
+	}
+	
 	public void setInstance(Instance instance) {
 		this.instance = instance;
 		try {
 			this.activations = new XMLParser().parseActivations( instance.getContent() );
+			StringBuilder sb = new StringBuilder();
+			for ( Activation act : this.activations ) {
+				sb.append( act.getExecutor() );
+			}
+			hash = getHashSHA1( sb.toString().getBytes() );
 		} catch (Exception e) { }
 	}
 
@@ -49,8 +72,8 @@ public class DeliveryUnit {
 		DateLibrary.getInstance().setTo( deliverTime );
 		Calendar data = Calendar.getInstance();
 		data.setTime(endTime);
-		long milis = DateLibrary.getInstance().getDiferencaMilisAte( data );
-		return milis;  
+		long millis = DateLibrary.getInstance().getDiferencaMilisAte( data );
+		return millis;  
 	}
 
 	public String getAgeTime() {

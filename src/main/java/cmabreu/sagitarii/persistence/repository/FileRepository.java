@@ -1,7 +1,6 @@
 package cmabreu.sagitarii.persistence.repository;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import cmabreu.sagitarii.persistence.entity.File;
@@ -10,7 +9,6 @@ import cmabreu.sagitarii.persistence.exceptions.DatabaseConnectException;
 import cmabreu.sagitarii.persistence.exceptions.DeleteException;
 import cmabreu.sagitarii.persistence.exceptions.InsertException;
 import cmabreu.sagitarii.persistence.exceptions.NotFoundException;
-import cmabreu.sagitarii.persistence.exceptions.UpdateException;
 import cmabreu.sagitarii.persistence.infra.DaoFactory;
 import cmabreu.sagitarii.persistence.infra.IDao;
 
@@ -57,42 +55,6 @@ public class FileRepository extends BasicRepository {
 		return files;
 	}
 	
-	
-	public File getFile( String fileName, String experiment ) throws NotFoundException {
-		logger.debug("get file by name " + fileName + " for experiment " + experiment );
-		DaoFactory<File> df = new DaoFactory<File>();
-		IDao<File> fm = df.getDao(this.session, File.class);
-		List<File> files = null;
-		
-		try {
-			files = fm.getList("select f.* from files f join experiments exp on exp.id_experiment = f.id_experiment " +
-					"where f.filename = '" + fileName + "' and exp.tagexec = '" + experiment + "'");
-		} catch ( Exception e ) {
-			closeSession();
-			throw e;
-		}
-		closeSession();
-		logger.debug("done");
-		return files.get(0);
-	}
-
-	public void updateFile( File file ) throws UpdateException {
-		logger.debug("update");
-		DaoFactory<File> df = new DaoFactory<File>();
-		IDao<File> fm = df.getDao(this.session, File.class);
-		try {
-			fm.updateDO(file);
-			commit();
-		} catch (UpdateException e) {
-			logger.error( e.getMessage() );
-			rollBack();
-			closeSession();
-			throw e;
-		}
-		closeSession();
-		logger.debug("done");
-	}
-	
 	public File insertFile(File file) throws InsertException {
 		logger.debug("insert");
 		DaoFactory<File> df = new DaoFactory<File>();
@@ -112,7 +74,6 @@ public class FileRepository extends BasicRepository {
 		return file;
 	}
 	
-
 	public File getFile(int idFile) throws NotFoundException {
 		logger.debug("get " + idFile + "...");
 		DaoFactory<File> df = new DaoFactory<File>();
@@ -121,6 +82,24 @@ public class FileRepository extends BasicRepository {
 		try {
 			file = fm.getDO(idFile);
 		} catch ( Exception e ) {
+			e.printStackTrace();
+			closeSession();		
+			throw e;
+		} 
+		closeSession();		
+		logger.debug("done: " + file.getFileName() + ": " + file.getFile().length + " bytes (GZIPPED)" );
+		return file;
+	}
+	
+	public FileLight getFileLight(int idFile) throws NotFoundException {
+		logger.debug("get light file " + idFile + "...");
+		DaoFactory<FileLight> df = new DaoFactory<FileLight>();
+		IDao<FileLight> fm = df.getDao(this.session, FileLight.class);
+		FileLight file = null;
+		try {
+			file = fm.getDO(idFile);
+		} catch ( Exception e ) {
+			e.printStackTrace();
 			closeSession();		
 			throw e;
 		} 
@@ -128,12 +107,11 @@ public class FileRepository extends BasicRepository {
 		logger.debug("done: " + file.getFileName() );
 		return file;
 	}
-	
 
-	public void deleteFile(File file) throws DeleteException {
+	public void deleteFile(FileLight file) throws DeleteException {
 		logger.debug("delete" );
-		DaoFactory<File> df = new DaoFactory<File>();
-		IDao<File> fm = df.getDao(this.session, File.class);
+		DaoFactory<FileLight> df = new DaoFactory<FileLight>();
+		IDao<FileLight> fm = df.getDao(this.session, FileLight.class);
 		try {
 			fm.deleteDO(file);
 			commit();

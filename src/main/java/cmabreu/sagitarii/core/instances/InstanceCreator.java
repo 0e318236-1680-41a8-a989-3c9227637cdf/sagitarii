@@ -11,7 +11,7 @@ import cmabreu.sagitarii.core.UserTableEntity;
 import cmabreu.sagitarii.persistence.entity.ActivationExecutor;
 import cmabreu.sagitarii.persistence.entity.Activity;
 import cmabreu.sagitarii.persistence.entity.Domain;
-import cmabreu.sagitarii.persistence.entity.File;
+import cmabreu.sagitarii.persistence.entity.FileLight;
 import cmabreu.sagitarii.persistence.entity.Fragment;
 import cmabreu.sagitarii.persistence.entity.Instance;
 import cmabreu.sagitarii.persistence.entity.Relation;
@@ -139,9 +139,6 @@ public class InstanceCreator {
 		logger.debug("processing columns " + columnList );
 		
 		// Preparar para refazer o CSV de dados com os novos valores em "result"...
-		StringBuilder result = new StringBuilder(); 
-		result.append(columnList + "\n");
-		
 		String columns[] = columnList.split(",");
 		int columnIndex = 0;
 		// Para cada coluna
@@ -167,20 +164,21 @@ public class InstanceCreator {
 					// índice existente lá.
 					// Preparar para refazer a linha com os valores CSV...
 					// Para cada linha...
+					
 					for ( int lineNumber = 1; lineNumber < lines.length; lineNumber++ ) {
 						String newLine = "";
 						String prefix = "";
 						// Desmembra cada item de dados da linha CSV.
 						String dataValues[] = lines[lineNumber].split(",");
-						// Pega o valor do �ndice do arquivo, que est� na coluna columnIndex
+						// Pega o valor do indice do arquivo, que estah na coluna columnIndex
 						int fileIndex = Integer.valueOf( dataValues[columnIndex] );
 						logger.debug( "try to retrieve file of index number " + fileIndex + "..." );
 						// Com o valor da coluna columnIndex 
-						// tenta pegar o arquivo correspondente (este valor � o �ndice do arquivo).
+						// tenta pegar o arquivo correspondente (este valor eh o indice do arquivo).
 						fs.newTransaction();
-						File file = fs.getFile(fileIndex);
+						FileLight file = fs.getFileLight(fileIndex);
 						logger.debug("found file " + file.getFileName() );
-						// Troca o �ndice pelo nome na lista de dados da linha em quest�o.
+						// Troca o indice pelo nome na lista de dados da linha em questao.
 						dataValues[columnIndex] = file.getFileName();
 						
 						fileXMLEntries.append("<file name='" + file.getFileName() + "' table='" + domain.getTable().getName() + "' attribute='" + column + 
@@ -191,22 +189,29 @@ public class InstanceCreator {
 							newLine = newLine + prefix + dataValue;
 							prefix = ",";
 						}
+
 						// Adicionar a nova linha na nova lista CSV...
-						result.append( newLine +  "\n");
+						lines[lineNumber] = newLine;
 						
 					}
+					
 				} else {
 					logger.debug(domainName + " is not a file domain.");
 				}
 			}
 			columnIndex++;
 		}
+		
 		if ( !changed ) {
 			// Não foi encontrado nenhum campo do tipo "File".
 			// Retornar exatamente o que foi entregue.
 			return parameter;
 		} else {
 			// Houve mudançaas nos dados. Retornar o que foi modificado.
+			StringBuilder result = new StringBuilder(); 
+			for ( String line : lines ) {
+				result.append( line +  "\n");
+			}
 			return result.toString();
 		}
 	}

@@ -24,14 +24,20 @@ public class AgeCalculator {
 		return new ArrayList<Accumulator>(lista);
 	}
 	
-	public void compute() {
-		// do nothing for while
+
+	public Accumulator getAccumulator( String hash ) {
+		for ( Accumulator accumulator : lista  ) {
+			if( accumulator.getHash().equals(hash)  ) {
+				return accumulator;
+			}
+		}
+		return null;
 	}
-	
+
 	public void addToStatistics( DeliveryUnit du ) {
 		boolean found = false;
 		for ( Accumulator accumulator : lista  ) {
-			if( accumulator.getAlias().equals( du.getInstance().getExecutorAlias() )  ) {
+			if( accumulator.getHash().equals( du.getHash() )  ) {
 				accumulator.addToStack( du );
 				found = true;
 			}

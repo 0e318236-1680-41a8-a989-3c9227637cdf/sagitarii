@@ -30,8 +30,6 @@ public class Configurator {
 	private int fileReceiverPort;
 	private int fileReceiverChunkBufferSize;
 	private char CSVDelimiter;
-	private boolean runLocalTeapot;
-	private String localTeapotFolder;
 	
     public double getProcessCpuLoad() {
     	try {
@@ -80,14 +78,6 @@ public class Configurator {
 		return poolIntervalSeconds;
 	}
 
-	public String getLocalTeapotFolder() {
-		return localTeapotFolder;
-	}
-	
-	public boolean getRunLocalTeapot() {
-		return runLocalTeapot;
-	}
-	
 	private String getTagValue(String sTag, Element eElement) throws Exception{
 		try {
 			NodeList nlList = eElement.getElementsByTagName(sTag).item(0).getChildNodes();
@@ -160,11 +150,6 @@ public class Configurator {
 			fileReceiverPort = Integer.valueOf( getTagValue("fileReceiverPort", mpElement) );
 			fileReceiverChunkBufferSize = Integer.valueOf( getTagValue("fileReceiverChunkBufferSize", mpElement) );
 			CSVDelimiter = getTagValue("CSVDelimiter", mpElement).charAt(0);
-			
-			try {
-				runLocalTeapot = ( getTagValue("runLocalTeapot", mpElement).toLowerCase().equals("true") );
-				localTeapotFolder = getTagValue("localTeapotFolder", mpElement);
-			} catch ( Exception ignored ) {}
 			
 		} catch ( Exception e ) {
 			System.out.println( e.getMessage() );

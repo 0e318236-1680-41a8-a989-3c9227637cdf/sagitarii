@@ -12,7 +12,7 @@
 	 
 	<package name="default" extends="struts-default">
 	
-	 	<interceptors>
+	 	<interceptors> 
 			<interceptor name="autorizador" class="cmabreu.sagitarii.interceptor.ClientAccessInterceptor" />
 			
 			<interceptor-stack name="seguranca">  

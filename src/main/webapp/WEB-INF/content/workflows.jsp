@@ -202,10 +202,10 @@
 			"sPaginationType": "full_numbers",
 			"aoColumns": [ 
 						  { "sWidth": "30%" },
-						  { "sWidth": "20%" },
-						  { "sWidth": "20%" },
+						  { "sWidth": "30%" },
 						  { "sWidth": "10%" },
-						  { "sWidth": "20%" }]						
+						  { "sWidth": "5%" },
+						  { "sWidth": "25%" }]						
 		} ).fnSort( [[0,'desc']] );
 	} );	
 	

@@ -131,6 +131,14 @@ public class ClustersManager {
 		}
 	}
 
+	public void inform(String macAddress, String instanceSerial ) {
+		Cluster cluster = cm.getCluster(macAddress);
+		if ( !cluster.isMainCluster() ) {
+			cluster.inform( instanceSerial );
+		}
+	}
+
+	
 	/**
 	 * Troca a TAG ##TAG_ID_INSTANCE## pelo ID do instance.
 	 * Isto é necessário pois não se possuía o ID do instance quando o XML foi

@@ -8,15 +8,18 @@ import cmabreu.sagitarii.misc.DateLibrary;
 
 public class Accumulator {
 	private Date averageAge;
+	private long averageMilis = 0;
 	private int calculatedCount;
-	private String executorAlias;
-	private String executorType;
+	private String hash;
 	private long totalAgeMilis;
 	
 	public Accumulator( DeliveryUnit du  ) {
-		executorAlias = du.getInstance().getExecutorAlias();
-		executorType = du.getInstance().getType().toString();
+		this.hash = du.getHash();
 		addToStack( du );
+	}
+	
+	public long getAverageMilis() {
+		return averageMilis;
 	}
 	
 	public void addToStack( DeliveryUnit du ) {
@@ -39,8 +42,19 @@ public class Accumulator {
 		return calculatedCount;
 	}
 
-	public String getAlias() {
-		return executorAlias;
+	public String getAverageAgeAsText() {
+		averageMilis = totalAgeMilis / calculatedCount;
+		String time = String.format("%02d:%02d:%02d", 
+				TimeUnit.MILLISECONDS.toHours(averageMilis),
+				TimeUnit.MILLISECONDS.toMinutes(averageMilis) -  
+				TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(averageMilis)), 
+				TimeUnit.MILLISECONDS.toSeconds(averageMilis) - 
+				TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(averageMilis)));
+		return time;
+	}
+	
+	public String getHash() {
+		return this.hash;
 	}
 	
 	public Date getAverageAge() {
@@ -49,10 +63,6 @@ public class Accumulator {
 	
 	public long getTotalAgeMilis() {
 		return totalAgeMilis;
-	}
-
-	public String getType() {
-		return executorType;
 	}
 	
 }

@@ -12,7 +12,6 @@ import javax.servlet.annotation.WebListener;
 
 import cmabreu.sagitarii.core.config.Configurator;
 import cmabreu.sagitarii.core.processor.MainCluster;
-import cmabreu.sagitarii.core.processor.teapot.LocalTeapotLoader;
 import cmabreu.sagitarii.core.sockets.FileReceiverManager;
 import cmabreu.sagitarii.core.types.ExecutorType;
 import cmabreu.sagitarii.core.types.UserType;
@@ -147,16 +146,6 @@ public class Orchestrator implements ServletContextListener {
 				
 			}
 			
-			if ( config.getRunLocalTeapot() ) {
-				loggerDebug("Will run a local Teapot Node instance...");
-				loggerDebug("Local Teapot at " + config.getLocalTeapotFolder() );
-				try {
-					LocalTeapotLoader.getInstance().execute();
-				} catch (Exception e) {
-					loggerError("Cannot run local Teapot Node: " + e.getMessage() );
-				}
-			}
-
 			loggerDebug("Start File Receiver Manager on port " + fileReceiverPort);
 			loggerDebug("Cache directory:");
 			loggerDebug(" > " + PathFinder.getInstance().getPath() + "/cache");

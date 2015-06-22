@@ -228,6 +228,7 @@ public class Experiment {
 
 	
 	private String evaluateElapsedTime() {
+		
 		DateLibrary dl = DateLibrary.getInstance();
 		dl.setTo( lastExecutionDate );
 		Calendar cl = Calendar.getInstance();
@@ -239,6 +240,10 @@ public class Experiment {
 		}
 		
 		long millis = dl.getDiferencaMilisAte( cl ) ;
+
+		if ( status == ExperimentStatus.STOPPED ) {
+			millis = 0;
+		}
 		
 		String time = String.format("%03d %02d:%02d:%02d", 
 				TimeUnit.MILLISECONDS.toDays( millis ),

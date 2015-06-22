@@ -171,6 +171,28 @@
 						</div>
 
 						<div class="basicCentralPanelBar">
+							<img src="img/tables.png">
+							<div class="basicCentralPanelBarText">Tables</div>
+						</div>
+						<div style="margin : 10px auto 20px; width : 95%;" id="dtRelationContainer">
+							<table>
+								<tr>
+									<th style="width:50%">Name</th>
+									<th style="width:40%">Description</th>
+								</tr>
+								<c:forEach var="table" items="${experiment.usedTables}">
+									<tr>
+										<td>${table.name}</td>
+										<td>${table.description}&nbsp;</td>
+									</tr>
+								</c:forEach>
+							</table>
+						</div>
+										
+
+
+
+						<div class="basicCentralPanelBar">
 							<img src="img/fragment.png">
 							<div class="basicCentralPanelBarText">Fragments</div>
 						</div>
@@ -258,6 +280,10 @@
 	
 	function viewWf(idWf) {
 		window.location.href="viewWorkflow?idWorkflow=" + idWf;
+	}
+
+	function uploadTo(table, experiment) {
+		window.location.href="uploadTableData?table=" + table + "&experiment=" + experiment;
 	}
 	
 	function run(idWf) {

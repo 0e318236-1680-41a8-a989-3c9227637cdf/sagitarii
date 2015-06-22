@@ -16,15 +16,13 @@
 						<div style="margin : 0 auto; width : 95%; margin-bottom:10px; margin-top:10px;" id="dtAgeContainer">
 							<table>
 								<tr>
-									<th style="width:15%">Executor Alias</th>
-									<th style="width:15%">Executor Type</th>
+									<th style="width:15%">Instance Hash</th>
 									<th style="width:10%">Average Time</th>
 									<th style="width:10%">Total Calculated</th>
 								</tr>
 								<c:forEach var="age" items="${ageStatistics}">
 									<tr>
-										<td class="tableCellFormRight">${age.alias}</td>
-										<td class="tableCellFormRight">${age.type}</td>
+										<td class="tableCellFormRight">${age.hash}</td>
 										<td class="tableCellFormRight">
 											<fmt:formatDate type="time" value="${age.averageAge}" />
 										</td>
@@ -34,8 +32,6 @@
 							</table>
 						</div>
 
-
-
 						<div class="basicCentralPanelBar">
 							<img src="img/fragment.png">
 							<div class="basicCentralPanelBarText">Instance Delivery Control Status</div>
@@ -43,11 +39,12 @@
 						<div style="margin : 0 auto; width : 95%; margin-bottom:10px; margin-top:10px;" id="dtTableContainer">
 							<table>
 								<tr>
-									<th style="width:10%">Instance ID</th>
-									<th style="width:15%">Delivered to</th>
-									<th style="width:10%">Executor Alias</th>
+									<th style="width:5%">Instance ID</th>
+									<th style="width:10%">Delivered to</th>
+									<th style="width:5%">Executor Alias</th>
 									<th style="width:10%">Instance Type</th>
 									<th style="width:10%">Running Time</th>
+									<th style="width:15%">Hash</th>
 									<th style="width:45%">Package Content</th>
 								</tr>
 								<c:forEach var="unit" items="${units}">
@@ -57,6 +54,7 @@
 										<td class="tableCellFormRight">${unit.instance.executorAlias}</td>
 										<td class="tableCellFormRight">${unit.instance.type}</td>
 										<td class="tableCellFormRight">${unit.ageTime}</td>
+										<td class="tableCellFormRight">${unit.hash}</td>
 										<td class="tableCellFormRight">
 											<table>
 												<tr>
