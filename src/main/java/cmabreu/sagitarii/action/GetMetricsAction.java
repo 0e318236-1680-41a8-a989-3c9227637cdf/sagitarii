@@ -2,6 +2,7 @@
 package cmabreu.sagitarii.action;
 
 import org.apache.struts2.convention.annotation.Action;
+import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.jfree.chart.JFreeChart;
@@ -9,7 +10,9 @@ import org.jfree.chart.JFreeChart;
 import cmabreu.sagitarii.metrics.MetricController;
 
 @Action (value = "getMetrics", results = { 
-		@Result ( type="chart", params = {"width", "420", "height", "220"} , name = "ok") } ) 
+		@Result ( type="chart", params = {"width", "420", "height", "220"} , name = "ok") }, 
+		interceptorRefs= { @InterceptorRef("seguranca") } 
+) 
 
 @ParentPackage("chart")
 public class GetMetricsAction  {

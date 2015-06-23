@@ -8,6 +8,20 @@
 	<constant name="struts.multipart.maxSize" value="20971520" />
 	 
 	<package name="chart" extends="jfreechart-default" >
+	 	<interceptors> 
+			<interceptor name="autorizador" class="cmabreu.sagitarii.interceptor.ClientAccessInterceptor" />
+
+			<interceptor-stack name="seguranca">  
+				<interceptor-ref name="autorizador" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+			
+		</interceptors>
+
+		<global-results>
+			<result name="notLogged">/index.jsp</result> 
+		</global-results>
+		
 	</package> 
 	 
 	<package name="default" extends="struts-default">

@@ -358,7 +358,7 @@ public class Cluster {
 		return lastError;
 	}
 	
-	public void setLastError(String lastError) {
+	public void setMessage(String lastError) {
 		this.lastError = lastError;
 	}
 }

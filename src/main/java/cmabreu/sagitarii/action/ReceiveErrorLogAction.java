@@ -25,7 +25,7 @@ public class ReceiveErrorLogAction extends BasicActionClass {
 	public String execute(){
 		String resposta = "";
 		
-		ClustersManager.getInstance().setErrorLog(errorLog, macAddress);
+		ClustersManager.getInstance().setTeapotMessage(errorLog, macAddress);
 		
 		try { 
 			HttpServletResponse response = (HttpServletResponse)ActionContext.getContext().get(StrutsStatics.HTTP_RESPONSE);

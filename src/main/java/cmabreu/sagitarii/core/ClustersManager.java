@@ -53,10 +53,10 @@ public class ClustersManager {
 		}
 	}
 
-	public void setErrorLog( String errorLog, String macAddress) {
-		logger.debug( "node " + macAddress + " report error: " + errorLog );
+	public void setTeapotMessage( String message, String macAddress) {
+		logger.debug( "node " + macAddress + " report: " + message );
 		Cluster clu = getCluster(macAddress);
-		clu.setLastError( errorLog );
+		clu.setMessage( message );
 	}
 
 	
@@ -77,7 +77,7 @@ public class ClustersManager {
 	public void refuseTask( String instanceId, String macAddress ) {
 		logger.debug( "node " + macAddress + " refused task in instance " + instanceId );
 		Cluster clu = cm.getCluster(macAddress);
-		clu.setLastError("Cannot run task in instance " + instanceId );
+		clu.setMessage("Cannot run task in instance " + instanceId );
 		clu.cancelAndRemoveInstance( instanceId );
 	}
 
@@ -91,7 +91,7 @@ public class ClustersManager {
 			} catch ( Exception e ) {
 				e.printStackTrace();
 				logger.error("activity " + rd.getInstance().getSerial() + ": " + e.getMessage() );
-				cluster.setLastError( "activity " + rd.getInstance().getSerial() + ": " + e.getMessage()  );
+				cluster.setMessage( "activity " + rd.getInstance().getSerial() + ": " + e.getMessage()  );
 				throw e;
 			}
 		}
@@ -132,6 +132,7 @@ public class ClustersManager {
 	}
 
 	public void inform(String macAddress, String instanceSerial ) {
+		logger.debug("Sagitarii needs to know about instance " + instanceSerial + " running on node " + macAddress );
 		Cluster cluster = cm.getCluster(macAddress);
 		if ( !cluster.isMainCluster() ) {
 			cluster.inform( instanceSerial );

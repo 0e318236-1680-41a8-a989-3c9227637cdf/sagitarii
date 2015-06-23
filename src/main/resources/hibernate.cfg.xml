@@ -5,7 +5,7 @@
 	<session-factory>  
 		<property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property> 
 		<property name="hibernate.connection.driver_class">org.postgresql.Driver</property> 
-		<property name="hibernate.connection.url">jdbc:postgresql://localhost/galaxy?ApplicationName=Sagitarii</property> 
+		<property name="hibernate.connection.url">jdbc:postgresql://localhost/sagitarii?ApplicationName=Sagitarii</property> 
 
 		<property name="hibernate.connection.username-prod">sagitarii</property> 
 		<property name="hibernate.connection.password-prod">Chiron2014!</property>  

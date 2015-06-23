@@ -114,7 +114,7 @@
 														<td>${task.taskId}</td>
 														<td>${task.executor}</td>
 														<td>${task.startTime}</td>
-														<td>${task.elapsedTime} s</td>
+														<td>${task.elapsedTime}</td>
 													</tr>									
 												</c:forEach>
 										</table>

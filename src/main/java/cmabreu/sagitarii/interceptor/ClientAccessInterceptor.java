@@ -13,12 +13,16 @@ public class ClientAccessInterceptor implements Interceptor {
 	private static final long serialVersionUID = -2344136157076941239L;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 	
-	public String intercept(ActionInvocation invocation) throws Exception {
+	public String intercept(ActionInvocation invocation) {
 		User loggedUser = (User)invocation.getInvocationContext().getSession().get("loggedUser");
 		if (loggedUser == null) {
 			return "notLogged";
-		} 
-		return invocation.invoke();
+		}
+		try {
+			return invocation.invoke();
+		} catch ( Exception ignored ) {
+			return "notLogged";
+		}
 	}
  
 	@Override

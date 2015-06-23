@@ -92,7 +92,7 @@ public class MainCluster implements Runnable {
 			}
 
 		} catch ( Exception e ) {
-			cluster.setLastError( e.getMessage() );
+			cluster.setMessage( e.getMessage() );
 			e.printStackTrace();
 		}
 		
