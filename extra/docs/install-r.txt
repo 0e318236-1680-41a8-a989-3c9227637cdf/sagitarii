@@ -1,0 +1,70 @@
+INSTALL R
+
+The first step is to add the security key:
+
+ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9 
+
+You need to add the CRAN repository to end of /etc/apt/sources.list:
+
+ deb http://cran.r-project.org/bin/linux/ubuntu trusty/ 
+ 
+ sudo apt-get update sudo apt-get install r-base r-base-dev 
+
+
+=======================================================
+
+INSTALL JDK 7
+sudo add-apt-repository ppa:webupd8team/java && sudo apt-get update
+
+sudo apt-get install oracle-jdk7-installer
+
+
+=======================================================
+
+Install JRI (rJava):
+
+#> R CMD javareconf
+
+#> R
+
+install.packages("rJava")
+
+=========================================================
+
+CONFIGURE JRI
+http://binfalse.de/2011/02/20/talking-r-through-java/
+
+export R_HOME=/usr/lib/R
+
+OR
+
+export R_HOME=/usr/lib64/R
+
+
+Local of JRI Java library (JARs)
+
+export CLASSPATH=.:/usr/local/lib/R/site-library/rJava/jri/
+
+** OR EXECUTE YOUR JAVA JAR WITH ****
+
+java -Djava.library.path=/usr/local/lib/R/site-library/rJava/jri/ -jar yourJar.jar
+
+
+Finally:
+
+export LD_LIBRARY_PATH=/usr/local/lib/R/site-library/rJava/jri/
+
+
+
+========================  
+install.packages("glmnet")
+install.packages("leaps")
+install.packages("ROCR")
+
+
+==================================
+list java applications running
+ps -aux | grep java
+
+kill
+kill -9 3553

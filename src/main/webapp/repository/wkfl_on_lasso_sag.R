@@ -32,6 +32,8 @@ x.test <- data.ts
 
 source("classifica.R")
 
+messageToSagitarii <- "starting..."
+
 x.train.clean <- remove_outliers(x.train)
 x.train.normmm <- normalize_minmax(x.train.clean)
 set.seed(1)
@@ -41,15 +43,12 @@ x.test.normmm <- normalize_minmax(x.train,x.test)
 x.test.lassomm <- x.test.normmm[,x.train.lassomm[[2]]]
 x.test.lassomm$alvo <- x.test.normmm$alvo
 
-
-
 tab$resultado <- "classifica.csv"
-  if (metodo=="rn")
-  {
-    x.rn2 <- rn2(x.train.lassomm[[1]], x.test.lassomm, tamanho, par_r, par_i)
-    aa <- croc(x.rn2[,2], x.test.normmm$alvo)
-    aa <- unlist(slot(aa, "y.values"))
-    write.table(x.rn2, file=outpuClassifica, row.names=FALSE, quote = FALSE, sep=",")
-  }
-
-  write.table(tab, file=outputFile, row.names=FALSE, quote = FALSE, sep=",")
+if (metodo=="rn") {
+	x.rn2 <- rn2(x.train.lassomm[[1]], x.test.lassomm, tamanho, par_r, par_i)
+	aa <- croc(x.rn2[,2], x.test.normmm$alvo)
+	aa <- unlist(slot(aa, "y.values"))
+	write.table(x.rn2, file=outpuClassifica, row.names=FALSE, quote = FALSE, sep=",")
+}
+write.table(tab, file=outputFile, row.names=FALSE, quote = FALSE, sep=",")
+messageToSagitarii <- "done"
