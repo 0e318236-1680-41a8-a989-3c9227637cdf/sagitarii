@@ -25,10 +25,10 @@
 				<td>${totalMemory}Mb</td>
 			</tr>
 			<tr>
-				<td colspan="3"><img id="imgRam" style="width:210px;height:110px;margin:0px;padding:0px;" src="getMetrics?metricName=Memory"></td>
+				<td colspan="3"><img class="dicas" title="Free Heap Memory %" id="imgRam" style="width:210px;height:110px;margin:0px;padding:0px;" src="getMetrics?metricName=Memory"></td>
 			</tr>
 			<tr> 
-				<td colspan="3"><img id="imgCpu" style="width:210px;height:110px;margin:0px;padding:0px;" src="getMetrics?metricName=CPU"></td>
+				<td colspan="3"><img class="dicas" title="CPU Load" id="imgCpu" style="width:210px;height:110px;margin:0px;padding:0px;" src="getMetrics?metricName=CPU"></td>
 			</tr>
 		</table>
 	</div>

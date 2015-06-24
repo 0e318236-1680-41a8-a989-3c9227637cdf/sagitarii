@@ -35,30 +35,16 @@
 				</div>
 			
 				<div class="userBoard" style="background-color:#FFF; border:0px; height: 30px; margin-top: 0; position: absolute; right: 13px; top: 4px; width: 200px;">
-					<div style="float:left;">
-						<a target="__BLANK" href="teapot.rar"><img style="width: 30px;height: 30px;" src="img/download.png"></a>
-					</div>
 					<div style="float:left; width:160px">
-						<div class="userBoardT1" style="color:#ADADAD">Download Teapot Node</div>
-						<div class="userBoardT2" style="color:#ADADAD">Version 1.0.125</div>
+						<div class="userBoardT1" style="color:#ADADAD;text-align:right">
+							<a target="__BLANK" href="teapot.rar">Teapot Node v1.0.125</a>
+						</div>
+						<div class="userBoardT1" style="color:#ADADAD;text-align:right">
+							<a target="__BLANK" href="download.zip">Data Upload Tool v1.0</a>
+						</div>
 					</div>							
 				</div>
 
-				<!--  
-
-				<div class="userBoard" style="background-color:#4D7A93; border:0px; height: 30px; margin-top: 0; position: absolute; right: 215px; top: 4px; width: 200px;">
-					<div style="float:left;">
-						<a target="__BLANK" href="uploader.zip"><img style="width: 30px;height: 30px;" src="img/download.png"></a>
-					</div>
-					<div style="float:left; width:160px">
-						<div class="userBoardT1" style="color:white">Download Data Uploader Tool</div>
-						<div class="userBoardT2" style="color:#ADADAD">Version 0.0.5-beta</div>
-					</div>							
-				</div>
-				
-				-->
-				
-				<div id="orgName"></div>
 			</div>
 
 			<div id="msgBar">

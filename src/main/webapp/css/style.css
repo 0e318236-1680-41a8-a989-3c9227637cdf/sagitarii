@@ -57,6 +57,12 @@ td a {
 	font-weight : bold;
 }
 
+a {
+	text-decoration : none;
+	color : #4D7A93;
+	font-weight : bold;
+}
+
 td input {
 	font-family: 'Exo 2', Arial,Helvetica,sans;
 	font-size : 9px;
@@ -475,8 +481,8 @@ td input {
 
 #centerContainer {
 	min-height : 400px;
-	padding-top: 10px;
-	padding-bottom: 10px;
+	padding-top: 5px;
+	padding-bottom: 5px;
 	position:relative;
 }
 
