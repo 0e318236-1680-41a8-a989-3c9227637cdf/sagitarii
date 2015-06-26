@@ -54,6 +54,7 @@ public class ClustersManager {
 				cluster.setTotalMemory( tasks.getTotalMemory() );
 				cluster.setFreeMemory( tasks.getFreeMemory() );
 				cluster.setTasks( tasks.getData() );
+				cluster.updateStatus();
 			}
 			
 		} catch ( Exception e ) {
