@@ -326,12 +326,10 @@ public class RelationService {
 	}
 
 	/**
-	 * Retorna a estrutura de determinada tabela 
-	 * 
-	 * 	***** ALERTA : CONTÉM CÓDIGO ESPECÍFICO PARA POSTGRE SQL *****
+	 * Retorns a table structure 
 	 * 
 	 * @param tableName
-	 * @return Lista de UserTableEntity
+	 * @return UserTableEntity list
 	 * @throws Exception
 	 */
 	public Set<UserTableEntity> getTableStructure(String tableName) throws Exception {
@@ -344,9 +342,8 @@ public class RelationService {
 	
 	
 	/**
-	 * Retorna as conexões abertas pelo Sagitarii e a query que está sendo executada por cada uma. 
+	 * Get the system open database connections 
 	 * 
-	 * 	***** ALERTA : CONTÉM CÓDIGO ESPECÍFICO PARA POSTGRE SQL *****
 	 */
 	public List<DatabaseConnectionItem> getConnectionUse() throws Exception {
 		logger.debug("get database connection use");
@@ -419,9 +416,7 @@ public class RelationService {
 
 	
 	/**
-	 * Importa uma lista de strings contendo valores CSV para uma tabela do usuário.
-	 * (importação de dados iniciais)
-	 * 
+	 * Receive the CSV data from Teapot
 	 * @param rd um objeto ReceivedData
 	 * @param owner o Experimento que será o proprietário dos dados
 	 * @param importer um objeto FileImporter  
@@ -460,14 +455,35 @@ public class RelationService {
 			String values = "";
 			String columns = "id_experiment,id_activity,id_instance," ;
 			
+			char delimiter = Configurator.getInstance().getCSVDelimiter();
+			String emptyData = delimiter + "" + delimiter;
+			String nullData = delimiter + "null" + delimiter;
+
+			// Is the middle value null?
+			String contentDataLine = contentLines.get(x).replace(emptyData, nullData);
+			
+			// Is the last value null? 
+			if ( contentDataLine.endsWith( String.valueOf( delimiter ) ) ) {
+				contentDataLine = contentDataLine + "null";
+			}
+			// Is the first value null? 
+			if ( contentDataLine.startsWith( String.valueOf( delimiter ) ) ) {
+				contentDataLine = "null" + contentDataLine;
+			}
+			// =============================
+			
 			String[] columnsArray = contentLines.get(0).split( String.valueOf( Configurator.getInstance().getCSVDelimiter() ) );
-			String[] valuesArray = contentLines.get(x).split( String.valueOf( Configurator.getInstance().getCSVDelimiter() ) );
+			String[] valuesArray = contentDataLine.split( String.valueOf( delimiter ) );
 			
 			for ( int z = 0; z < columnsArray.length; z++ ) {
 				try {
 					if ( attributeExists( columnsArray[z], structure ) ) {
-						columns = columns + columnsArray[z] + ",";		
-						values = values + "'" + valuesArray[z] + "',";
+						columns = columns + columnsArray[z] + ",";
+						if ( valuesArray[z].equals("null") ) {
+							values = values + valuesArray[z] + ",";
+						} else {
+							values = values + "'" + valuesArray[z] + "',";
+						}
 					}
 				} catch ( Exception ex ) {
 					logger.error("Error when inserting data into table " + rd.getTable().getName() );

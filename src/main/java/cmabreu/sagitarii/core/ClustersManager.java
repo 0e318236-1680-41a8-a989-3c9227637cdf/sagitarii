@@ -47,7 +47,15 @@ public class ClustersManager {
 			Gson gson = new Gson();
 			NodeTasks tasks = gson.fromJson( data, NodeTasks.class );
 			Cluster cluster = getCluster( tasks.getNodeId() );
-			cluster.setTasks( tasks.getData() );
+			
+			if ( cluster != null ) {
+				cluster.setLastAnnounce( Calendar.getInstance().getTime() );
+				cluster.setCpuLoad( tasks.getCpuLoad() );
+				cluster.setTotalMemory( tasks.getTotalMemory() );
+				cluster.setFreeMemory( tasks.getFreeMemory() );
+				cluster.setTasks( tasks.getData() );
+			}
+			
 		} catch ( Exception e ) {
 			logger.error( e.getMessage() );
 		}
@@ -247,6 +255,7 @@ public class ClustersManager {
 			String ipAddress, String machineName, Double cpuLoad, String soName, 
 			int availableProcessors, int maxAllowedTasks, long freeMemory, long totalMemory) {
 		Cluster retorno = null;
+		
 		Cluster clu = cm.getCluster(macAddress);
 		if ( clu != null ) {
 			clu.setMachineName( machineName );
