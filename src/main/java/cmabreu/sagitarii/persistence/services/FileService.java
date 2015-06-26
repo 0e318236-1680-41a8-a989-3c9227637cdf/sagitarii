@@ -1,10 +1,15 @@
 package cmabreu.sagitarii.persistence.services;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import cmabreu.sagitarii.core.UserTableEntity;
+import cmabreu.sagitarii.misc.json.JsonUserTableConversor;
 import cmabreu.sagitarii.persistence.entity.File;
 import cmabreu.sagitarii.persistence.entity.FileLight;
 import cmabreu.sagitarii.persistence.exceptions.DatabaseConnectException;
@@ -17,6 +22,41 @@ public class FileService {
 	private FileRepository rep;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 
+	public String getFilesPagination( int idExperiment, String sortColumn, String sSortDir0,
+			String iDisplayStart, String iDisplayLength, String sEcho) throws Exception {
+		
+		String sql = "select * from files where id_experiment = " + idExperiment + " order by " + 
+				sortColumn + " " + sSortDir0 + " offset " + iDisplayStart + " limit " + iDisplayLength ;
+
+		Set<UserTableEntity> result = new HashSet<UserTableEntity>();
+		int totalRecords = 0;
+		
+		if ( !sortColumn.equals("ERROR") ) {
+			RelationService rs = new RelationService();
+			result = rs.genericFetchList( sql );
+			
+			for ( UserTableEntity ute : result  ) {
+				String fileName = ute.getData("filename"); 
+				String idFile = ute.getData("id_file"); 
+				if ( (fileName != null) && ( !fileName.equals("") ) ) {
+					ute.setData("filename", "<a href='getFile?idFile="+idFile+"</a>");
+				}
+			}
+			
+			rs.newTransaction();
+			totalRecords = rs.getCount( "files", "where id_experiment = " + idExperiment);
+		} else {
+			Map<String,String> data = new HashMap<String,String>();
+			data.put("ERROR", "No files for this experiment");
+			UserTableEntity ute = new UserTableEntity(data);
+			result.add(ute);
+
+		}
+		return new JsonUserTableConversor().asJson( result, totalRecords, Integer.valueOf( sEcho ) );
+	}
+
+	
+	
 	public FileService() throws DatabaseConnectException {
 		this.rep = new FileRepository();
 	}

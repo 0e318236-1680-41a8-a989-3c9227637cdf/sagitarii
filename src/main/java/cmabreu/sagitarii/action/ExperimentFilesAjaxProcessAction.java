@@ -12,19 +12,18 @@ import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 
-import cmabreu.sagitarii.persistence.services.RelationService;
+import cmabreu.sagitarii.persistence.services.FileService;
 
 import com.opensymphony.xwork2.ActionContext;
 
-@Action (value = "tableDataAjaxProcess", 
+@Action (value = "experimentFilesAjaxProcess", 
 	results = { 
 		@Result(name="ok", type="httpheader", params={"status", "200"}) } 
 	) 
 
 @ParentPackage("default")
-public class TableDataAjaxProcessAction extends BasicActionClass {
+public class ExperimentFilesAjaxProcessAction extends BasicActionClass {
 	private Integer idExperiment;
-	private String tableName;
 	private String sEcho;
 	private String iDisplayStart;
 	private String iDisplayLength;
@@ -38,8 +37,6 @@ public class TableDataAjaxProcessAction extends BasicActionClass {
 		String resp = "";
 		
 		try {
-			RelationService rs = new RelationService();
-
 			HttpServletRequest req = (HttpServletRequest)ActionContext.getContext().get(StrutsStatics.HTTP_REQUEST);
 			sEcho = req.getParameter("sEcho");
 			iDisplayStart = req.getParameter("iDisplayStart");
@@ -51,8 +48,9 @@ public class TableDataAjaxProcessAction extends BasicActionClass {
 			
 			String sortColumn = columns.get( Integer.valueOf( iSortCol0 ) );
 			
-			resp = rs.inspectExperimentTablePagination(tableName, idExperiment, sortColumn, sSortDir0, iDisplayStart,
-					iDisplayLength, sEcho);
+			FileService fs = new FileService();	
+			
+			resp = fs.getFilesPagination( idExperiment, sortColumn, sSortDir0, iDisplayStart, iDisplayLength, sEcho);
 			
 			resp = resp.replace("\\", "\\\\");
 			
@@ -79,15 +77,9 @@ public class TableDataAjaxProcessAction extends BasicActionClass {
 	}
 
 
-	public void setTableName(String tableName) {
-		this.tableName = tableName;
-	}
-
-
 	public List<String> getColumns() {
 		return columns;
 	}
-
 
 	public void setColumns(List<String> columns) {
 		this.columns = columns;

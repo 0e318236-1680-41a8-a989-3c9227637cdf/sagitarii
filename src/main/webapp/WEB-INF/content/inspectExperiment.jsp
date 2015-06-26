@@ -155,25 +155,10 @@
 							<table class="tableForm"  id="experimentFiles" >
 								<thead>
 									<tr>
-										<th>File ID</th>
 										<th>Name</th>
-										<th>Activity</th>
-										<th>Instance</th>
-										<th>&nbsp;</th>
 									</tr>
 								</thead>
 								<tbody>
-									<c:forEach var="file" items="${files}">
-									<tr>
-										<td>${file.idFile}</td>
-										<td><a target="_BLANK" href="getFile?idFile=${file.idFile}">${file.fileName}</a></td>
-										<td>${file.activity.tag}</td>
-										<td>${file.instance.serial}</td>
-										<td>
-											<img class="miniButton dicas" title="Delete" onclick="deleteFile('${file.idFile}')" src="img/delete.png">
-										</td>
-									</tr>
-									</c:forEach>
 								</tbody>
 							</table>
 						</div>
@@ -204,22 +189,50 @@
 	        "oLanguage": {
 	            "sUrl": "js/pt_BR.txt"
 	        },	
-	        "iDisplayLength" : 5,
-			"bLengthChange": false,
-			"fnInitComplete": function(oSettings, json) {
-				this.fnSort( [[0,'asc']] );
-				doTableComplete();
-			},
-			"bAutoWidth": false,
-			"sPaginationType": "full_numbers",
-			"aoColumns": [ 
-						  { "sWidth": "10%" },
-						  { "sWidth": "50%" },
-						  { "sWidth": "10%" },
-						  { "sWidth": "20%" },
-						  { "sWidth": "10%" }]						
-		});		
+			
+	        "bLengthChange": false,
+			"sPaginationType": "full_numbers",	
+			"iDisplayLength" : 30,	
+			"bAutoWidth" : false,
+			"bFilter": false,
+			"sScrollX": "100%",
 
+	        "bProcessing": true,
+	        "bServerSide": true,
+	        "sAjaxSource" : "experimentFilesAjaxProcess?idExperiment=${experiment.idExperiment}", 
+	        "sServerMethod": "POST",
+	        "aoColumns": [
+             			{ "mDataProp": "filename" },
+	      	        ],
+	        
+	        "fnServerData": function ( sSource, aoData, fnCallback, oSettings ) {
+	        	aoData.push( { "name": "columns", "value": "filename" } );
+	        	oSettings.jqXHR = $.ajax({
+	              "dataType": 'json',
+	              "type": "POST",
+	              "url": sSource,
+	              "data": aoData,
+	              "success": fnCallback
+	         	}); 
+	         },
+	         
+	        "fnInitComplete": function(oSettings, json) {
+	        	doComplete();
+	        }
+		});	
+
+		
+		
+		function doComplete() {
+			doTableComplete();
+			$("#experimentFiles_wrapper .dataTable").each(function() {
+				$(this).css("padding-top","0px");
+				$(this).css("margin-bottom","0px");
+			});
+			$(".dataTables_scroll").css("margin-bottom","10px");
+			$(".dataTables_scroll").css("padding-top","10px");
+		}
+		
 		
 		$('#customTables').dataTable({
 	        "oLanguage": {

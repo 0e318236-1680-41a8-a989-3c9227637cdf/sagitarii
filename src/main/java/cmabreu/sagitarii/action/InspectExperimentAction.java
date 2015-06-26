@@ -31,7 +31,6 @@ public class InspectExperimentAction extends BasicActionClass {
 	private Set<UserTableEntity> result;
 	private String sql;
 	private List<Relation> customTables;
-	private Set<FileLight> files;
 	private Set<CustomQuery> queries;
 	
 	public String execute () {
@@ -47,9 +46,6 @@ public class InspectExperimentAction extends BasicActionClass {
 				//
 			} 
 			
-			try {
-				files = new FileService().getList( idExperiment );	
-			} catch ( NotFoundException ignored ) {		}
 			
 		} catch ( Exception e ) {
 			setMessageText("Error: " + e.getMessage() );
@@ -86,10 +82,6 @@ public class InspectExperimentAction extends BasicActionClass {
 		return customTables;
 	}
 
-	public Set<FileLight> getFiles() {
-		return files;
-	}
-	
 	public Set<CustomQuery> getQueries() {
 		return queries;
 	}
