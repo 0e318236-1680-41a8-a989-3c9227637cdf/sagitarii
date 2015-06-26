@@ -102,45 +102,53 @@ public class FragmentInstancer {
 		}
 		return result;
 	}
+
 	
-	/**
-	 * Verifica se a atividade 'activity' está apta a ser executada.
-	 * Se é uma atividade de início de Workflow ( não há atividades de entrada )
-	 * verifica se a tabela de entrada possui dados.
-	 * 
-	 * Se é uma atividade de início de fragmento ( possui atividade(s) de entrada )
-	 * então verifica se todas estão como "FINISHED". Então verifica se todas as 
-	 * tabelas de entrada possuem dados.  
-	 *   
-	 * @param activity
-	 * @return
-	 */
-	private boolean isAllowedToRun( Activity activity ) {
-		int count = 0;
+	private boolean checkExperimentStartPoint( Activity activity ) {
 		if ( activity.getPreviousActivities().size() == 0 ) {
-			// � ponto de entrada do workflow.
-			// Verificar se a tabela de entrada possui dados.
-			logger.debug(activity.getTag() +  " is workflow entrance point. checking data availability...");
+			// Is the Experiment start point. Check data availability.
+			logger.debug(activity.getTag() +  " is Experiment entrance point. checking data availability...");
 			boolean finalResult = activity.getInputRelations().size() > 0;
+			int count = 0;
 			for ( Relation rel : activity.getInputRelations() ) {
-				finalResult = finalResult && haveTableSomeData( rel.getName() ); 
+				if ( !haveTableSomeData( rel.getName() ) ) {
+					count++;
+					logger.debug( " > needed source table " + rel.getName() + " produced no data.");
+				} else {
+					logger.debug( " > needed source table " + rel.getName() + " have data.");
+				}
 			}
+			int totalAvailability = activity.getInputRelations().size() - count;
+			finalResult = finalResult && ( totalAvailability > 0  );
 			return finalResult; 
 		} else {
-			// � inicial de fragmento. 
-			// Verificar se todas as atividades anteriores produziram dados.
-			logger.debug(activity.getTag() +  " is fragment entrance point. checking data availability...");
+			return true;
+		}
+	}
+	
+	private boolean checkSourceDataAvailability( Activity activity ) {
+		boolean canRun = false;  
+		if ( activity.getPreviousActivities().size() > 0 ) {
+			// Is the Fragment start point. Check all previous activities for produced data. 
+			logger.debug(activity.getTag() +  " is Fragment entrance point. checking data availability...");
+			int count = 0;
 			for ( Activity act : activity.getPreviousActivities() ) {
 				if ( !haveTableSomeData( act.getOutputRelation().getName() ) ) {
 					count++;
-					logger.debug( "needed activity " + act.getTag() + " (" + act.getSerial() + ") produced no data. Table " + act.getOutputRelation().getName() );
+					logger.debug( " > needed activity " + act.getTag() + " (" + act.getSerial() + ") produced no data. Table " + act.getOutputRelation().getName() );
 				} else {
-					logger.debug( "needed activity " + act.getTag() + " (" + act.getSerial() + ") produced data in table " + act.getOutputRelation().getName() );
+					logger.debug( " > needed activity " + act.getTag() + " (" + act.getSerial() + ") produced data in table " + act.getOutputRelation().getName() );
 				}
 			}
-			if ( count > 0 ) { return false; }
+			int totalAvailability = activity.getPreviousActivities().size() - count;
+			if ( totalAvailability == 0  ) {
+				canRun = false;
+			}
+		} else {
+			return checkExperimentStartPoint( activity );
 		}
-		return true;
+		// canRun == false means: Its a Experiment entrance point ( previous activities = 0 ) or we have no data anywhere
+		return canRun;
 	}
 	
 	
@@ -159,31 +167,41 @@ public class FragmentInstancer {
 					Activity act = getEntrancePoint( frag );
 					if ( act != null ) {
 						logger.debug("entrance point: activity " + act.getTag() );
-						if ( isAllowedToRun(act) ) {
-							
+						// Check if any of source tables have any data...
+						if ( checkSourceDataAvailability( act ) ) {
 							instances = InstanceGeneratorFactory.getGenerator( act.getType() ).generateInstances(act, frag);
-	
 							if ( instances.size() > 0 ) {
-								logger.debug("done. " + instances.size() + " instances generated. Will store...");
+								logger.debug("done. " + instances.size() + " instances generated. will store...");
 								new InstanceService().insertInstanceList(instances);
-								logger.debug("done storing instances to database. Updating fragment status...");
+								logger.debug("done storing instances to database. updating fragment status...");
 								
 								frag.setStatus( FragmentStatus.PIPELINED );
 								frag.setRemainingInstances( instances.size() );
 								frag.setTotalInstances( instances.size() );
+								FragmentService fs = new FragmentService();
+								fs.updateFragment( frag );
 								
 							} else {
-								logger.debug("ERROR: no instances was created.");
+								logger.error("no instances were created.");
 							}
 							logger.debug("done");
-							
 						} else {
-							logger.debug("not allowed to run");
-							frag.setStatus( FragmentStatus.READY );
+							if ( checkExperimentStartPoint(act) ) {
+								logger.warn("no data found in any source tables. cannot run this Experiment.");
+								// Its an Experiment entrance point with no data. Cannot Run!
+							} else {
+								// Its a Fragment entrance point with no data. Finish it!
+								logger.warn("no data found in any source tables. finishing this Fragment...");
+								frag.setStatus( FragmentStatus.FINISHED );
+								frag.setRemainingInstances( 0 );
+								frag.setTotalInstances( 0 );
+								FragmentService fs = new FragmentService();
+								fs.updateFragment( frag );
+							}
 						}
-						new FragmentService().updateFragment( frag );
+						
 					} else {
-						logger.debug("no entrance point");
+						logger.debug("no entrance point. aborting...");
 					}
 				}
 			}

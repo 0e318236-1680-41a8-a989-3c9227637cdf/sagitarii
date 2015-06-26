@@ -79,7 +79,7 @@
 		</Logger>
 
 
-		<Logger name="cmabreu.sagitarii.core.FragmentInstancer" level="error" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.core.FragmentInstancer" level="debug" additivity="false"> 
 			<appender-ref ref="Console"/> 
 		</Logger>
 

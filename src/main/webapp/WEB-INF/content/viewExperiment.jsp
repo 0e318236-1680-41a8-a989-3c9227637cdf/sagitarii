@@ -178,20 +178,23 @@
 							<table>
 								<tr>
 									<th style="width:50%">Name</th>
-									<th style="width:40%">Description</th>
+									<th style="width:30%">Description</th>
+									<th style="width:10%">&nbsp;</th>
 								</tr>
 								<c:forEach var="table" items="${experiment.usedTables}">
 									<tr>
 										<td>${table.name}</td>
 										<td>${table.description}&nbsp;</td>
+										<td>
+											<a href="getTableSample?tableName=${table.name}">
+												<img title="Get table sample CSV data" class="miniButton dicas" src="img/csv.png")">
+											</a>
+										</td>
 									</tr>
 								</c:forEach>
 							</table>
 						</div>
 										
-
-
-
 						<div class="basicCentralPanelBar">
 							<img src="img/fragment.png">
 							<div class="basicCentralPanelBarText">Fragments</div>
@@ -265,7 +268,7 @@
 
 	function viewImageCanvas() {
 		var cyImage = "${experiment.imagePreviewData}";
-	    var image = "<img name='compman' style='border-radius:5px;margin:0px;height:100%;width:100%' src='"+cyImage+"' />";
+	    var image = "<img name='compman' style='border-radius:5px;margin:0px;height:180px;width:100%' src='"+cyImage+"' />";
 	    $("#imageCanvas").html(image);
 	}
 	

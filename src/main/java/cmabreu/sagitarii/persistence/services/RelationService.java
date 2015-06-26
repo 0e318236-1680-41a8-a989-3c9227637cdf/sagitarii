@@ -1,5 +1,6 @@
 package cmabreu.sagitarii.persistence.services;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -83,6 +84,30 @@ public class RelationService {
 		}
 	}
 
+	// Get the first 40 lines and export as CSV to the user.
+	public ByteArrayInputStream getTableSample( String tableName ) throws Exception {
+		Set<UserTableEntity> utes = genericFetchList( "select * from " + tableName + " offset 0 limit 40" );
+		StringBuilder columns = new StringBuilder();
+		StringBuilder dataLine = new StringBuilder();
+		boolean columnsDone = false;
+		StringBuilder csvData = new StringBuilder(); 
+		for ( UserTableEntity ute : utes ) {
+			String prefix = "";
+			for ( String column : ute.getColumnNames() ) {
+				String data = ute.getData( column );
+				if( !columnsDone ) { columns.append( prefix + column ); }
+				dataLine.append( prefix + data );
+				prefix = ",";
+			}
+			if( !columnsDone ) { csvData.append( columns.toString() + "\n" ); }
+			csvData.append( dataLine.toString() + "\n");
+			dataLine.setLength(0);
+			columnsDone = true;
+		}
+        return new ByteArrayInputStream( csvData.toString().getBytes("UTF-8") );
+	}
+	
+	
 	public String inspectExperimentQueryPagination(CustomQuery query, String sortColumn, String sSortDir0,
 			String iDisplayStart, String iDisplayLength, String sEcho) throws Exception {
 		
