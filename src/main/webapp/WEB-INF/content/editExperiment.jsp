@@ -419,7 +419,7 @@
 		
 		$("#cmbWrappers").find('option').remove();
 		for(var x=0; x<wrappers.length; x++  ) {
-			if( ( wrappers[x][0] == type ) || ( (type=="MAP") && ( wrappers[x][0] == "RSCRIPT") ) || ( (type=="REDUCE") && ( wrappers[x][0] == "RSCRIPT") ) ) {
+			if( ( wrappers[x][0] == type ) || ( (type=="SPLIT_MAP") && ( wrappers[x][0] == "RSCRIPT") ) || ( (type=="MAP") && ( wrappers[x][0] == "RSCRIPT") ) || ( (type=="REDUCE") && ( wrappers[x][0] == "RSCRIPT") ) ) {
 				$("#cmbWrappers").append(
 					$('<option></option>').val( wrappers[x][1] ).html( wrappers[x][2] )
 				);
