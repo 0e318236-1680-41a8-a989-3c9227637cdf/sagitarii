@@ -10,7 +10,7 @@ import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 
-import cmabreu.sagitarii.core.sockets.FileReceiverManager;
+import cmabreu.sagitarii.core.filetransfer.FileReceiverManager;
 
 import com.opensymphony.xwork2.ActionContext;
 

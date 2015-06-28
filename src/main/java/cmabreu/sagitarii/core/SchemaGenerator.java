@@ -7,11 +7,6 @@ public class SchemaGenerator {
 	
 	/**
 	 * Gera uma lista de valores baseado em uma string CSV.
-	 *  
-	 * @param csvList uma string contendo valores em CSV
-	 * @param separator um caractere separador de CSV ( EX: ; ou , )
-	 * 
-	 * @return um array de strings contendo os valores resultantes.
 	 * 
 	 */
 	public static List<String> generateList( String csvList, String separator ) {
@@ -28,9 +23,6 @@ public class SchemaGenerator {
 	/**
 	 * Gera um esquema de criação de tabela (DDL).
 	 * 
-	 * @param tableName nome da tabela a ser criada. 
-	 * @param attributes List<TableAttribute> coleção de atributos da tabela.
-	 * @return o esquema DDL da tabela criada.
 	 */
 	public static String generateSchema( String tableName, List<TableAttribute> attributes ) {
 		String retorno = "CREATE TABLE " + tableName + "( ";

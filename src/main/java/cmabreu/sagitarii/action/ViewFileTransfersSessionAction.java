@@ -8,9 +8,9 @@ import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 
-import cmabreu.sagitarii.core.sockets.FileImporter;
-import cmabreu.sagitarii.core.sockets.FileReceiverManager;
-import cmabreu.sagitarii.core.sockets.FileSaver;
+import cmabreu.sagitarii.core.filetransfer.FileImporter;
+import cmabreu.sagitarii.core.filetransfer.FileReceiverManager;
+import cmabreu.sagitarii.core.filetransfer.FileSaver;
 
 @Action (value = "viewFileTransfersSession", 
 	results = { 

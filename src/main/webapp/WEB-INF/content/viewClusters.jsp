@@ -100,6 +100,23 @@
 									<c:if test="${not fn:contains(cluster.macAddress, 'S0-A0-G0-I0-T0-A0-RI')}">
 										<table style="margin-bottom: 5px;width:98%; margin-left:10px; margin-top: 5px">
 												<tr>
+													<th>File</th>
+													<th>Percent</th>
+												</tr>									
+												<c:forEach var="listener" items="${cluster.progressListeners}">
+													<tr>
+														<td>${listener.fileName}</td>
+														<td>${listener.percentage}</td>
+													</tr>									
+												</c:forEach>
+										</table>
+									</c:if>
+
+
+
+									<c:if test="${not fn:contains(cluster.macAddress, 'S0-A0-G0-I0-T0-A0-RI')}">
+										<table style="margin-bottom: 5px;width:98%; margin-left:10px; margin-top: 5px">
+												<tr>
 													<th>Workflow</th>
 													<th>Experiment</th>
 													<th>Task ID</th>

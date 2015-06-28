@@ -1,5 +1,7 @@
 package cmabreu.sagitarii.persistence.entity;
 
+import java.io.ByteArrayInputStream;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -11,9 +13,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+
+import cmabreu.sagitarii.core.ClustersManager;
+import cmabreu.sagitarii.misc.ProgressAwareInputStream;
+import cmabreu.sagitarii.misc.ProgressListener;
 
 @Entity
 @Table(name="files", indexes = {
@@ -51,6 +58,19 @@ public class File {
 	
 	public int getIdFile() {
 		return idFile;
+	}
+	
+	@Transient
+	public ProgressAwareInputStream getDownloadStream( String macAddress ) {
+		if ( file == null ) {
+			return null;
+		}
+        ProgressAwareInputStream pais = new ProgressAwareInputStream( new ByteArrayInputStream( file ), 
+        		file.length, fileName );
+        ProgressListener pl = new ProgressListener( );
+        pais.setOnProgressListener( pl );
+        ClustersManager.getInstance().addProgressListener( macAddress, pl );
+        return pais; 
 	}
 
 	public void setIdFile(int idFile) {

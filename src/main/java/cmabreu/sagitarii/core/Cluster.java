@@ -3,6 +3,7 @@ package cmabreu.sagitarii.core;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -14,6 +15,7 @@ import cmabreu.sagitarii.core.types.InstanceStatus;
 import cmabreu.sagitarii.metrics.MetricController;
 import cmabreu.sagitarii.metrics.MetricType;
 import cmabreu.sagitarii.misc.DateLibrary;
+import cmabreu.sagitarii.misc.ProgressListener;
 import cmabreu.sagitarii.misc.json.NodeTask;
 import cmabreu.sagitarii.persistence.entity.Activity;
 import cmabreu.sagitarii.persistence.entity.Instance;
@@ -43,7 +45,31 @@ public class Cluster {
 	private long totalMemory;
 	private List<NodeTask> tasks;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
+	
+	private List<ProgressListener> progressListeners;
+	
+	public void addProgressListener( ProgressListener listener ) {
+		progressListeners.add( listener );
+	}
 
+	public List<ProgressListener> getProgressListeners() {
+		return new ArrayList<ProgressListener>(progressListeners);
+	}
+	
+	private void removeListeners() {
+		logger.debug("cleaning listeners...");
+		int total = 0;
+		Iterator<ProgressListener> i = progressListeners.iterator();
+		while ( i.hasNext() ) {
+			ProgressListener pl = i.next(); 
+			if ( pl.getPercentage() == 100 ) {
+				i.remove();
+				total++;
+			}
+		}		
+		logger.debug( total + " listeners deleted" );
+	}
+	
 	public void setTasks(List<NodeTask> tasks) {
 		this.tasks = tasks;
 	}
@@ -305,6 +331,7 @@ public class Cluster {
 			runningInstances.remove( pipe );
 			pipe = getFinishedTask();
 		}
+		removeListeners();
 	}
 	
 	public void setLastAnnounce(Date lastAnnounce) {

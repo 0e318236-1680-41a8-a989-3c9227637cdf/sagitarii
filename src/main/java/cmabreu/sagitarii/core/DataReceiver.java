@@ -6,8 +6,8 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import cmabreu.sagitarii.core.sockets.FileImporter;
-import cmabreu.sagitarii.core.sockets.ReceivedFile;
+import cmabreu.sagitarii.core.filetransfer.FileImporter;
+import cmabreu.sagitarii.core.filetransfer.ReceivedFile;
 import cmabreu.sagitarii.core.types.ActivityStatus;
 import cmabreu.sagitarii.core.types.ActivityType;
 import cmabreu.sagitarii.core.types.InstanceStatus;

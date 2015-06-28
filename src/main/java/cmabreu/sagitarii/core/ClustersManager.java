@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 
 import cmabreu.sagitarii.core.delivery.InstanceDeliveryControl;
 import cmabreu.sagitarii.core.types.InstanceStatus;
+import cmabreu.sagitarii.misc.ProgressListener;
 import cmabreu.sagitarii.misc.json.NodeTasks;
 import cmabreu.sagitarii.persistence.entity.Instance;
 
@@ -36,9 +37,18 @@ public class ClustersManager {
 				break;
 			}
 		}
-		
 	}
 
+	
+	public void addProgressListener( String macAddress, ProgressListener listener ) {
+		logger.debug( "node " + macAddress + " is downloading file " + listener.getFileName() );
+		Cluster clu = getCluster(macAddress);
+		if ( clu != null ) {
+			clu.addProgressListener(listener);
+		}
+	}
+	
+	
 	public void receiveNodeTasks( String data ) {
 		if ( data == null ) {
 			return;
@@ -155,9 +165,6 @@ public class ClustersManager {
 	 * gerado (antes de gravar no banco) e é necessário enviar este ID ao Nó
 	 * para facilitar o encontro do mesmo instance quando a tarefa for concluída.
 	 * (O nó não precisa do ID, ele vai devolver ao Sagitarii junto com os dados).
-	 * 
-	 * @param instance
-	 * @return
 	 */
 	private String fillInstanceID( Instance instance ) {
 		return instance.getContent().replace("##TAG_ID_INSTANCE##", String.valueOf( instance.getIdInstance() ) );

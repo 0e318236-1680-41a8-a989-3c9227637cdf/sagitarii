@@ -10,8 +10,8 @@ import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 
-import cmabreu.sagitarii.core.sockets.FileImporter;
-import cmabreu.sagitarii.core.sockets.FileSaver;
+import cmabreu.sagitarii.core.filetransfer.FileImporter;
+import cmabreu.sagitarii.core.filetransfer.FileSaver;
 import cmabreu.sagitarii.persistence.entity.Activity;
 import cmabreu.sagitarii.persistence.entity.CustomQuery;
 import cmabreu.sagitarii.persistence.entity.Experiment;

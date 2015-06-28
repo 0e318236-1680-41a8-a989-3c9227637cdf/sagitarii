@@ -70,10 +70,6 @@ public class ExperimentService {
 	
 	/**
 	 * Gera as atividades e os fragmentos para um experimento mas não salva no banco de dados.
-	 *  
-	 * @param idExperiment
-	 * @return um experimento
-	 * @throws Exception em caso de erro
 	 */
 	public Experiment previewExperiment( int idExperiment ) throws Exception {
 		Experiment exp = getExperiment(idExperiment);
@@ -95,12 +91,6 @@ public class ExperimentService {
 	 * ordena os fragmentos, coloca o experimento com status = RUNNING 
 	 * e grava tudo no banco de dados.
 	 * 
-	 * @param idExperiment
-	 * 
-	 * @return um objeto Experiment
-
-	 * @throws InsertException
-	 * @throws Exception
 	 */
 	public Experiment runExperiment( int idExperiment ) throws Exception {
 	
@@ -187,8 +177,7 @@ public class ExperimentService {
 	/**
 	 * Apos carregar um experimento do banco de dados, completar com os fragmentos e as
 	 * respectivas atividades.
-	 * @param experiment
-	 * @return
+
 	 */
 	private Experiment fillExperiment( Experiment experiment ) {
 		try {
@@ -224,12 +213,6 @@ public class ExperimentService {
 	
 	/** 
 	 * Gera um experimento baseado nos dados de um workflow.
-	 * 
-	 * @param idWorkflow o workflow de base
-	 * @param owner o usuario que sera proprietario do experimento
-	 * @return um experimento
-	 * 
-	 * @throws InsertException em caso de erro
 	 */
 	public Experiment generateExperiment( int idWorkflow, User owner ) throws InsertException {
 		Experiment ex = new Experiment();
@@ -249,10 +232,6 @@ public class ExperimentService {
 
 	/**
 	 * Copy an Experiment
-	 * @param source Experiment to copy
-	 * @param owner logged User ( owner of this copy may not be the same of the source Experiment )
-	 * @return the new experiment
-	 * @throws InsertException in case of error
 	 */
 	public Experiment generateExperiment( Experiment source, User owner ) throws InsertException {
 		Experiment ex = new Experiment();

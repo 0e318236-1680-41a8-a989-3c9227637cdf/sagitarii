@@ -35,11 +35,6 @@ public class Uploader {
 	
 	/**
 	 * Envia um arquivo CSV ao servidor
-	 * @param fileName nome e caminho do arquivo CSV
-	 * @param relationName noma da tabela que irá receber o arquivo (já deverá existir)
-	 * @param experimentSerial tag do experimento associado a estes dados (já deverá existir)
-	 * 
-	 * @throws IOException
 	 */
 	public void uploadCSV(String fileName, String relationName, String experimentSerial, 
 			String filesFolderName, SystemProperties tm) throws Exception {

@@ -57,10 +57,6 @@ public class Communicator  {
 	* Send a GET request to Sagitarii
 	* 
 	* Exemple : targetAction = "myStrutsAction", parameters = "name=foo&sobrenome=Bar"
-	*
-	* @param  targetAction  a Struts2 action
-	* @param  parameters the GET request URL 
-	* @return Sagitarii response
 	*/
 	public String send( String targetAction, String parameters ) {
 		String resposta = "COMM_ERROR";

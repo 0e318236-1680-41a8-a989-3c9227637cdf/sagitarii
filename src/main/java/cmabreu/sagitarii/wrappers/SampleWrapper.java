@@ -78,9 +78,6 @@ public class SampleWrapper {
 	 * 		data[ getIndex("age") ] will return "24" 
 	 * 
 	 * 
-	 * @param key the column name
-	 * @param header the header columns in CSV format
-	 * @return the index number of this column name
 	 */
 	private static int getIndex( String key, String header ) {
 		int index = -1;
@@ -95,7 +92,6 @@ public class SampleWrapper {
 	
 	/**
 	 * Process each line of CSV data
-	 * @param line : Array of string: Contains all columns of a line
 	 * 
 	 * You must call line[x] for a specific column
 	 * Example:
@@ -130,9 +126,6 @@ public class SampleWrapper {
 	/**
 	 * Entrance point
 	 * 
-	 * @param args Array of String with parameters passed by Teapot
-	 * 
-	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
 		// Teapot will give you these parameter:
@@ -163,8 +156,6 @@ public class SampleWrapper {
 	/**
 	 * Save a CSV file
 	 * 
-	 * @param fileName the complete file path + name
-	 * @throws FileNotFoundException in case of error
 	 * 
 	 */
 	public static void saveFile(List<String> outputCsv, String fileName) throws FileNotFoundException {
@@ -177,9 +168,6 @@ public class SampleWrapper {
 	
 	/**
 	 * If you need to move files
-	 * @param source source file
-	 * @param dest destination
-	 * @throws IOException in case of any error
 	 */
 	private static void moveFile(String source, String dest) throws IOException {
 		File src = new File(source);
@@ -192,9 +180,6 @@ public class SampleWrapper {
 
 	/**
 	 * This is a method to read the CSV data 
-	 * @param file
-	 * @return StringBuilder : The file data as a list of lines.
-	 * @throws Exception
 	 */
 	public static List<String> readFile(String file) throws Exception {
 		BufferedReader br = new BufferedReader(new FileReader(file));

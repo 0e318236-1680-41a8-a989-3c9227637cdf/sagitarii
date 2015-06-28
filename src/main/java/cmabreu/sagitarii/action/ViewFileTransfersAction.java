@@ -8,8 +8,8 @@ import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 
-import cmabreu.sagitarii.core.sockets.FileReceiverManager;
-import cmabreu.sagitarii.core.sockets.TransferSession;
+import cmabreu.sagitarii.core.filetransfer.FileReceiverManager;
+import cmabreu.sagitarii.core.filetransfer.TransferSession;
 
 @Action (value = "viewFileTransfers", 
 	results = { 

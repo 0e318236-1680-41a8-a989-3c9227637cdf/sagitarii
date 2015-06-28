@@ -1,4 +1,4 @@
-package cmabreu.sagitarii.core.sockets;
+package cmabreu.sagitarii.core.filetransfer;
 
 import java.util.List;
 

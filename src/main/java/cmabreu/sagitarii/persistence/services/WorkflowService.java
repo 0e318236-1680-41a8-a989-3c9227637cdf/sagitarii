@@ -33,8 +33,6 @@ public class WorkflowService {
 	/**
 	 * Inclui um novo workflow no banco de dados.
 	 * 
-	 * @param workflow o workflow a ser incluído.
-	 * @throws InsertException
 	 */
 	public void insertWorkflow(Workflow workflow) throws InsertException {
 		logger.debug("inserting workflow " + workflow.getTag() );
@@ -44,9 +42,6 @@ public class WorkflowService {
 	
 	/**
 	 * Atualiza um workflow no banco de dados.
-	 * 
-	 * @param workflow o objeto workflow a ser atualizado.
-	 * @throws UpdateException
 	 */
 	public void updateWorkflow(Workflow workflow) throws UpdateException {
 		Workflow oldWorkflow;
@@ -68,8 +63,6 @@ public class WorkflowService {
 	/**
 	 * Atualiza a definicao de fluxo de um workflow no banco de dados.
 	 * 
-	 * @param workflow o objeto workflow a ser atualizado.
-	 * @throws UpdateException
 	 */
 	public void updateWorkflowActivities(Workflow workflow) throws UpdateException {
 		Workflow oldWorkflow;
@@ -90,11 +83,6 @@ public class WorkflowService {
 	
 	/**
 	 * Retorna um objeto workflow do banco de dados usando o seu ID como critério de busca.
-	 * 
-	 * @param idWorkflow o id do workflow no banco de dados.
-	 * @return um objeto WorkflowDB.
-	 * 
-	 * @throws NotFoundException
 	 */
 	public Workflow getWorkflow(int idWorkflow) throws NotFoundException{
 		return rep.getWorkflow(idWorkflow);
@@ -167,10 +155,6 @@ public class WorkflowService {
 	/**
 	 * Retorna um objeto workflow do banco de dados usando a sua TAG como critério de busca.
 	 * 
-	 * @param tag a tag do workflow no banco de dados.
-	 * @return um objeto Workflow.
-	 * 
-	 * @throws NotFoundException em caso de erro.
 	 */
 	public Workflow getWorkflow(String tag) throws NotFoundException{
 		return  rep.getWorkflow(tag);
@@ -180,8 +164,6 @@ public class WorkflowService {
 	
 	/**
 	 * Exclui um workflow do banco de dados.
-	 * @param idWorkflow
-	 * @throws DeleteException
 	 */
 	public Workflow deleteWorkflow( int idWorkflow ) throws DeleteException {
 		Workflow workflow = null;
@@ -210,11 +192,6 @@ public class WorkflowService {
 	/**
 	 * Retorna uma lista de workflows.
 	 * 
-	 * @return uma lista com todos os workflows do banco de dados.
-	 * 
-	 * TODO: Filtar por algum critério. 
-	 * 
-	 * @throws NotFoundException
 	 */
 	public List<Workflow> getList() throws NotFoundException {
 		logger.debug( "retrieving workflow list..." );  

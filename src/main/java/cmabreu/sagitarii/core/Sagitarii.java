@@ -12,11 +12,11 @@ import org.apache.logging.log4j.Logger;
 
 import cmabreu.sagitarii.core.delivery.DeliveryUnit;
 import cmabreu.sagitarii.core.delivery.InstanceDeliveryControl;
+import cmabreu.sagitarii.core.filetransfer.FileImporter;
+import cmabreu.sagitarii.core.filetransfer.FileReceiverManager;
+import cmabreu.sagitarii.core.filetransfer.ReceivedFile;
 import cmabreu.sagitarii.core.mail.MailService;
 import cmabreu.sagitarii.core.processor.Activation;
-import cmabreu.sagitarii.core.sockets.FileImporter;
-import cmabreu.sagitarii.core.sockets.FileReceiverManager;
-import cmabreu.sagitarii.core.sockets.ReceivedFile;
 import cmabreu.sagitarii.core.types.ExperimentStatus;
 import cmabreu.sagitarii.core.types.FragmentStatus;
 import cmabreu.sagitarii.persistence.entity.Experiment;
@@ -106,9 +106,6 @@ public class Sagitarii {
 	/**
 	 * Dado um experimento, verifica se existe ainda algum instance pertencente a um de seus
 	 * fragmentos nos buffers de entrada ou de saida.
-	 * 
-	 * @param exp Um experimento
-	 * @return boolean (está ou não em um buffer)
 	 */
 	public boolean experimentIsStillQueued( Experiment exp ) {
 		for( Fragment frag : exp.getFragments() ) {
@@ -136,8 +133,6 @@ public class Sagitarii {
 	/**
 	 * Marca um instance como encerrado ( já foi entregue a um nó e este já o 
 	 * processou e já entregou os dados produzidos de todas as tarefas)
-	 *  
-	 * @param instance um instance
 	 */
 	public synchronized void finishInstance( Instance instance ) {
 		logger.debug("instance " + instance.getSerial() + " is finished");
@@ -428,8 +423,7 @@ public class Sagitarii {
 	/**
 	 * Retorna um instance que estava na fila de processamento mas foi 
 	 * perdido (foi entregue para um nó mas não retornou dentro do tempo esperado)
-	 * 
-	 * @param instance
+
 	 */
 	public synchronized void returnToBuffer( Instance instance ) {
 		if ( instanceOutputBuffer.remove( instance ) ) {
@@ -462,8 +456,6 @@ public class Sagitarii {
 	/**
 	 * Dada uma lista de instances, separa os que serão entregues ao cluster e os que serão
 	 * processados no servidor ( MainCluster ) e adiciona nas listas apropriadas.
-	 * 
-	 * @param pipes
 	 */
 	private synchronized void processAndInclude( List<Instance> pipes ) {
 		for( Instance pipe : pipes ) {
@@ -506,8 +498,6 @@ public class Sagitarii {
 	/**
 	 * Dado um experimento, retorna o fragmento que está sendo executado no momento.
 	 * 
-	 * @param experiment
-	 * @return running fragment
 	 */
 	private synchronized Fragment getRunningFragment( Experiment experiment ) {
 		for ( Fragment frag : experiment.getFragments() ) {
@@ -732,8 +722,6 @@ public class Sagitarii {
 	 * Não retirar da lista de experimentos em execução, pois só assim ele poderá ser 
 	 * colocado em execução novamente. Ver "resume()".
 	 * 
-	 * @param idExperiment
-	 * @throws Exception
 	 */
 	public void pause( int idExperiment ) throws Exception {
 		ExperimentService experimentService = new ExperimentService();
@@ -750,9 +738,6 @@ public class Sagitarii {
 	 * Coloca um experimento pausado para executar novamente.
 	 * Não busca no banco, e sim na lista se experimentos em execução
 	 * para poupar acesso ao banco de dados. Somente o seu status é altarado no banco.
-	 * 
-	 * @param idExperiment
-	 * @throws Exception
 	 */
 	public void resume( int idExperiment ) throws Exception {
 		logger.debug("resuming experiment " + idExperiment);

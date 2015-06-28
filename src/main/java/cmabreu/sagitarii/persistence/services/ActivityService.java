@@ -65,8 +65,6 @@ public class ActivityService {
 	/**
 	 * Atualiza uma atividade
 	 * 
-	 * @param activity a atividade a ser atualizada
-	 * @throws UpdateException
 	 */
 	public void updateActivity(Activity activity) throws UpdateException {
 		Activity oldActivityDB;

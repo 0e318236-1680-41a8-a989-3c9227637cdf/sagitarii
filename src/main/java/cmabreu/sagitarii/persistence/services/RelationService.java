@@ -19,7 +19,7 @@ import cmabreu.sagitarii.core.SchemaGenerator;
 import cmabreu.sagitarii.core.TableAttribute;
 import cmabreu.sagitarii.core.UserTableEntity;
 import cmabreu.sagitarii.core.config.Configurator;
-import cmabreu.sagitarii.core.sockets.FileImporter;
+import cmabreu.sagitarii.core.filetransfer.FileImporter;
 import cmabreu.sagitarii.misc.DatabaseConnectionItem;
 import cmabreu.sagitarii.misc.json.JsonUserTableConversor;
 import cmabreu.sagitarii.persistence.entity.Consumption;
@@ -352,10 +352,6 @@ public class RelationService {
 
 	/**
 	 * Retorns a table structure 
-	 * 
-	 * @param tableName
-	 * @return UserTableEntity list
-	 * @throws Exception
 	 */
 	public Set<UserTableEntity> getTableStructure(String tableName) throws Exception {
 		logger.debug("get schema from " + tableName );
@@ -413,9 +409,6 @@ public class RelationService {
 	
 	/**
 	 * Verifica se uma coluna de determinado nome existe na estrutura de uma tabela.
-	 * @param attribute
-	 * @param structure
-	 * @return
 	 */
 	private boolean attributeExists( String attribute, Set<UserTableEntity> structure ) {
 		for ( UserTableEntity ute : structure  ) {
@@ -442,11 +435,6 @@ public class RelationService {
 	
 	/**
 	 * Receive the CSV data from Teapot
-	 * @param rd um objeto ReceivedData
-	 * @param owner o Experimento que será o proprietário dos dados
-	 * @param importer um objeto FileImporter  
-	 * 
-	 * @throws Exception
 	 */
 	public void importCSVData(ReceivedData rd, FileImporter importer) throws Exception {
 		String sql = "";

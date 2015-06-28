@@ -92,9 +92,6 @@ public class RelationRepository extends BasicRepository {
 	 * Executa um acesso generico no banco de dados
 	 * Não deve ser utilizado para SELECT.
 	 * 
-	 * @param query (update ou delete)
-	 * 
-	 * @throws Exception
 	 */
 	public void executeQuery( String query ) throws Exception {
 		logger.debug("execute query");

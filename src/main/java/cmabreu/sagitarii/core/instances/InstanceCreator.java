@@ -300,9 +300,6 @@ public class InstanceCreator {
 	/**
 	 * Checa se uma atividade est� contida no fragmento sendo processado.
 	 * 
-	 * @param fragment
-	 * @param act
-	 * @return
 	 */
 	private boolean contains( Activity act ) {
 		for ( Activity activity : fragment.getActivities() ) {

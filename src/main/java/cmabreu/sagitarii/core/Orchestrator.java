@@ -11,8 +11,8 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
 import cmabreu.sagitarii.core.config.Configurator;
+import cmabreu.sagitarii.core.filetransfer.FileReceiverManager;
 import cmabreu.sagitarii.core.processor.MainCluster;
-import cmabreu.sagitarii.core.sockets.FileReceiverManager;
 import cmabreu.sagitarii.core.types.ExecutorType;
 import cmabreu.sagitarii.core.types.UserType;
 import cmabreu.sagitarii.metrics.Chronos;

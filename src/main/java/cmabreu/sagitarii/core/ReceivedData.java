@@ -4,7 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import cmabreu.sagitarii.core.sockets.ReceivedFile;
+import cmabreu.sagitarii.core.filetransfer.ReceivedFile;
 import cmabreu.sagitarii.persistence.entity.Activity;
 import cmabreu.sagitarii.persistence.entity.Instance;
 import cmabreu.sagitarii.persistence.entity.Relation;

@@ -1,4 +1,4 @@
-package cmabreu.sagitarii.core.sockets;
+package cmabreu.sagitarii.core.filetransfer;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -76,9 +76,6 @@ public class FileReceiverManager {
 
 	/**
 	 * Start the File Receiver Server
-	 * @param serverPort the port to listen (default 3333)
-	 * @param chunkBuffer the size of chunk data. Warning: This value must be the same found in Teapot configuration.
-	 *  
 	 */
 	public void startServer( int serverPort, int chunkBuffer ) {
 		logger.debug("start server port " + serverPort + " buffer " + chunkBuffer );
@@ -91,8 +88,6 @@ public class FileReceiverManager {
 	
 	/**
 	 * Start a transaction in Sagitarii File Cache to receive data from Node
-	 * @return "ok" or "error"
-	 * @throws Exception if error.
 	 */
 	public String beginTransaction() throws Exception {
 		return server.beginTransaction();
@@ -101,8 +96,6 @@ public class FileReceiverManager {
 	/**
 	 * Stop all Savers from this session and clear the cache.
 	 * This will delete all files received.
-	 * @param sessionSerial the session that will be forced to stop
-	 * 
 	 */
 	public void forceStopAndCancel( String sessionSerial ) throws Exception {
 		logger.debug("will stop session " + sessionSerial + " at user request");
@@ -130,9 +123,6 @@ public class FileReceiverManager {
 	/**
 	 * Return all savers from a given session serial number
 	 * 
-	 * @param sessionSerial a session serial number
-	 * @return a list of FileSavers from that session
-	 * 
 	 */
 	public List<FileSaver> getSaversBySession( String sessionSerial ) {
 		List<FileSaver> savers = new ArrayList<FileSaver>();
@@ -146,7 +136,6 @@ public class FileReceiverManager {
 
 	/**
 	 * Return all savers in transfer process
-	 * @return a list of active savers
 	 */
 	public List<FileSaver> getSaversInTransfer() {
 		List<FileSaver> savers = new ArrayList<FileSaver>();
@@ -161,8 +150,6 @@ public class FileReceiverManager {
 	/**
 	 * Returns all savers in progress for a given session
 	 * 
-	 * @param sessionSerial the session ID
-	 * @return a list of savers in progress for that session
 	 */
 	public List<FileSaver> getSaversInTransfer( String sessionSerial ) {
 		List<FileSaver> savers = new ArrayList<FileSaver>();
@@ -181,8 +168,6 @@ public class FileReceiverManager {
 	
 	/**
 	 * Return all savers from a given experiment Execution Tag (serial)
-	 * @param experimentSerial 
-	 * @return a list of FileSavers from that experiment
 	 * 
 	 */
 	public List<FileSaver> getSaversByExperiment( String experimentSerial ) {
@@ -197,9 +182,6 @@ public class FileReceiverManager {
 
 	/**
 	 * Return all savers that is importing data to a given table name
-	 * 
-	 * @param tableName a table name
-	 * @return a list of savers that is importing data to this table
 	 *  
 	 */
 	public List<FileSaver> getSaversByTargetTable( String tableName ) {
@@ -217,9 +199,6 @@ public class FileReceiverManager {
 	/**
 	 * Commit a session.
 	 * Send all files to the files table and import CSV data to target table.
-	 * 
-	 * @param sessionSerial the session to commit. Must be idle (no active transfers). 
-	 * @throws in case of error
 	 */
 	public void commit( String sessionSerial ) throws Exception {
 		server.commit( sessionSerial );

@@ -1,4 +1,4 @@
-package cmabreu.sagitarii.core.sockets;
+package cmabreu.sagitarii.core.filetransfer;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -91,9 +91,6 @@ public class FileSaver extends Thread {
 	/**
 	 * Verify if the cache folder exists
 	 * 
-	 * @param sessionSerial
-	 * @return if exists or not
-	 * @throws Exception in case of any error
 	 */
 	private boolean checkSession( String sessionSerial ) throws Exception {
 		Path cacheDirectory = new File(PathFinder.getInstance().getPath() + "/cache/" + sessionSerial + "/").toPath();

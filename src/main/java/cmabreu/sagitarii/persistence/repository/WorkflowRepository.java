@@ -73,10 +73,6 @@ public class WorkflowRepository extends BasicRepository {
 	/**
 	 * Insere um Workflow no banco de dados
 	 * 
-	 * @param workflow objeto workflow a ser inserido.
-	 * @return o objeto com seu respectivo ID.
-	 * 
-	 * @throws InsertException
 	 */
 	public Workflow insertWorkflow(Workflow workflow) throws InsertException {
 		logger.debug("insert workflow...");

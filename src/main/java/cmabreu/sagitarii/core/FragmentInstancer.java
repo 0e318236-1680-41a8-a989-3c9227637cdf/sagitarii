@@ -28,10 +28,6 @@ public class FragmentInstancer {
 	
 	/**
 	 * Check if a Fragment contains an Activity
-	 * 
-	 * @param fragment
-	 * @param act
-	 * @return
 	 */
 	private boolean contains( Fragment fragment, Activity act ) {
 		for ( Activity activity : fragment.getActivities() ) {
@@ -45,9 +41,6 @@ public class FragmentInstancer {
 	/**
 	 * Localiza qual atividade é a inicial do fragmento analizando se sua(s) atividade(s)
 	 * de entrada estão fora de seu próprio fragmento.
-	 *  
-	 * @param fragment
-	 * @return
 	 */
 	private Activity getEntrancePoint( Fragment fragment ) {
 		for ( Activity act : fragment.getActivities() ) {
@@ -73,8 +66,6 @@ public class FragmentInstancer {
 	/**
 	 * Construtor.
 	 * 
-	 * @param experiment o experimento a ser processado
-	 * 
 	 */
 	public FragmentInstancer( Experiment experiment ) {
 		this.experiment = experiment;
@@ -84,10 +75,6 @@ public class FragmentInstancer {
 	
 	/**
 	 * Verifica se a tabela tableName possui algum registro.
-	 * 
-	 * @param tableName
-	 * 
-	 * @return se possui ou nao 
 	 */
 	private boolean haveTableSomeData( String tableName ) {
 		logger.debug("verify table " + tableName + " data...");
@@ -156,7 +143,6 @@ public class FragmentInstancer {
 	 *	Para cada fragmento da lista verifica se sua atividade de entrada
 	 *	pode ser executada. Gera os instances, salva no banco e atualiza o 
 	 *	status do fragmento para PIPELINED
-	 * @throws Exception 
 	 */
 	public void generate() throws Exception {
 		try {

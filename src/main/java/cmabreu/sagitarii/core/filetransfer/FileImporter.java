@@ -1,4 +1,4 @@
-package cmabreu.sagitarii.core.sockets;
+package cmabreu.sagitarii.core.filetransfer;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -256,8 +256,6 @@ public class FileImporter extends Thread {
 	 * 
 	 *  TODO: In case of any CSV import error, we MUST roll back all file insertions in File table. 
 	 * 
-	 * @param csvDataFile 
-	 * @throws Exception
 	 */
 	private void importData( ReceivedFile csvDataFile ) throws Exception {
 		String newDataFile = csvDataFile.getFileName() + ".uncompressed";
@@ -363,8 +361,6 @@ public class FileImporter extends Thread {
 	
 	/**
 	 * Decompress a file
-	 * @param compressedFile compressed file
-	 * @param decompressedFile decompressed file
 	 */
 	public void decompress( String compressedFile, String decompressedFile ) {
 		logger.debug("uncompressing " + compressedFile + "...");
@@ -391,8 +387,6 @@ public class FileImporter extends Thread {
 	 * This file describes all files uploaded by current session and
 	 * the name of main CSV data file
 	 * 
-	 * @param descriptor the XML file that describes all files uploaded by Teapot.
-	 * @throws Exception in case of any error
 	 */
 	private void parseXml( String descriptor ) throws Exception {
 		String newDescriptor = descriptor + ".uncompressed";
@@ -425,8 +419,6 @@ public class FileImporter extends Thread {
 	/**
 	 * Check if a session is receiving file (active)
 	 * 
-	 * @param sessionSerial a session serial number
-	 * @return boolean if session is in transfer process or not
 	 */
 	private boolean isActive() {
 		logger.debug("checking session " + sessionSerial + "...");

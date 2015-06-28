@@ -1,12 +1,11 @@
 
 package cmabreu.sagitarii.action;
 
-import java.io.ByteArrayInputStream;
-
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 
+import cmabreu.sagitarii.misc.ProgressAwareInputStream;
 import cmabreu.sagitarii.persistence.services.FileService;
 
 @Action(value="getFile", results= {  
@@ -22,7 +21,8 @@ import cmabreu.sagitarii.persistence.services.FileService;
 public class GetFileAction extends BasicActionClass {
 	private String fileName;
 	private Integer idFile;
-	private ByteArrayInputStream fileInputStream;
+	private ProgressAwareInputStream fileInputStream;
+	private String macAddress;
 	
 	public String execute () {
 		cmabreu.sagitarii.persistence.entity.File file = null;
@@ -31,15 +31,8 @@ public class GetFileAction extends BasicActionClass {
 			FileService fs = new FileService();
 			if ( (idFile != null) && ( idFile > -1 ) ) {
 				file = fs.getFile( idFile );
-			}
-			
-			if ( file != null ) {
-		        byte[] theFile = file.getFile();
-		        
-		        fileInputStream = new ByteArrayInputStream( theFile );
-		        fileName = file.getFileName();
-			} else {
-				//
+				fileName = file.getFileName();
+				fileInputStream = file.getDownloadStream( macAddress );
 			}
 			
 		} catch ( Exception e ) {
@@ -59,7 +52,7 @@ public class GetFileAction extends BasicActionClass {
 	}
 	
 	
-	public ByteArrayInputStream getFileInputStream() {
+	public ProgressAwareInputStream getFileInputStream() {
 		return fileInputStream;
 	}
 	
@@ -67,5 +60,8 @@ public class GetFileAction extends BasicActionClass {
 		this.fileName = fileName;
 	}
 	
+	public void setMacAddress(String macAddress) {
+		this.macAddress = macAddress;
+	}
 
 }
