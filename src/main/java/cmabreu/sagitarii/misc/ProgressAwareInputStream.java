@@ -52,15 +52,18 @@ public class ProgressAwareInputStream extends InputStream {
 
 	private void check() {
 		int percent = (int) ( counter * 100 / size );
-		if (percent - lastPercent >= 10) {
+		if (percent - lastPercent >= 5) {
 			lastPercent = percent;
-			if (listener != null)
-				listener.onProgress(percent, tag);
+			if (listener != null) listener.onProgress(percent, tag);
 		}
 	}
 
 	@Override
-	public void close() throws IOException { wrappedInputStream.close(); }
+	public void close() throws IOException {
+		wrappedInputStream.close();
+	}
+	
+	
 	@Override
 	public int available() throws IOException { return wrappedInputStream.available(); }
 	@Override

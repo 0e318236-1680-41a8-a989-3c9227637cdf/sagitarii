@@ -153,7 +153,7 @@ public class Orchestrator implements ServletContextListener {
 
 			scheduler = Executors.newSingleThreadScheduledExecutor();
 			
-			ActivationScheduler as = new ActivationScheduler();
+			MainHeartBeat as = new MainHeartBeat();
 	        scheduler.scheduleAtFixedRate(as, 0, interval , TimeUnit.SECONDS);
 
 	        Chronos chronos = new Chronos();

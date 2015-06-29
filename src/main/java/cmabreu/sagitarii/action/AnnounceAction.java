@@ -10,6 +10,7 @@ import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 
 import cmabreu.sagitarii.core.ClustersManager;
+import cmabreu.sagitarii.core.types.ClusterType;
 
 import com.opensymphony.xwork2.ActionContext;
 
@@ -47,7 +48,7 @@ public class AnnounceAction  {
 	
 			try {
 				cpu = Double.valueOf( cpuLoad );
-				ClustersManager.getInstance().addOrUpdateCluster( javaVersion, soFamily, macAddress, 
+				ClustersManager.getInstance().addOrUpdateCluster( ClusterType.NODE, javaVersion, soFamily, macAddress, 
 						localIpAddress, machineName, cpu, soName, availableProcessors, 
 						maxAllowedTasks, freeMemory, totalMemory );
 				resposta = ClustersManager.getInstance().getTask( macAddress );

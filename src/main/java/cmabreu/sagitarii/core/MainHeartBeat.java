@@ -9,7 +9,7 @@ import cmabreu.sagitarii.core.delivery.InstanceDeliveryControl;
  * @author contmagno
  *
  */
-public class ActivationScheduler implements Runnable {
+public class MainHeartBeat implements Runnable {
 	
     @Override
     public void run() {

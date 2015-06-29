@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 
 import cmabreu.sagitarii.core.delivery.InstanceDeliveryControl;
 import cmabreu.sagitarii.core.types.ClusterStatus;
+import cmabreu.sagitarii.core.types.ClusterType;
 import cmabreu.sagitarii.core.types.InstanceStatus;
 import cmabreu.sagitarii.metrics.MetricController;
 import cmabreu.sagitarii.metrics.MetricType;
@@ -21,6 +22,7 @@ import cmabreu.sagitarii.persistence.entity.Activity;
 import cmabreu.sagitarii.persistence.entity.Instance;
 
 public class Cluster {
+	private ClusterType type;
 	private String soName;
 	private String macAddress;
 	private String ipAddress;
@@ -45,7 +47,6 @@ public class Cluster {
 	private long totalMemory;
 	private List<NodeTask> tasks;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
-	
 	private List<ProgressListener> progressListeners;
 	
 	public void addProgressListener( ProgressListener listener ) {
@@ -59,14 +60,16 @@ public class Cluster {
 	private void removeListeners() {
 		logger.debug("cleaning listeners...");
 		int total = 0;
-		Iterator<ProgressListener> i = progressListeners.iterator();
-		while ( i.hasNext() ) {
-			ProgressListener pl = i.next(); 
-			if ( pl.getPercentage() == 100 ) {
-				i.remove();
-				total++;
+		try {
+			Iterator<ProgressListener> i = progressListeners.iterator();
+			while ( i.hasNext() ) {
+				ProgressListener pl = i.next(); 
+				if ( pl.getPercentage() == 100 ) {
+					i.remove();
+					total++;
+				}
 			}
-		}		
+		} catch ( Exception e ) { }
 		logger.debug( total + " listeners deleted" );
 	}
 	
@@ -235,7 +238,7 @@ public class Cluster {
 		}
 	}
 
-	public Cluster(String javaVersion, String soFamily, String macAddress, String ipAddress, String machineName, Double cpuLoad, 
+	public Cluster(ClusterType type, String javaVersion, String soFamily, String macAddress, String ipAddress, String machineName, Double cpuLoad, 
 			String soName, int availableProcessors,  int maxAllowedTasks, long freeMemory, long totalMemory) {
 		this.soName = soName;
 		this.macAddress = macAddress;
@@ -251,7 +254,9 @@ public class Cluster {
 		this.totalMemory = totalMemory;
 		this.status = ClusterStatus.IDLE;
 		this.maxAllowedTasks = maxAllowedTasks;
-		runningInstances = new ArrayList<Instance>();
+		this.runningInstances = new ArrayList<Instance>();
+		this.progressListeners = new ArrayList<ProgressListener>(); 
+		this.type = type;
 	}
 	
 
@@ -387,5 +392,9 @@ public class Cluster {
 	
 	public void setMessage(String lastError) {
 		this.lastError = lastError;
+	}
+	
+	public ClusterType getType() {
+		return type;
 	}
 }

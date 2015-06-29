@@ -65,8 +65,7 @@ public class File {
 		if ( file == null ) {
 			return null;
 		}
-        ProgressAwareInputStream pais = new ProgressAwareInputStream( new ByteArrayInputStream( file ), 
-        		file.length, fileName );
+        ProgressAwareInputStream pais = new ProgressAwareInputStream( new ByteArrayInputStream( file ), file.length, fileName );
         ProgressListener pl = new ProgressListener( );
         pais.setOnProgressListener( pl );
         ClustersManager.getInstance().addProgressListener( macAddress, pl );

@@ -8,6 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import cmabreu.sagitarii.core.delivery.InstanceDeliveryControl;
+import cmabreu.sagitarii.core.types.ClusterType;
 import cmabreu.sagitarii.core.types.InstanceStatus;
 import cmabreu.sagitarii.misc.ProgressListener;
 import cmabreu.sagitarii.misc.json.NodeTasks;
@@ -259,7 +260,7 @@ public class ClustersManager {
 	}
 
 	
-	public Cluster addOrUpdateCluster(String javaVersion, String soFamily, String macAddress, 
+	public Cluster addOrUpdateCluster(ClusterType type, String javaVersion, String soFamily, String macAddress, 
 			String ipAddress, String machineName, Double cpuLoad, String soName, 
 			int availableProcessors, int maxAllowedTasks, long freeMemory, long totalMemory) {
 		Cluster retorno = null;
@@ -278,7 +279,7 @@ public class ClustersManager {
 			clu.updateStatus();
 			retorno = clu;
 		} else {
-			Cluster c1 = new Cluster(javaVersion,soFamily,macAddress,ipAddress,machineName,
+			Cluster c1 = new Cluster(type, javaVersion,soFamily,macAddress,ipAddress,machineName,
 					cpuLoad,soName,availableProcessors,maxAllowedTasks,freeMemory,totalMemory);
 			clusterList.add( c1 );
 			retorno = c1;

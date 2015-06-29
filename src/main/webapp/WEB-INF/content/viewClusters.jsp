@@ -21,7 +21,7 @@
 								<div style="position:relative" id="${cluster.macAddress}" class="clusterBar">
 								
 									<table style="margin-bottom: 5px;width:98%; margin-left:10px; margin-top: 5px">
-										<c:if test="${not fn:contains(cluster.macAddress, 'S0-A0-G0-I0-T0-A0-RI')}">
+										<c:if test="${not fn:contains(cluster.type, 'MAIN')}">
 											<tr>
 												<td colspan="9" >
 													<img onclick="shutdown('${cluster.macAddress}')" class="dicas" title="Shutdown this node (no confirmation)" src="img/shutdown.png" style="width:24px;height:24px">
@@ -97,7 +97,7 @@
 										</tr>
 									</table>
 
-									<c:if test="${not fn:contains(cluster.macAddress, 'S0-A0-G0-I0-T0-A0-RI')}">
+									<c:if test="${not fn:contains(cluster.type, 'MAIN')}">
 										<table style="margin-bottom: 5px;width:98%; margin-left:10px; margin-top: 5px">
 												<tr>
 													<th>File</th>
@@ -114,7 +114,7 @@
 
 
 
-									<c:if test="${not fn:contains(cluster.macAddress, 'S0-A0-G0-I0-T0-A0-RI')}">
+									<c:if test="${not fn:contains(cluster.type, 'MAIN')}">
 										<table style="margin-bottom: 5px;width:98%; margin-left:10px; margin-top: 5px">
 												<tr>
 													<th>Workflow</th>

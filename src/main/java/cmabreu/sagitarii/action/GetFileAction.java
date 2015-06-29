@@ -26,7 +26,6 @@ public class GetFileAction extends BasicActionClass {
 	
 	public String execute () {
 		cmabreu.sagitarii.persistence.entity.File file = null;
-		
 		try {
 			FileService fs = new FileService();
 			if ( (idFile != null) && ( idFile > -1 ) ) {
@@ -34,7 +33,6 @@ public class GetFileAction extends BasicActionClass {
 				fileName = file.getFileName();
 				fileInputStream = file.getDownloadStream( macAddress );
 			}
-			
 		} catch ( Exception e ) {
             //
 		}

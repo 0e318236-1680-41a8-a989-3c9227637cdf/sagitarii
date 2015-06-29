@@ -614,12 +614,13 @@ public class Sagitarii {
 	 * 
 	 */
 	public synchronized void loadInputBuffer() {
-		
+
 		if ( stopped || ( runningExperiments.size() == 0 ) ) {
 			return;
 		}
-		
+
 		if ( ClustersManager.getInstance().hasClusters() ) {
+			
 			logger.debug("COMMON buffer...");
 			// Se o buffer comum está com 1/3 de sua capacidade, é hora de ler mais instances do banco
 			if ( instanceInputBuffer.size() < ( maxInputBufferCapacity / 3 ) ) {
@@ -679,7 +680,6 @@ public class Sagitarii {
 		} else {
 			// logger.debug("will not work until have nodes to process.");
 		}
-			
 			
 	}
 	

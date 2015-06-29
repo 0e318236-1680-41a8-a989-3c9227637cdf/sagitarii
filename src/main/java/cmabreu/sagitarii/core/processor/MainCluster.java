@@ -9,6 +9,7 @@ import cmabreu.sagitarii.core.Cluster;
 import cmabreu.sagitarii.core.ClustersManager;
 import cmabreu.sagitarii.core.Sagitarii;
 import cmabreu.sagitarii.core.config.Configurator;
+import cmabreu.sagitarii.core.types.ClusterType;
 import cmabreu.sagitarii.persistence.entity.Activity;
 import cmabreu.sagitarii.persistence.entity.Instance;
 import cmabreu.sagitarii.persistence.exceptions.NotFoundException;
@@ -54,7 +55,7 @@ public class MainCluster implements Runnable {
 			totalMemory = Configurator.getInstance().getTotalMemory();
 		} catch ( Exception e ) {  }
 			
-		Cluster cluster = ClustersManager.getInstance().addOrUpdateCluster("0.0", "Local System", macAddress, "Local Machine", "Sagitarii Server", getProcessCpuLoad(), "Main Cluster", 8, maxAllowedTasks, freeMemory, totalMemory );
+		Cluster cluster = ClustersManager.getInstance().addOrUpdateCluster(ClusterType.MAIN, "0.0", "Local System", macAddress, "Local Machine", "Sagitarii Server", getProcessCpuLoad(), "Main Cluster", 8, maxAllowedTasks, freeMemory, totalMemory );
 		try {
 			if ( cluster != null ) {
 				cluster.setAsMainCluster();
