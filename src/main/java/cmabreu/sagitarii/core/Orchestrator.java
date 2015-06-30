@@ -13,11 +13,9 @@ import javax.servlet.annotation.WebListener;
 import cmabreu.sagitarii.core.config.Configurator;
 import cmabreu.sagitarii.core.filetransfer.FileReceiverManager;
 import cmabreu.sagitarii.core.processor.MainCluster;
-import cmabreu.sagitarii.core.types.ExecutorType;
 import cmabreu.sagitarii.core.types.UserType;
 import cmabreu.sagitarii.metrics.Chronos;
 import cmabreu.sagitarii.misc.PathFinder;
-import cmabreu.sagitarii.persistence.entity.ActivationExecutor;
 import cmabreu.sagitarii.persistence.entity.Domain;
 import cmabreu.sagitarii.persistence.entity.Experiment;
 import cmabreu.sagitarii.persistence.entity.User;
@@ -25,7 +23,6 @@ import cmabreu.sagitarii.persistence.exceptions.DatabaseConnectException;
 import cmabreu.sagitarii.persistence.exceptions.InsertException;
 import cmabreu.sagitarii.persistence.exceptions.NotFoundException;
 import cmabreu.sagitarii.persistence.repository.RelationRepository;
-import cmabreu.sagitarii.persistence.services.ExecutorService;
 import cmabreu.sagitarii.persistence.services.ExperimentService;
 import cmabreu.sagitarii.persistence.services.UserService;
 
@@ -76,15 +73,6 @@ public class Orchestrator implements ServletContextListener {
 				us.newTransaction();
 				us.insertUser(usr);
 				loggerDebug("System Administrator created");
-				
-				// Add the default RRUNNER wrapper
-				ExecutorService es = new ExecutorService();
-				ActivationExecutor ex = new ActivationExecutor();
-				ex.setActivationWrapper("r-wrapper.jar");
-				ex.setExecutorAlias("executor_r");
-				ex.setType( ExecutorType.RRUNNER );
-				es.insertExecutor( ex );
-				
 			}
 			
 		} catch (DatabaseConnectException | InsertException e) {

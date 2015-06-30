@@ -21,6 +21,7 @@
 							<img onclick="newExecutorReduce();" title="New Executor: REDUCE" class="button dicas" src="img/reduce.png">
 							<img onclick="newExecutorSplit();" title="New Executor: SPLIT MAP" class="button dicas" src="img/split.png">
 							<img onclick="newExecutorRScript();" title="New Executor: R SCRIPT" class="button dicas" src="img/function.png">
+							<img onclick="newExecutorBash();" title="New Executor: Bash SCRIPT" class="button dicas" src="img/bash.png">
 							<img onclick="newExecutorLibrary();" title="New Executor Library" class="button dicas" src="img/library.png">
 						</div>
 
@@ -43,10 +44,8 @@
 											<td>${executor.activationWrapper}&nbsp;</td>
 											<td>${executor.selectStatement}&nbsp;</td>
 											<td>&nbsp;
-												<c:if test="${executor.type != 'RRUNNER'}">
-													<img class="miniButton dicas" title="Edit" onclick="edit('${executor.idActivationExecutor}');" src="img/edit.png">
-													<img class="miniButton dicas" title="Delete" onclick="deleteExecutor('${executor.idActivationExecutor}','${executor.executorAlias}')" src="img/delete.png">
-												</c:if>
+												<img class="miniButton dicas" title="Edit" onclick="edit('${executor.idActivationExecutor}');" src="img/edit.png">
+												<img class="miniButton dicas" title="Delete" onclick="deleteExecutor('${executor.idActivationExecutor}','${executor.executorAlias}')" src="img/delete.png">
 											</td>
 										</tr>
 									</c:forEach>
@@ -82,6 +81,10 @@
 		window.location.href="newExecutorRScript";
 	}
 	
+	function newExecutorBash() {
+		window.location.href="newExecutorBash";
+	}
+
 	function newExecutorLibrary() {
 		window.location.href="newExecutorLibrary";
 	}
