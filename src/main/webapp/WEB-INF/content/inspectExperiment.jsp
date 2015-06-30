@@ -149,13 +149,15 @@
 
 						<div class="basicCentralPanelBar">
 							<img src="img/right.png">
-							<div class="basicCentralPanelBarText">Experiment files</div>
+							<div class="basicCentralPanelBarText">Experiment files (GZIPPED)</div>
 						</div>
 						<div style="margin : 0 auto;width : 95%; margin-bottom:10px; margin-top:10px;display:table" id="dtTableContainer">
 							<table class="tableForm"  id="experimentFiles" >
 								<thead>
 									<tr>
 										<th>Name</th>
+										<th>Source Activity</th>
+										<th>Owner Table</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -194,19 +196,21 @@
 			"sPaginationType": "full_numbers",	
 			"iDisplayLength" : 30,	
 			"bAutoWidth" : false,
-			"bFilter": false,
 			"sScrollX": "100%",
-
 	        "bProcessing": true,
 	        "bServerSide": true,
 	        "sAjaxSource" : "experimentFilesAjaxProcess?idExperiment=${experiment.idExperiment}", 
 	        "sServerMethod": "POST",
 	        "aoColumns": [
              			{ "mDataProp": "filename" },
+             			{ "mDataProp": "activity" },
+             			{ "mDataProp": "table" },
 	      	        ],
 	        
 	        "fnServerData": function ( sSource, aoData, fnCallback, oSettings ) {
 	        	aoData.push( { "name": "columns", "value": "filename" } );
+	        	aoData.push( { "name": "columns", "value": "activity" } );
+	        	aoData.push( { "name": "columns", "value": "table" } );
 	        	oSettings.jqXHR = $.ajax({
 	              "dataType": 'json',
 	              "type": "POST",

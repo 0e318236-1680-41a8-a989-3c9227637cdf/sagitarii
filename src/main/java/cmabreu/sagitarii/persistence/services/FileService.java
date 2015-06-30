@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 
 import cmabreu.sagitarii.core.UserTableEntity;
 import cmabreu.sagitarii.misc.json.JsonUserTableConversor;
+import cmabreu.sagitarii.persistence.entity.Activity;
 import cmabreu.sagitarii.persistence.entity.File;
 import cmabreu.sagitarii.persistence.entity.FileLight;
 import cmabreu.sagitarii.persistence.exceptions.DatabaseConnectException;
@@ -23,9 +24,16 @@ public class FileService {
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 
 	public String getFilesPagination( int idExperiment, String sortColumn, String sSortDir0,
-			String iDisplayStart, String iDisplayLength, String sEcho) throws Exception {
+			String iDisplayStart, String iDisplayLength, String sEcho, String sSearch) throws Exception {
+
+		String search = "";
+		if ( (sSearch != null) && ( !sSearch.equals("") ) ) {
+			search = " and a.tag like '%" + sSearch + "%' or filename like '%" + sSearch + "%'";
+		}
 		
-		String sql = "select * from files where id_experiment = " + idExperiment + " order by " + 
+		String sql = "select f.*, a.tag as activity from files f join activities a on f.id_activity = a.id_activity "
+				+ "where f.id_experiment = " + idExperiment + search + 
+				" order by " + 
 				sortColumn + " " + sSortDir0 + " offset " + iDisplayStart + " limit " + iDisplayLength ;
 
 		Set<UserTableEntity> result = new HashSet<UserTableEntity>();
@@ -35,11 +43,21 @@ public class FileService {
 			RelationService rs = new RelationService();
 			result = rs.genericFetchList( sql );
 			
-			for ( UserTableEntity ute : result  ) {
+			ActivityService as = new ActivityService();
+			
+			
+			for ( UserTableEntity ute : result  ) { // Each line of result ...
 				String fileName = ute.getData("filename"); 
 				String idFile = ute.getData("id_file"); 
+				int idActivity = Integer.valueOf( ute.getData("id_activity") );
+				
+				as.newTransaction();
+				Activity act = as.getActivity(idActivity);
+				ute.setData("activity", act.getTag() );
+				ute.setData("table", act.getOutputRelation().getName() );
+				
 				if ( (fileName != null) && ( !fileName.equals("") ) ) {
-					ute.setData("filename", "<a href='getFile?idFile="+idFile+"</a>");
+					ute.setData("filename", "<a href='getFile?idFile="+idFile+"'>"+fileName+"</a>");
 				}
 			}
 			

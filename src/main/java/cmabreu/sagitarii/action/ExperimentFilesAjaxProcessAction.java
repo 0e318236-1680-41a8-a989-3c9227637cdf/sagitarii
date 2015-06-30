@@ -33,6 +33,7 @@ public class ExperimentFilesAjaxProcessAction extends BasicActionClass {
 	private String sSortDir0;
 	private List<String> columns;
 	
+	
 	public String execute () {
 		String resp = "";
 		
@@ -45,12 +46,12 @@ public class ExperimentFilesAjaxProcessAction extends BasicActionClass {
 			iColumns = req.getParameter("iColumns");
 			iSortCol0 = req.getParameter("iSortCol_0");
 			sSortDir0 = req.getParameter("sSortDir_0");
-			
+
 			String sortColumn = columns.get( Integer.valueOf( iSortCol0 ) );
 			
 			FileService fs = new FileService();	
 			
-			resp = fs.getFilesPagination( idExperiment, sortColumn, sSortDir0, iDisplayStart, iDisplayLength, sEcho);
+			resp = fs.getFilesPagination( idExperiment, sortColumn, sSortDir0, iDisplayStart, iDisplayLength, sEcho, sSearch);
 			
 			resp = resp.replace("\\", "\\\\");
 			
@@ -85,5 +86,19 @@ public class ExperimentFilesAjaxProcessAction extends BasicActionClass {
 		this.columns = columns;
 	}
 
-
+	public void setsSearch(String sSearch) {
+		this.sSearch = sSearch;
+	}
+	
+	public String getsSearch() {
+		return sSearch;
+	}
+	
+	public void setiColumns(String iColumns) {
+		this.iColumns = iColumns;
+	}
+	
+	public String getiColumns() {
+		return iColumns;
+	}
 }
