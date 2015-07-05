@@ -41,7 +41,10 @@ public class ActivitiesManagerAction extends BasicActionClass {
 			try {
 				criterias = cs.getList();
 			} catch ( NotFoundException e1 ) {
-				setMessageText("No selections criterias registered. You will not be able to create SELECT type Activities.");
+				setMessageText("No executors registered.");
+				return "erro";
+			} catch ( Exception e1 ) {
+				setMessageText("Error: " + e1.getMessage() );
 			}
 			
 			

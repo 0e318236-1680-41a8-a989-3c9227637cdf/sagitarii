@@ -58,7 +58,6 @@ public class Cluster {
 	}
 	
 	private void removeListeners() {
-		logger.debug("cleaning listeners...");
 		int total = 0;
 		try {
 			Iterator<ProgressListener> i = progressListeners.iterator();
@@ -70,7 +69,9 @@ public class Cluster {
 				}
 			}
 		} catch ( Exception e ) { }
-		logger.debug( total + " listeners deleted" );
+		if ( total > 0 ) {
+			logger.debug( total + " listeners deleted" );
+		}
 	}
 	
 	public void setTasks(List<NodeTask> tasks) {

@@ -22,11 +22,21 @@ public class ExecutorService {
 	private ExecutorRepository rep;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 
-	public String getAsManifest() throws NotFoundException {
+	public String getAsManifest() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 		sb.append("<manifest>\n");
-		Set<ActivationExecutor> preList = rep.getList();
+		Set<ActivationExecutor> preList = null;
+		try {
+			preList = rep.getList();
+		} catch ( NotFoundException e ) {
+			
+		}
+		
+		if( preList== null ) {
+			logger.error("no executors found when providing manifest file to Teapot. Teapot will not run.");
+		}
+		
 		for ( ActivationExecutor executor :  preList  ) {
 			ExecutorType type = executor.getType();
 			if ( type != ExecutorType.SELECT ) {

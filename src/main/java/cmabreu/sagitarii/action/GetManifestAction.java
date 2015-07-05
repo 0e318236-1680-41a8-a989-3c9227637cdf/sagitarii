@@ -10,7 +10,6 @@ import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 
-import cmabreu.sagitarii.persistence.exceptions.NotFoundException;
 import cmabreu.sagitarii.persistence.services.ExecutorService;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -27,10 +26,8 @@ public class GetManifestAction extends BasicActionClass {
 		try {
 			ExecutorService cs = new ExecutorService();
 			resp = cs.getAsManifest();
-		} catch ( NotFoundException ignored ) {
-			
 		} catch ( Exception e ) {
-			
+			//e.printStackTrace();
 		}
 		
 		try { 
