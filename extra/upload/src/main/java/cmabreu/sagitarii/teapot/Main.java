@@ -56,8 +56,12 @@ public class Main {
 				new Uploader(configurator).uploadCSV(fileName, relationName, experimentSerial, folderName, configurator.getSystemProperties() );
 				System.exit(0);
 			} else {
-				System.out.println("Use upload <file.csv> <target_table> <experiment_tag> <work_folder>");
-				System.exit(0);
+				if ( (args.length == 1) && (args[0].equals("withgui")) ) {
+					new SwingFileUploadHTTP( configurator ).runUi();
+				} else {	
+					System.out.println("Use upload <file.csv> <target_table> <experiment_tag> <work_folder> | withgui");
+					System.exit(0);
+				}
 			}
 			
 		} catch (Exception e) {

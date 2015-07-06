@@ -33,9 +33,10 @@ public class ExecutorService {
 			
 		}
 		
-		if( preList== null ) {
-			logger.error("no executors found when providing manifest file to Teapot. Teapot will not run.");
-		}
+		sb.append("\t<wrapper name=\"RRUNNER\" type=\"SYSTEM\" target=\"ANY\" version=\"1.0\">\n");
+		sb.append("\t\t<activityFile>r-wrapper.jar</activityFile>\n");
+		sb.append("\t\t<reload>true</reload>\n");
+		sb.append("\t</wrapper>\n");
 		
 		for ( ActivationExecutor executor :  preList  ) {
 			ExecutorType type = executor.getType();

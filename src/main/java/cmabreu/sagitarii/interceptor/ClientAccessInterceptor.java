@@ -3,7 +3,6 @@ package cmabreu.sagitarii.interceptor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import cmabreu.sagitarii.misc.PathFinder;
 import cmabreu.sagitarii.persistence.entity.User;
 
 import com.opensymphony.xwork2.ActionInvocation;
@@ -34,11 +33,6 @@ public class ClientAccessInterceptor implements Interceptor {
 	@Override
 	public void init() {
 		logger.info("system init");
-		try {
-			logger.info( PathFinder.getInstance().getPath()	);
-		} catch ( Exception e ) {
-			
-		}
 	}	
 	
 }

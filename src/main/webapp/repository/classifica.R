@@ -21,9 +21,9 @@ remove_outliers <- function(x.train)
 #
 # NORMALIZACAO MIN-MAX
 #
-normalize_minmax <- function(x.train, x.test=NA)
+normalize_minmax <- function(x.train, x.test=NULL)
 {
-  if(is.na(x.test))
+  if(is.null(x.test))
   {
     normalize_mm1 <- function(x.train)
     {
@@ -54,9 +54,9 @@ normalize_minmax <- function(x.train, x.test=NA)
 #
 # NORMALIZACAO Z-SCORE
 #
-normalize_zscore <- function(x.train, x.test=NA)
+normalize_zscore <- function(x.train, x.test=NULL)
 {
-  if(is.na(x.test))
+  if(is.null(x.test))
   {
     x.zs <- as.data.frame(scale(x.train))
   }
@@ -122,35 +122,38 @@ lasso <- function(x.train, classe)
   lasso.coef=predict (out,type ="coefficients", s=bestlam)
   l <- lasso.coef[(lasso.coef[,1])!=0,0]
   vec <- rownames(l)[-1]
-  return (list(x.train[,vec], vec))
+  data <- x.train[,vec]
+  data$alvo <- x.train$alvo
+  return (list(data, vec))
 }
 #
 # PCA
 #
-pca <- function(x.train, vect=NA, pcameuindex=NA)
+pca <- function(x.train, test = NULL, transf = NULL, varacum=0.2)
 {
-  if(is.na(vect))
-  {
+
+  if (is.null(test)) {
     xmeu <- x.train[, -ncol(x.train)]
-  }
-  else
-  {
-    xmeu <- x.train[, vect]
-  }
-  pcameu <- prcomp(xmeu, center=TRUE, scale.=TRUE)
-  if(is.na(pcameuindex))
-  {
+    pcameu <- prcomp(xmeu, center=TRUE, scale.=TRUE)
     cumvar <- cumsum(pcameu$sdev^2/sum(pcameu$sdev^2))
-    pcameuindex <- min(which(cumvar>0.9))
+    pcameuindex <- min(which(cumvar > varacum))
+    xpca <- array(0, dim=c(nrow(xmeu),pcameuindex))
+    transf <- as.matrix(pcameu$rotation[, 1:pcameuindex])
+    M <- as.matrix(xmeu)
+    alvo <- x.train[, ncol(x.train)]
   }
-  xpca <- array(0, dim=c(nrow(xmeu),pcameuindex))
-  M <- as.matrix(xmeu)
-  N <- as.matrix(pcameu$rotation[, 1:pcameuindex])
-  xpca <- M %*% N
+  else {
+    xmeu <- test[, -ncol(test)]
+    alvo <- test[, ncol(test)]
+    M <- as.matrix(xmeu)
+  }
+  xpca <- M %*% transf
   xpca_df <- as.data.frame(xpca)
-  x.train <- data.frame(xpca_df, x.train[, ncol(x.train)])
-  return (list(x.train,pcameuindex))
+  dataset <- data.frame(xpca_df)
+  dataset$alvo <- alvo
+  return (list(dataset, transf))
 }
+
 #
 # REDES NEURAIS COM PARAMETROS FIXOS
 #
@@ -161,8 +164,8 @@ rn <- function(x.train, x.test)
   data.train <- x.train[,1:ncol(x.train)-1]
   alvo <- x.train[,ncol(x.train)]
   alvo.class <- class.ind(alvo)
-  data.test <- x.test[,1:ncol(x.test)-1]
   tnet <- nnet(data.train, alvo.class, size=10, decay=5e-4, maxit=200)
+  data.test <- x.test[,1:ncol(x.test)-1]
   pnet <- predict(tnet, data.test, type="raw")
   return (pnet)
 }
@@ -172,14 +175,14 @@ rn <- function(x.train, x.test)
 rn2 <- function(x.train, x.test, sz, dc, it)
 {
   require(nnet)
-  
+
   data.train <- x.train[,1:ncol(x.train)-1]
   alvo <- x.train[,ncol(x.train)]
   alvo.class <- class.ind(alvo)
-  data.test <- x.test[,1:ncol(x.test)-1]
   tnet <- nnet(data.train, alvo.class, size=sz, decay=dc, maxit=it)
+  data.test <- x.test[,1:ncol(x.test)-1]
   pnet <- predict(tnet, data.test, type="raw")
-  return (pnet)
+  return (pnet)  
 }
 #
 # SVM COM PARAMETROS FIXOS
@@ -188,13 +191,8 @@ svm <- function(x.train, x.test, alvo)
 {
   require(kernlab)
   
-  #data.train <- x.train[,1:ncol(x.train)-1]
-  #alvo <- x.train[,ncol(x.train)]
-  #alvo <- as.data.frame(alvo)
-  #colnames(alvo) <- "alvo"
   data.test <- x.test[,1:ncol(x.test)-1]
   rbf <- rbfdot(sigma=0.1)
-  #tsvm <- ksvm(alvo~., data=x.train, kernel=rbf, C=10, type="C-bsvc", prob.model=TRUE)
   tsvm <- ksvm(alvo, data=x.train, kernel=rbf, C=10, type="C-bsvc", prob.model=TRUE)
   psvm <- predict(tsvm, data.test, type="probabilities")
   return (psvm)
@@ -206,18 +204,78 @@ svm2 <- function(x.train, x.test, alvo, kn, c, tp)
 {
   require(kernlab)
   
-  #data.train <- x.train[,1:ncol(x.train)-1]
-  #alvo <- x.train[,ncol(x.train)]
-  #alvo <- as.data.frame(alvo)
-  #colnames(alvo) <- "alvo"
   data.test <- x.test[,1:ncol(x.test)-1]
   #rbfdot <- rbfdot(sigma=0.1)
-  #tsvm <- ksvm(alvo~., data=x.train, kernel=rbf, C=10, type="C-bsvc", prob.model=TRUE)
   tsvm <- ksvm(alvo, data=x.train, kernel=kn, C=c, type=tp, prob.model=TRUE)
   psvm <- predict(tsvm, data.test, type="probabilities")
   return (psvm)
 }
 #
+# SVM COM TIPO DETERMINADO
+#
+svm4 <- function(x.train, x.test, alvo, kn, c, tp)
+{
+  require(kernlab)
+  
+  data.test <- x.test[,1:ncol(x.test)-1]
+  #rbfdot <- rbfdot(sigma=0.1)
+  if (tp=="C-svc")
+  {
+    tsvm <- ksvm(alvo, data=x.train, kernel=kn, C=c, type="C-svc", prob.model=TRUE)
+  }
+  if (tp=="nu-svc")
+  {
+    tsvm <- ksvm(alvo, data=x.train, kernel=kn, C=c, type="nu-svc", prob.model=TRUE)
+  }
+  if (tp=="C-bsvc")
+  {
+    tsvm <- ksvm(alvo, data=x.train, kernel=kn, C=c, type="C-bsvc", prob.model=TRUE)
+  }
+  psvm <- predict(tsvm, data.test, type="probabilities")
+  return (psvm)
+}
+#
+# K NEAREST NEIGHBOURS
+#
+knear <- function(x.train, x.test, viz)
+{
+  require(class)
+  
+  data.train <- x.train[,1:ncol(x.train)-1]
+  data.test <- x.test[,1:ncol(x.test)-1]
+  alvo <- as.factor(x.train$alvo)
+  x.knn1 <- knn(data.train, data.test, alvo, k=viz, prob=TRUE)
+  x.pknn <- matrix(0, nrow=length(x.knn1), ncol=2)
+  at <- attr(x.knn1,"prob")
+  for (k in 1:length(x.knn1))
+  {
+    if (x.knn1[k] == 0)
+    {
+      x.pknn[k,1] <- at[k]
+      x.pknn[k,2] <- 1 - at[k]
+    }
+    else if (x.knn1[k] == 1)
+    {
+      x.pknn[k,1] <- 1 - at[k]
+      x.pknn[k,2] <- at[k]
+    }
+  }
+  return (x.pknn)
+}
+#
+# RANDOM FOREST
+#
+rf <- function(x.train, x.test, nt)
+{
+  require(randomForest)
+  
+  data.train <- x.train[,1:ncol(x.train)-1]
+  data.test <- x.test[,1:ncol(x.test)-1]
+  alvo <- as.factor(x.train$alvo)
+  x.trf <- randomForest(data.train, alvo, ntree=nt)
+  x.prf <- predict(x.trf, data.test, type="prob")
+  return (x.prf)
+}
 # AVALIA REDES NEURAIS
 #
 avalia_rn <- function(pred, alvo.teste)
