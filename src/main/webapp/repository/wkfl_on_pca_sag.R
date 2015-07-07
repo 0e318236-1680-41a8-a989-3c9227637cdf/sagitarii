@@ -105,6 +105,6 @@ tab$resultado <- 0
     aa <- croc(x.rf[,2], x.test$alvo)
     aa <- unlist(slot(aa, "y.values"))
     tab$resultado[1] <- aa
-    write.table(x.rf, file=outpuClassifica, row.names=FALSE, quote = FALSE)
+    write.table(x.rf, file=outpuClassifica, row.names=FALSE, quote = FALSE, sep = ",")
   }
-  write.table(tab, file=outputFile, row.names=FALSE, quote = FALSE)
+  write.table(tab, file=outputFile, row.names=FALSE, quote = FALSE, sep = ",")

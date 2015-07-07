@@ -10,9 +10,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+@SuppressWarnings("serial")
 public class JFilePicker extends JPanel {
-	private String textFieldLabel;
-	private String buttonLabel;
 
 	private JLabel label;
 	private JTextField textField;
@@ -25,11 +24,7 @@ public class JFilePicker extends JPanel {
 	public static final int MODE_SAVE = 2;
 
 	public JFilePicker(String textFieldLabel, String buttonLabel) {
-		this.textFieldLabel = textFieldLabel;
-		this.buttonLabel = buttonLabel;
-
 		fileChooser = new JFileChooser();
-
 		setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 
 		// creates the GUI

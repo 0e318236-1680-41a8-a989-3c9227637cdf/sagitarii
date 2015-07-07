@@ -26,6 +26,7 @@ import cmabreu.sagitarii.teapot.comm.Uploader;
  * @author www.codejava.net
  *
  */
+@SuppressWarnings("serial")
 public class SwingFileUploadHTTP extends JFrame implements PropertyChangeListener {
     private JLabel targetTable = new JLabel("Target Table");
     private JTextField fieldTrgtTable = new JTextField(30);
@@ -156,6 +157,8 @@ public class SwingFileUploadHTTP extends JFrame implements PropertyChangeListene
         } catch ( Exception e ) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
+
+        System.exit(0);
         
     }
  

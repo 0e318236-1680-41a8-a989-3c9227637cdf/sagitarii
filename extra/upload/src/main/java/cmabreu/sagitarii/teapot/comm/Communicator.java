@@ -17,9 +17,6 @@ package cmabreu.sagitarii.teapot.comm;
  * 
  */
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,17 +25,10 @@ import cmabreu.sagitarii.teapot.SystemProperties;
 
 public class Communicator  {
 	private WebClient webClient;
-    private String macAddress;	
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 
 	public Communicator( Configurator gf, SystemProperties tm ) throws Exception {
-		
 		webClient = new WebClient(gf);
-		try {
-			this.macAddress = URLEncoder.encode(tm.getMacAddress(), "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw e;
-		}
 	}
 
 	public String doPost( String targetAction, String parameter, String content) {

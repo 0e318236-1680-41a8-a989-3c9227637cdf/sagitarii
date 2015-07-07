@@ -1,5 +1,7 @@
 package cmabreu.sagitarii.core.filetransfer;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,6 +13,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 public class FileXMLParser {
 	private Document doc;
@@ -31,7 +34,12 @@ public class FileXMLParser {
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		dbFactory.setNamespaceAware(true);
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-		doc = dBuilder.parse( xmlFile );
+		
+		InputStream ism = new FileInputStream( xmlFile );
+		InputSource is = new InputSource( ism );
+		is.setEncoding("UTF-8");		
+		
+		doc = dBuilder.parse( is.getByteStream() );
 		doc.getDocumentElement().normalize();
 
 		NodeList pipeTag = doc.getElementsByTagName("session");

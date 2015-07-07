@@ -5,35 +5,42 @@ import org.rosuda.JRI.Rengine;
 
 public class Main {
 	private static String rscript;			// args[0]
-	private static String workFolder;		// args[2]
+	private static String workFolder;		// args[1]
 
 	public static void main(String[] args) {
-		// Teapot will give you these parameters:
 		rscript = args[0];			// R Script to run
 		workFolder = args[1];		// Working folder 
 		
-		Rengine rengine = new Rengine(new String [] {"--vanilla"}, false, new TextConsole() );
+		
+		TextConsole console = new TextConsole();
+		
+		Rengine rengine = new Rengine(new String [] {"--vanilla"}, false, console );
 
         if ( !rengine.waitForR() ) {
             System.out.println("Cannot load R");
             System.exit(1);
         }
 
-        System.out.println("running R Engine");
+    	System.out.println("Sagitarii R Wrapper v1.0              04/07/2015");
+    	System.out.println("Carlos Magno Abreu        magno.mabreu@gmail.com");
+		System.out.println("------------------------------------------------");
+        System.out.println(rscript);
+		System.out.println("------------------------------------------------");
         
-        // Send the working folder to user's R script.
         rengine.eval("sagitariiWorkFolder <- \""+ workFolder +"\"");
-        rengine.eval( "source( '" + rscript + "') " );
+        rengine.eval("messageToSagitarii <- \"\"");
         
+        console.enableLog();
+        rengine.eval( "source( '" + rscript + "') " );
         rengine.end();
         
         REXP message = rengine.eval("messageToSagitarii");
         if ( message != null ) {
-        	System.out.println( message );
+        	System.out.println( message.asString() );
         }
         
-        System.out.println("done");
-
+		System.out.println("------------------------------------------------");
+        System.out.println("R Script done.");
 	}
 
 }
