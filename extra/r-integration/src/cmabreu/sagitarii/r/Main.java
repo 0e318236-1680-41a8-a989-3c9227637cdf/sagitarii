@@ -6,11 +6,12 @@ import org.rosuda.JRI.Rengine;
 public class Main {
 	private static String rscript;			// args[0]
 	private static String workFolder;		// args[1]
+	private static String libraryFolder;	// args[2]
 
 	public static void main(String[] args) {
 		rscript = args[0];			// R Script to run
 		workFolder = args[1];		// Working folder 
-		
+		libraryFolder = args[2];	// Wrappers / Library folder 
 		
 		TextConsole console = new TextConsole();
 		
@@ -28,19 +29,31 @@ public class Main {
 		System.out.println("------------------------------------------------");
         
         rengine.eval("sagitariiWorkFolder <- \""+ workFolder +"\"");
+        rengine.eval("libraryFolder <- \""+ libraryFolder +"\"");
         rengine.eval("messageToSagitarii <- \"\"");
         
         console.enableLog();
         rengine.eval( "source( '" + rscript + "') " );
-        rengine.end();
         
         REXP message = rengine.eval("messageToSagitarii");
         if ( message != null ) {
         	System.out.println( message.asString() );
         }
         
+        
+        
+        rengine.rniStop(0);
+        rengine.end();
+
+        rengine = null;
+        console = null;
+        System.gc();
+        
 		System.out.println("------------------------------------------------");
         System.out.println("R Script done.");
+
+        System.exit(0);
+        
 	}
 
 }
