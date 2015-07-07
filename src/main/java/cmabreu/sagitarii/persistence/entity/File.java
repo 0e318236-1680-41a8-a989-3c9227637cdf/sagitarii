@@ -66,8 +66,9 @@ public class File {
 			return null;
 		}
         ProgressAwareInputStream pais = new ProgressAwareInputStream( new ByteArrayInputStream( file ), file.length, fileName );
-        ProgressListener pl = new ProgressListener( );
+        ProgressListener pl = new ProgressListener( this.fileName );
         pais.setOnProgressListener( pl );
+        
         ClustersManager.getInstance().addProgressListener( macAddress, pl );
         return pais; 
 	}

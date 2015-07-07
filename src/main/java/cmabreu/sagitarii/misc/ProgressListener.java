@@ -9,15 +9,15 @@ public class ProgressListener implements OnProgressListener {
 	private String fileName;
 	private String serial;
 	
-	public ProgressListener() {
+	public ProgressListener( String fileName ) {
 		this.serial = UUID.randomUUID().toString().substring(0,5).replace("-", "");
+		this.fileName = fileName;
 	}
 	
 	@Override
 	public void onProgress(int percentage, Object tag) {
 		this.percentage = percentage;
-		this.fileName = (String)tag;
-		System.out.println( serial + " " + (String)tag + " " + percentage + "%" );
+		System.out.println( serial + " " + this.fileName + " " + percentage + "%" );
 	}
 
 	public int getPercentage() {
