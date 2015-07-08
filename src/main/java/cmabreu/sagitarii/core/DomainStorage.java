@@ -35,5 +35,14 @@ public class DomainStorage {
 		}
 		return null;
 	}
+
+	public boolean domainExists( String domainName ) {
+		for ( Domain domain : domains  ) {
+			if ( domain.getDomainName().equals( domainName ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 }

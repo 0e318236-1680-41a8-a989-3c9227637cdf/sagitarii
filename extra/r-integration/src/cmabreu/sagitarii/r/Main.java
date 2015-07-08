@@ -40,19 +40,10 @@ public class Main {
         	System.out.println( message.asString() );
         }
         
-        
-        
-        rengine.rniStop(0);
         rengine.end();
 
-        rengine = null;
-        console = null;
-        System.gc();
-        
 		System.out.println("------------------------------------------------");
         System.out.println("R Script done.");
-
-        System.exit(0);
         
 	}
 

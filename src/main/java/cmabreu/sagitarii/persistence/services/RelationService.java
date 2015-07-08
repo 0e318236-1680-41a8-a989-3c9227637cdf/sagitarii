@@ -26,6 +26,7 @@ import cmabreu.sagitarii.persistence.entity.Consumption;
 import cmabreu.sagitarii.persistence.entity.CustomQuery;
 import cmabreu.sagitarii.persistence.entity.Domain;
 import cmabreu.sagitarii.persistence.entity.Experiment;
+import cmabreu.sagitarii.persistence.entity.File;
 import cmabreu.sagitarii.persistence.entity.Relation;
 import cmabreu.sagitarii.persistence.exceptions.DatabaseConnectException;
 import cmabreu.sagitarii.persistence.exceptions.DeleteException;
@@ -232,6 +233,23 @@ public class RelationService {
 			result = genericFetchList( sql );
 			newTransaction();
 			totalRecords = getCount( tableName, "where 1 = 1");
+			
+			FileService fs = new FileService();
+			
+			for ( UserTableEntity ute : result  ) { // Each line of result ...
+				List<String> columns = ute.getColumnNames();
+				for ( String column : columns ) {
+					String domainName = tableName + "." + column;
+					if ( DomainStorage.getInstance().domainExists(domainName)  ) {
+						fs.newTransaction();
+						File fil = fs.getFile( Integer.valueOf( ute.getData(column) ) );
+						ute.setData(column, "<a href='getFile?idFile="+ute.getData(column)+
+								"'>" + fil.getFileName() + "</a>" );
+					}
+				}
+			}
+			
+			
 		} else {
 			Map<String,String> data = new HashMap<String,String>();
 			data.put("ERROR", "No data in table '" + tableName + "' for this experiment");

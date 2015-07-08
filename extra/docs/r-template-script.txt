@@ -1,0 +1,77 @@
+#!/usr/bin/env Rscript
+
+# R Script Template for Sagitarii 
+#
+# Carlos Magno Abreu      magno.mabreu@gmail.com
+# 08/07/2015
+#
+# Use this script as base for your own code
+
+# ---------------------------------------------------------------------------
+# Here is all Sagitarii requirements. You will not change this 
+# unless you know what you're doing. Teapot will pass 
+# "sagitariiWorkFolder" and "libraryFolder" thru JRI (rJava) library.
+
+inputFileFolder <- paste( sagitariiWorkFolder, "inbox", sep = "/")
+outputFileFolder <- paste( sagitariiWorkFolder, "outbox", sep = "/")
+paramFile <- paste( sagitariiWorkFolder, "sagi_input.txt", sep = "/")
+outputFile <- paste( sagitariiWorkFolder, "sagi_output.txt", sep = "/")
+setwd(libraryFolder)
+
+# ---------------------------------------------------------------------------
+# Start to code after this point.
+# Your files will be at "inputFileFolder" folder.
+# Your CSV params file is "paramFile".
+# You can load the CSV file this way:
+
+tab <- read.table( paramFile, header = TRUE, sep = ",")
+
+# Now you have the CSV data given by Sagitarii.
+# If you have some files to load, they must be described
+# in CSV data. We need to get the file names.
+# Supose we have 2 columns "train" and "test" wich describes
+# our files, so we get the file names this way:
+# Get the "train" file name at column "train" in CSV data, line 1
+trainFileName <- tab$train[1]
+# Get the "test" file name at column "test" in CSV data, line 1
+testFileName <- tab$test[1]
+
+# Now you can load the files to use it:
+trainFile <- paste( inputFileFolder, trainFileName, sep = "/")
+load(trainFile)
+testFile <- paste( inputFileFolder, testFileName, sep = "/")
+load(testFile)
+
+# Now its time to do your job.  
+# ...
+# 
+# ...
+# All done? You must output your data to send to Sagitarii.
+
+# You can create a new CSV data, but I will send back all input data
+# to help me track back the results. Of course the output table must
+# be prepared to handle all columns of input table, plus the new columns
+# in this case, the "result" column and "result_v" column.
+# The "result" column in output table MUST be of "File" type, or Sagitarii 
+# will not store the file.
+# Lets add the new columns to the input CSV with some values.
+# The "result" column will contain the output data file and "result_v"
+# column will contain some value.
+tab$result <- "mydatafile.dat" 
+tab$result_v <- 0
+
+# Now you must save all files descibed in CSV to "outbox" folder. In this case,
+# I will save "mydatafile.dat" to "outputFileFolder" ( the outbox ).
+# The content is the same of CSV file, just to show you what to do. Of course it
+# will be your own file, or files ( if any ).
+outputDataFile <- paste( outputFileFolder, "mydatafile.dat", sep = "/")
+write.table(tab, file=outputDataFile, row.names=FALSE, quote = FALSE, sep = ",")
+
+# Now, you MUST save the "sagi_output.txt" file to send all control data
+# to the activity's output table. This will be all input data, plus the new columns,
+# but you must decide what to store. I like to send back all source data, so will be easy
+# to know what data produced this result.
+write.table(tab, file=outputFile, row.names=FALSE, quote = FALSE, sep = ",")
+
+# Congratulations! You're done. All console output of this script will be send to Sagitarii to.
+# You can view it at "View Nodes" screen.
