@@ -64,6 +64,8 @@ public class ClustersManager {
 				cluster.setCpuLoad( tasks.getCpuLoad() );
 				cluster.setTotalMemory( tasks.getTotalMemory() );
 				cluster.setFreeMemory( tasks.getFreeMemory() );
+				cluster.setFreeDiskSpace( tasks.getFreeDiskSpace() );
+				cluster.setTotalDiskSpace( tasks.getTotalDiskSpace() );
 				cluster.setTasks( tasks.getData() );
 				cluster.updateStatus();
 			}

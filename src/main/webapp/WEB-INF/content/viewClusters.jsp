@@ -23,7 +23,7 @@
 									<table style="margin-bottom: 5px;width:98%; margin-left:10px; margin-top: 5px">
 										<c:if test="${not fn:contains(cluster.type, 'MAIN')}">
 											<tr>
-												<td colspan="9" >
+												<td colspan="10" >
 													<img onclick="shutdown('${cluster.macAddress}')" class="dicas" title="Shutdown this node (no confirmation)" src="img/shutdown.png" style="width:24px;height:24px">
 													<img onclick="restart('${cluster.macAddress}')" class="dicas" title="Restart this node (no confirmation)" src="img/refresh.png" style="width:24px;height:24px">
 													<img onclick="showNodeLog('${cluster.macAddress}')" class="dicas" title="View Node Activities Log" src="img/search.png" style="width:24px;height:24px">
@@ -31,15 +31,16 @@
 											</tr>
 										</c:if>
 										<tr >
-											<th style='width:100px'>Operational System</th>
-											<th style='width:130px'>Machine Name</th>
-											<th style='width:130px'>MAC Address / Serial</th>
+											<th style='width:90px'>O.S.</th>
+											<th style='width:110px'>Machine</th>
+											<th style='width:140px'>MAC Address</th>
 											<th style='width:100px'>IP Address</th>
 											<th style='width:60px'>Java</th>
 											<th style='width:100px'>Active Tasks</th>
 											<th style='width:80px'>Finished Tasks</th>
-											<th style='width:80px'>CPU Load</th>
-											<th style='width:80px'>Memory Use (VM)</th>
+											<th style='width:40px'>CPU Load</th>
+											<th style='width:40px'>Memory Use (VM)</th>
+											<th style='width:40px'>Disk Space</th>
 										</tr>
 										<tr>
 											<td>${cluster.soName}</td>
@@ -59,6 +60,11 @@
 													<div class="clusterCpuIn" style="width:${cluster.memoryPercent}%">&nbsp;</div>
 												</div> 
 											</td>
+											<td>
+												<div title="${cluster.diskPercent}% of ${cluster.totalDiskSpace}Mb" class="clusterCpuOut">
+													<div class="clusterCpuIn" style="background-color:#00933B; width:${cluster.diskPercent}%">&nbsp;</div>
+												</div> 
+											</td>
 										</tr>
 										
 										<tr>
@@ -68,7 +74,7 @@
 											<th>Status</th>
 											<th>Signaled</th>
 											<th>Age</th>
-											<th colspan="3">Last Error</th>
+											<th colspan="4">Last Error</th>
 										</tr>
 										<tr>
 											<td>${cluster.lastAnnounce}</td>
@@ -93,7 +99,7 @@
 											
 											</td>
 											<td>${cluster.age}&nbsp;</td>
-											<td colspan="3" style="color:#F90101">${cluster.lastError}&nbsp;</td>
+											<td colspan="4" style="color:#F90101">${cluster.lastError}&nbsp;</td>
 										</tr>
 									</table>
 
@@ -102,7 +108,7 @@
 												<tr>
 													<th style='width:100px'>Serial</th>
 													<th style='width:135px'>File</th>
-													<th>Percent</th>
+													<th style='width:135px'>Percent</th>
 												</tr>									
 												<c:forEach var="listener" items="${cluster.progressListeners}">
 													<c:if test="${listener.percentage > 0}">

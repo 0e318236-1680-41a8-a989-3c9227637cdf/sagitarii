@@ -44,10 +44,28 @@ public class Cluster {
 	private boolean reloadWrappersSignal = false;
 	private boolean mainCluster = false;
 	private long freeMemory;
+	private long freeDiskSpace;
 	private long totalMemory;
+	private long totalDiskSpace;
 	private List<NodeTask> tasks;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 	private List<ProgressListener> progressListeners;
+	
+	public void setFreeDiskSpace(long freeDiskSpace) {
+		this.freeDiskSpace = freeDiskSpace;
+	}
+	
+	public void setTotalDiskSpace(long totalDiskSpace) {
+		this.totalDiskSpace = totalDiskSpace;
+	}
+
+	public long getFreeDiskSpace() {
+		return freeDiskSpace;
+	}
+	
+	public long getTotalDiskSpace() {
+		return totalDiskSpace;
+	}
 	
 	public void addProgressListener( ProgressListener listener ) {
 		progressListeners.add( listener );
@@ -102,6 +120,14 @@ public class Cluster {
 		return percent;
 	}
 	
+	public double getDiskPercent() {
+		double percent = 0;
+		try {
+			percent = Math.round( (freeDiskSpace * 100 ) / totalDiskSpace );
+		} catch ( Exception ignored ) {}
+		return percent;
+	}
+
 	public void setTotalMemory(long totalMemory) {
 		this.totalMemory = totalMemory;
 	}

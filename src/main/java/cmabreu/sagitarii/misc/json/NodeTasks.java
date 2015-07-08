@@ -7,7 +7,21 @@ public class NodeTasks {
 	private String cpuLoad;
 	private String freeMemory;
 	private String totalMemory;
+	private String freeDiskSpace;
+	private String totalDiskSpace;
 	private List<NodeTask> data;
+	
+	public long getFreeDiskSpace() {
+		return Long.parseLong(freeDiskSpace);
+	}
+	
+	public long getTotalDiskSpace() {
+		return Long.parseLong(totalDiskSpace);
+	}
+
+	public void setFreeDiskSpace(String freeDiskSpace) {
+		this.freeDiskSpace = freeDiskSpace;
+	}
 	
 	public String getNodeId() {
 		return nodeId;
