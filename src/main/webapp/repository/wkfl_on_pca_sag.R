@@ -1,4 +1,5 @@
 #!/usr/bin/env Rscript
+
 #---- Deixar trecho abaixo comentado no Sagitarii
 #sagitariiWorkFolder <- "D:/runpot/namespaces/GALAXY/41F83AB5-829A-498/B726D80A/7B69B04D-AFCF-4/GALAXY"
 
@@ -61,7 +62,8 @@ if (TRUE) { # uso de pca
   x.test <- normalize_minmax(x.train.pca.raw,x.test)
 }
 
-tab$resultado <- 0
+tab$resultado <- "classifica.csv"
+tab$resultadov <- 0
 
   if (metodo=="rn")
   {
@@ -70,42 +72,42 @@ tab$resultado <- 0
     x.rn2 <- rn2(x.train, x.test, tamanho, par_r, par_i)
     aa <- croc(x.rn2[,2], x.test$alvo)
     aa <- unlist(slot(aa, "y.values"))
-    tab$resultado[1] <- aa
+    tab$resultadov[1] <- aa
     write.table(x.rn2, file=outpuClassifica, row.names=FALSE, quote = FALSE)
   } else if (metodo=="rbfdot_C-svc")
   {
     x.svm4 <- svm4(x.train, x.test, x.train$alvo~., rbfdot, par_i, C-svc)
     aa <- croc(x.svm4[,2], x.test$alvo)
     aa <- unlist(slot(aa, "y.values"))
-    tab$resultado[1] <- aa
+    tab$resultadov[1] <- aa
     write.table(x.svm4, file=outpuClassifica, row.names=FALSE, quote = FALSE)
   } else if (metodo=="rbfdot_nu-svc")
   {
     x.svm4 <- svm4(x.train, x.test, x.train$alvo~., rbfdot, par_i, nu-svc)
     aa <- croc(x.svm4[,2], x.test$alvo)
     aa <- unlist(slot(aa, "y.values"))
-    tab$resultado[1] <- aa
+    tab$resultadov[1] <- aa
     write.table(x.svm4, file=outpuClassifica, row.names=FALSE, quote = FALSE)
   } else if (metodo=="rbfdot_C-bsvc")
   {
     x.svm4 <- svm4(x.train, x.test, x.train$alvo~., rbfdot, par_i, C-bsvc)
     aa <- croc(x.svm4[,2], x.test$alvo)
     aa <- unlist(slot(aa, "y.values"))
-    tab$resultado[1] <- aa
+    tab$resultadov[1] <- aa
     write.table(x.svm4, file=outpuClassifica, row.names=FALSE, quote = FALSE)
   } else if (metodo=="knn")
   {
     x.knn <- knear(x.train, x.test, tamanho)
     aa <- croc(x.knn[,2], x.test$alvo)
     aa <- unlist(slot(aa, "y.values"))
-    tab$resultado[1] <- aa
+    tab$resultadov[1] <- aa
     write.table(x.knn, file=outpuClassifica, row.names=FALSE, quote = FALSE)
   } else if (metodo=="rf")
   {
     x.rf <- rf(x.train, x.test, tamanho)
     aa <- croc(x.rf[,2], x.test$alvo)
     aa <- unlist(slot(aa, "y.values"))
-    tab$resultado[1] <- aa
+    tab$resultadov[1] <- aa
     write.table(x.rf, file=outpuClassifica, row.names=FALSE, quote = FALSE, sep = ",")
   }
   write.table(tab, file=outputFile, row.names=FALSE, quote = FALSE, sep = ",")
