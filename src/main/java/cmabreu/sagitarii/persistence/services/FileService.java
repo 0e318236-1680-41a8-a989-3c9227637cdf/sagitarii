@@ -28,7 +28,7 @@ public class FileService {
 
 		String search = "";
 		if ( (sSearch != null) && ( !sSearch.equals("") ) ) {
-			search = " and a.tag like '%" + sSearch + "%' or filename like '%" + sSearch + "%'";
+			search = " and cast(f as text) like '%" + sSearch + "%' or cast(a as text) like '%" + sSearch + "%'";
 		}
 		
 		String sql = "select f.*, a.tag as activity from files f join activities a on f.id_activity = a.id_activity "
@@ -36,10 +36,16 @@ public class FileService {
 				" order by " + 
 				sortColumn + " " + sSortDir0 + " offset " + iDisplayStart + " limit " + iDisplayLength ;
 
+		String countSql = "select count(*) as qtd from files f join activities a on f.id_activity = a.id_activity "
+				+ "where f.id_experiment = " + idExperiment + search;
+		
+		
 		Set<UserTableEntity> result = new HashSet<UserTableEntity>();
+		
 		int totalRecords = 0;
 		
 		if ( !sortColumn.equals("ERROR") ) {
+			
 			RelationService rs = new RelationService();
 			result = rs.genericFetchList( sql );
 			
@@ -62,7 +68,14 @@ public class FileService {
 			}
 			
 			rs.newTransaction();
-			totalRecords = rs.getCount( "files", "where id_experiment = " + idExperiment);
+			Set<UserTableEntity> resultCount = rs.genericFetchList( countSql );
+			int totR = 0;
+			for ( UserTableEntity ute : resultCount  ) {
+				totR = Integer.valueOf( ute.getData("qtd") );
+				break;
+			}
+			totalRecords = totR;
+			
 		} else {
 			Map<String,String> data = new HashMap<String,String>();
 			data.put("ERROR", "No files for this experiment");

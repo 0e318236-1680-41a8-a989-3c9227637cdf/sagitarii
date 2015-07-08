@@ -236,9 +236,6 @@ public class RelationService {
 		
 		if ( !sortColumn.equals("ERROR") ) {
 			result = genericFetchList( sql );
-			newTransaction();
-			totalRecords = getCount( tableName, search);
-			
 			FileService fs = new FileService();
 			
 			for ( UserTableEntity ute : result  ) { // Each line of result ...
@@ -253,7 +250,8 @@ public class RelationService {
 					}
 				}
 			}
-			
+			newTransaction();
+			totalRecords = getCount( tableName, search);
 			
 		} else {
 			Map<String,String> data = new HashMap<String,String>();
