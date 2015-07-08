@@ -221,9 +221,14 @@ public class RelationService {
 	}
 
 	public String viewSqlPagination(String tableName, String sortColumn, String sSortDir0,
-			String iDisplayStart, String iDisplayLength, String sEcho) throws Exception {
+			String iDisplayStart, String iDisplayLength, String sEcho, String sSearch) throws Exception {
 		
-		String sql = "select * from " + tableName +  " order by " + 
+		String search = " where 1 = 1";
+		if ( (sSearch != null) && ( !sSearch.equals("") ) ) {
+			search = " where cast("+tableName+" as text) like '%" + sSearch + "%'";
+		}		
+		
+		String sql = "select * from " + tableName + search + " order by " + 
 				sortColumn + " " + sSortDir0 + " offset " + iDisplayStart + " limit " + iDisplayLength ;
 
 		Set<UserTableEntity> result = new HashSet<UserTableEntity>();
@@ -232,7 +237,7 @@ public class RelationService {
 		if ( !sortColumn.equals("ERROR") ) {
 			result = genericFetchList( sql );
 			newTransaction();
-			totalRecords = getCount( tableName, "where 1 = 1");
+			totalRecords = getCount( tableName, search);
 			
 			FileService fs = new FileService();
 			
@@ -257,7 +262,7 @@ public class RelationService {
 			result.add(ute);
 
 		}
-		return new JsonUserTableConversor().asJson( result, totalRecords, Integer.valueOf( sEcho ) );
+		return new JsonUserTableConversor().asJson( result, totalRecords, Integer.valueOf( sEcho ) ).replace("\\", "\\\\");
 	}
 
 	

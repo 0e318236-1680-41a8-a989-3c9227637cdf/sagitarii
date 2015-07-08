@@ -51,9 +51,9 @@ public class SqlAjaxProcessAction extends BasicActionClass {
 			String sortColumn = columns.get( Integer.valueOf( iSortCol0 ) );
 			
 			resp = rs.viewSqlPagination(tableName, sortColumn, sSortDir0, iDisplayStart,
-					iDisplayLength, sEcho);
+					iDisplayLength, sEcho, sSearch);
 			
-			resp = resp.replace("\\", "\\\\");
+			
 			
 		} catch (Exception e) {
 			e.printStackTrace();
