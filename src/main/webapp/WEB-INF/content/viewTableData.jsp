@@ -113,9 +113,7 @@
 			"sPaginationType": "full_numbers",	
 			"iDisplayLength" : 30,	
 			"bAutoWidth" : false,
-			"bFilter": false,
 			"sScrollX": "100%",
-
 	        "bProcessing": true,
 	        "bServerSide": true,
 	        "sAjaxSource" : "tableDataAjaxProcess?idExperiment=${experiment.idExperiment}&tableName=${tableName}", 

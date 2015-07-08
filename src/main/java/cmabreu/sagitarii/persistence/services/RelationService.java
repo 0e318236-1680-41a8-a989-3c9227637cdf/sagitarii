@@ -138,19 +138,38 @@ public class RelationService {
 
 	
 	public String inspectExperimentTablePagination(String tableName, int idExperiment, String sortColumn, String sSortDir0,
-			String iDisplayStart, String iDisplayLength, String sEcho) throws Exception {
+			String iDisplayStart, String iDisplayLength, String sEcho, String sSearch) throws Exception {
 		
-		String sql = "select * from " + tableName + " where id_experiment = " + idExperiment + " order by " + 
-				sortColumn + " " + sSortDir0 + " offset " + iDisplayStart + " limit " + iDisplayLength ;
+		String search = "";
+		if ( (sSearch != null) && ( !sSearch.equals("") ) ) {
+			search = " and cast("+tableName+" as text) like '%" + sSearch + "%'";
+		}		
+		
+		String sql = "select * from " + tableName + " where id_experiment = " + idExperiment + search +
+				" order by " + sortColumn + " " + sSortDir0 + " offset " + iDisplayStart + 
+				" limit " + iDisplayLength ;
 
 		Set<UserTableEntity> result = new HashSet<UserTableEntity>();
 		int totalRecords = 0;
 		
 		if ( !sortColumn.equals("ERROR") ) {
 			result = genericFetchList( sql );
+			FileService fs = new FileService();
 			
 			// Show ID instance as a link
 			for ( UserTableEntity ute : result  ) {
+				
+				List<String> columns = ute.getColumnNames();
+				for ( String column : columns ) {
+					String domainName = tableName + "." + column;
+					if ( DomainStorage.getInstance().domainExists(domainName)  ) {
+						fs.newTransaction();
+						File fil = fs.getFile( Integer.valueOf( ute.getData(column) ) );
+						ute.setData(column, "<a href='getFile?idFile="+ute.getData(column)+
+								"'>" + fil.getFileName() + "</a>" );
+					}
+				}
+				
 				String idInstance = ute.getData("id_instance"); 
 				if ( (idInstance != null) && ( !idInstance.equals("") ) ) {
 					ute.setData("id_instance", "<a href='viewInstance?tableName="+tableName+"&idExperiment="+idExperiment+"&idInstance="+idInstance+"'>"+idInstance+"</a>");
@@ -160,7 +179,7 @@ public class RelationService {
 			}
 			
 			newTransaction();
-			totalRecords = getCount( tableName, "where id_experiment = " + idExperiment);
+			totalRecords = getCount( tableName, "where id_experiment = " + idExperiment + search);
 		} else {
 			Map<String,String> data = new HashMap<String,String>();
 			data.put("ERROR", "No data in table '" + tableName + "' for this experiment");
@@ -168,7 +187,7 @@ public class RelationService {
 			result.add(ute);
 
 		}
-		return new JsonUserTableConversor().asJson( result, totalRecords, Integer.valueOf( sEcho ) );
+		return new JsonUserTableConversor().asJson( result, totalRecords, Integer.valueOf( sEcho ) ).replace("\\", "\\\\");
 	}
 	
 	public Set<UserTableEntity> inspectExperimentTable( String tableName, Experiment experiment ) throws Exception {

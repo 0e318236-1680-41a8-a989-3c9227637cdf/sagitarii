@@ -52,9 +52,7 @@ public class TableDataAjaxProcessAction extends BasicActionClass {
 			String sortColumn = columns.get( Integer.valueOf( iSortCol0 ) );
 			
 			resp = rs.inspectExperimentTablePagination(tableName, idExperiment, sortColumn, sSortDir0, iDisplayStart,
-					iDisplayLength, sEcho);
-			
-			resp = resp.replace("\\", "\\\\");
+					iDisplayLength, sEcho, sSearch);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
