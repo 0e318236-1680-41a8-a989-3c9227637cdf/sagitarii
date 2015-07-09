@@ -21,6 +21,7 @@
 									<th>Instances with nodes</th>
 									<th>Buffers capacity</th>
 									<th>Selected Experiments (Common / Blocking)</th>
+									<th>&nbsp;</th>
 								</tr>
 								<tr>
 									<td>${fn:length(instanceInputBuffer)}</td>
@@ -28,6 +29,11 @@
 									<td>${fn:length(instanceOutputBuffer)}</td>
 									<td>${maxBufferCapacity}</td>
 									<td>${experimentOnTable.tagExec} / ${experimentOnTableJoin.tagExec}</td>
+									<td>
+										<a href="reloadBuffers">
+											<img title="Call AfterCrash Routine : WARNING! Experimental" class="miniButton dicas" src="img/turn.png">
+										</a>
+									</td>
 								</tr>
 							</table>
 						</div>

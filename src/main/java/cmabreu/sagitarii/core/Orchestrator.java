@@ -58,12 +58,9 @@ public class Orchestrator implements ServletContextListener {
 			us = new UserService();
 			
 			try {
-	    		// Chamar getList().size() apenas para ver se existem usuários cadastrados.
-				// Um NotFoundException significa que precisamos cadastrar o Admin
-				// pois o banco está vazio. Caso contrário já temos ao menos o Admin.
 				us.getList().size();
 			} catch (NotFoundException ignored ) {
-				// Nada encontrado. Precisamos de um Admin!
+				// No users found. We need an Admin!
 				User usr = new User();
 				usr.setFullName("System Administrator");
 				usr.setLoginName("admin");
