@@ -44,6 +44,11 @@
 											<td>${executor.activationWrapper}&nbsp;</td>
 											<td>${executor.selectStatement}&nbsp;</td>
 											<td>&nbsp;
+												<c:if test="${executor.type == 'RSCRIPT' || executor.type == 'LIBRARY'}">
+													<a target="__BLANK" href="repository/${executor.activationWrapper}">
+														<img class="miniButton dicas" title="View" src="img/search.png">
+													</a>
+												</c:if>
 												<img class="miniButton dicas" title="Edit" onclick="edit('${executor.idActivationExecutor}');" src="img/edit.png">
 												<img class="miniButton dicas" title="Delete" onclick="deleteExecutor('${executor.idActivationExecutor}','${executor.executorAlias}')" src="img/delete.png">
 											</td>
@@ -130,8 +135,8 @@
 				  { "sWidth": "10%" },
 				  { "sWidth": "10%" },
 				  { "sWidth": "20%" },
-				  { "sWidth": "50%" },
-				  { "sWidth": "10%" }]
+				  { "sWidth": "45%" },
+				  { "sWidth": "15%" }]
 			
 		}).fnSort( [[0,'desc']] );
 		
