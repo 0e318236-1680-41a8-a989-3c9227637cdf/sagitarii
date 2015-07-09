@@ -27,6 +27,9 @@ public class ActivationExecutor {
 	@Column(length=150)
 	private String executorAlias;
 
+	@Column(length=10)
+	private String hash;
+
 	@Column(length=15)
 	@Enumerated(EnumType.STRING)
 	private ExecutorType type;
@@ -75,6 +78,14 @@ public class ActivationExecutor {
 
 	public void setType(ExecutorType type) {
 		this.type = type;
+	}
+	
+	public void setHash(String hash) {
+		this.hash = hash;
+	}
+	
+	public String getHash() {
+		return hash;
 	}
 
 }

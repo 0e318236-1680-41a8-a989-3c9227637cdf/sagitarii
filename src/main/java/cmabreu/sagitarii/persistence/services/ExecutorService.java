@@ -3,6 +3,7 @@ package cmabreu.sagitarii.persistence.services;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,20 +34,15 @@ public class ExecutorService {
 			
 		}
 		
-		sb.append("\t<wrapper name=\"RRUNNER\" type=\"SYSTEM\" target=\"ANY\" version=\"1.0\">\n");
-		sb.append("\t\t<activityFile>r-wrapper.jar</activityFile>\n");
-		sb.append("\t\t<reload>true</reload>\n");
-		sb.append("\t</wrapper>\n");
+		sb.append("\t<wrapper activity=\"r-wrapper.jar\" name=\"RRUNNER\" type=\"SYSTEM\" hash=\"RWRAPPER\" target=\"ANY\" version=\"1.0\" />\n");
 		
 		for ( ActivationExecutor executor :  preList  ) {
 			ExecutorType type = executor.getType();
 			if ( type != ExecutorType.SELECT ) {
 				String alias = executor.getExecutorAlias();
 				String wrapper = executor.getActivationWrapper();
-				sb.append("\t<wrapper name=\""+ alias +"\" type=\"" + type.toString() + "\" target=\"ANY\" version=\"1.0\">\n");
-				sb.append("\t\t<activityFile>"+wrapper+"</activityFile>\n");
-				sb.append("\t\t<reload>true</reload>\n");
-				sb.append("\t</wrapper>\n");
+				String hash = executor.getHash();
+				sb.append("\t<wrapper activity=\""+wrapper+"\" name=\""+ alias +"\" type=\"" + type.toString() + "\" hash=\""+hash+"\" target=\"ANY\" version=\"1.0\" />\n");
 			}
 		}
 		sb.append("</manifest>\n\n");
@@ -65,13 +61,30 @@ public class ExecutorService {
 			throw new UpdateException( e.getMessage() );
 		}
 		
+		// If the file name is different, delete the older file.
+		if ( !oldExecutor.getActivationWrapper().equals( executor.getActivationWrapper() )  ) {
+			try {
+				String filePath = PathFinder.getInstance().getPath() + "/repository";
+				File fil = new File( filePath + "/" + oldExecutor.getActivationWrapper() );
+				fil.delete();
+				logger.debug("wrapper " + oldExecutor.getExecutorAlias() + " changed from " + oldExecutor.getActivationWrapper() + "to " + executor.getActivationWrapper() );
+			} catch ( Exception e ) {
+				logger.error("cannot remove old executor file: " + oldExecutor.getActivationWrapper() );
+			}
+		}
+		
+		String hash = UUID.randomUUID().toString().replace("-", "").substring(0, 10);
+		oldExecutor.setHash(hash);
+
 		oldExecutor.setSelectStatement( executor.getSelectStatement() );
+		
 		if( ( executor.getActivationWrapper() != null ) && ( !executor.getActivationWrapper().equals("") )) {
 			oldExecutor.setActivationWrapper( executor.getActivationWrapper()  );
 		}
 		
 		newTransaction();
 		rep.updateActivationExecutor(oldExecutor);
+		ClustersManager.getInstance().reloadWrappers();
 	}	
 	
 	public ActivationExecutor getExecutor(int idExecutor) throws NotFoundException{
@@ -89,6 +102,8 @@ public class ExecutorService {
 	}
 	
 	public ActivationExecutor insertExecutor(ActivationExecutor executor) throws InsertException {
+		String hash = UUID.randomUUID().toString().replace("-", "").substring(0, 10);
+		executor.setHash(hash);
 		ActivationExecutor expRet = rep.insereActivationExecutor( executor );
 		ClustersManager.getInstance().reloadWrappers();
 		return expRet;

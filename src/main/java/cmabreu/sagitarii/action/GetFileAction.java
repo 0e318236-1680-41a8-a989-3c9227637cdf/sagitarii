@@ -26,11 +26,17 @@ public class GetFileAction extends BasicActionClass {
 	
 	public String execute () {
 		cmabreu.sagitarii.persistence.entity.File file = null;
+		
+		String gz = "";
+		if ( (macAddress == null) || (macAddress.equals("") ) ) {
+			gz = ".gz";
+		}
+		
 		try {
 			FileService fs = new FileService();
 			if ( (idFile != null) && ( idFile > -1 ) ) {
 				file = fs.getFile( idFile );
-				fileName = file.getFileName();
+				fileName = file.getFileName() + gz;
 				fileInputStream = file.getDownloadStream( macAddress );
 			}
 		} catch ( Exception e ) {

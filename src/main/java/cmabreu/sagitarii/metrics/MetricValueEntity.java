@@ -121,7 +121,6 @@ public class MetricValueEntity implements IMetricEntity {
         ValueAxis domain = plot.getDomainAxis();
         domain.setVisible(false);
         
-        
         return retChart;
     	
 	}

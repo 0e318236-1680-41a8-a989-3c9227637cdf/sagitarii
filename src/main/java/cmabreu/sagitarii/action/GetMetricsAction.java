@@ -26,7 +26,7 @@ public class GetMetricsAction  {
 				chart = MetricController.getInstance().getEntity(metricName).getImage();
 			}
 		} catch ( Exception e ) {
-			//
+			e.printStackTrace();
 		}
 		return "ok";
 	}
