@@ -64,6 +64,16 @@ public class FileXMLParser {
 			// Just an empty node. Nothing dangerous.
 		}
 		
+
+		List<String> execLog = new ArrayList<String>();
+		try {
+			String log = getTagValue("execLog", pipeElement);
+			execLog = Arrays.asList( log.split("\n") );
+		} catch ( Exception e ) {
+			// Just an empty node. Nothing dangerous.
+		}
+		
+		
 		List<ReceivedFile> resp = new ArrayList<ReceivedFile>();
 		NodeList mapconfig = doc.getElementsByTagName("file");
 		for ( int x = 0; x < mapconfig.getLength(); x++ ) {
@@ -86,6 +96,8 @@ public class FileXMLParser {
 				receivedFile.setFragment(fragment);
 				
 				receivedFile.setConsole( consoleLines );
+				receivedFile.setExecLog( execLog );
+				
 				receivedFile.setExitCode( exitCode );
 				receivedFile.setTaskId( taskId );
 				

@@ -23,6 +23,7 @@
 										<th>Executor</th>
 										<th>Exit</th>
 										<th>Wrapper Console Output</th>
+										<th>Execution Log</th>
 									</tr>
 								</thead>
 								
@@ -37,6 +38,11 @@
 											<td class="tableCellFormLeft"> ${data.csvDataFile.exitCode}</td>
 											<td class="tableCellFormRight">
 												<c:forEach var="line" items="${data.csvDataFile.console}">
+													${line}<br> 
+												</c:forEach> 
+											</td>
+											<td class="tableCellFormRight">
+												<c:forEach var="line" items="${data.csvDataFile.execLog}">
 													${line}<br> 
 												</c:forEach> 
 											</td>
@@ -74,11 +80,12 @@
 			"bAutoWidth": false,
 			"sPaginationType": "full_numbers",
 			"aoColumns": [ 
-						  { "sWidth": "13%" },
 						  { "sWidth": "10%" },
-						  { "sWidth": "12%" },
-						  { "sWidth": "5%" },
-						  { "sWidth": "60%" }]						
+						  { "sWidth": "10%" },
+						  { "sWidth": "8%" },
+						  { "sWidth": "2%" },
+						  { "sWidth": "20%" },					
+						  { "sWidth": "50%" }]						
 		} ).fnSort( [[0,'desc']] );
 		
 		window.setInterval(reloadPage, 4000);

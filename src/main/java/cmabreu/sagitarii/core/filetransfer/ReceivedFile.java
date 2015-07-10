@@ -16,10 +16,12 @@ public class ReceivedFile {
 	private String taskId;
 	private String exitCode;
 	private List<String> console;
+	private List<String> execLog;
 
 	public ReceivedFile() {
 		exitCode = "0";
 		console = new ArrayList<String>();
+		execLog = new ArrayList<String>();
 		
 	}
 	
@@ -45,6 +47,14 @@ public class ReceivedFile {
 
 	public void setConsole(List<String> console) {
 		this.console = console;
+	}
+	
+	public void setExecLog(List<String> execLog) {
+		this.execLog = execLog;
+	}
+	
+	public List<String> getExecLog() {
+		return execLog;
 	}
 
 	public String getFragment() {

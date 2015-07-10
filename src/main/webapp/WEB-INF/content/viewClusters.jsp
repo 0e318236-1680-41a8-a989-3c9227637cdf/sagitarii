@@ -74,7 +74,7 @@
 											<th>Status</th>
 											<th>Signaled</th>
 											<th>Age</th>
-											<th colspan="4">Last Error</th>
+											<th colspan="4">Message</th>
 										</tr>
 										<tr>
 											<td>${cluster.lastAnnounce}</td>
