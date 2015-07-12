@@ -190,9 +190,6 @@ public class Cluster {
 	
 	public synchronized boolean confirmReceiveData( ReceivedData rd ) throws Exception {
 		setLastAnnounce( Calendar.getInstance().getTime() );
-		
-		setInstanceAsDone( rd );
-		
 		if ( rd.hasData() ) {
 			logger.debug( "[" + this.macAddress +  "] data received from instance " + rd.getInstance().getSerial() + " (" + rd.getActivity().getTag() + ") is done");
 		} else {
@@ -212,10 +209,13 @@ public class Cluster {
 	}
 	
 
-	public void setInstanceAsDone( ReceivedData rd ) {
+	public void finishInstance( ReceivedData rd ) {
 		String instanceSerial = rd.getInstance().getSerial();
 		Activity actvt = rd.getActivity();
-		MainLog.getInstance().storeLog( rd );
+		
+		MainLog.getInstance().storeLog( rd.getCsvDataFile().getTaskId(), rd.getActivity().getExecutorAlias(), rd.getCsvDataFile().getExitCode(),
+				rd.getMacAddress(), rd.getCsvDataFile().getConsole(), rd.getCsvDataFile().getExecLog() );
+		
 		setInstanceAsDone( instanceSerial, actvt );
 	}
 	

@@ -20,7 +20,9 @@ import org.apache.commons.csv.CSVRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import cmabreu.sagitarii.core.ClustersManager;
 import cmabreu.sagitarii.core.DataReceiver;
+import cmabreu.sagitarii.core.ReceivedData;
 import cmabreu.sagitarii.core.config.Configurator;
 import cmabreu.sagitarii.core.types.ActivityStatus;
 import cmabreu.sagitarii.core.types.ActivityType;
@@ -349,7 +351,6 @@ public class FileImporter extends Thread {
 			
 			new DataReceiver().receive( contentLines, macAddress, instance, activity, table, 
 					csvDataFile, this, initialLoad );
-	
 			
 			insertedLines = importedLines;
 			logger.debug("done inserting CSV data into table " + table.getName() );
@@ -390,11 +391,11 @@ public class FileImporter extends Thread {
 	 */
 	private void parseXml( String descriptor ) throws Exception {
 		String newDescriptor = descriptor + ".uncompressed";
+		logger.debug("decompressing descriptor " + newDescriptor + "...");
 		decompress( descriptor, newDescriptor );
 		
 		logger.debug("parsing descriptor " + newDescriptor + "...");
 		FileXMLParser parser = new FileXMLParser();
-		
 		receivedFiles = parser.parseDescriptor( newDescriptor );
 		ReceivedFile csvDataFile = null;
 		
@@ -411,7 +412,30 @@ public class FileImporter extends Thread {
 		if ( csvDataFile != null ) {
 			importData( csvDataFile );
 		} else {
-			logger.error("no csv data file in descriptor " + newDescriptor );
+			// We don't have a CSV sagi_output.txt, take any file record to log the operation and close the task.
+			if ( receivedFiles.size() > 0) {
+				ReceivedFile any = receivedFiles.get(0);
+				logger.error("no csv data file in descriptor " + newDescriptor + ". finishing instance " + any.getInstance() );
+
+				try {
+					InstanceService ps = new InstanceService();
+					Instance instance = ps.getInstance( any.getInstance() );
+					
+					ActivityService as = new ActivityService();
+					Activity act = as.getActivity( any.getActivity() );
+					
+					RelationService relationService = new RelationService();
+					Relation table = relationService.getTable( any.getTargetTable() );					
+					
+					ReceivedData rd = new ReceivedData(null, any.getMacAddress(), instance, act, table, any );
+					ClustersManager.getInstance().finishInstance( rd );				
+				} catch ( Exception e ) {
+					e.printStackTrace();
+				}
+				
+			} else {
+				logger.error("no files found in descriptor " + newDescriptor );
+			}
 		}
 
 	}

@@ -5,32 +5,32 @@ import java.util.List;
 
 public class MainLog {
 	private static MainLog instance;
-	private List<ReceivedData> log;
+	private List<LogItem> log;
 	
 	
 	private MainLog() {
-		log = new ArrayList<ReceivedData>();
+		log = new ArrayList<LogItem>();
 	}
 	
-	public List<ReceivedData> getLog() {
-		return new ArrayList<ReceivedData>( log );
+	public List<LogItem> getLog() {
+		return new ArrayList<LogItem>( log );
 	}
 	
-	public List<ReceivedData> getLogByExecutor( String executor ) {
-		List<ReceivedData> result = new ArrayList<ReceivedData>();
-		for ( ReceivedData rd : getLog()  ) {
-			if ( rd.getActivity().getExecutorAlias().equals( executor ) ) {
-				result.add( rd );
+	public List<LogItem> getLogByExecutor( String executor ) {
+		List<LogItem> result = new ArrayList<LogItem>();
+		for ( LogItem li : getLog()  ) {
+			if ( li.getExecutorAlias().equals( executor ) ) {
+				result.add( li );
 			}
 		}
 		return result;
 	}
 
-	public List<ReceivedData> getLogByNode( String node ) {
-		List<ReceivedData> result = new ArrayList<ReceivedData>();
-		for ( ReceivedData rd : getLog()  ) {
-			if ( rd.getMacAddress().equals( node ) ) {
-				result.add( rd );
+	public List<LogItem> getLogByNode( String node ) {
+		List<LogItem> result = new ArrayList<LogItem>();
+		for ( LogItem li : getLog()  ) {
+			if ( li.getMacAddress().equals( node ) ) {
+				result.add( li );
 			}
 		}
 		return result;
@@ -44,11 +44,13 @@ public class MainLog {
 		return instance;
 	}
 	
-	public synchronized void storeLog( ReceivedData rd ) {
+	public synchronized void storeLog(String taskId, String executorAlias, String exitCode, String macAddress, List<String> console, List<String> execLog) {
+		LogItem li = new LogItem( taskId,  executorAlias,  exitCode,  macAddress, console,  execLog);
 		if ( log.size() > 500 ) {
 			log.clear();
 		}
-		log.add( rd );
+		log.add( li );
 	}
+	
 
 }

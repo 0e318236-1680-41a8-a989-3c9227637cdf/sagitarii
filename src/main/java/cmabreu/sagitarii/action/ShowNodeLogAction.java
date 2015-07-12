@@ -7,8 +7,8 @@ import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 
+import cmabreu.sagitarii.core.LogItem;
 import cmabreu.sagitarii.core.MainLog;
-import cmabreu.sagitarii.core.ReceivedData;
 
 @Action(value="showNodeLog", results = { 
 		@Result ( location = "nodeLog.jsp", name = "ok") 
@@ -18,14 +18,14 @@ import cmabreu.sagitarii.core.ReceivedData;
 @ParentPackage("default")
 public class ShowNodeLogAction extends BasicActionClass {
 	private String macAddress;
-	private List<ReceivedData> log;
+	private List<LogItem> log;
 	
 	public String execute(){
 		log =  MainLog.getInstance().getLogByNode( macAddress );
 		return "ok";
 	}
 
-	public List<ReceivedData> getLog() {
+	public List<LogItem> getLog() {
 		return log;
 	}
 	

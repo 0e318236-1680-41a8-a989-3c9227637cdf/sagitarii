@@ -111,7 +111,20 @@ public class ClustersManager {
 			try {
 				cluster.confirmReceiveData( rd );
 			} catch ( Exception e ) {
-				e.printStackTrace();
+				logger.error("activity " + rd.getInstance().getSerial() + ": " + e.getMessage() );
+				cluster.setMessage( "activity " + rd.getInstance().getSerial() + ": " + e.getMessage()  );
+				throw e;
+			}
+		}
+	}
+	
+	public void finishInstance( ReceivedData rd ) {
+		Cluster cluster = cm.getCluster( rd.getMacAddress() );
+		if ( cluster != null ) {
+			logger.debug( "finishing instance "+ rd.getInstance().getSerial() +" from cluster " + rd.getMacAddress() );
+			try {
+				cluster.finishInstance( rd );
+			} catch ( Exception e ) {
 				logger.error("activity " + rd.getInstance().getSerial() + ": " + e.getMessage() );
 				cluster.setMessage( "activity " + rd.getInstance().getSerial() + ": " + e.getMessage()  );
 				throw e;

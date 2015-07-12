@@ -22,7 +22,7 @@
 			<appender-ref ref="Console"/> 
 		</Logger>
 		
-		<Logger name="cmabreu.sagitarii.core.sockets.FileImporter" level="error" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.core.sockets.FileImporter" level="debug" additivity="false"> 
 			<appender-ref ref="Console"/> 
 		</Logger>
 		
@@ -34,7 +34,7 @@
 			<appender-ref ref="Console"/> 
 		</Logger>
 
-		<Logger name="cmabreu.sagitarii.core.DataReceiver" level="error" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.core.DataReceiver" level="debug" additivity="false"> 
 			<appender-ref ref="Console"/> 
 		</Logger>
 
@@ -96,11 +96,11 @@
 			<appender-ref ref="Console"/> 
 		</Logger>
 
-		<Logger name="cmabreu.sagitarii.core.ClustersManager" level="error" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.core.ClustersManager" level="debug" additivity="false"> 
 			<appender-ref ref="Console"/> 
 		</Logger>
 		
-		<Logger name="cmabreu.sagitarii.core.Cluster" level="error" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.core.Cluster" level="debug" additivity="false"> 
 			<appender-ref ref="Console"/> 
 		</Logger>
 

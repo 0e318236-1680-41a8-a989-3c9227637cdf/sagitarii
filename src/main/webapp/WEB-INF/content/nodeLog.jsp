@@ -33,16 +33,16 @@
 											<td class="tableCellFormLeft">
 												<fmt:formatDate type="both" timeStyle="short" value="${data.time}"/>&nbsp;
 											</td>
-											<td class="tableCellFormLeft"> ${data.csvDataFile.taskId}</td>
-											<td class="tableCellFormLeft"> ${data.activity.executorAlias}</td>
-											<td class="tableCellFormLeft"> ${data.csvDataFile.exitCode}</td>
+											<td class="tableCellFormLeft"> ${data.taskId}</td>
+											<td class="tableCellFormLeft"> ${data.executorAlias}</td>
+											<td class="tableCellFormLeft"> ${data.exitCode}</td>
 											<td class="tableCellFormRight">
-												<c:forEach var="line" items="${data.csvDataFile.console}">
+												<c:forEach var="line" items="${data.console}">
 													${line}<br> 
 												</c:forEach> 
 											</td>
 											<td class="tableCellFormRight">
-												<c:forEach var="line" items="${data.csvDataFile.execLog}">
+												<c:forEach var="line" items="${data.execLog}">
 													${line}<br> 
 												</c:forEach> 
 											</td>
