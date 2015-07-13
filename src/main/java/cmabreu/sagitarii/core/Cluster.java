@@ -37,11 +37,13 @@ public class Cluster {
     private int maxAllowedTasks;
     private int processedPipes = 0;
     private String lastError = "";
+    private String lostInstance = "";
 	private List<Instance> runningInstances;
 	private boolean restartSignal = false;
 	private boolean quitSignal = false;
 	private boolean cleanWorkspaceSignal = false;
 	private boolean reloadWrappersSignal = false;
+	private boolean askingForInstance = false;
 	private boolean mainCluster = false;
 	private long freeMemory;
 	private long freeDiskSpace;
@@ -50,6 +52,11 @@ public class Cluster {
 	private List<NodeTask> tasks;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 	private List<ProgressListener> progressListeners;
+	
+	public boolean signaled() {
+		return ( restartSignal || quitSignal || cleanWorkspaceSignal || reloadWrappersSignal || askingForInstance );
+		
+	}
 	
 	public void setFreeDiskSpace(long freeDiskSpace) {
 		this.freeDiskSpace = freeDiskSpace;
@@ -140,9 +147,27 @@ public class Cluster {
 		cleanWorkspaceSignal = true;
 	}
 
+	public boolean isAskingForInstance() {
+		return askingForInstance;
+	}
+	
+	public String getLostInstance() {
+		return lostInstance;
+	}
+	
+	public void informReport( String instanceSerial, String status ) {
+		logger.debug( instanceSerial + " status is " + status );
+		askingForInstance = false;
+		lostInstance = "";
+	}
+	
 	public void inform( String instanceSerial ) {
+		if ( askingForInstance ) {
+			return;
+		}
 		logger.warn("remember to ask Teapot for instance " + instanceSerial );
-		//logger.warn( "INFORM#" + instanceSerial );
+		askingForInstance = true;
+		lostInstance = instanceSerial;
 	}
 	
 	public void restart() {
@@ -195,10 +220,6 @@ public class Cluster {
 		} else {
 			logger.error( "[" + this.macAddress +  "] no data produced by instance " + rd.getInstance().getSerial() + " (" + rd.getActivity().getTag() + ")" );
 			lastError = "No data produced by instance " + rd.getInstance().getSerial() + " (" + rd.getActivity().getTag() + ")";
-		}
-		
-		if ( !rd.getCsvDataFile().getExitCode().equals("0") ) {
-			lastError = "Exit Error: " + rd.getInstance().getSerial() + " (" + rd.getActivity().getTag() + ")";
 		}
 		
 		MetricController.getInstance().hit( this.machineName, MetricType.NODE );

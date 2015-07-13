@@ -169,9 +169,13 @@ public class ClustersManager {
 	public void inform(String macAddress, String instanceSerial ) {
 		logger.debug("Sagitarii needs to know about instance " + instanceSerial + " running on node " + macAddress );
 		Cluster cluster = cm.getCluster(macAddress);
-		if ( !cluster.isMainCluster() ) {
-			cluster.inform( instanceSerial );
-		}
+		cluster.inform( instanceSerial );
+	}
+	
+	public void informReport( String macAddress, String status, String instanceSerial ) {
+		logger.debug("Teapot node " + macAddress + " informs instance " + instanceSerial + " status as " + status );
+		Cluster cluster = cm.getCluster(macAddress);
+		cluster.informReport( instanceSerial, status );
 	}
 
 	
@@ -208,12 +212,18 @@ public class ClustersManager {
 		Cluster cluster = cm.getCluster(macAddress);
 		if ( (cluster != null)  ) {
 			// if it is allowed to receive new tasks...
-			if ( ( !cluster.isReloadWrappersSignal() ) && ( !cluster.isQuitSignal() ) && ( !cluster.isRestartSignal() ) && ( !cluster.isCleanWorkspaceSignal() ) ) {
+			if ( !cluster.signaled() ) {
 				resposta = getNextInstance( cluster );
 			} else {
 				logger.warn("node " + macAddress + " not allowed to run tasks for now");
 				// if not...
 				if ( !cluster.isMainCluster() ) {
+					if ( cluster.isAskingForInstance() ) {
+						
+						System.out.println(" SENING ");
+						
+						resposta = "INFORM#" + cluster.getLostInstance();
+					}
 					if ( cluster.isReloadWrappersSignal() ) {
 						resposta = "RELOAD_WRAPPERS";
 					}

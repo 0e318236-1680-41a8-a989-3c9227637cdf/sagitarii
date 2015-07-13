@@ -9,6 +9,8 @@ import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 
+import cmabreu.sagitarii.core.ClustersManager;
+
 import com.opensymphony.xwork2.ActionContext;
 
 @Action(value="taskStatusReport", results= {  
@@ -24,8 +26,7 @@ public class TaskStatusReportAction extends BasicActionClass {
 	public String execute(){
 		String resposta = "";
 		
-		System.out.println( " taskStatusReport : " + macAddress + " " + instance + " " + status );
-		
+		ClustersManager.getInstance().informReport(macAddress, status, instance);
 		
 		try { 
 			HttpServletResponse response = (HttpServletResponse)ActionContext.getContext().get(StrutsStatics.HTTP_RESPONSE);
