@@ -65,15 +65,19 @@ public class DeliveryUnit {
 	}
 	
 	public long getAgeMillis() {
-		Date endTime = Calendar.getInstance().getTime();
-		if( receiveTime != null ) {
-			endTime = receiveTime;
-		} 
-		DateLibrary.getInstance().setTo( deliverTime );
-		Calendar data = Calendar.getInstance();
-		data.setTime(endTime);
-		long millis = DateLibrary.getInstance().getDiferencaMilisAte( data );
-		return millis;  
+		try {
+			Date endTime = Calendar.getInstance().getTime();
+			if( receiveTime != null ) {
+				endTime = receiveTime;
+			} 
+			DateLibrary.getInstance().setTo( deliverTime );
+			Calendar data = Calendar.getInstance();
+			data.setTime(endTime);
+			long millis = DateLibrary.getInstance().getDiffMillisTo( data );
+			return millis;
+		} catch ( Exception e ) {
+			return 0;
+		}
 	}
 
 	public String getAgeTime() {

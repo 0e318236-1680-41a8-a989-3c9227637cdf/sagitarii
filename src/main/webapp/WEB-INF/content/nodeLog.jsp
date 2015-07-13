@@ -19,9 +19,7 @@
 								<thead>
 									<tr>
 										<th>Time</th>
-										<th>Node Task ID</th>
 										<th>Executor</th>
-										<th>Exit</th>
 										<th>Wrapper Console Output</th>
 										<th>Execution Log</th>
 									</tr>
@@ -33,9 +31,7 @@
 											<td class="tableCellFormLeft">
 												<fmt:formatDate type="both" timeStyle="short" value="${data.time}"/>&nbsp;
 											</td>
-											<td class="tableCellFormLeft"> ${data.taskId}</td>
 											<td class="tableCellFormLeft"> ${data.executorAlias}</td>
-											<td class="tableCellFormLeft"> ${data.exitCode}</td>
 											<td class="tableCellFormRight">
 												<c:forEach var="line" items="${data.console}">
 													${line}<br> 
@@ -82,10 +78,8 @@
 			"aoColumns": [ 
 						  { "sWidth": "10%" },
 						  { "sWidth": "10%" },
-						  { "sWidth": "8%" },
-						  { "sWidth": "2%" },
-						  { "sWidth": "20%" },					
-						  { "sWidth": "50%" }]						
+						  { "sWidth": "40%" },					
+						  { "sWidth": "40%" }]						
 		} ).fnSort( [[0,'desc']] );
 		
 		window.setInterval(reloadPage, 4000);

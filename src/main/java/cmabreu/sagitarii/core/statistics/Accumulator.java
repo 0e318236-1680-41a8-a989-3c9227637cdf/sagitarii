@@ -9,9 +9,9 @@ import cmabreu.sagitarii.misc.DateLibrary;
 public class Accumulator {
 	private Date averageAge;
 	private long averageMilis = 0;
-	private int calculatedCount;
+	private int calculatedCount = 0;
 	private String hash;
-	private long totalAgeMilis;
+	private long totalAgeMilis = 0;
 	
 	public Accumulator( DeliveryUnit du  ) {
 		this.hash = du.getHash();
@@ -25,7 +25,7 @@ public class Accumulator {
 	public void addToStack( DeliveryUnit du ) {
 		calculatedCount++;
 		totalAgeMilis = totalAgeMilis + du.getAgeMillis();
-		long averageMilis = totalAgeMilis / calculatedCount;
+		averageMilis = totalAgeMilis / calculatedCount;
 		
 		String time = String.format("%02d:%02d:%02d", 
 				TimeUnit.MILLISECONDS.toHours(averageMilis),

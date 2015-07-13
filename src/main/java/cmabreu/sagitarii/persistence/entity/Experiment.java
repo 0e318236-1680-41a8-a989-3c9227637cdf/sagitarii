@@ -239,7 +239,7 @@ public class Experiment {
 			cl.setTime( Calendar.getInstance().getTime() );
 		}
 		
-		long millis = dl.getDiferencaMilisAte( cl ) ;
+		long millis = dl.getDiffMillisTo( cl ) ;
 
 		if ( status == ExperimentStatus.STOPPED ) {
 			millis = 0;

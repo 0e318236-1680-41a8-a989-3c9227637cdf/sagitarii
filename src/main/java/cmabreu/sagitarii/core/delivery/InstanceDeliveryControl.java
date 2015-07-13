@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 import cmabreu.sagitarii.core.ClustersManager;
 import cmabreu.sagitarii.core.statistics.Accumulator;
 import cmabreu.sagitarii.core.statistics.AgeCalculator;
+import cmabreu.sagitarii.misc.DateLibrary;
 import cmabreu.sagitarii.persistence.entity.Instance;
 
 public class InstanceDeliveryControl {
@@ -24,16 +25,44 @@ public class InstanceDeliveryControl {
 		return instance;
 	}
 	
+	/**
+	 * Check if Sagitarii must ask the node for an instance that is take much more time
+	 * than the average
+	 */
+	private boolean mustInform( Accumulator ac, DeliveryUnit unity ) {
+
+		long m1 = unity.getAgeMillis();
+		long m2 = ac.getAverageMilis();
+		long mt = ac.getTotalAgeMilis();
+		
+		long secs = ( (m1 - m2) / 1000 ) + 1 ;
+		long secsLimit = ( m2  / 1000 );
+		
+		logger.debug(" > Hash: " + ac.getHash() );
+		logger.debug("   > Unity Age  : " + DateLibrary.getInstance().getTimeRepresentation( m1 ) );
+		logger.debug("   > Average    : " + DateLibrary.getInstance().getTimeRepresentation( m2 ) );
+		logger.debug("   > Limit      : " + secsLimit );
+		logger.debug("   > Total      : " + DateLibrary.getInstance().getTimeRepresentation( mt ) );
+		logger.debug("   > Diff Secs. : " + secs );
+		
+		if ( secs > secsLimit ) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	public void checkLostPackets() {
+		logger.debug("checking instance times... ");
 		// For each Instance we have with nodes...
 		for ( DeliveryUnit unity : units ) {
 			// We take the Average time for this kind of Instance
 			// by checking the accumulator with same hash
 			Accumulator ac = AgeCalculator.getInstance().getAccumulator( unity.getHash() );
-			long millis = ac.getTotalAgeMilis() - unity.getAgeMillis();
-			logger.debug(" > " + unity.getHash() + ": Time: " + unity.getAgeTime() + " Average: " + ac.getAverageAgeAsText() + " Millis diff:" + millis);
-			if ( millis > ( 2 * ac.getAverageMilis() ) ) {
-				ClustersManager.getInstance().inform( unity.getMacAddress(), unity.getInstance().getSerial() );
+			if ( ac != null ) {
+				if ( mustInform( ac, unity ) ) {
+					ClustersManager.getInstance().inform( unity.getMacAddress(), unity.getInstance().getSerial() );
+				}
 			}
 		}
 	}

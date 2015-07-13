@@ -5,8 +5,7 @@ import cmabreu.sagitarii.core.delivery.InstanceDeliveryControl;
 
 /**
  * Main system heartbeat
- * 
- * @author contmagno
+ * @author Carlos Magno Abreu
  *
  */
 public class MainHeartBeat implements Runnable {
@@ -15,7 +14,7 @@ public class MainHeartBeat implements Runnable {
     public void run() {
     	ClustersManager.getInstance().updateClustersStatus();
     	Sagitarii.getInstance().loadInputBuffer();
-    	InstanceDeliveryControl.getInstance().checkLostPackets();
+   		InstanceDeliveryControl.getInstance().checkLostPackets();
     }
 	
 

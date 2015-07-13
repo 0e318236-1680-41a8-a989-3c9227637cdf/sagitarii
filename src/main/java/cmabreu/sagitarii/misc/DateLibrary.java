@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class DateLibrary {
 	private Calendar calendar;
@@ -56,26 +57,42 @@ public class DateLibrary {
 		calendar.add(Calendar.MILLISECOND, i );
 	}
 	
-	public long getDiferencaDiasAte(Calendar data) {
-		long diferenca = 0;
-		if (  isAfter(data)  ) {
-			diferenca = calendar.getTimeInMillis() - data.getTimeInMillis();
-		} else {
-			diferenca = data.getTimeInMillis() - calendar.getTimeInMillis();
-		}
-		long segundosDiferenca = diferenca / (1000 * 60 * 60 * 24);    	
-		return segundosDiferenca;    	
+	public long getDiffDaysTo(Calendar date) {
+		long daysDiff = getDiffMillisTo(date) / (1000 * 60 * 60 * 24);    	
+		return daysDiff;    	
+	}
+
+	
+	public long getDiffSecondsTo(Calendar date) {
+		long secDiff = getDiffMillisTo(date) / 1000;    	
+		return secDiff;    	
 	}
 	
-	public long getDiferencaMilisAte(Calendar data) {
-		long diferenca = 0;
-		if (  isAfter(data)  ) {
-			diferenca = calendar.getTimeInMillis() - data.getTimeInMillis();
+	
+	public String getTimeRepresentation( long millis ) {
+		String retorno = String.format("%02d:%02d:%02d", 
+				TimeUnit.MILLISECONDS.toHours(millis),
+				TimeUnit.MILLISECONDS.toMinutes(millis) -  
+				TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)), 
+				TimeUnit.MILLISECONDS.toSeconds(millis) - 
+				TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))); 	
+		return retorno;
+	}
+
+	
+	public long getDiffMillisTo(Calendar date) {
+		long difference = 0;
+		if (  isAfter(date)  ) {
+			difference = calendar.getTimeInMillis() - date.getTimeInMillis();
 		} else {
-			diferenca = data.getTimeInMillis() - calendar.getTimeInMillis();
+			difference = date.getTimeInMillis() - calendar.getTimeInMillis();
 		}
-		calendar.setTimeInMillis( diferenca );
-		return diferenca;    	
+		calendar.setTimeInMillis( difference );
+		return difference;    	
+	}
+	
+	public Date getDiffDateTo(Calendar date) {
+		return new Date( getDiffMillisTo(date) );    	
 	}
 	
 	public boolean isAfter( Calendar data ) {
@@ -98,12 +115,17 @@ public class DateLibrary {
 	}
 
 	
-	public void setTo( Date data ) {
-		if ( data != null ) {
-			calendar.setTime(data);
+	public void setTo( Date date ) {
+		if ( date != null ) {
+			calendar.setTime(date);
 		}
 	}
 
+	public void setTo( Calendar date ) {
+		calendar = date;
+	}
+
+	
 	public Date asDate() {
 		return calendar.getTime();
 	}

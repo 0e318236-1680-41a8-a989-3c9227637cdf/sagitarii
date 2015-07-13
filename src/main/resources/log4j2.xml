@@ -14,7 +14,7 @@
 	
 	<loggers>
 
-		<Logger name="cmabreu.sagitarii.core.delivery.InstanceDeliveryControl" level="error" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.core.delivery.InstanceDeliveryControl" level="debug" additivity="false"> 
 			<appender-ref ref="Console"/> 
 		</Logger>
 
@@ -22,7 +22,7 @@
 			<appender-ref ref="Console"/> 
 		</Logger>
 		
-		<Logger name="cmabreu.sagitarii.core.sockets.FileImporter" level="debug" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.core.sockets.FileImporter" level="error" additivity="false"> 
 			<appender-ref ref="Console"/> 
 		</Logger>
 		
