@@ -53,8 +53,10 @@ public class Instance implements Serializable {
 	@Column(length=15)
 	private String serial;
 
+	/*
 	@Column(length=250)
 	private String executorAlias;
+	*/
 	
     @OneToMany(orphanRemoval=true,  mappedBy="instance", fetch = FetchType.LAZY)
     @OrderBy("id_table, id_row ASC")
@@ -162,13 +164,15 @@ public class Instance implements Serializable {
 		this.status = status;
 	}
 
-	public String getExecutorAlias() {
+	/*
+	public String getExecutorAlias--XX() {
 		return executorAlias;
 	}
 
-	public void setExecutorAlias(String executorAlias) {
+	public void setExecutorAlias--XX(String executorAlias) {
 		this.executorAlias = executorAlias;
 	}
+	*/
 
 	public Set<Consumption> getConsumptions() {
 		return consumptions;
@@ -197,5 +201,4 @@ public class Instance implements Serializable {
 		this.finishDateTime = finishDateTime;
 	}
 
-	
 }

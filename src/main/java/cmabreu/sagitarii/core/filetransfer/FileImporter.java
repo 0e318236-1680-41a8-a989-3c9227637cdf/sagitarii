@@ -234,7 +234,7 @@ public class FileImporter extends Thread {
 			logger.debug("found instance " + instance.getSerial() );
 		} catch ( NotFoundException nf ) {
 			instance = new Instance();
-			instance.setExecutorAlias( activity.getSerial() );
+			//instance.setExecutorAlias( activity.getSerial() );
 			instance.setType( ActivityType.LOADER );
 			instance.setStatus( InstanceStatus.NEW_DATA );
 			instance.setStartDateTime( Calendar.getInstance().getTime() );
@@ -434,7 +434,7 @@ public class FileImporter extends Thread {
 				}
 				
 			} else {
-				logger.error("no files found in descriptor " + newDescriptor );
+				logger.error("SEVERE: no files found in descriptor " + newDescriptor + ". cannot process instance" );
 			}
 		}
 
@@ -495,9 +495,7 @@ public class FileImporter extends Thread {
 		
 			logger.debug("session " + sessionSerial + " commited");
 		} catch ( Exception e ) {
-			
 			e.printStackTrace();
-			
 			logger.error( e.getMessage() + " while commiting session " + sessionSerial);
 			cleanFiles();
 		}

@@ -159,6 +159,12 @@ public class Cluster {
 		logger.debug( instanceSerial + " status is " + status );
 		askingForInstance = false;
 		lostInstance = "";
+		
+		if ( status.equals("NOT_FOUND") ) {
+			logger.debug("resubmiting instance " + instanceSerial + " to job queue");
+			cancelAndRemoveInstance( instanceSerial );
+		} 
+		
 	}
 	
 	public void inform( String instanceSerial ) {
@@ -226,6 +232,8 @@ public class Cluster {
 		MetricController.getInstance().hit( rd.getActivity().getTag(), MetricType.ACTIVITY_TAG );
 		MetricController.getInstance().hit( rd.getActivity().getType().toString(), MetricType.ACTIVITY_TYPE );
 		
+		finishInstance( rd );
+		
 		return true;
 	}
 	
@@ -280,6 +288,8 @@ public class Cluster {
 			if ( instance.getSerial().equalsIgnoreCase( instanceSerial ) ) {
 				instance.setStatus( InstanceStatus.PIPELINED );
 				runningInstances.remove( instance ); 
+				InstanceDeliveryControl.getInstance().removeUnit( instanceSerial );
+				Sagitarii.getInstance().returnToBuffer(instance);
 				break;
 			}
 		}

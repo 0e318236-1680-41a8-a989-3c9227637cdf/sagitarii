@@ -45,7 +45,23 @@ public class InstanceDeliveryControl {
 		logger.debug("   > Total      : " + DateLibrary.getInstance().getTimeRepresentation( mt ) );
 		logger.debug("   > Diff Secs. : " + secs );
 		
-		if ( secs > secsLimit ) {
+		if ( secs > secsLimit ) { // Is taking more than double of average time for this kind of instance
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	
+	/**
+	 * Check if an instance that is taking many time as the average
+	 */
+	private boolean isDelayed( Accumulator ac, DeliveryUnit unity ) {
+		long m1 = unity.getAgeMillis();
+		long m2 = ac.getAverageMilis();
+		long secs = ( (m1 - m2) / 1000 ) + 1 ;
+		
+		if ( secs > 0 ) { // Is taking more than the average time for this kind of instance
 			return true;
 		} else {
 			return false;
@@ -53,13 +69,15 @@ public class InstanceDeliveryControl {
 	}
 	
 	public void checkLostPackets() {
-		logger.debug("checking instance times... ");
 		// For each Instance we have with nodes...
-		for ( DeliveryUnit unity : units ) {
+		for ( DeliveryUnit unity : getUnits() ) {
 			// We take the Average time for this kind of Instance
 			// by checking the accumulator with same hash
 			Accumulator ac = AgeCalculator.getInstance().getAccumulator( unity.getHash() );
 			if ( ac != null ) {
+				if ( isDelayed( ac, unity ) ) {
+					unity.setDelayed();
+				}
 				if ( mustInform( ac, unity ) ) {
 					ClustersManager.getInstance().inform( unity.getMacAddress(), unity.getInstance().getSerial() );
 				}

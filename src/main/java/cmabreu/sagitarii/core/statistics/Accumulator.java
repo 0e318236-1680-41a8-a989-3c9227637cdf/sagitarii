@@ -12,10 +12,16 @@ public class Accumulator {
 	private int calculatedCount = 0;
 	private String hash;
 	private long totalAgeMilis = 0;
+	private String content;
 	
 	public Accumulator( DeliveryUnit du  ) {
 		this.hash = du.getHash();
+		this.content = du.getInstanceActivities();
 		addToStack( du );
+	}
+	
+	public String getContent() {
+		return content;
 	}
 	
 	public long getAverageMilis() {

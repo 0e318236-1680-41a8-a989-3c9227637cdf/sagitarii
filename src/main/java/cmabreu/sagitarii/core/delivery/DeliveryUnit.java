@@ -18,6 +18,21 @@ public class DeliveryUnit {
 	private Date deliverTime;
 	private Date receiveTime;
 	private String hash;
+	private boolean delayed = false;
+	
+	public String getInstanceActivities() {
+		String prefix = "";
+		StringBuilder sb = new StringBuilder();
+		for ( Activation act : activations ) {
+			sb.append( prefix + act.getExecutor()  );
+			prefix = ", ";
+		}
+		return sb.toString();
+	}
+	
+	public boolean getDelayed() {
+		return this.delayed;
+	}
 	
 	public List<Activation> getActivations() {
 		return activations;
@@ -29,6 +44,10 @@ public class DeliveryUnit {
 	
 	public Instance getInstance() {
 		return instance;
+	}
+	
+	public void setDelayed() {
+		this.delayed = true;
 	}
 
 	private String getHashSHA1( byte[] subject ) throws Exception {

@@ -169,22 +169,30 @@ public class ClustersManager {
 	public void inform(String macAddress, String instanceSerial ) {
 		logger.debug("Sagitarii needs to know about instance " + instanceSerial + " running on node " + macAddress );
 		Cluster cluster = cm.getCluster(macAddress);
-		cluster.inform( instanceSerial );
+		if ( cluster != null ) {
+			cluster.inform( instanceSerial );
+		} else {
+			logger.error("cluster " + macAddress + " not connected");
+		}
 	}
 	
 	public void informReport( String macAddress, String status, String instanceSerial ) {
 		logger.debug("Teapot node " + macAddress + " informs instance " + instanceSerial + " status as " + status );
 		Cluster cluster = cm.getCluster(macAddress);
-		cluster.informReport( instanceSerial, status );
+		if ( cluster != null ) {
+			cluster.informReport( instanceSerial, status );
+		} else {
+			logger.error("cluster " + macAddress + " not connected");
+		}
 	}
 
 	
 	/**
 	 * Troca a TAG ##TAG_ID_INSTANCE## pelo ID do instance.
-	 * Isto é necessário pois não se possuía o ID do instance quando o XML foi
-	 * gerado (antes de gravar no banco) e é necessário enviar este ID ao Nó
-	 * para facilitar o encontro do mesmo instance quando a tarefa for concluída.
-	 * (O nó não precisa do ID, ele vai devolver ao Sagitarii junto com os dados).
+	 * Isto eh necessario pois nao se possuia o ID do instance quando o XML foi
+	 * gerado (antes de gravar no banco) e eh necessário enviar este ID ao No
+	 * para facilitar o encontro do mesmo instance quando a tarefa for concluida.
+	 * (O no nao precisa do ID, ele vai devolver ao Sagitarii junto com os dados).
 	 */
 	private String fillInstanceID( Instance instance ) {
 		return instance.getContent().replace("##TAG_ID_INSTANCE##", String.valueOf( instance.getIdInstance() ) );
@@ -196,7 +204,7 @@ public class ClustersManager {
 		String macAddress = cluster.getMacAddress();
 		Instance instance = Sagitarii.getInstance().getNextInstance();
 		if ( instance != null ) {
-			logger.debug( "sending instance "+ instance.getType() + " (" + instance.getExecutorAlias() + ") "+ instance.getSerial() +" data to node " + macAddress );
+			logger.debug( "sending instance (" + instance.getSerial() + ") "+ instance.getSerial() +" data to node " + macAddress );
 			instance.setStatus( InstanceStatus.WAITING );
 			cluster.addInstance(instance);
 			resposta = fillInstanceID ( instance );

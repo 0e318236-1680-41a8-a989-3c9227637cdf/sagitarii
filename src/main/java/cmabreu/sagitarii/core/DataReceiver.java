@@ -38,7 +38,7 @@ public class DataReceiver {
 		InstanceService ps = new InstanceService();
 		Instance instance = null;
 		instance = new Instance();
-		instance.setExecutorAlias( activity.getSerial() );
+		//instance.setExecutorAlias( activity.getSerial() );
 		instance.setType( ActivityType.LOADER );
 		instance.setStatus( InstanceStatus.NEW_DATA );
 		instance.setStartDateTime( Calendar.getInstance().getTime() );

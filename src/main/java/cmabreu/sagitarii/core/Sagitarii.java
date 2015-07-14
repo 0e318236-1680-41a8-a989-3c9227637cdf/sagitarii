@@ -426,11 +426,14 @@ public class Sagitarii {
 
 	 */
 	public synchronized void returnToBuffer( Instance instance ) {
+		logger.debug("instance refund: " + instance.getSerial() );
 		if ( instanceOutputBuffer.remove( instance ) ) {
 			if ( instance.getType().isJoin() ) {
 				instanceJoinInputBuffer.add( instance );
+				logger.debug(" > to the join buffer" );
 			} else {
 				instanceInputBuffer.add( instance );
+				logger.debug(" > to the common buffer" );
 			}
 		}
 	}

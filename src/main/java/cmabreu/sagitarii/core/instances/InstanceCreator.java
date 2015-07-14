@@ -53,7 +53,7 @@ public class InstanceCreator {
 		pipe.setIdFragment( fragment.getIdFragment() );
 		pipe.setContent( getXMLContent(activity, parameter, pipe.getSerial() )  );
 		pipe.setType( activity.getType() );
-		pipe.setExecutorAlias( activity.getExecutorAlias() );
+		//pipe.setExecutorAlias( activity.getExecutorAlias() );
 		pipe.setQtdActivations( order );
 		return pipe;
 	}
