@@ -92,7 +92,7 @@
 			<appender-ref ref="Console"/> 
 		</Logger>
 
-		<Logger name="cmabreu.sagitarii.core.Sagitarii" level="error" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.core.Sagitarii" level="debug" additivity="false"> 
 			<appender-ref ref="Console"/> 
 		</Logger>
 

@@ -52,6 +52,7 @@ public class Cluster {
 	private List<NodeTask> tasks;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 	private List<ProgressListener> progressListeners;
+	private List<String> log = new ArrayList<String>();
 	
 	public boolean signaled() {
 		return ( restartSignal || quitSignal || cleanWorkspaceSignal || reloadWrappersSignal || askingForInstance );
@@ -168,10 +169,17 @@ public class Cluster {
 	}
 	
 	public void inform( String instanceSerial ) {
+		logger.warn("asking Teapot for lost instance " + instanceSerial + " from node " + macAddress );
+		
+		if ( status == ClusterStatus.DEAD ) {
+			logger.warn("this node is DEAD. try to recover lost instance from output buffer");
+			informReport( instanceSerial, "NOT_FOUND");
+		}
+		
 		if ( askingForInstance ) {
+			logger.warn("already waiting for instance " + lostInstance);
 			return;
 		}
-		logger.warn("remember to ask Teapot for instance " + instanceSerial );
 		askingForInstance = true;
 		lostInstance = instanceSerial;
 	}
@@ -225,7 +233,7 @@ public class Cluster {
 			logger.debug( "[" + this.macAddress +  "] data received from instance " + rd.getInstance().getSerial() + " (" + rd.getActivity().getTag() + ") is done");
 		} else {
 			logger.error( "[" + this.macAddress +  "] no data produced by instance " + rd.getInstance().getSerial() + " (" + rd.getActivity().getTag() + ")" );
-			lastError = "No data produced by instance " + rd.getInstance().getSerial() + " (" + rd.getActivity().getTag() + ")";
+			setMessage("No data produced by instance " + rd.getInstance().getSerial() + " (" + rd.getActivity().getTag() + ")" );
 		}
 		
 		MetricController.getInstance().hit( this.machineName, MetricType.NODE );
@@ -241,10 +249,8 @@ public class Cluster {
 	public void finishInstance( ReceivedData rd ) {
 		String instanceSerial = rd.getInstance().getSerial();
 		Activity actvt = rd.getActivity();
-		
 		MainLog.getInstance().storeLog( rd.getCsvDataFile().getTaskId(), rd.getActivity().getExecutorAlias(), rd.getCsvDataFile().getExitCode(),
 				rd.getMacAddress(), rd.getCsvDataFile().getConsole(), rd.getCsvDataFile().getExecLog() );
-		
 		setInstanceAsDone( instanceSerial, actvt );
 	}
 	
@@ -430,7 +436,6 @@ public class Cluster {
 		this.availableProcessors = availableProcessors;
 	}
 
-
 	public String getJavaVersion() {
 		return javaVersion;
 	}
@@ -447,11 +452,32 @@ public class Cluster {
 		return lastError;
 	}
 	
-	public void setMessage(String lastError) {
-		this.lastError = lastError;
+	public void setMessage(String logItem) {
+		this.lastError = logItem;
+		if ( log.size() > 30 ) {
+			log.remove(0);
+		}
+		log.add( logItem );
 	}
 	
 	public ClusterType getType() {
 		return type;
 	}
+	
+	public void clearLog() {
+		log.clear();
+	}
+	
+	public List<String> getLog() {
+		return new ArrayList<String>(log);
+	}
+	
+	public void clearListeners() {
+		progressListeners.clear();
+	}
+	
+	public void clearTasks() {
+		tasks.clear();
+	}
+	
 }

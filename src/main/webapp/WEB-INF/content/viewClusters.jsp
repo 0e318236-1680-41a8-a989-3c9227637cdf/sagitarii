@@ -15,137 +15,71 @@
 						<img onclick="reloadWrappers();" title="Force nodes to reload all wrappers" class="menuButton dicas" src="img/refresh.png">
 					</div>
 					
-					<div id="promoBar" style="height:220px;display:table;width:100%">
+					<div id="promoBar" style="height:220px;display:table;width:95%;margin:0 auto">
 						<c:forEach var="cluster" items="${clusterList}">
 						
-								<div style="position:relative" id="${cluster.macAddress}" class="clusterBar">
+								<div onclick="showNodeDetails('${cluster.macAddress}')" id="${cluster.macAddress}" class="clusterBar">
 								
-									<table style="margin-bottom: 5px;width:98%; margin-left:10px; margin-top: 5px">
-										<c:if test="${not fn:contains(cluster.type, 'MAIN')}">
-											<tr>
-												<td colspan="10" >
-													<img onclick="shutdown('${cluster.macAddress}')" class="dicas" title="Shutdown this node (no confirmation)" src="img/shutdown.png" style="width:24px;height:24px">
-													<img onclick="restart('${cluster.macAddress}')" class="dicas" title="Restart this node (no confirmation)" src="img/refresh.png" style="width:24px;height:24px">
-													<img onclick="showNodeLog('${cluster.macAddress}')" class="dicas" title="View Node Activities Log" src="img/search.png" style="width:24px;height:24px">
-												</td>
-											</tr>
-										</c:if>
-										<tr >
-											<th style='width:90px'>O.S.</th>
-											<th style='width:110px'>Machine</th>
-											<th style='width:140px'>MAC Address</th>
-											<th style='width:100px'>IP Address</th>
-											<th style='width:60px'>Java</th>
-											<th style='width:100px'>Active Tasks</th>
-											<th style='width:80px'>Finished Tasks</th>
-											<th style='width:40px'>CPU Load</th>
-											<th style='width:40px'>Memory Use (VM)</th>
-											<th style='width:40px'>Disk Space</th>
+									<table style="margin: 5px;width:90%;">
+										<tr>
+											<td colspan="3">
+												<c:if test="${cluster.status == 'IDLE'}">
+													<img style="width:32px;height:32px" src="img/computer.png">
+												</c:if>
+												<c:if test="${cluster.status == 'ACTIVE'}">
+													<img style="width:32px;height:32px" src="img/computerblue.png">
+												</c:if>
+												<c:if test="${cluster.status == 'DEAD'}">
+													<img style="width:32px;height:32px" src="img/computerred.png">
+												</c:if>
+												<c:if test="${cluster.status == 'TOO_BUSY'}">
+													<img style="width:32px;height:32px" src="img/computergreen.png">
+												</c:if>
+											</td>
 										</tr>
 										<tr>
-											<td>${cluster.soName}</td>
-											<td>${cluster.machineName}</td>
-											<td >${cluster.macAddress}</td>
-											<td>${cluster.ipAddress}</td>
-											<td>${cluster.javaVersion}</td>
-											<td><span class="clusterInfo1">${fn:length(cluster.runningInstances)}</span></td>
-											<td>${cluster.processedPipes}</td>
+											<td colspan="3">
+												<span style="font-weight:bold;font-size:12px">${cluster.machineName}</span>
+											</td>
+										</tr>
+										<tr><td colspan="3">${cluster.ipAddress}</td></tr>
+										<tr>
+											<td colspan="3">
+												<c:if test="${cluster.type != 'MAIN'}">
+													${cluster.macAddress}
+												</c:if>
+												<c:if test="${cluster.type == 'MAIN'}">
+													Internal Node
+												</c:if>
+											</td>
+										</tr>
+										<tr>
+											<td><span class="dicas" title="Status">${cluster.status}</span></td>
 											<td>
-												<div title="${cluster.cpuLoad}%" class="clusterCpuOut">
+											<span class="dicas" title="Running / Max">${fn:length(cluster.runningInstances)} / ${cluster.maxAllowedTasks}</span></td>
+											<td>
+											<span class="dicas" title="Finished">${cluster.processedPipes}</span></td>
+										</tr>
+										<tr>
+											<td>
+												<div title="CPU: ${cluster.cpuLoad}%" class="clusterCpuOut dicas">
 													<div class="clusterCpuIn" style="background-color:#0266C8; width:${cluster.cpuLoad}%">&nbsp;</div>
 												</div> 
 											</td>
 											<td>
-												<div title="${cluster.memoryPercent}% of ${cluster.totalMemory}Mb" class="clusterCpuOut">
+												<div title="Memory: ${cluster.memoryPercent}% of ${cluster.totalMemory}Mb" class="clusterCpuOut dicas">
 													<div class="clusterCpuIn" style="width:${cluster.memoryPercent}%">&nbsp;</div>
 												</div> 
 											</td>
 											<td>
-												<div title="${cluster.diskPercent}% of ${cluster.totalDiskSpace}Mb" class="clusterCpuOut">
+												<div title="Disk: ${cluster.diskPercent}% of ${cluster.totalDiskSpace}Mb" class="clusterCpuOut dicas">
 													<div class="clusterCpuIn" style="background-color:#00933B; width:${cluster.diskPercent}%">&nbsp;</div>
 												</div> 
 											</td>
 										</tr>
 										
-										<tr>
-											<th>Last Announce</th>
-											<th>Max Allowed Tasks</th>
-											<th>Cores</th>
-											<th>Status</th>
-											<th>Signaled</th>
-											<th>Age</th>
-											<th colspan="4">Message</th>
-										</tr>
-										<tr>
-											<td>${cluster.lastAnnounce}</td>
-											<td>${cluster.maxAllowedTasks}</td>
-											<td>${cluster.availableProcessors}</td>
-											<td style="color:#F90101">${cluster.status}</td>
-											<td style="color:#F90101">
-											
-												<c:if test="${cluster.restartSignal == 'TRUE' }">
-													RESTART
-												</c:if>
-												<c:if test="${cluster.quitSignal == 'TRUE' }">
-													QUIT
-												</c:if>
-												<c:if test="${cluster.reloadWrappersSignal == 'TRUE' }">
-													RELOAD WPRS
-												</c:if>
-												<c:if test="${cluster.cleanWorkspaceSignal == 'TRUE' }">
-													CLEAN WSPC
-												</c:if>
-												&nbsp;
-											
-											</td>
-											<td>${cluster.age}&nbsp;</td>
-											<td colspan="4" style="color:#F90101">${cluster.lastError}&nbsp;</td>
-										</tr>
 									</table>
 
-									<c:if test="${not fn:contains(cluster.type, 'MAIN')}">
-										<table style="margin-bottom: 5px;width:98%; margin-left:10px; margin-top: 5px">
-												<tr>
-													<th style='width:100px'>Serial</th>
-													<th style='width:135px'>File</th>
-													<th style='width:135px'>Percent</th>
-												</tr>									
-												<c:forEach var="listener" items="${cluster.progressListeners}">
-													<c:if test="${listener.percentage > 0}">
-													<tr>
-														<td>${listener.serial}&nbsp;</td>
-														<td>${listener.fileName}&nbsp;</td>
-														<td>${listener.percentage}</td>
-													</tr>									
-													</c:if>
-												</c:forEach>
-										</table>
-									</c:if>
-
-
-
-									<c:if test="${not fn:contains(cluster.type, 'MAIN')}">
-										<table style="margin-bottom: 5px;width:98%; margin-left:10px; margin-top: 5px">
-												<tr>
-													<th style='width:100px'>Workflow</th>
-													<th style='width:135px'>Experiment</th>
-													<th>Task ID</th>
-													<th>Executor</th>
-													<th>Start Time</th>
-													<th>Elapsed Time</th>
-												</tr>									
-												<c:forEach var="task" items="${cluster.tasks}">
-													<tr>
-														<td>${task.workflow}</td>
-														<td>${task.experiment}</td>
-														<td>${task.taskId}</td>
-														<td>${task.executor}</td>
-														<td>${task.startTime}</td>
-														<td>${task.elapsedTime}</td>
-													</tr>									
-												</c:forEach>
-										</table>
-									</c:if>
 								</div>
 						
 						</c:forEach>
@@ -168,28 +102,23 @@
 		location.reload();
 	}
 
-	function restart(mac) {
-		window.location.href="clusterControl?command=restart&mac=" + mac;
-	}
-
 	function clean() {
 		window.location.href="cleanWorkspaces";
-	}
-
-	function shutdown(mac) {
-		window.location.href="clusterControl?command=quit&mac=" + mac;
 	}
 
 	function reloadWrappers() {
 		window.location.href="clusterControl?command=reloadWrappers";
 	}
 
-	function showNodeLog( node ) {
-		window.location.href="showNodeLog?macAddress=" + node;
+
+	function showNodeDetails( node ) {
+		window.location.href="showNodeDetails?macAddress=" + node;
 	}
 
 	$(document).ready(function() {
+		reloadDicas();
 		window.setInterval(reloadPage, 5000);
+		
 	});
 
 </script>				

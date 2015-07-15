@@ -29,6 +29,30 @@ public class ClustersManager {
 		return cm;
 	}
 	
+	public void clearNodeListeners( String macAddress ) {
+		logger.debug( "will clear listeners for node " + macAddress );
+		Cluster clu = getCluster(macAddress);
+		if ( clu != null ) {
+			clu.clearListeners();
+		}
+	}
+	
+	public void clearNodeLog( String macAddress ) {
+		logger.debug( "will clear log for node " + macAddress );
+		Cluster clu = getCluster(macAddress);
+		if ( clu != null ) {
+			clu.clearLog();
+		}
+	}
+
+	public void clearNodeTasks( String macAddress ) {
+		logger.debug( "will clear tasks for node " + macAddress );
+		Cluster clu = getCluster(macAddress);
+		if ( clu != null ) {
+			clu.clearTasks();
+		}
+	}
+
 	public void acceptTask( String instanceId, String macAddress) {
 		logger.debug( "node " + macAddress + " accepted task in instance " + instanceId );
 		Cluster clu = getCluster(macAddress);
@@ -276,7 +300,7 @@ public class ClustersManager {
 		clusterList = new ArrayList<Cluster>();
 	}
 	
-	private Cluster getCluster(String macAddress) {
+	public Cluster getCluster(String macAddress) {
 		for ( Cluster clu : getClusterList()  ) {
 			if ( clu.getMacAddress().equalsIgnoreCase( macAddress ) ) {
 				return clu;

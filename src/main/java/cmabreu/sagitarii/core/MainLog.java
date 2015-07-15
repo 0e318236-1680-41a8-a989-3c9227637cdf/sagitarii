@@ -46,8 +46,8 @@ public class MainLog {
 	
 	public synchronized void storeLog(String taskId, String executorAlias, String exitCode, String macAddress, List<String> console, List<String> execLog) {
 		LogItem li = new LogItem( taskId,  executorAlias,  exitCode,  macAddress, console,  execLog);
-		if ( log.size() > 500 ) {
-			log.clear();
+		if ( log.size() > 200 ) {
+			log.remove(0);
 		}
 		log.add( li );
 	}
