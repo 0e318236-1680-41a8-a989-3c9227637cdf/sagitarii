@@ -60,6 +60,8 @@ export LD_LIBRARY_PATH=/usr/local/lib/R/site-library/rJava/jri/
 install.packages("glmnet")
 install.packages("leaps")
 install.packages("ROCR")
+install.packages("randomForest")
+install.packages("kernlab")
 
 
 ==================================

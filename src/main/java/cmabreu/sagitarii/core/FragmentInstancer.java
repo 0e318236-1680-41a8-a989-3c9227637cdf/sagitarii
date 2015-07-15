@@ -94,7 +94,7 @@ public class FragmentInstancer {
 	private boolean checkExperimentStartPoint( Activity activity ) {
 		if ( activity.getPreviousActivities().size() == 0 ) {
 			// Is the Experiment start point. Check data availability.
-			logger.debug(activity.getTag() +  " is Experiment entrance point. checking data availability...");
+			logger.debug(activity.getTag() +  " is EXPERIMENT entrance point");
 			boolean finalResult = activity.getInputRelations().size() > 0;
 			int count = 0;
 			for ( Relation rel : activity.getInputRelations() ) {
@@ -109,15 +109,17 @@ public class FragmentInstancer {
 			finalResult = finalResult && ( totalAvailability > 0  );
 			return finalResult; 
 		} else {
-			return true;
+			logger.debug(activity.getTag() +  " is NOT an EXPERIMENT entrance point.");
+			return false;
 		}
 	}
 	
 	private boolean checkSourceDataAvailability( Activity activity ) {
-		boolean canRun = false;  
+		logger.debug("checking data availability");
+		boolean canRun = true;  
 		if ( activity.getPreviousActivities().size() > 0 ) {
 			// Is the Fragment start point. Check all previous activities for produced data. 
-			logger.debug(activity.getTag() +  " is Fragment entrance point. checking data availability...");
+			logger.debug(activity.getTag() +  " is FRAGMENT entrance point");
 			int count = 0;
 			for ( Activity act : activity.getPreviousActivities() ) {
 				if ( !haveTableSomeData( act.getOutputRelation().getName() ) ) {
@@ -132,6 +134,7 @@ public class FragmentInstancer {
 				canRun = false;
 			}
 		} else {
+			logger.debug(activity.getTag() +  " is not FRAGMENT entrance point. trying as EXPERIMENT E.P.");
 			return checkExperimentStartPoint( activity );
 		}
 		// canRun == false means: Its a Experiment entrance point ( previous activities = 0 ) or we have no data anywhere
@@ -146,10 +149,9 @@ public class FragmentInstancer {
 	 */
 	public void generate() throws Exception {
 		try {
-
 			for ( Fragment frag : fragments ) {
 				if ( ( frag.getStatus() == FragmentStatus.PREVIEW ) || ( frag.getStatus() == FragmentStatus.READY ) ) {
-					logger.debug("will create pipes for fragment " + frag.getSerial() );
+					logger.debug("will create instances for fragment " + frag.getSerial() );
 					Activity act = getEntrancePoint( frag );
 					if ( act != null ) {
 						logger.debug("entrance point: activity " + act.getTag() );
@@ -159,7 +161,7 @@ public class FragmentInstancer {
 							if ( instances.size() > 0 ) {
 								logger.debug("done. " + instances.size() + " instances generated. will store...");
 								new InstanceService().insertInstanceList(instances);
-								logger.debug("done storing instances to database. updating fragment status...");
+								logger.debug("done storing instances to database. updating fragment status to PIPELINED...");
 								
 								frag.setStatus( FragmentStatus.PIPELINED );
 								frag.setRemainingInstances( instances.size() );
@@ -172,13 +174,14 @@ public class FragmentInstancer {
 							}
 							logger.debug("done");
 						} else {
+							logger.debug("no data available. is it an experiment E.P. ? ");
 							if ( checkExperimentStartPoint(act) ) {
 								logger.warn("no data found in any source tables. cannot run this Experiment.");
 								// Its an Experiment entrance point with no data. Cannot Run!
 							} else {
-								// Its a Fragment entrance point with no data. Finish it!
-								logger.warn("no data found in any source tables. finishing this Fragment...");
-								frag.setStatus( FragmentStatus.FINISHED );
+								// Its a Fragment entrance point with no data.
+								logger.warn("no data found in any source tables. Its READY to go but not now.");
+								frag.setStatus( FragmentStatus.READY );
 								frag.setRemainingInstances( 0 );
 								frag.setTotalInstances( 0 );
 								FragmentService fs = new FragmentService();
