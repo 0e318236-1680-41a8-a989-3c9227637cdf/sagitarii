@@ -26,6 +26,8 @@ public class TaskStatusReportAction extends BasicActionClass {
 	public String execute(){
 		String resposta = "";
 		
+		System.out.println(macAddress + " " + status + " " + instance);
+		
 		ClustersManager.getInstance().informReport(macAddress, status, instance);
 		
 		try { 
