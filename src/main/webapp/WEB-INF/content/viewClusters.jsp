@@ -13,6 +13,7 @@
 					<div class="basicCentralPanelBar" style="height:50px">
 						<img onclick="clean();" title="Clean all workspaces" class="menuButton dicas" src="img/clean.png">
 						<img onclick="reloadWrappers();" title="Force nodes to reload all wrappers" class="menuButton dicas" src="img/refresh.png">
+						<img onclick="openMultipleConsole();" title="Open SSH terminal for all nodes" class="menuButton dicas" src="img/bash.png">
 					</div>
 					
 					<div id="promoBar" style="height:220px;display:table;width:95%;margin:0 auto">

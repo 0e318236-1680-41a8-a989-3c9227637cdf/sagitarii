@@ -25,6 +25,7 @@
 													<img onclick="shutdown('${cluster.macAddress}')" class="dicas" title="Shutdown this node (no confirmation)" src="img/shutdown.png" style="width:24px;height:24px">
 													<img onclick="restart('${cluster.macAddress}')" class="dicas" title="Restart this node (no confirmation)" src="img/refresh.png" style="width:24px;height:24px">
 													<img onclick="showNodeLog('${cluster.macAddress}')" class="dicas" title="View Node Activities Log" src="img/search.png" style="width:24px;height:24px">
+													<img onclick="openConsole('${cluster.macAddress}');" title="Open a SSH terminal for this node" class="dicas" src="img/bash.png" style="width:24px;height:24px">
 												</td>
 											</tr>
 										</c:if>
@@ -202,6 +203,10 @@
 
 	function shutdown(mac) {
 		window.location.href="clusterControl?command=quit&mac=" + mac;
+	}
+
+	function openConsole(mac) {
+		window.location.href="nodeSSHTerminal?macAddress=" + mac;
 	}
 
 	function reloadWrappers() {

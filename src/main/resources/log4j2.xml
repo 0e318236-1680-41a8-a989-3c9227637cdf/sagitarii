@@ -14,6 +14,10 @@
 	
 	<loggers>
 
+		<Logger name="cmabreu.sagitarii.core.ssh.SSHSessionManager" level="debug" additivity="false"> 
+			<appender-ref ref="File"/> 
+		</Logger>
+
 		<Logger name="cmabreu.sagitarii.core.delivery.InstanceDeliveryControl" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
