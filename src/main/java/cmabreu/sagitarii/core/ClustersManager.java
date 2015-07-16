@@ -251,9 +251,6 @@ public class ClustersManager {
 				// if not...
 				if ( !cluster.isMainCluster() ) {
 					if ( cluster.isAskingForInstance() ) {
-						
-						System.out.println(" SENING ");
-						
 						resposta = "INFORM#" + cluster.getLostInstance();
 					}
 					if ( cluster.isReloadWrappersSignal() ) {

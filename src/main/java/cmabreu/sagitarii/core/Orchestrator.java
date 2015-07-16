@@ -16,6 +16,7 @@ import cmabreu.sagitarii.core.processor.MainCluster;
 import cmabreu.sagitarii.core.types.UserType;
 import cmabreu.sagitarii.metrics.Chronos;
 import cmabreu.sagitarii.misc.PathFinder;
+import cmabreu.sagitarii.misc.json.GSONThreadLocalImmolater;
 import cmabreu.sagitarii.persistence.entity.Domain;
 import cmabreu.sagitarii.persistence.entity.Experiment;
 import cmabreu.sagitarii.persistence.entity.User;
@@ -161,5 +162,19 @@ public class Orchestrator implements ServletContextListener {
     public void contextDestroyed(ServletContextEvent event) {
 		loggerDebug("shutdown");
         scheduler.shutdownNow();
+		loggerDebug("immolating GSON threads...");
+		int result = 0;
+		try {
+			result = GSONThreadLocalImmolater.immolate();
+		} catch ( Exception e ) {
+			loggerError( e.getMessage() );
+		}
+		loggerDebug("done: " + result + " threads killed.");
+		try {
+			FileReceiverManager.getInstance().stopServer();
+		} catch (Exception e) {
+			//
+		}
+        
     }
 }

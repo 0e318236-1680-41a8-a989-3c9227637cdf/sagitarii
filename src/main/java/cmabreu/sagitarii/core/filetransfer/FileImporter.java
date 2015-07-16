@@ -415,6 +415,7 @@ public class FileImporter extends Thread {
 			// We don't have a CSV sagi_output.txt, take any file record to log the operation and close the task.
 			if ( receivedFiles.size() > 0) {
 				ReceivedFile any = receivedFiles.get(0);
+				mainCsvFile = any;
 				logger.error("no csv data file in descriptor " + newDescriptor + ". finishing instance " + any.getInstance() );
 
 				try {
@@ -432,9 +433,9 @@ public class FileImporter extends Thread {
 				} catch ( Exception e ) {
 					e.printStackTrace();
 				}
-				
+				logger.debug("done finishing instance " + any.getInstance() );
 			} else {
-				logger.error("SEVERE: no files found in descriptor " + newDescriptor + ". cannot process instance" );
+				logger.error("SEVERE: no files found in descriptor " + newDescriptor + ". cannot process this response" );
 			}
 		}
 

@@ -15,6 +15,9 @@ public class FileReceiverManager {
 	private Server server;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 	
+	public void stopServer() {
+		server.stopServer();
+	}
 	
 	public List<TransferSession> getTransferSessions() throws Exception {
 		List<TransferSession> sessions = new ArrayList<TransferSession>();
@@ -58,8 +61,12 @@ public class FileReceiverManager {
 	public List<FileImporter> getImportersByExperiment( String experimentSerial ) {
 		List<FileImporter> importers = new ArrayList<FileImporter>();
 		for ( FileImporter importer : getImporters() ) {
-			if ( importer.getMainCsvFile().getExperimentSerial().equals( experimentSerial ) ) {
-				importers.add( importer );
+			try {
+				if ( importer.getMainCsvFile().getExperimentSerial().equals( experimentSerial ) ) {
+					importers.add( importer );
+				}
+			} catch ( Exception e ) {
+				logger.error( "Error checking Importers for Experiment " + experimentSerial + ": " + e.getMessage() );
 			}
 		}
 		return importers;
@@ -173,8 +180,12 @@ public class FileReceiverManager {
 	public List<FileSaver> getSaversByExperiment( String experimentSerial ) {
 		List<FileSaver> savers = new ArrayList<FileSaver>();
 		for ( FileSaver saver : getSavers() ) {
-			if ( (saver.getStatus() == SaverStatus.TRANSFERRING) && (saver.getSessionSerial().equals( experimentSerial ) ) ) {
-				savers.add( saver );
+			try {
+				if ( (saver.getStatus() == SaverStatus.TRANSFERRING) && (saver.getSessionSerial().equals( experimentSerial ) ) ) {
+					savers.add( saver );
+				}
+			} catch ( Exception e ) {
+				logger.error("error checking File Savers for Experiment " + experimentSerial + ": " + e.getMessage() );
 			}
 		}
 		return savers;

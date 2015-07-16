@@ -100,14 +100,11 @@ public class Server extends Thread {
 					saver.setName("Sagitarii file receiver");
 					saver.start();
 				}
-
+				
 			} catch (Exception e) {
-				e.printStackTrace();
+				//
 			}
 
-			try {
-				serverSocket.close();
-			} catch ( Exception ignored ) { }
 
 		} catch ( Exception e ) {
 
@@ -123,9 +120,13 @@ public class Server extends Thread {
 		
 		logger.debug("checking savers...");
 		for ( FileSaver saver : savers ) {
-			if ( (saver.getStatus() != SaverStatus.TRANSFERRING) && ( saver.getStatus() != SaverStatus.WAITCOMMIT )
-					&& ( saver.getStatus() != SaverStatus.COMMITING ) ) {
-				toRemove.add( saver ); 
+			try {
+				if ( (saver.getStatus() != SaverStatus.TRANSFERRING) && ( saver.getStatus() != SaverStatus.WAITCOMMIT )
+						&& ( saver.getStatus() != SaverStatus.COMMITING ) ) {
+					toRemove.add( saver ); 
+				}
+			} catch ( Exception e ) {
+				//
 			}
 		}
 		logger.debug("will clean " + toRemove.size() + " savers");
@@ -151,6 +152,16 @@ public class Server extends Thread {
 	
 	public void stopServer() {
 		canStop = true;
+		logger.debug("stop");
+		
+		for ( FileSaver saver :  savers ) {
+			saver.stopProcess();
+		}
+		
+		try {
+			serverSocket.close();
+		} catch ( Exception ignored ) { }
+		
 	}
 
 

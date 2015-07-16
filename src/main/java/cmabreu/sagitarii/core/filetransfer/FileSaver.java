@@ -149,6 +149,7 @@ public class FileSaver extends Thread {
 					logger.debug("will stop transfer of " + fileName + " and close socket.");
 					fos.close();
 					ois.close();
+					socket.close();
 					server.closeTransaction( sessionSerial );
 					throwException("Canceled by user request");
 				} 
