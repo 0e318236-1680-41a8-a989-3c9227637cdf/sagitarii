@@ -22,6 +22,7 @@ public class NodeSSHTerminalAction extends BasicActionClass {
 	private String password;
 	private SSHSession session;
 	private String command;
+	private int port;
 	
 	public String execute () {
 		ClustersManager cm = ClustersManager.getInstance();
@@ -32,32 +33,38 @@ public class NodeSSHTerminalAction extends BasicActionClass {
 			return "ok";
 		}
 		
-		if (  (user == null) && (password == null) && (command == null) ) {
-			return "ok";
-		}
-		
 		SSHSessionManager mngr = SSHSessionManager.getInstance();
 
 		try {
 			session = mngr.getSession( cluster.getMacAddress() );
 			if ( session == null ) {
+				
+				//No command / No login : Just entering the screen 
+				if (  (user == null) && (password == null) && (command == null) ) {
+					return "ok";
+				}				
+				
+				System.out.println("no session - creating new");
 				if ( (user != null) && (password != null)  ) {
-					//String host = cluster.getIpAddress();
-					String host = "10.5.112.214";
-					session = mngr.newSession( cluster.getMacAddress(), host, user, password);
+					String host = cluster.getIpAddress();
+					//session = mngr.newSession( cluster.getMacAddress(), host, port, user, password);
+					session = mngr.newSession( cluster.getMacAddress(), "eic.cefet-rj.br", 8091, "sagitarii", "Chiron2014!" );
+					
 				} else {
 					setMessageText("user and password must be set");						
 				}
+			} else {
+				System.out.println("using old session");
 			}
 			
 			if ( session != null ) { // NOT "ELSE" because getSession or newSession
+				String line = "";
 				if ( command != null && !command.equals("") ) {
-					session.run( command );
+					System.out.println("running command");
+					line = session.run( command );
 				}
 
-	    		for ( String line : session.getConsoleOut() ) {
-	    			System.out.println( line );
-	    		}
+    			System.out.println( line );
 			} else {
 				setMessageText("session not found");
 			}
@@ -94,4 +101,9 @@ public class NodeSSHTerminalAction extends BasicActionClass {
 	public void setCommand(String command) {
 		this.command = command;
 	}
+	
+	public void setPort(int port) {
+		this.port = port;
+	}
+	
 }

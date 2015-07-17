@@ -1,34 +1,31 @@
 package cmabreu.sagitarii;
 
 import cmabreu.sagitarii.core.ssh.SSHSession;
+import cmabreu.sagitarii.core.ssh.SSHSessionManager;
 
 public class Test {
 
 	public static void main(String[] args) {
 
 		try {
-    		SSHSession sess = new SSHSession( "alias", "10.5.112.214", "sadlog", "sadlog");
+			
+			SSHSessionManager mngr = SSHSessionManager.getInstance();
+			SSHSession sess = mngr.newSession( "alias", "eic.cefet-rj.br", 8091, "sagitarii", "Chiron2014!" );
+
+			System.out.println( mngr.getSessions().size() );
+			
+			SSHSession sess2 = mngr.getSession("alias");
+			System.out.println( sess2.getHost() );
+			
     		//String toLocalPath = "d:/mydownloaded.jar";
     		//String remoteFile = "/srv/www/htdocs/tree/teapot-1.0.125.jar";
     		//sess.download(remoteFile, toLocalPath);
     		
-    		sess.run("ls /root");
+    		String result = sess.run("ls -lh");
     		
-    		while( sess.isRunning() ) {
-    			System.out.println( "waiting..." );
-    		}
+    		System.out.println( result );
     		
-    		for ( String line : sess.getConsoleOut() ) {
-    			System.out.println( line );
-    		}
-
-    		
-    		System.out.println( "---------- ");
-    		for ( String line : sess.getConsoleError() ) {
-    			System.out.println( line );
-    		}
-    		
-    		sess.disconnect();
+    		//sess.disconnect();
     		System.out.println("done");
     	} catch ( Exception e ) {
     		e.printStackTrace();

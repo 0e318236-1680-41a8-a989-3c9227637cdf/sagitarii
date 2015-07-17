@@ -1,18 +1,21 @@
 package cmabreu.sagitarii.core.ssh;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import static net.sf.expectit.filter.Filters.removeColors;
+import static net.sf.expectit.filter.Filters.removeNonPrintable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.connection.channel.direct.Session;
-import net.schmizz.sshj.connection.channel.direct.Session.Command;
+import net.schmizz.sshj.connection.channel.direct.Session.Shell;
 import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
 import net.schmizz.sshj.xfer.FileSystemFile;
+import net.sf.expectit.Expect;
+import net.sf.expectit.ExpectBuilder;
+import net.sf.expectit.matcher.Matchers;
 
 public class SSHSession {
 	private String alias;
@@ -25,7 +28,8 @@ public class SSHSession {
 	private String host;
 	private String user;
 	private boolean running = false;
-	private String command;
+	private Expect expect;
+	private Shell shell;
 	
 	public boolean isRunning() {
 		return running;
@@ -44,15 +48,18 @@ public class SSHSession {
 		consoleOut = new ArrayList<String>();
 		consoleError = new ArrayList<String>();
 	}
-	
-	
-	public SSHSession( String alias, String host, String user, String password ) throws Exception {
+
+	private void init(String alias, String host, String user, String password ) throws Exception {
 		this.alias = alias;
 		consoleOut = new ArrayList<String>();
 		consoleError = new ArrayList<String>();
 		connect( host, user, password );
 	}
 	
+	public SSHSession( String alias, String host, int port, String user, String password ) throws Exception {
+		this.port = port;
+		init(alias,host,user,password);
+	}
 	
 	public List<String> getConsoleError() {
 		return consoleError;
@@ -63,6 +70,8 @@ public class SSHSession {
 	}
 	
 	public void disconnect() throws Exception {
+		expect.close();
+		shell.close();
 		session.close();
 		ssh.disconnect();
 		ssh.close();
@@ -76,6 +85,23 @@ public class SSHSession {
 		ssh.connect(host, port);
 		ssh.authPassword(user, password);
 		session = ssh.startSession();
+		
+        session.allocateDefaultPTY();
+        shell = session.startShell();
+        
+        expect = new ExpectBuilder()
+                .withOutput(shell.getOutputStream())
+                .withInputs(shell.getInputStream(), shell.getErrorStream())
+                .withInputFilters(removeColors(), removeNonPrintable())
+                .withEchoOutput(System.out)
+                .withEchoInput(System.err)
+                .withExceptionOnFailure()
+                .withTimeout(10, TimeUnit.SECONDS)
+                .build();
+        
+    	String result = expect.expect( Matchers.contains( user + "@" ) ).getInput();
+    	consoleOut.add( result );
+        
 	}
 
 	public boolean isOperational() {
@@ -100,43 +126,19 @@ public class SSHSession {
 		 }		
 	}
 	
-	
-	private void runInternal() {
-		try {
-
-			Command cmd = session.exec( command );
-			cmd.join(5, TimeUnit.MINUTES);
-			
-			returnCode = cmd.getExitStatus();
-			InputStream er = cmd.getErrorStream();
-			BufferedReader brError = new BufferedReader( new InputStreamReader(er) );
-			String line = null;
-			consoleError.clear();
-			while ( (line = brError.readLine() ) != null) {
-				consoleError.add( line );
-			}	
-			
-			InputStream is = cmd.getInputStream();
-			BufferedReader br = new BufferedReader( new InputStreamReader(is) );
-			line = null;
-			consoleOut.clear();
-			while ( (line = br.readLine() ) != null) {
-				consoleOut.add( line );
-			}	
-			
-		} catch ( Exception e ) {
-			e.printStackTrace();
-		}
-		running = false;
-	};
-
-	public void run( String command ) throws Exception {
+	public String run( String command ) throws Exception {
 		if ( running ) {
 			throw new Exception("thread busy");
 		}
 		running = true;
-		this.command = command;
-		this.runInternal();
+		
+    	expect.sendLine( command );
+        
+    	String result = expect.expect( Matchers.contains( user + "@" ) ).getInput();
+    	consoleOut.clear();
+    	consoleOut.add( result );
+    	running = false;
+    	return result;
 	}
 	
 	public int getReturnCode() {
