@@ -403,11 +403,11 @@ td input {
 .tableCellFormInputTextArea {
 	border : 1px solid #ADADAD;
 	width : 480px; 
-	background-color : #F6F6F6;
-	color : #666666;
+	background-color : white;
+	color : black;
 	padding-left : 3px;
 	resize:none;
-	height : 100px;
+	height : 250px;
 	font-family: "Consolas","Bitstream Vera Sans Mono","Courier New",Courier,monospace;
 	font-size : 10px;		
 }

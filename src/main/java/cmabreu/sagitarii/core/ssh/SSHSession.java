@@ -25,14 +25,23 @@ public class SSHSession {
 	private int returnCode;
 	private List<String> consoleOut;
 	private List<String> consoleError;
+	private List<String> lastCommands;
+	private List<String> notAllowed;
 	private String host;
 	private String user;
+	private String password;
 	private boolean running = false;
 	private Expect expect;
 	private Shell shell;
+	private String PROMPT;
+	private boolean sudo = false;
 	
 	public boolean isRunning() {
 		return running;
+	}
+	
+	public boolean isSudo() {
+		return sudo;
 	}
 	
 	public String getUser() {
@@ -43,22 +52,28 @@ public class SSHSession {
 		return host;
 	}
 	
-	public SSHSession( String alias ) {
-		this.alias = alias;
-		consoleOut = new ArrayList<String>();
-		consoleError = new ArrayList<String>();
-	}
-
 	private void init(String alias, String host, String user, String password ) throws Exception {
 		this.alias = alias;
 		consoleOut = new ArrayList<String>();
 		consoleError = new ArrayList<String>();
+		lastCommands = new ArrayList<String>();
+		notAllowed = new ArrayList<String>();
+		
+		notAllowed.add("sudo");
+		notAllowed.add("vim");
+		
+		PROMPT = user + "@";
+		
 		connect( host, user, password );
+	}
+	
+	public List<String> getLastCommands() {
+		return lastCommands;
 	}
 	
 	public SSHSession( String alias, String host, int port, String user, String password ) throws Exception {
 		this.port = port;
-		init(alias,host,user,password);
+		init( alias, host, user, password );
 	}
 	
 	public List<String> getConsoleError() {
@@ -80,6 +95,7 @@ public class SSHSession {
 	public void connect( String host, String user, String password ) throws Exception {
 		this.host = host;
 		this.user = user;
+		this.password = password;
 		ssh = new SSHClient();
 		ssh.addHostKeyVerifier( new PromiscuousVerifier() );
 		ssh.connect(host, port);
@@ -93,15 +109,13 @@ public class SSHSession {
                 .withOutput(shell.getOutputStream())
                 .withInputs(shell.getInputStream(), shell.getErrorStream())
                 .withInputFilters(removeColors(), removeNonPrintable())
-                .withEchoOutput(System.out)
-                .withEchoInput(System.err)
                 .withExceptionOnFailure()
-                .withTimeout(10, TimeUnit.SECONDS)
+                .withTimeout(30, TimeUnit.SECONDS)
                 .build();
         
-    	String result = expect.expect( Matchers.contains( user + "@" ) ).getInput();
+    	String result = expect.expect( Matchers.contains( PROMPT ) ).getInput();
     	consoleOut.add( result );
-        
+    	
 	}
 
 	public boolean isOperational() {
@@ -126,18 +140,60 @@ public class SSHSession {
 		 }		
 	}
 	
+	private String sudo() throws Exception {
+    	consoleOut.clear();
+		
+    	expect.sendLine( "sudo -i" );
+    	expect.expect( Matchers.contains( ":" ) );
+    	expect.sendLine( password );
+    	
+    	PROMPT = user + ":";
+    	
+    	String result = expect.expect( Matchers.contains( PROMPT ) ).getInput();
+    	
+    	consoleOut.add( result );
+    	sudo = true;
+    	return result;
+		
+	}
+	
 	public String run( String command ) throws Exception {
 		if ( running ) {
 			throw new Exception("thread busy");
 		}
+		consoleOut.clear();
+		
+		if ( command.equals("sudo") ) {
+			return sudo();
+		}
+		
+		if ( command.toLowerCase().equals("logout") || command.toLowerCase().equals("exit") ) {
+			disconnect();
+			consoleOut.add( "disconnected." );
+			return "disconnected.";
+		}
+
+		if ( (command == null) || command.equals("") || ( command.length() < 2 ) ){
+			throw new Exception("invalid command: " + command);
+		}
+		
+		for( String notRun : notAllowed ) {
+			if ( command.toLowerCase().contains( notRun.toLowerCase() ) ) {
+				throw new Exception("Command not allowed: " + notRun );
+			}
+		}
+		
 		running = true;
 		
     	expect.sendLine( command );
-        
-    	String result = expect.expect( Matchers.contains( user + "@" ) ).getInput();
-    	consoleOut.clear();
+    	String result = expect.expect( Matchers.contains( PROMPT ) ).getInput();
+    	
     	consoleOut.add( result );
     	running = false;
+    	lastCommands.add( command );
+    	if ( lastCommands.size() > 25 ) {
+    		lastCommands.remove(0);
+    	}
     	return result;
 	}
 	

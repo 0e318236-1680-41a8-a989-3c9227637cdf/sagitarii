@@ -10,6 +10,11 @@ public class SSHSessionManager {
 	private List<SSHSession> sessions;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 	private static SSHSessionManager instance;
+	private List<String> lastMultiCommands;
+
+	public List<String> getLastMultiCommands() {
+		return lastMultiCommands;
+	}
 	
 	public static SSHSessionManager getInstance() {
 		if ( instance == null ) {
@@ -20,6 +25,7 @@ public class SSHSessionManager {
 	
 	private SSHSessionManager() {
 		sessions = new ArrayList<SSHSession>();
+		lastMultiCommands = new ArrayList<String>();
 	}
 	
 	public List<SSHSession> getSessions() {
@@ -27,6 +33,7 @@ public class SSHSessionManager {
 	}
 	
 	public SSHSession getSession( String alias ) throws Exception {
+		cleanUp();
 		logger.debug("get session " + alias );
 		for ( SSHSession session : getSessions() ) {
 			if ( session.getAlias().equals(alias) ) {
@@ -85,6 +92,10 @@ public class SSHSessionManager {
 				session.run( command );
 			}
 		}
+		lastMultiCommands.add( command );
+		if ( lastMultiCommands.size() > 25 ) {
+			lastMultiCommands.remove(0);
+		}
 	}
 
 	public void upload( String alias, String file, String toPath ) throws Exception {
@@ -125,12 +136,11 @@ public class SSHSessionManager {
 	}
 	
 	public SSHSession newSession( String alias, String host, int port, String user, String password ) throws Exception {
-    	SSHSession sess = getSessionByHost(host);
+		SSHSession sess = getSessionByHost(host);
     	if ( sess != null ) {
     		throw new Exception("already connected to " + host + " as '" + sess.getAlias() + "'");
     	}
-    	
-		sess = new SSHSession( alias, host, port, user, password);
+		sess = new SSHSession( alias, host, port, user, password );
 		sessions.add( sess );
 		return sess;
 	}

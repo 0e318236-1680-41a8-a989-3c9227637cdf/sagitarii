@@ -22,6 +22,7 @@
 		<script type="text/javascript" src="js/codemirror.js"></script>
 		<script type="text/javascript" src="js/xml.js"></script>
 		<script type="text/javascript" src="js/sql.js"></script>
+		<script type="text/javascript" src="js/shell.js"></script>
 		
 	</head>
 	

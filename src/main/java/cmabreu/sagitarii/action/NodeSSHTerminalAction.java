@@ -44,27 +44,32 @@ public class NodeSSHTerminalAction extends BasicActionClass {
 					return "ok";
 				}				
 				
-				System.out.println("no session - creating new");
 				if ( (user != null) && (password != null)  ) {
 					String host = cluster.getIpAddress();
-					//session = mngr.newSession( cluster.getMacAddress(), host, port, user, password);
-					session = mngr.newSession( cluster.getMacAddress(), "eic.cefet-rj.br", 8091, "sagitarii", "Chiron2014!" );
+					session = mngr.newSession( cluster.getMacAddress(), host, port, user, password);
+					
+					/*
+					//session = mngr.newSession( cluster.getMacAddress(), "eic.cefet-rj.br", 8091, "sagitarii", "Chiron2014!" );
+					session = mngr.newSession( cluster.getMacAddress(), "10.5.112.214", 22, "sadlog", "sadlog" );
+					
+					mngr.newSession( cluster.getMacAddress()+"_2", "10.5.112.214", 22, "sadlog", "sadlog" );
+					mngr.newSession( cluster.getMacAddress()+"_3", "10.5.112.214", 22, "sadlog", "sadlog" );
+					*/
+					
 					
 				} else {
 					setMessageText("user and password must be set");						
 				}
 			} else {
-				System.out.println("using old session");
+				//
 			}
 			
 			if ( session != null ) { // NOT "ELSE" because getSession or newSession
 				String line = "";
 				if ( command != null && !command.equals("") ) {
-					System.out.println("running command");
 					line = session.run( command );
 				}
 
-    			System.out.println( line );
 			} else {
 				setMessageText("session not found");
 			}

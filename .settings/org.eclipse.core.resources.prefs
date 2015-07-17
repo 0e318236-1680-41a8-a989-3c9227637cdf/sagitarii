@@ -5,6 +5,7 @@ encoding//src/main/java/cmabreu/sagitarii/action/DoNewTableAction.java=UTF-8
 encoding//src/main/java/cmabreu/sagitarii/action/EditExperimentAction.java=UTF-8
 encoding//src/main/java/cmabreu/sagitarii/action/ExplainQueryAction.java=UTF-8
 encoding//src/main/java/cmabreu/sagitarii/action/InspectExperimentAction.java=UTF-8
+encoding//src/main/java/cmabreu/sagitarii/action/NodeSSHUploadAction.java=UTF-8
 encoding//src/main/java/cmabreu/sagitarii/action/PauseExperimentAction.java=UTF-8
 encoding//src/main/java/cmabreu/sagitarii/action/ResumeExperimentAction.java=UTF-8
 encoding//src/main/java/cmabreu/sagitarii/action/RunExperimentAction.java=UTF-8
