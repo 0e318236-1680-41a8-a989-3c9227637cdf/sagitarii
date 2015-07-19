@@ -66,6 +66,20 @@
 							</tr>
 						</table>
 					</div>
+					
+					<div class="clusterBarMax" style="margin-top:5px;background-color:white;border:0px;color:#F90101">
+						WARNING: This is a experimental feature and may not work as expected.<br><br>
+						Things you CAN do:<br>
+						Simple commands like cp, mkdir, rm, chdir, who, cat, etc ...<br><br>
+						Things you CANNOT do:<br>
+						Start programs like vim, vi and all that expects user input. If you start something that requires user inputs you will cause the web terminal to crash and will need to start again other terminal, 
+						needing to kill the crashed one since it will be connected anyway.
+						<br><br>
+						Some automatic installation routines may be executed, but its not been tested. If they not requires user inputs, then all may be fine.   
+					
+					
+					</div>
+					
 				</c:if>
 			</form>
 		</div>

@@ -41,7 +41,7 @@
 							<a target="__BLANK" href="teapot.zip">Teapot Node v1.0.125</a>
 						</div>
 						<div class="userBoardT1" style="color:#ADADAD;text-align:right">
-							<a target="__BLANK" href="download.zip">Data Upload Tool v1.0</a>
+							<a target="__BLANK" href="upload.zip">Data Upload Tool v1.0</a>
 						</div>
 					</div>							
 				</div>

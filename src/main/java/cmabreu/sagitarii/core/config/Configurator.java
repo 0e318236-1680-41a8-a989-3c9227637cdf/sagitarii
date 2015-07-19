@@ -30,6 +30,29 @@ public class Configurator {
 	private int fileReceiverPort;
 	private int fileReceiverChunkBufferSize;
 	private char CSVDelimiter;
+	private String userPrompt;
+	private String rootPrompt;
+	
+	
+	public String getUserPrompt( String user ) {
+		if ( userPrompt.contains("%USER%") ) {
+			// Take as variable
+			return userPrompt.replace( "%USER%", user);
+		} else {
+			// Take as literal
+			return userPrompt;
+		}
+	}
+	
+	public String getRootPrompt( String root ) {
+		if ( rootPrompt.contains("%ROOT%") ) {
+			// Take as variable
+			return rootPrompt.replace( "%ROOT%", root);
+		} else {
+			// Take as literal
+			return rootPrompt;
+		}
+	}
 	
     public double getProcessCpuLoad() {
     	try {
@@ -150,7 +173,8 @@ public class Configurator {
 			fileReceiverPort = Integer.valueOf( getTagValue("fileReceiverPort", mpElement) );
 			fileReceiverChunkBufferSize = Integer.valueOf( getTagValue("fileReceiverChunkBufferSize", mpElement) );
 			CSVDelimiter = getTagValue("CSVDelimiter", mpElement).charAt(0);
-			
+			userPrompt = getTagValue("userPrompt", mpElement);
+			rootPrompt = getTagValue("rootPrompt", mpElement);
 		} catch ( Exception e ) {
 			System.out.println( e.getMessage() );
 		}

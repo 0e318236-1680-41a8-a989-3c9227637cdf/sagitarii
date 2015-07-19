@@ -20,7 +20,6 @@
 									<tr>
 										<th>Experiment</th>
 										<th>Workflow</th>
-										<th>Created</th>
 										<th>Owner</th>
 										<th>Last Run</th>
 										<th>Finish Date</th>
@@ -38,9 +37,6 @@
 											</td>
 											<td class="tableCellFormRight">
 												${experiment.owner.loginName}
-											</td>
-											<td class="tableCellFormRight">
-												<fmt:formatDate type="both" timeStyle="short" value="${experiment.alterationDate}"/>&nbsp;
 											</td>
 											<td class="tableCellFormRight">
 												<fmt:formatDate type="both" timeStyle="short" value="${experiment.lastExecutionDate}"/>&nbsp;
@@ -122,13 +118,12 @@
 			"aoColumns": [ 
 						  { "sWidth": "10%" },
 						  { "sWidth": "10%" },
+						  { "sWidth": "5%" },
+						  { "sWidth": "10%" },
+						  { "sWidth": "10%" },
 						  { "sWidth": "10%" },
 						  { "sWidth": "5%" },
-						  { "sWidth": "7%" },
-						  { "sWidth": "7%" },
-						  { "sWidth": "10%" },
-						  { "sWidth": "5%" },
-						  { "sWidth": "18%" }]						
+						  { "sWidth": "20%" }]						
 		} ).fnSort( [[0,'desc']] );
 	} );	
 	

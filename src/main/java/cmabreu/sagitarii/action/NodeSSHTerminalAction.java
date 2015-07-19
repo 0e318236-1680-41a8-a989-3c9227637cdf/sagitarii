@@ -47,9 +47,8 @@ public class NodeSSHTerminalAction extends BasicActionClass {
 				if ( (user != null) && (password != null)  ) {
 					String host = cluster.getIpAddress();
 					session = mngr.newSession( cluster.getMacAddress(), host, port, user, password);
-					
-					/*
 					//session = mngr.newSession( cluster.getMacAddress(), "eic.cefet-rj.br", 8091, "sagitarii", "Chiron2014!" );
+					/*
 					session = mngr.newSession( cluster.getMacAddress(), "10.5.112.214", 22, "sadlog", "sadlog" );
 					
 					mngr.newSession( cluster.getMacAddress()+"_2", "10.5.112.214", 22, "sadlog", "sadlog" );
@@ -76,7 +75,6 @@ public class NodeSSHTerminalAction extends BasicActionClass {
     		
 
 		} catch ( Exception e ) {
-			e.printStackTrace();
 			setMessageText("Error: " + e.getMessage() );
 		}
 			

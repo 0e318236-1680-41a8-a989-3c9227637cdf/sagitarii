@@ -9,8 +9,7 @@
 <!DOCTYPE configuration [
 	<!ELEMENT configuration (sagitarii) >
 	<!ELEMENT sagitarii (poolIntervalSeconds,pseudoClusterIntervalSeconds,pseudoMaxTasks, 
-		maxInputBufferCapacity,mainNodesQuant,fileReceiverPort,fileReceiverChunkBufferSize,CSVDelimiter,
-		runLocalTeapot,localTeapotFolder)>
+		maxInputBufferCapacity,mainNodesQuant,fileReceiverPort,fileReceiverChunkBufferSize,CSVDelimiter,userPrompt,rootPrompt)>
 ]>
 
 <configuration>
@@ -24,8 +23,8 @@
 		<fileReceiverPort>3333</fileReceiverPort>
 		<fileReceiverChunkBufferSize>100</fileReceiverChunkBufferSize>
 		<CSVDelimiter>,</CSVDelimiter>
-		<runLocalTeapot>false</runLocalTeapot>
-		<localTeapotFolder>/home/sagitarii/teapot/</localTeapotFolder>
+		<userPrompt>%USER%@</userPrompt>
+		<rootPrompt>root@</rootPrompt>
 	</sagitarii>
 	
 </configuration>

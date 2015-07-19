@@ -77,7 +77,7 @@
 										<th>Description</th>
 										<th>Label</th>
 										<th>Owner</th>
-										<th>Experiments</th>
+										<th>Exps</th>
 										<th>&nbsp;</th>
 									</tr>
 								</thead>
@@ -202,10 +202,10 @@
 			"sPaginationType": "full_numbers",
 			"aoColumns": [ 
 						  { "sWidth": "30%" },
-						  { "sWidth": "30%" },
+						  { "sWidth": "25%" },
 						  { "sWidth": "10%" },
 						  { "sWidth": "5%" },
-						  { "sWidth": "25%" }]						
+						  { "sWidth": "30%" }]						
 		} ).fnSort( [[0,'desc']] );
 	} );	
 	

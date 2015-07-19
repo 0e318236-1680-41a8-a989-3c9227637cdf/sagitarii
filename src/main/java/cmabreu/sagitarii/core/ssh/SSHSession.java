@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import cmabreu.sagitarii.core.config.Configurator;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.connection.channel.direct.Session.Shell;
@@ -62,7 +63,7 @@ public class SSHSession {
 		notAllowed.add("sudo");
 		notAllowed.add("vim");
 		
-		PROMPT = user + "@";
+		PROMPT =  Configurator.getInstance().getUserPrompt( user ); // user + "@";
 		
 		connect( host, user, password );
 	}
@@ -110,7 +111,7 @@ public class SSHSession {
                 .withInputs(shell.getInputStream(), shell.getErrorStream())
                 .withInputFilters(removeColors(), removeNonPrintable())
                 .withExceptionOnFailure()
-                .withTimeout(30, TimeUnit.SECONDS)
+                .withTimeout(5, TimeUnit.MINUTES)
                 .build();
         
     	String result = expect.expect( Matchers.contains( PROMPT ) ).getInput();
@@ -142,12 +143,11 @@ public class SSHSession {
 	
 	private String sudo() throws Exception {
     	consoleOut.clear();
-		
     	expect.sendLine( "sudo -i" );
     	expect.expect( Matchers.contains( ":" ) );
     	expect.sendLine( password );
     	
-    	PROMPT = user + ":";
+    	PROMPT = Configurator.getInstance().getRootPrompt( user ); //user + ":";
     	
     	String result = expect.expect( Matchers.contains( PROMPT ) ).getInput();
     	

@@ -18,7 +18,7 @@ public class GSONThreadLocalImmolater {
 			count += clear(threadLocalsField.get(thread));
 			count += clear(inheritableThreadLocalsField.get(thread));
 		}
-		//System.out.println("immolated " + count + " GSON values in ThreadLocals");
+		
 		return count;
 	}
 
