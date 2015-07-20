@@ -9,18 +9,31 @@ public class LogItem {
 	private String executorAlias;
 	private String exitCode;
 	private String macAddress;
+	private String experiment;
+	private String activity;
 	private List<String> console;
 	private List<String> execLog;
 	private Date time;
 	
-	public LogItem(String taskId, String executorAlias, String exitCode, String macAddress, List<String> console, List<String> execLog ) {
+	public LogItem(String activity, String experiment, String taskId, String executorAlias, String exitCode, 
+			String macAddress, List<String> console, List<String> execLog ) {
 		this.taskId = taskId;
 		this.executorAlias = executorAlias;
 		this.exitCode = exitCode;
 		this.console = console;
 		this.execLog = execLog;
 		this.macAddress = macAddress;
+		this.experiment = experiment;
+		this.activity = activity;
 		this.time = Calendar.getInstance().getTime(); 
+	}
+	
+	public String getActivity() {
+		return activity;
+	}
+	
+	public String getExperiment() {
+		return experiment;
 	}
 	
 	public Date getTime() {

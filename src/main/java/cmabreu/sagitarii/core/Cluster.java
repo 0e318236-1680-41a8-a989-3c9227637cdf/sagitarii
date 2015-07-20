@@ -248,8 +248,11 @@ public class Cluster {
 
 	public void finishInstance( ReceivedData rd ) {
 		String instanceSerial = rd.getInstance().getSerial();
+		String experiment = rd.getCsvDataFile().getExperimentSerial();
 		Activity actvt = rd.getActivity();
-		MainLog.getInstance().storeLog( rd.getCsvDataFile().getTaskId(), rd.getActivity().getExecutorAlias(), rd.getCsvDataFile().getExitCode(),
+		String activity = actvt.getTag();
+		
+		MainLog.getInstance().storeLog( activity, experiment, rd.getCsvDataFile().getTaskId(), rd.getActivity().getExecutorAlias(), rd.getCsvDataFile().getExitCode(),
 				rd.getMacAddress(), rd.getCsvDataFile().getConsole(), rd.getCsvDataFile().getExecLog() );
 		setInstanceAsDone( instanceSerial, actvt );
 	}

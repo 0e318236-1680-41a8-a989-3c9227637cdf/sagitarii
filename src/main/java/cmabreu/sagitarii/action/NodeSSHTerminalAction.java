@@ -46,10 +46,10 @@ public class NodeSSHTerminalAction extends BasicActionClass {
 				
 				if ( (user != null) && (password != null)  ) {
 					String host = cluster.getIpAddress();
-					// session = mngr.newSession( cluster.getMacAddress(), host, port, user, password );
+					session = mngr.newSession( cluster.getMacAddress(), host, port, user, password );
 					
 					// session = mngr.newSession( cluster.getMacAddress(), "eic.cefet-rj.br", 8091, "sagitarii", "Chiron2014!" );
-					session = mngr.newSession( cluster.getMacAddress(), "10.5.112.214", 22, "sadlog", "sadlog" );
+					// session = mngr.newSession( cluster.getMacAddress(), "10.5.112.214", 22, "sadlog", "sadlog" );
 					
 				} else {
 					setMessageText("user and password must be set");						
@@ -59,9 +59,8 @@ public class NodeSSHTerminalAction extends BasicActionClass {
 			}
 			
 			if ( session != null ) { // NOT "ELSE" because getSession or newSession
-				String line = "";
 				if ( command != null && !command.equals("") ) {
-					line = session.run( command );
+					session.run( command );
 				}
 
 			} else {

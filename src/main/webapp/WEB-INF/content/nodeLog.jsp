@@ -24,7 +24,7 @@
 								<thead>
 									<tr>
 										<th>Time</th>
-										<th>Executor</th>
+										<th>Experiment<br>Activity<br>Executor<br></th>
 										<th>Wrapper Console Output</th>
 										<th>Execution Log</th>
 									</tr>
@@ -36,7 +36,7 @@
 											<td class="tableCellFormLeft">
 												<fmt:formatDate type="both" timeStyle="short" value="${data.time}"/>&nbsp;
 											</td>
-											<td class="tableCellFormLeft"> ${data.executorAlias}</td>
+											<td class="tableCellFormLeft">${data.experiment}<br>${data.activity}<br>${data.executorAlias}</td>
 											<td class="tableCellFormRight">
 												<c:forEach var="line" items="${data.console}">
 													${line}<br> 
