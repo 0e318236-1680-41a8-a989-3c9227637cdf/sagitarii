@@ -46,7 +46,6 @@
 										</td>
 									</tr>
 
-
 									<tr>
 										<td class="tableCellFormLeft">Start Date/Time</td>
 										<td class="tableCellFormRight">
@@ -186,6 +185,9 @@
 										<td>${table.name}</td>
 										<td>${table.description}&nbsp;</td>
 										<td>
+											<a href="getTableFull?tableName=${table.name}">
+												<img title="Get full table CSV data" class="miniButton dicas" src="img/download.png")">
+											</a>
 											<a href="getTableSample?tableName=${table.name}">
 												<img title="Get table sample CSV data" class="miniButton dicas" src="img/csv.png")">
 											</a>

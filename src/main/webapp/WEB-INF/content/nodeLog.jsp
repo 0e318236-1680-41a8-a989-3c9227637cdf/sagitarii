@@ -13,6 +13,11 @@
 							<img src="img/node.png">
 							<div class="basicCentralPanelBarText">View Node ${macAddress} Log</div>
 						</div>
+						
+						<div class="menuBarMain">
+							<img onclick="back();" title="Back"	class="button dicas" src="img/back.png">
+						</div>
+						
 
 						<div style="margin : 0 auto; width : 95%; margin-top:10px;" id="dtTableContainer">
 							<table class="tableForm"  id="example">
@@ -60,6 +65,10 @@
 	
 	function reloadPage() {
 		location.reload();
+	}
+	
+	function back() {
+		window.location.href="showNodeDetails?macAddress=${macAddress}";
 	}
 
 	$(document).ready(function() {

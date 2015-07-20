@@ -24,28 +24,7 @@
 		<div id="promoBar" style="display: table; width: 100%; margin-top:5px;">
 
 			<form action="nodeSSHTerminal" method="post">
-				<div id="${cluster.macAddress}" class="clusterBarMax">
-					<input type="hidden" name="macAddress"
-						value="${cluster.macAddress}">
-					<table
-						style="margin-bottom: 5px; width: 98%; margin-left: 10px; margin-top: 5px">
-						<tr>
-							<th style='width: 90px'>O.S.</th>
-							<th style='width: 110px'>Machine</th>
-							<th style='width: 140px'>MAC Address</th>
-							<th style='width: 100px'>IP Address</th>
-							<th style='width: 60px'>Java</th>
-						</tr>
-						<tr>
-							<td>${cluster.soName}</td>
-							<td>${cluster.machineName}</td>
-							<td>${cluster.macAddress}</td>
-							<td>${cluster.ipAddress}</td>
-							<td>${cluster.javaVersion}</td>
-						</tr>
-					</table>
-				</div>
-
+				<input type="hidden" name="macAddress"	value="${cluster.macAddress}">
 				<c:if test="${session.alias != cluster.macAddress}">
 					<div id="${cluster.macAddress}" class="clusterBarMax" style="margin-top:5px;">
 						<table
@@ -70,14 +49,17 @@
 					<div class="clusterBarMax" style="margin-top:5px;background-color:white;border:0px;color:#F90101">
 						WARNING: This is a experimental feature and may not work as expected.<br><br>
 						Things you CAN do:<br>
-						Simple commands like cp, mkdir, rm, chdir, who, cat, etc ...<br><br>
+						* Simple commands like cp, mkdir, rm, chdir, who, cat, etc ...<br><br>
 						Things you CANNOT do:<br>
-						Start programs like vim, vi and all that expects user input. If you start something that requires user inputs you will cause the web terminal to crash and will need to start again other terminal, 
+						* You cannot start programs like vim, vi, nano and all that starts a screen. If you do something like, 
+						you may cause the web terminal to crash and will need to start again other terminal, 
 						needing to kill the crashed one since it will be connected anyway.
+						<br>
+						* You cannot send control keys or combos ( CTRL + K, SHIFT + ALT, etc... ).  
+						<br>
+						* You cannot start programs that takes the console forever ( you cannot send CTRL+C ).   
 						<br><br>
-						Some automatic installation routines may be executed, but its not been tested. If they not requires user inputs, then all may be fine.   
-					
-					
+						Scripts can be executed if they give you the console again, but its not been tested.    
 					</div>
 					
 				</c:if>
@@ -98,11 +80,8 @@
 							<td ><input id="command" autocomplete="off" type="text" name="command"></td>
 							<td>
 								<img class="miniButton dicas" title="Logout SSH session" src="img/shutdown.png" onclick="logout()">
-								<c:if test="${session.sudo == 'false'}">
-									<img class="miniButton dicas" title="Call interactive SUDO" src="img/sudo.png" onclick="callSudo()">
-								</c:if>
-								<img class="miniButton dicas" title="Upload a file" src="img/source.png" onclick="upload()">
-								<img class="miniButton dicas" title="Download a file" src="img/target.png" onclick="download()">
+								<img class="miniButton dicas" title="Upload a file" src="img/upload.png" onclick="upload()">
+								<img class="miniButton dicas" title="Download a file" src="img/download.png" onclick="download()">
 							</td>
 						</tr>
 					</table>
@@ -110,10 +89,10 @@
 
 				<form action="nodeSSHUpload" id="frmUpload" method="post" enctype="multipart/form-data">
 					<input type="hidden" name="macAddress"	value="${cluster.macAddress}">
-					<table id="uploadBar" style="margin-top: 10px; width:500px; margin:0 auto; display:none">
+					<table id="uploadBar" style="margin-top: 10px; width:450px; margin:0 auto; display:none">
 						<tr>
-							<td style="width:100px">File to Upload</td>
-							<td style="width:300px">
+							<td style="width:120px">File to Upload</td>
+							<td style="width:310px">
 							<input type="file" name="fileUpload"></td>
 						</tr>
 						<tr>
@@ -127,7 +106,27 @@
 					</table>
 				</form>
 
-				<div class="menuBarMain" style="height: 400px; margin-top: 5px; font-size: 11px !important;">
+
+				<form action="nodeSSHDownload" id="frmDownload" method="post">
+					<input type="hidden" name="macAddress"	value="${cluster.macAddress}">
+					<table id="downloadBar" style="margin-top: 10px; width:450px; margin:0 auto; display:none">
+						<tr>
+							<td style="width:120px">Source File ( and path )</td>
+							<td style="width:310px">
+							<input type="text" name="sourceFile"></td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td><td>
+								<input style="width:145px" type="button" onclick="downloadCancel()" value="Cancel">
+								<input style="width:145px" type="button" onclick="downloadFile()" value="Download">
+							</td>
+						</tr>
+					</table>
+				</form>
+
+
+
+				<div class="menuBarMain" style="height: 300px; margin-top: 5px; font-size: 11px !important;">
 					<textarea style="border: 0px;" id="code" name="code"><c:forEach var="line" items="${session.consoleOut}">${line}&#13;&#10;</c:forEach></textarea>
 				</div>
 
@@ -139,6 +138,30 @@
 </div>
 
 <div id="rightBox">
+
+	<div id="tblIds" class="userBoard" style="padding-bottom:5px;">
+		<div class="userBoardT1" style="text-align:center;width:95%">Host Detail</div>
+		<div class="userBoardT2" style="text-align:center;width:95%">
+			<table>
+				<tr>
+					<td style='width: 90px'>O.S.</td><td>${cluster.soName}</td>
+				</tr>
+				<tr>
+					<td>Machine</td><td>${cluster.machineName}</td>
+				</tr>
+				<tr>
+					<td>MAC Address</td><td>${cluster.macAddress}</td>
+				</tr>
+				<tr>
+					<td>IP Address</td><td>${cluster.ipAddress}</td>
+				</tr>
+				<tr>
+					<td>Java</td><td>${cluster.javaVersion}</td>
+				</tr>
+			</table>
+		</div>
+	</div>	
+
 
 	<div id="tblIds" class="userBoard" style="padding-bottom:5px;">
 		<div class="userBoardT1" style="text-align:center;width:95%">History : Click to repeat</div>
@@ -157,6 +180,7 @@
 <script>
 
 	function upload() {
+		downloadCancel();
 		$("#uploadBar").css("display","block");
 	}
 	
@@ -169,6 +193,20 @@
 		$("#uploadBar").css("display","none");
 	}
 
+	function download() {
+		uploadCancel();
+		$("#downloadBar").css("display","block");
+	}
+	
+	function downloadFile() {
+		$("#downloadBar").css("display","none");
+		$("#frmDownload").submit();
+	}
+
+	function downloadCancel() {
+		$("#downloadBar").css("display","none");
+	}
+	
 	function repeat( command ) {
 		$("#command").val( command );
 		$("#frmCommand").submit();
@@ -211,6 +249,8 @@
 			lineWrapping:true
         });
 		
+		
+		$('.CodeMirror-scroll').scrollTop($('.CodeMirror-scroll')[0].scrollHeight);
 	});
 
 </script>

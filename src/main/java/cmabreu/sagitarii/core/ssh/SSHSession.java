@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import cmabreu.sagitarii.core.config.Configurator;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.connection.channel.direct.Session.Shell;
@@ -16,6 +15,7 @@ import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
 import net.schmizz.sshj.xfer.FileSystemFile;
 import net.sf.expectit.Expect;
 import net.sf.expectit.ExpectBuilder;
+import net.sf.expectit.Result;
 import net.sf.expectit.matcher.Matchers;
 
 public class SSHSession {
@@ -27,23 +27,10 @@ public class SSHSession {
 	private List<String> consoleOut;
 	private List<String> consoleError;
 	private List<String> lastCommands;
-	private List<String> notAllowed;
 	private String host;
 	private String user;
-	private String password;
-	private boolean running = false;
 	private Expect expect;
 	private Shell shell;
-	private String PROMPT;
-	private boolean sudo = false;
-	
-	public boolean isRunning() {
-		return running;
-	}
-	
-	public boolean isSudo() {
-		return sudo;
-	}
 	
 	public String getUser() {
 		return user;
@@ -58,13 +45,6 @@ public class SSHSession {
 		consoleOut = new ArrayList<String>();
 		consoleError = new ArrayList<String>();
 		lastCommands = new ArrayList<String>();
-		notAllowed = new ArrayList<String>();
-		
-		notAllowed.add("sudo");
-		notAllowed.add("vim");
-		
-		PROMPT =  Configurator.getInstance().getUserPrompt( user ); // user + "@";
-		
 		connect( host, user, password );
 	}
 	
@@ -96,7 +76,6 @@ public class SSHSession {
 	public void connect( String host, String user, String password ) throws Exception {
 		this.host = host;
 		this.user = user;
-		this.password = password;
 		ssh = new SSHClient();
 		ssh.addHostKeyVerifier( new PromiscuousVerifier() );
 		ssh.connect(host, port);
@@ -110,11 +89,15 @@ public class SSHSession {
                 .withOutput(shell.getOutputStream())
                 .withInputs(shell.getInputStream(), shell.getErrorStream())
                 .withInputFilters(removeColors(), removeNonPrintable())
-                .withExceptionOnFailure()
-                .withTimeout(5, TimeUnit.MINUTES)
+                .withTimeout(3, TimeUnit.SECONDS)
                 .build();
         
-    	String result = expect.expect( Matchers.contains( PROMPT ) ).getInput();
+        String result = "";
+        try {
+        	result = expect.expect( Matchers.contains( "hahaoops" ) ).getInput();
+        } catch ( Exception e ) {
+        	result = e.getMessage();
+        }
     	consoleOut.add( result );
     	
 	}
@@ -141,30 +124,10 @@ public class SSHSession {
 		 }		
 	}
 	
-	private String sudo() throws Exception {
-    	consoleOut.clear();
-    	expect.sendLine( "sudo -i" );
-    	expect.expect( Matchers.contains( ":" ) );
-    	expect.sendLine( password );
-    	
-    	PROMPT = Configurator.getInstance().getRootPrompt( user ); //user + ":";
-    	
-    	String result = expect.expect( Matchers.contains( PROMPT ) ).getInput();
-    	
-    	consoleOut.add( result );
-    	sudo = true;
-    	return result;
-		
-	}
-	
 	public String run( String command ) throws Exception {
-		if ( running ) {
-			throw new Exception("thread busy");
-		}
-		consoleOut.clear();
-		
-		if ( command.equals("sudo") ) {
-			return sudo();
+
+		if ( (command == null) || command.equals("") ){
+			throw new Exception("invalid command");
 		}
 		
 		if ( command.toLowerCase().equals("logout") || command.toLowerCase().equals("exit") ) {
@@ -172,29 +135,24 @@ public class SSHSession {
 			consoleOut.add( "disconnected." );
 			return "disconnected.";
 		}
-
-		if ( (command == null) || command.equals("") || ( command.length() < 2 ) ){
-			throw new Exception("invalid command: " + command);
-		}
-		
-		for( String notRun : notAllowed ) {
-			if ( command.toLowerCase().contains( notRun.toLowerCase() ) ) {
-				throw new Exception("Command not allowed: " + notRun );
-			}
-		}
-		
-		running = true;
+		consoleOut.clear();
 		
     	expect.sendLine( command );
-    	String result = expect.expect( Matchers.contains( PROMPT ) ).getInput();
+    	String resultString = "";
+    	Result result;
+    	try {
+    		result = expect.expect( Matchers.contains("hahaoops") );
+    		resultString = result.getInput();
+    	} catch ( Exception e ) {
+    		resultString = e.getMessage();
+    	}
     	
-    	consoleOut.add( result );
-    	running = false;
+    	consoleOut.add( resultString );
     	lastCommands.add( command );
     	if ( lastCommands.size() > 25 ) {
     		lastCommands.remove(0);
     	}
-    	return result;
+    	return resultString;
 	}
 	
 	public int getReturnCode() {

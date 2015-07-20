@@ -9,7 +9,7 @@
 <!DOCTYPE configuration [
 	<!ELEMENT configuration (sagitarii) >
 	<!ELEMENT sagitarii (poolIntervalSeconds,pseudoClusterIntervalSeconds,pseudoMaxTasks, 
-		maxInputBufferCapacity,mainNodesQuant,fileReceiverPort,fileReceiverChunkBufferSize,CSVDelimiter,userPrompt,rootPrompt)>
+		maxInputBufferCapacity,mainNodesQuant,fileReceiverPort,fileReceiverChunkBufferSize,CSVDelimiter)>
 ]>
 
 <configuration>
@@ -23,8 +23,6 @@
 		<fileReceiverPort>3333</fileReceiverPort>
 		<fileReceiverChunkBufferSize>100</fileReceiverChunkBufferSize>
 		<CSVDelimiter>,</CSVDelimiter>
-		<userPrompt>%USER%@</userPrompt>
-		<rootPrompt>root@</rootPrompt>
 	</sagitarii>
 	
 </configuration>

@@ -108,13 +108,39 @@ public class RelationService {
         return new ByteArrayInputStream( csvData.toString().getBytes("UTF-8") );
 	}
 	
+	// Get the all lines and export as CSV to the user.
+	public ByteArrayInputStream getTableFull( String tableName ) throws Exception {
+		Set<UserTableEntity> utes = genericFetchList( "select * from " + tableName );
+		StringBuilder columns = new StringBuilder();
+		StringBuilder dataLine = new StringBuilder();
+		boolean columnsDone = false;
+		StringBuilder csvData = new StringBuilder(); 
+		for ( UserTableEntity ute : utes ) {
+			String prefix = "";
+			for ( String column : ute.getColumnNames() ) {
+				String data = ute.getData( column );
+				if( !columnsDone ) { columns.append( prefix + column ); }
+				dataLine.append( prefix + data );
+				prefix = ",";
+			}
+			if( !columnsDone ) { csvData.append( columns.toString() + "\n" ); }
+			csvData.append( dataLine.toString() + "\n");
+			dataLine.setLength(0);
+			columnsDone = true;
+		}
+        return new ByteArrayInputStream( csvData.toString().getBytes("UTF-8") );
+	}
 	
 	public String inspectExperimentQueryPagination(CustomQuery query, String sortColumn, String sSortDir0,
 			String iDisplayStart, String iDisplayLength, String sEcho) throws Exception {
 		
+		logger.debug("pagination inspectExperimentQuery");
+
 		String sql = "select * from (" + query.getQuery() + ") as qq order by " + 
 				sortColumn + " " + sSortDir0 + " offset " + iDisplayStart + " limit " + iDisplayLength ;
 
+		logger.debug( sql );
+		
 		Set<UserTableEntity> result = new HashSet<UserTableEntity>();
 		int totalRecords = 0;
 		
@@ -123,6 +149,9 @@ public class RelationService {
 			newTransaction();
 			
 			String countSql = "select count(*) as count from (" + query.getQuery() + ") as qq";
+			
+			logger.debug( countSql );
+			
 			Set<UserTableEntity> resultCount = genericFetchList( countSql );
 			UserTableEntity count = resultCount.iterator().next();
 			totalRecords = Integer.valueOf( count.getData("count") ); 
@@ -140,6 +169,8 @@ public class RelationService {
 	public String inspectExperimentTablePagination(String tableName, int idExperiment, String sortColumn, String sSortDir0,
 			String iDisplayStart, String iDisplayLength, String sEcho, String sSearch) throws Exception {
 		
+		logger.debug("pagination inspectExperimentTable");
+		
 		String search = "";
 		if ( (sSearch != null) && ( !sSearch.equals("") ) ) {
 			search = " and cast("+tableName+" as text) like '%" + sSearch + "%'";
@@ -149,6 +180,8 @@ public class RelationService {
 				" order by " + sortColumn + " " + sSortDir0 + " offset " + iDisplayStart + 
 				" limit " + iDisplayLength ;
 
+		logger.debug( sql );
+		
 		Set<UserTableEntity> result = new HashSet<UserTableEntity>();
 		int totalRecords = 0;
 		
@@ -179,6 +212,9 @@ public class RelationService {
 			}
 			
 			newTransaction();
+
+			logger.debug( "get count from " + tableName + " where id_experiment = " + idExperiment + search );
+
 			totalRecords = getCount( tableName, "where id_experiment = " + idExperiment + search);
 		} else {
 			Map<String,String> data = new HashMap<String,String>();
@@ -242,6 +278,8 @@ public class RelationService {
 	public String viewSqlPagination(String tableName, String sortColumn, String sSortDir0,
 			String iDisplayStart, String iDisplayLength, String sEcho, String sSearch) throws Exception {
 		
+		logger.debug("pagination viewSql");
+		
 		String search = " where 1 = 1";
 		if ( (sSearch != null) && ( !sSearch.equals("") ) ) {
 			search = " where cast("+tableName+" as text) like '%" + sSearch + "%'";
@@ -249,6 +287,8 @@ public class RelationService {
 		
 		String sql = "select * from " + tableName + search + " order by " + 
 				sortColumn + " " + sSortDir0 + " offset " + iDisplayStart + " limit " + iDisplayLength ;
+
+		logger.debug( sql );
 
 		Set<UserTableEntity> result = new HashSet<UserTableEntity>();
 		int totalRecords = 0;
@@ -270,6 +310,7 @@ public class RelationService {
 				}
 			}
 			newTransaction();
+			logger.debug("get count from " + tableName + " where " + search );
 			totalRecords = getCount( tableName, search);
 			
 		} else {

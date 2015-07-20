@@ -26,10 +26,14 @@
 			<form action="nodeSSHMultiTerminal" id="frmCommand" method="post">
 				<table style="margin-top: 10px; width:98%; margin-left: 10px">
 					<tr>
-						<td style="width:300px">Command</td>
+						<td style="width:280px">Command</td>
+						<td style="width:70px">&nbsp;</td>
 					</tr>
 					<tr>
-						<td><input id="command" autocomplete="off" type="text" name="command"></td>
+						<td ><input id="command" autocomplete="off" type="text" name="command"></td>
+						<td>
+							<img class="miniButton dicas" title="Upload a file" src="img/upload.png" onclick="upload()">
+						</td>
 					</tr>
 				</table>
 			</form>
@@ -39,20 +43,38 @@
 			<div id="${session.alias}" class="menuBarMain host"
 				style="display: table;  margin-top: 5px; font-size: 11px !important;padding-bottom: 10px;">
 
-				<table style="margin-top: 10px; width:98%; margin-left: 10px">
+				<table style="margin-top: 10px; width:95%; margin: 0 auto">
 					<tr>
 						<th style="width:100px">Node</th>
 						<th style="width:100px">Host</th>
 						<th style="width:100px">User</th>
-						<th >Sudo</th>
 					</tr>
 					<tr>
 						<td>${session.alias}</td>
 						<td>${session.host}</td>
 						<td>${session.user}</td>
-						<td>${session.sudo}</td>
 					</tr>
 				</table>
+				
+				<form action="nodeSSHUpload" id="frmUpload" method="post" enctype="multipart/form-data">
+					<input type="hidden" name="option"	value="multi">
+					<table id="uploadBar" style="width:500px; margin:0 auto; margin-top: 10px; display:none">
+						<tr>
+							<td style="width:100px">File to Upload</td>
+							<td style="width:300px">
+							<input type="file" name="fileUpload"></td>
+						</tr>
+						<tr>
+							<td>Target Path</td><td><input type="text" name="targetPath"></td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td><td>
+							<input style="width:145px" type="button" onclick="uploadCancel()" value="Cancel">
+							<input style="width:145px" type="button" onclick="uploadFile()" value="Upload"></td>
+						</tr>
+					</table>
+				</form>
+				
 				
 				<div class="menuBarMain" style="height: 300px; margin-top: 5px; font-size: 11px !important;">
 					<textarea name="tx${session.alias}" id="tx${session.alias}" style="border: 0px;"><c:forEach var="line" items="${session.consoleOut}">${line}&#13;&#10;</c:forEach></textarea>
@@ -93,6 +115,19 @@
 
 
 <script>
+
+	function upload() {
+		$("#uploadBar").css("display","block");
+	}
+	
+	function uploadFile() {
+		$("#uploadBar").css("display","none");
+		$("#frmUpload").submit();
+	}
+	
+	function uploadCancel() {
+		$("#uploadBar").css("display","none");
+	}
 
 	function show( host ) {
 		$(".host").css("display","none");
@@ -153,6 +188,8 @@
 		</c:forEach>
 
 		show( lastId );
+		
+		$('.CodeMirror-scroll').scrollTop($('.CodeMirror-scroll')[0].scrollHeight);
 	
 	});
 

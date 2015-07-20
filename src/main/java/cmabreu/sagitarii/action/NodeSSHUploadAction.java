@@ -21,10 +21,14 @@ public class NodeSSHUploadAction extends BasicActionClass {
 	private String macAddress;
 	private String targetPath;
 	private String location;
+	private String option;
 	
 	public String execute () {
-		
-		location = "nodeSSHTerminal?macAddress=" + macAddress;
+		if ( macAddress != null ) {
+			location = "nodeSSHTerminal?macAddress=" + macAddress;
+		} else {
+			location = "nodeSSHMultiTerminal";
+		}
 		try {
 
 			if ( fileUpload != null ) {
@@ -33,7 +37,11 @@ public class NodeSSHUploadAction extends BasicActionClass {
 		        FileUtils.copyFile( fileUpload, fileToCreate);
 		        
 		        SSHSessionManager mngr = SSHSessionManager.getInstance();
-		        mngr.upload(macAddress, filePath+"/"+fileUploadFileName, targetPath);
+		        if ( option != null && option.equals("multi") ){
+		        	mngr.multipleUpload( filePath+"/"+fileUploadFileName, targetPath );
+		        } else {
+		        	mngr.upload(macAddress, filePath+"/"+fileUploadFileName, targetPath);
+		        }
 		        
 		        
 			} else {
