@@ -44,7 +44,7 @@
 							<div class="basicCentralPanelBarText">Source data (consumption)</div>
 							<div style="margin-top: 4px;" title="Back to Experiment Data" onclick="viewData('${idExperiment}','${tableName}')" class="basicButton dicas">Back</div>
 						</div>
-						<div style="margin : 0 auto; width : 95%; margin-top:10px" id="dtTableContainer">
+						<div style="margin : 0 auto; width : 95%; margin-top:10px"  >
 							<table style="width:99%;" class="tableForm" id="conTable" >
 								<thead>
 									<tr><c:forEach var="column" items="${consumptions.toArray()[0].columnNames}"><th>${column}</th></c:forEach></tr>
@@ -60,7 +60,7 @@
 							<img src="img/right.png">
 							<div class="basicCentralPanelBarText">Target data (product)</div>
 						</div>
-						<div style="margin : 0 auto; width : 95%; margin-top:10px;" id="dtTableContainer">
+						<div style="margin : 0 auto; width : 95%; margin-top:10px;"  >
 							<table style="width:99%;" class="tableForm" id="example" >
 								<thead>
 									<tr><c:forEach var="column" items="${products.toArray()[0].columnNames}"><th>${column}</th></c:forEach></tr>

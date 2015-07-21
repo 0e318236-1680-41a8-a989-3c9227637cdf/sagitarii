@@ -77,7 +77,7 @@
 							<img src="img/right.png">
 							<div class="basicCentralPanelBarText">Tables used by this experiment</div>
 						</div>
-						<div style="margin : 0 auto; width : 95%; margin-bottom:10px;margin-top:10px;display:table" id="dtTableContainer">
+						<div style="margin : 0 auto; width : 95%; margin-bottom:10px;margin-top:10px;display:table"  >
 							<table class="tableForm"  id="customTables" >
 								<thead>
 									<tr>
@@ -151,7 +151,7 @@
 							<img src="img/right.png">
 							<div class="basicCentralPanelBarText">Experiment files (GZIPPED)</div>
 						</div>
-						<div style="margin : 0 auto;width : 95%; margin-bottom:10px; margin-top:10px;display:table" id="dtTableContainer">
+						<div style="margin : 0 auto;width : 95%; margin-bottom:10px; margin-top:10px;display:table"  >
 							<table class="tableForm"  id="experimentFiles" >
 								<thead>
 									<tr>

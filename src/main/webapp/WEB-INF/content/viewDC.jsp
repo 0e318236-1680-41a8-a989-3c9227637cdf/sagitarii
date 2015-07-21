@@ -36,7 +36,7 @@
 							<img src="img/fragment.png">
 							<div class="basicCentralPanelBarText">Instance Delivery Control Status</div>
 						</div>
-						<div style="margin : 0 auto; width : 95%; margin-bottom:10px; margin-top:10px;" id="dtTableContainer">
+						<div style="margin : 0 auto; width : 95%; margin-bottom:10px; margin-top:10px;"  >
 							<table>
 								<tr>
 									<th style="width:10%">Instance ID</th>

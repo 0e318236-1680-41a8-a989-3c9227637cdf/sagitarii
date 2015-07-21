@@ -18,7 +18,7 @@ $(function(){
 		    name: 'breadthfirst',
 		    fit: true,
 		    directed: true,
-		    padding: 50  
+		    padding: 20  
 	  },
 	  
 	  style: cytoscape.stylesheet()
@@ -97,8 +97,9 @@ $(function(){
 		$("#dspDescription").text( "" );
 		$('#relInput').prop('disabled', false);
 		$("#criteriaContentPanel").css("display","none");
+		
 		if ( cy.elements('*').size() > 0 ) {
-			$("#insertBox").css("height", "25px");
+			// $("#insertBox").css("display", "none");
 		} 
 		
 	});
@@ -123,6 +124,7 @@ $(function(){
 	cy.on('tap', 'node', function(){
 		
 		var type =  this.data('name');
+		
 		if ( (type == 'SRCTABLE') || (type == 'TRGTABLE') ) {
 			$("#tblDetailBox").css("display", "table");
 			selectedNode = null;
@@ -138,7 +140,11 @@ $(function(){
 		
 		$("#actDependencyDetailBox").css("display", "none");
 		$("#criteriaContentPanel").css("display","none");
-		$("#dspTag").text( this.data('id') );
+		
+		$("#dspTagSAI").text( this.data('id') );
+		$("#dspTagSTI").text( this.data('id') );
+
+		
 		$("#dspType").text( this.data('name') );
 		$("#dspActivation").text( this.data('activation') );
 		$("#dspDescription").text( this.data('description') );
@@ -157,8 +163,6 @@ $(function(){
 			$("#joinLine").css("display", "none");
 			$("#unoLine").css("display", "cell");			
 		}
-	
-		$("#insertBox").css("display", "block");
 	
 		var selects = "<option value='-1'>-- Select a target --</option>";
 		var tagRef = this.data('id');

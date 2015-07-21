@@ -45,7 +45,7 @@
 							<div class="basicCentralPanelBarText">Experiments Running</div>
 						</div>
 
-						<div style="margin : 0 auto; width : 95%; margin-top:10px;" id="dtTableContainer">
+						<div style="margin : 0 auto; width : 95%; margin-top:10px;"  >
 							<table>
 								<tr>
 									<th style="width:100px">Experiment</th>

@@ -25,7 +25,7 @@
 							<img onclick="newExecutorLibrary();" title="New Executor Library" class="button dicas" src="img/library.png">
 						</div>
 
-						<div style="margin : 0 auto; width : 95%; margin-top:10px;" id="dtTableContainer">
+						<div style="margin : 0 auto; width : 95%; margin-top:10px;"  >
 							<table class="tableForm"  id="example" >
 								<thead>
 									<tr>

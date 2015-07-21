@@ -19,7 +19,7 @@
 						</div>
 						
 						
-						<div id="dtTableContainer" style="width:95%; margin:0 auto;margin-top:10px;margin-bottom:10px">
+						<div   style="width:95%; margin:0 auto;margin-top:10px;margin-bottom:10px">
 						
 							<table style="width:99%" class="tableForm" id="example" >
 								<thead>

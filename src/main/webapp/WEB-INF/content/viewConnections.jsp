@@ -14,7 +14,7 @@
 							<div class="basicCentralPanelBarText">Active Database Connections</div>
 						</div>
 
-						<div style="margin : 0 auto; width : 95%; margin-top:10px;" id="dtTableContainer">
+						<div style="margin : 0 auto; width : 95%; margin-top:10px;"  >
 							<table>
 								<tr>
 									<th style="width:15%">Start</th>

@@ -5,8 +5,7 @@
 <%@ include file="../../header.jsp"%>
 
 <div id="leftBox">
-	<div id="bcbMainButtons" class="basicCentralPanelBar"
-		style="height: 50px">
+	<div id="bcbMainButtons" class="basicCentralPanelBar" style="height: 50px">
 		<%@ include file="buttons.jsp"%>
 	</div>
 
@@ -18,17 +17,12 @@
 		</div>
 			
 		<div class="menuBarMain">
-			<img onclick="clean();" title="Clean all workspaces"
-				class="button dicas" src="img/clean.png"> <img
-				onclick="reloadWrappers();"
-				title="Force nodes to reload all wrappers" class="button dicas"
-				src="img/refresh.png"> <img onclick="openMultipleConsole();"
-				title="Open SSH terminal for all nodes" class="button dicas"
-				src="img/bash.png">
+			<img onclick="clean();" title="Clean all workspaces" class="button dicas" src="img/clean.png"> 
+			<img onclick="reloadWrappers();" title="Force nodes to reload all wrappers" class="button dicas" src="img/refresh.png"> 
+			<img onclick="openMultipleConsole();" title="Open SSH terminal for all nodes" class="button dicas" src="img/bash.png">
 		</div>
 
-		<div id="promoBar"
-			style="height: 220px; display: table; width: 95%; margin: 0 auto">
+		<div id="promoBar"	style="height: 220px; display: table; width: 95%; margin: 0 auto">
 			<c:forEach var="cluster" items="${clusterList}">
 
 				<div onclick="showNodeDetails('${cluster.macAddress}')"

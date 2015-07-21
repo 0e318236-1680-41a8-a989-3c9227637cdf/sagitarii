@@ -14,7 +14,7 @@
 							<div class="basicCentralPanelBarText">File Transfer Session ${sessionSerial} Status</div>
 						</div>
 						
-						<div style="margin : 0 auto 50px; width : 100%; margin-top:10px;height:40px;" id="dtTableContainer">
+						<div style="margin : 0 auto 50px; width : 100%; margin-top:10px;height:40px;"  >
 							<table class="tableForm"  id="example">
 								<thead>
 									<tr>
@@ -53,7 +53,7 @@
 							<div class="basicCentralPanelBarText">Data Importer for this session</div>
 						</div>
 						
-						<div style="margin : 0 auto 50px; width : 100%; margin-top:10px;height:40px;" id="dtTableContainer">
+						<div style="margin : 0 auto 50px; width : 100%; margin-top:10px;height:40px;"  >
 							<table class="tableForm"  id="tblImporters">
 								<thead>
 									<tr>

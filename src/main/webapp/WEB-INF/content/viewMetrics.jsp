@@ -23,7 +23,7 @@
 							<img onclick="files();" title="View Files Statistics" class="button dicas" src="img/filetransfer.png">
 						</div>						
 
-						<div style="margin : 0 auto; width : 95%; margin-top:10px;" id="dtTableContainer">
+						<div style="margin : 0 auto; width : 95%; margin-top:10px;"  >
 							<c:forEach var="metric" items="${metrics}">
 								<c:if test="${metric.type == type}">
 								<div style="float:left">

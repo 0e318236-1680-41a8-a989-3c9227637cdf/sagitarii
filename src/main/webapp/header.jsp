@@ -6,8 +6,8 @@
 <html>
 	<head>
 		<title>Sagitarii</title>
-		<link rel="stylesheet" href="css/style.css?id=400" type="text/css"/>
 		<link rel="stylesheet" href="css/jquery.dataTables.css?id=400" type="text/css"/>
+		<link rel="stylesheet" href="css/style.css?id=400" type="text/css"/>
 		<link rel="stylesheet" href="css/codemirror.css" type="text/css" />
 		<link rel="stylesheet" href="css/tipTip.css" type="text/css"/>	
 
