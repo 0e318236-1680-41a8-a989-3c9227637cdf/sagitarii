@@ -25,25 +25,18 @@
 
 			<div id="${cluster.macAddress}" class="clusterBarMax">
 
-				<table
-					style="margin-bottom: 5px; width: 98%; margin-left: 10px; margin-top: 5px">
-					<c:if test="${not fn:contains(cluster.type, 'MAIN')}">
-						<tr>
-							<td colspan="10"><img
-								onclick="shutdown('${cluster.macAddress}')" class="dicas"
-								title="Shutdown this node (no confirmation)"
-								src="img/shutdown.png" style="width: 24px; height: 24px">
-								<img onclick="restart('${cluster.macAddress}')" class="dicas"
-								title="Restart this node (no confirmation)"
-								src="img/refresh.png" style="width: 24px; height: 24px"> <img
-								onclick="showNodeLog('${cluster.macAddress}')" class="dicas"
-								title="View Node Activities Log" src="img/search.png"
-								style="width: 24px; height: 24px"> <img
-								onclick="openConsole('${cluster.macAddress}');"
-								title="Open a SSH terminal for this node" class="dicas"
-								src="img/bash.png" style="width: 24px; height: 24px"></td>
-						</tr>
-					</c:if>
+				<table style="margin-bottom: 5px; width: 98%; margin-left: 10px; margin-top: 5px">
+					<tr>
+						<td colspan="10">
+							<c:if test="${not fn:contains(cluster.type, 'MAIN')}">
+								<img onclick="shutdown('${cluster.macAddress}')" class="dicas"	title="Shutdown this node (no confirmation)" src="img/shutdown.png" style="width: 24px; height: 24px">
+								<img onclick="restart('${cluster.macAddress}')" class="dicas"	title="Restart this node (no confirmation)"	src="img/refresh.png" style="width: 24px; height: 24px"> 
+								<img onclick="openConsole('${cluster.macAddress}');" title="Open a SSH terminal for this node" class="dicas" src="img/bash.png" style="width: 24px; height: 24px">
+							</c:if>
+							<img onclick="showNodeLog('${cluster.macAddress}')" class="dicas" title="View Node Activities Log" src="img/search.png"	style="width: 24px; height: 24px"> 
+						</td>
+					</tr>
+				
 					<tr>
 						<th style='width: 90px'>O.S.</th>
 						<th style='width: 110px'>Machine</th>
@@ -123,7 +116,7 @@
 							style="margin-bottom: 5px; width: 98%; margin-left: 10px; margin-top: 20px">
 							<tr>
 								<td style="width: 1%"><img
-									style="width: 24px; height: 24px"
+									style="width: 24px; height: 24px;float:left"
 									onclick="clearNodeListeners('${cluster.macAddress}')"
 									class="dicas miniButton" title="Clear node download info"
 									src="img/clean.png"></td>
@@ -150,13 +143,12 @@
 				</c:if>
 
 
-				<c:if test="${not fn:contains(cluster.type, 'MAIN')}">
 					<c:if test="${fn:length(cluster.tasks) > 0}">
 						<table
 							style="margin-bottom: 5px; width: 98%; margin-left: 10px; margin-top: 20px">
 							<tr>
 								<td style="width: 1%"><img
-									style="width: 24px; height: 24px"
+									style="width: 24px; height: 24px; float:left"
 									onclick="clearNodeTasks('${cluster.macAddress}')" class="dicas"
 									title="Clear node Tasks" src="img/clean.png"></td>
 							</tr>
@@ -182,15 +174,13 @@
 							</c:forEach>
 						</table>
 					</c:if>
-				</c:if>
 
-				<c:if test="${not fn:contains(cluster.type, 'MAIN')}">
 					<c:if test="${fn:length(cluster.log) > 0}">
 						<table
 							style="margin-bottom: 5px; width: 98%; margin-left: 10px; margin-top: 20px">
 							<tr>
 								<td style="width: 1%"><img
-									style="width: 24px; height: 24px"
+									style="width: 24px; height: 24px;float:left"
 									onclick="clearNodeLog('${cluster.macAddress}')" class="dicas"
 									title="Clear node Log" src="img/clean.png"></td>
 							</tr>
@@ -203,7 +193,6 @@
 							</c:forEach>
 						</table>
 					</c:if>
-				</c:if>
 
 
 			</div>

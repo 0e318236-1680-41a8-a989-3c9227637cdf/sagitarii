@@ -201,7 +201,7 @@
 					</div>
 					
 					<div class="userBoard" style="height: 150px;">
-						<img onclick="viewImageCanvas()" class="dicas" title="Atualizar Imagem" src="img/refresh.png" style="cursor:pointer;position:absolute;right:5px;top:0px;width:24px;height:20px;opacity:0.5">
+						<img onclick="viewImageCanvas()" class="dicas" title="Update Image" src="img/refresh.png" style="cursor:pointer;position:absolute;right:5px;top:0px;width:24px;height:20px;opacity:0.5">
 						<div id="imageCanvas" style="background-color:#FFFFFF;height:100%;width:100%"></div>
 					</div>
 

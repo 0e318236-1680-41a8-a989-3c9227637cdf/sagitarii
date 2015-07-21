@@ -109,9 +109,9 @@
 
 				<form action="nodeSSHDownload" id="frmDownload" method="post">
 					<input type="hidden" name="macAddress"	value="${cluster.macAddress}">
-					<table id="downloadBar" style="margin-top: 10px; width:450px; margin:0 auto; display:none">
+					<table id="downloadBar" style="margin-top: 10px; width:500px; margin:0 auto; display:none">
 						<tr>
-							<td style="width:120px">Source File ( and path )</td>
+							<td style="width:130px">Source File ( and path )</td>
 							<td style="width:310px">
 							<input type="text" name="sourceFile"></td>
 						</tr>

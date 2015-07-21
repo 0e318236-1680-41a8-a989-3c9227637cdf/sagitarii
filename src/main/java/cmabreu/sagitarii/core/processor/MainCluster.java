@@ -1,5 +1,6 @@
 package cmabreu.sagitarii.core.processor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -7,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 
 import cmabreu.sagitarii.core.Cluster;
 import cmabreu.sagitarii.core.ClustersManager;
+import cmabreu.sagitarii.core.MainLog;
 import cmabreu.sagitarii.core.Sagitarii;
 import cmabreu.sagitarii.core.config.Configurator;
 import cmabreu.sagitarii.core.types.ClusterType;
@@ -28,11 +30,15 @@ public class MainCluster implements Runnable {
 	private int currentTaskCount = 0;
 	private XMLParser parser;
 	private String macAddress;
+	private	List<String> console;
+	private	List<String> execLog;
 
 	public MainCluster( int maxAllowedTasks, String macAddress ) {
 		this.maxAllowedTasks = maxAllowedTasks;
 		this.parser = new XMLParser();
 		this.macAddress = macAddress;
+		this.console = new ArrayList<String>();
+		this.execLog = new ArrayList<String>();
 	}
 	
 	
@@ -78,13 +84,29 @@ public class MainCluster implements Runnable {
 							MainClusterQueryWrapper mcqw = new MainClusterQueryWrapper();
 							mcqw.executeQuery( act );
 							
+							cluster.setMessage( act.getCommand() );
+							
+							console.clear();
+							console.add( act.getCommand() );
+							
+							execLog.clear();
+							//execLog.add( pipe.getContent() );
+							
+							String activityName = act.getActivitySerial();
+							
 							ActivityService as = new ActivityService();
 							try {
 								Activity activity = as.getActivity( act.getActivitySerial() );
+								activityName = activity.getTag();
 								cluster.setInstanceAsDone( pipe.getSerial(), activity );
-							} catch ( NotFoundException nf ) {	
-								logger.error("cannot finish instance " + pipe.getSerial() + ". Activity " + act.getActivitySerial() + " not found." );
+							} catch ( NotFoundException nf ) {
+								String errorString = "cannot finish instance " + pipe.getSerial() + ". Activity " + act.getActivitySerial() + " not found.";
+								console.add( errorString );
+								logger.error( errorString );
 							}
+							
+							MainLog.getInstance().storeLog(activityName , act.getExperiment(), 
+									act.getActivitySerial(), act.getExecutor(), "0", macAddress, console, execLog);
 							
 						}
 
@@ -94,7 +116,6 @@ public class MainCluster implements Runnable {
 
 		} catch ( Exception e ) {
 			cluster.setMessage( e.getMessage() );
-			e.printStackTrace();
 		}
 		
 	}

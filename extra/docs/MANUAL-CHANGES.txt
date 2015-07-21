@@ -1,2 +1,0 @@
-		<userPrompt>USER@</userPrompt>
-		<rootPrompt>ROOT:</rootPrompt>

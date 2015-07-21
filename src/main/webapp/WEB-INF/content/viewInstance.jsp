@@ -18,9 +18,9 @@
 							<div>
 								<table style="width:100%">
 									<tr>
-										<td class="tableCellFormLeft">Executor</td>
+										<td class="tableCellFormLeft">Serial Number</td>
 										<td class="tableCellFormRight"> 
-											${instance.executorAlias}
+											${instance.serial}
 										</td>
 									</tr>
 									<tr>

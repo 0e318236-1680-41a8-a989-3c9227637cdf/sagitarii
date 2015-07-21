@@ -89,7 +89,7 @@ public class Cluster {
 			Iterator<ProgressListener> i = progressListeners.iterator();
 			while ( i.hasNext() ) {
 				ProgressListener pl = i.next(); 
-				if ( pl.getPercentage() == 100 ) {
+				if ( pl.getPercentage() > 95 ) {
 					i.remove();
 					total++;
 				}

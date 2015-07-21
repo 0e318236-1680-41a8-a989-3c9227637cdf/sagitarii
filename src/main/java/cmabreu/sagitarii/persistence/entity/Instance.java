@@ -53,11 +53,6 @@ public class Instance implements Serializable {
 	@Column(length=15)
 	private String serial;
 
-	/*
-	@Column(length=250)
-	private String executorAlias;
-	*/
-	
     @OneToMany(orphanRemoval=true,  mappedBy="instance", fetch = FetchType.LAZY)
     @OrderBy("id_table, id_row ASC")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
