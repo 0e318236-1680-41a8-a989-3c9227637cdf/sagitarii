@@ -65,13 +65,13 @@ a {
 
 input[type='text'] {
 	font-family: 'Exo 2', Arial,Helvetica,sans;
-	font-size : 9px;
+	font-size : 10px;
 	border : 1px solid #4D7A93;
 }
 
 td input {
 	font-family: 'Exo 2', Arial,Helvetica,sans;
-	font-size : 9px;
+	font-size : 10px;
 	width : 95%;
 	border : 1px solid #4D7A93;
 }
@@ -439,7 +439,7 @@ td input {
 .searchBar {
 	border-bottom : 1px dotted #ADADAD;
 	text-align : left;
-	font-size : 11px;
+	font-size : 10px;
 	background-color : #FFFFFF;
 	padding-left : 5px;
 	height : 26px;
@@ -565,7 +565,7 @@ td input {
 	background-color: #F6F6F6;
     border: 1px solid #ADADAD;
     border-radius: 5px;
-    font-size: 9px;
+    font-size: 10px;
     position: relative;
     margin-right : 5px;
 }
@@ -582,7 +582,7 @@ td input {
 	background-color: #F6F6F6;
     border: 1px solid #ADADAD;
     border-radius: 5px;
-    font-size: 9px;
+    font-size: 10px;
     position: relative;
     margin-right : 5px;
 }
@@ -595,7 +595,7 @@ td input {
     border: 1px solid #ADADAD;
 	display: table;
     padding-bottom: 5px;
-    font-size: 9px;
+    font-size: 10px;
     height: 80px;
     position: relative;
     width: 240px;
@@ -608,7 +608,7 @@ td input {
     margin-left: 7px;
     text-align: left;
     width: 165px;	
-    font-size : 9px;
+    font-size : 10px;
     margin-top: 4px;
 }
 
@@ -617,7 +617,7 @@ td input {
     margin-left: 7px;
     text-align: left;
     width: 165px;	
-    font-size : 9px;
+    font-size : 10px;
     margin-top: 4px;
 }
 
@@ -626,7 +626,7 @@ td input {
     margin-left: 7px;
     text-align: left;
     width: 150px;	
-    font-size : 9px;
+    font-size : 10px;
     font-weight : bold;
     border-bottom : 1px dotted #ADADAD;
 	height: 17px;
@@ -698,7 +698,7 @@ td input {
 	margin:0 auto;
 	margin-top:20px;
 	padding : 3px;
-	font-size : 11px;
+	font-size : 10px;
 	color : #F90101; 
 	position : relative; 
 	font-family: "Consolas","Bitstream Vera Sans Mono","Courier New",Courier,monospace;
@@ -782,53 +782,10 @@ td input {
 	position : relative;
 }
 
-#disciplineButtons #requestEntranceButton {
-    background-color: #E84C3D;
-    border-radius: 5px 5px 5px 5px;
-    color: #FFFFFF;
-    cursor: pointer;
-    font-size: 11px;
-    font-weight: bold;
-    height: 14px;
-    right: 110px;
-    padding: 5px;
-    position: absolute;
-    text-align: center;
-    top: 0;
-    width: 200px;
-}
 
-#disciplineButtons img {
-	height : 24px;
-	float: right;
-	width: 24px;
-	cursor : pointer;
-	padding-right : 10px;
-}
 
-#courseNameBar #courseNameImage {
-	float : left;
-}
 
-#courseNameBar #courseNameImage img{
-	width : 32px;
-	height : 32px;
-}
 
-#courseNameBar #courseNameText {
-	float : left;
-	height : 32px;
-	font-size : 20px;
-	padding-top : 3px;
-}
-
-#disciplineNameBar {
-	height : 32px;
-	margin-left : 10px;
-	margin-right : 10px;
-	padding-left : 0px;
-	position : relative;
-}
 
 #disciplineNameBar #disciplineNameText {
 	height : 32px;
@@ -1046,17 +1003,6 @@ td input {
 
 }
 
-#basicCentralPanel #fileDetail #documentDataDate {
-	position : absolute;
-	font-size : 11px;
-	top : 140px;
-	width : 150px;
-	color : #666666;
-	padding-top : 5px;
-	padding-right : 5px;
-	right : 0px;
-	text-align : right;
-}
 
 #basicCentralPanel #fileDetail {
 	width : 400px;
@@ -1078,11 +1024,6 @@ td input {
 	padding-top: 30px;
 }
 
-#basicCentralPanel #fileDetail  #documentType  #documentTitle {
-	color : #000000;
-	font-size : 17px;
-	font-weight : bold;
-}
 
 #basicCentralPanel #fileDetail   #imageContainer  {
 	width : 90px;
@@ -1109,15 +1050,6 @@ td input {
 	padding-right : 3px;
 }
 
-#loginBox #boxBarLogin {
-    background-color: #F6F6F6;
-    font-size: 15px;
-    font-weight: bold;
-    height: 30px;
-    padding-left: 45px;
-    padding-top: 12px;
-    position: relative;
-}
 
 #loginBox #iconLogin {
 	position : absolute;
@@ -1143,16 +1075,7 @@ td input {
 	width : 90%;
 }
 
-#boxBodyLogin input {
-	width : 95%;
-	margin-bottom : 15px;
-	margin-left : 10px;
-	height : 24px;
-	border : 0px;
-	font-family: 'Exo 2', Arial,Helvetica,sans;
-	font-size : 12px;
-	color : #ADADAD;
-}
+
 
 .iconedInput {
     float: right;
@@ -1166,28 +1089,7 @@ td input {
 	height : 16px;
 }
 
-#registerButton {
-    background-color: #4D7A93;
-    border-radius: 5px 5px 5px 5px;
-    color: #FFFFFF;
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: bold;
-    height: 20px;
-    margin: 0 auto 10px;
-    padding-top: 5px;
-    text-align: center;
-    width: 120px;
-}
 
-.loginSelect {
-	color : #ADADAD;
-	width : 95%;
-	margin-left : 6px;
-	border : 0px;
-	font-family: 'Exo 2', Arial,Helvetica,sans;
-	font-size : 12px;
-}
 
 #profileContainer #rigthContainer{
     padding-left: 205px;
@@ -1209,19 +1111,6 @@ td input {
     margin-top: 10px;
 }
 
-#profileContainer #leftContainer #menuContainer .menuItem .menuItemNewItem {
-	background-color : #E84C3D;
-	font-size : 10px;
-	color : #FFFFFF;
-	border-radius: 11px;
-	-moz-border-radius: 11px;
-	width : 22px;
-	height : 18px;
-	text-align : center;
-	float : right;
-	padding-top : 4px;
-	margin-top : 5px;
-}
 
 #profileContainer #leftContainer #menuContainer .menuItem {
 	border-top : 1px solid #ADADAD;
@@ -1301,108 +1190,6 @@ td input {
 	font-size : 10px;
 }
 
-.userDisciplineLittle .userDisciplineLittleDiscipline {
-	color : #ADADAD;
-	width: 100%;
-	font-size: 12px;
-	margin-top: 10px;
-}
-
-.userDisciplineLittle {
-    background-color: #F6F6F6;
-    border: 1px solid #ADADAD;
-    border-radius: 5px 5px 5px 5px;
-    
-    display: table;
-    font-size: 10px;
-    height: 60px;
-    margin: 5px 0px 5px;
-    padding-bottom: 3px;
-    text-align: center;
-    width: 250px;
-}
-
-.universityBoxImage img{
-	width : 48px;
-	height : 48px;
-	margin-top : 3px;
-}
-
-.universityBoxBottomText3 a {
-	text-decoration : none;
-	color : #666666;
-	font-weight : bold;
-}
-
-.universityBoxImage {
-	position : absolute;
-	top : 4px;
-	left : 5px;
-	width : 52px;
-	height : 55px;
-	border : 1px solid #ADADAD;
-	border-radius: 5px;
-	background-color : #FFFFFF;
-	text-align : center;
-}
-
-.universityBox {
-	position : relative;
-	width : 90%;
-	height : 85px;
-	border : 1px solid #ADADAD;
-	margin : 0 auto;
-	margin-top : 5px;
-	background-color : #F6F6F6;
-	border-radius: 5px;
-	-moz-border-radius: 5px;
-	font-size : 10px;
-}
-
-.universityBox .universityBoxTopText {
-	margin-left : 75px;
-	font-size : 12px;
-	font-weight : bold;
-	padding-top : 3px;
-	padding-right : 5px;
-}
-
-.universityBox .universityBoxTop {
-    background-color: #4D7A93;
-    color: white;
-    font-weight: bold;
-    margin-bottom: 3px;
-    padding-bottom: 3px;
-    width: 100%;
-	height: 35px;
-	border-radius: 5px 5px 0 0;
-	-moz-border-radius: 5px 5px 0 0;
-}
-
-.universityBox .universityBoxBottomText1 {
-	margin-left : 75px;
-	margin-top : 2px;
-	color : #4D7A93;
-	font-weight : bold;
-}
-.universityBox .universityBoxBottomText2  {
-	margin-left : 75px;
-}
-.universityBox .universityBoxBottomText3 {
-	margin-left : 75px;
-}
-.universityBox .universityBoxBottom  {
-	color : #ADADAD;
-	width: 100%;
-}
-.universityBox .universityBoxBottomImage {
-	width : 24px;
-	height : 24px;
-	position : absolute;
-	top : 50px;
-	right : 10px;
-	cursor : pointer;
-}
 
 #userNameBar {
 	height : 32px;
@@ -1419,13 +1206,6 @@ td input {
 #userNameBar #userNameImage img{
 	width : 32px;
 	height : 32px;
-}
-
-#userNameBar #userNameText {
-	float : left;
-	height : 32px;
-	font-size : 20px;
-	padding-top : 3px;
 }
 
 #userDetailNameBar {
@@ -1453,371 +1233,6 @@ td input {
 	position : absolute;
 	height: 32px;  
 }
-
-
-#userMainPhotoContainer img {
-	width : 170px;
-	height : 200px;
-	border-radius: 5px;
-	-moz-border-radius: 5px;	
-}
-#userMainPhotoContainer {
-	position : absolute;
-	width : 170px;
-	left: 10px;
-	height : 200px;
-	border : 1px solid #ADADAD;
-	border-radius: 5px;
-	-moz-border-radius: 5px;	
-}
-
-#disciplinePostContainer {
-	width : 100%;
-	margin-top : 5px;
-}
-
-#disciplinePostContainer #disciplinePostPanel {
-	width : 98%;
-	margin : 0 auto;
-}
-
-#disciplinePostContainer #disciplinePostPanel .disciplinePostBox {
-	border-radius: 5px;
-	-moz-border-radius: 5px;		
-	min-height : 100px;
-	border : 1px solid #ADADAD;
-	background-color : #F6F6F6;
-	padding : 5px;
-	margin-bottom : 10px;
-}
-
-#disciplinePostContainer #disciplinePostPanel .disciplinePostBox .disciplinePostUserName{
-	font-size : 14px;
-	color : #4D7A93;
-	font-weight : bold;
-	position : absolute;
-	left : 50px;
-}
-
-#disciplinePostContainer #disciplinePostPanel .disciplinePostBox .disciplinePostDetail{
-	font-size : 11px;
-	color : #ADADAD;
-	position : absolute;
-	left : 50px;
-	top : 20px;
-}
-
-.disciplinePostBox .disciplinePostNewComment {
-	border : 1px solid #ADADAD;
-	height : 20px;
-	padding-top : 5px;
-	width : 100%;
-}
-
-.disciplinePostBox  .disciplinePostCommentsPanel {
-	height : 100px;
-	width : 100%;
-	margin-top : 10px;
-	display : table;
-}
-
-.disciplinePostBox  .disciplinePostCommentsPanel .disciplinePostCommentBlock {
-	font-size : 10px;
-	padding-top : 10px;
-	display: table;
-}
-
-.disciplinePostBox  .disciplinePostCommentsPanel .disciplinePostCommentBlock .disciplinePostCommentImage img {
-	width : 42px;
-	height : 42px;
-	border : 1px solid #ADADAD; 
-	border-radius: 5px;
-	-moz-border-radius: 5px;	
-}
-
-.disciplinePostBox  .disciplinePostCommentsPanel .disciplinePostCommentBlock .disciplinePostCommentImage {
-	width : 50px;
-	float : left;
-}
-
-.disciplinePostBox  .disciplinePostCommentsPanel .disciplinePostCommentBlock .disciplinePostCommentText .disciplinePostCommentDetail{
-	color : #ADADAD;
-}
-
-.disciplinePostBox  .disciplinePostCommentsPanel .disciplinePostCommentBlock .disciplinePostCommentText .disciplinePostCommentUser{
-	color : #4D7A93;
-	font-weight : bold;
-}
-
-.disciplinePostBox  .disciplinePostCommentsPanel .disciplinePostCommentBlock .disciplinePostCommentText .disciplinePostCommentDelete {
-	width : 12px;
-	height : 12px;
-	margin-left : 10px;
-	opacity : 0.5;
-	margin-top : 2px;
-	cursor : pointer;
-}
-
-.disciplinePostBox  .disciplinePostCommentsPanel .disciplinePostCommentBlock .disciplinePostCommentText {
-    float: left;
-    width: 90%;
-	text-align : justify;
-}
-
-
-.disciplinePostBox .disciplinePostNewComment input{
-	border : 0px;
-	background-color : #F6F6F6;
-	width : 99%;
-	font-size : 11px;
-	margin-left : 5px;
-}
-
-#disciplinePostContainer #disciplinePostPanel .disciplinePostBox .disciplinePostText {
-	font-size : 10px;
-	color : #000000;
-	text-align : justify;
-	margin-bottom : 4px;
-}
-
-#disciplinePostContainer #disciplinePostPanel .disciplinePostBox .disciplinePostTop .disciplinePostButtons {
-	border : 1px solid #ADADAD;
-	height : 29px;
-	background-color : #FFFFFF;
-	position : absolute;
-	right : 3px;
-	top : 3px;
-	border-radius: 5px;
-	-moz-border-radius: 5px;
-	cursor : pointer;
-	padding-top : 5px;
-	padding-right : 10px;
-}
-
-#disciplinePostContainer #disciplinePostPanel .disciplinePostBox .disciplinePostTop .disciplinePostButtons img{
-	height : 24px;
-	width : 24px;
-	float : right;
-	margin-left : 10px;
-}
-
-#disciplinePostContainer #disciplinePostPanel .disciplinePostBox .disciplinePostTop {
-	border-bottom : 1px dotted #ADADAD; 
-	position : relative;
-	height : 47px;
-}
-
-#disciplinePostContainer #disciplinePostPanel .disciplinePostBox .disciplinePostTop .posterImage {
-	width : 42px;
-	height : 42px;
-	position : absolute;
-	border : 1px solid #ADADAD; 
-	border-radius: 5px;
-	-moz-border-radius: 5px;	
-}
-
-#personProfilesTopBox {
-    background-color: #4D7A93;
-    text-align: center;
-    font-size: 10px;
-    border-radius: 5px 5px 0 0;
-    color: white;
-    font-weight: bold;
-    height: 25px;
-    margin-bottom: 3px;
-    padding-bottom: 3px;
-    width: 100%;
-}
-
-#personsProfilesBox {
-    display: table;
-    margin: 5px auto 0;
-    min-height: 105px;
-    border: 1px solid #ADADAD;
-    padding-bottom: 5px;
-    width: 250px;
-    background-color: #F6F6F6;
-    border-radius : 5px;
-}
-
-.personName {
-	font-size : 8px;
-}
-
-.personImage {
-	width:24px; 
-	height:24px;
-	float:left;
-	margin-left:4px;
-	margin-bottom:5px;
-	border: 1px solid #ADADAD;
-	border-radius: 3px;
-	cursor : pointer;
-}
-
-
-.profileBox {
-	margin : 0 auto;
-	width : 250px;
-	height : 105px;
-}
-
-.profileBox  .profileContent {
-	background-color : #4D7A93;
-	width : 250px;
-	height : 70px;
-	border-radius: 5px 5px 0 0;
-	-moz-border-radius: 5px 5px 0 0;
-	position : relative;
-}
-
-.profileBox  .profileContent .profileImage {
-	width : 50px;
-	height : 55px;
-	position : absolute;
-	top : 8px;
-	left : 7px;
-}
-
-.profileBox .profileContent .profileImage img {
-	width : 50px;
-	height : 55px;
-	border-radius: 5px;
-	-moz-border-radius: 5px;
-}
-
-.profileBox .profileContent .profileText {
-	position : absolute;
-	top : 10px;
-	left : 65px;	
-	padding-right : 3px;
-}
-
-.profileBox .profileContent .profileText .profileTitle {
-	width : 100%;
-	color : #000000;
-	font-weight : bold;
-	font-size : 12px;
-}
-
-.profileBox .profileContent .profileText .profileDescription {
-	width : 100%;
-	color : #FFFFFF;
-	font-style:italic;
-	font-size : 10px;
-	margin-top: 5px;
-}
-
-.profileBox .profileButtons {
-	background-color :#F6F6F6;
-	width : 248px;
-	height : 30px;
-	border-radius: 0 0 5px 5px;
-	-moz-border-radius: 0 0 5px 5px;
-	border-bottom : 1px solid #ADADAD;
-	border-left : 1px solid #ADADAD;
-	border-right : 1px solid #ADADAD;
-	position : relative;
-}
-
-.profileBox .profileButtons img {
-	width : 20px;
-	height : 20px;
-	position : absolute;
-	top : 5px;
-	cursor : pointer;
-}
-
-.profileBox .profileButtons span {
-	height : 30px;
-	position : absolute;
-	top : 8px;
-	text-align : left;
-	width : 25px;
-	height : 15px;
-}
-
-.profileBox .profileButtons .profileLikeButton {
-	left: 10px;
-}
-
-.profileBox .profileButtons .profileUnlikeButton {
-	left: 95px;
-}
-
-.profileBox .profileButtons .profileUnlikeText {
-	left: 120px;
-}
-
-.profileBox .profileButtons .profileLikeText {
-	left: 35px;
-}
-
-
- .profileContent {
-	background-color : white;
-	width : 215px;
-	height : 60px;
-	border-radius: 5px;
-	position : relative;
-}
-
-
-.profileContent img {
-    border: 1px solid #ADADAD;
-    border-radius: 3px 3px 3px 3px;
-    height: 50px;
-    left: 0;
-    position: absolute;
-    top: 5px;
-    width: 50px;
-}
-
-.profileContent .profileText {
-	position : absolute;
-	top : 2px;
-	left : 60px;	
-	padding-right : 3px;
-	width: 150px;
-	font-weight: normal;
-}
-
-.profileContent .profileText .profileTitle {
-	width : 100%;
-	color : #4D7A93;
-	font-weight : bold;
-	font-size : 10px;
-	border-bottom : 1px dotted #4D7A93;
-}
-
-.profileContent .profileText .profileDescription {
-    color: #000;
-    font-size: 9px;
-    width: 100%;
-    height : 12px;
-}
-
-.profileContent .profileText .profileSubDescription {
-    color: #ADADAD;
-    font-size: 9px;
-    width: 100%;
-    height : 12px;
-    cursor : pointer;
-}
-
-.profileMicroPictureContainer {
-	width : 300px;
-	width: 99%;
-}
-
-.profileMicroPictureContainer img {
-	height : 24px;
-	width : 24px;
-	border : 1px solid #ADADAD;
-	border-radius: 3px;
-	cursor : pointer;
-}
-
 
 div.dataTables_wrapper {
     width: 95%;
