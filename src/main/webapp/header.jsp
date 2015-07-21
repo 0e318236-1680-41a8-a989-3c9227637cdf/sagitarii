@@ -6,18 +6,18 @@
 <html>
 	<head>
 		<title>Sagitarii</title>
-		<link rel="stylesheet" href="css/jquery.dataTables.css?id=400" type="text/css"/>
-		<link rel="stylesheet" href="css/style.css?id=400" type="text/css"/>
+		<link rel="stylesheet" href="css/jquery.dataTables.css" type="text/css"/>
+		<link rel="stylesheet" href="css/style.css?id=450" type="text/css"/>
 		<link rel="stylesheet" href="css/codemirror.css" type="text/css" />
 		<link rel="stylesheet" href="css/tipTip.css" type="text/css"/>	
 
 
 		<script src="js/jquery-1.11.0.min.js"></script>
 		<script src="js/jquery.tipTip.minified.js"></script>	
-		<script src="js/script.js"></script>
+		<script src="js/script.js?id=450"></script>
 		<script src="js/jquery.dataTables.js"></script>
 		<script src="js/cytoscape.min.js"></script>
-		<script src="js/nodes.js"></script>
+		<script src="js/nodes.js?id=450"></script>
 		
 		<script type="text/javascript" src="js/codemirror.js"></script>
 		<script type="text/javascript" src="js/xml.js"></script>

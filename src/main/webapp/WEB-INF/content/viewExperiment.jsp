@@ -3,7 +3,7 @@
 <%@ include file="../../header.jsp" %>
 
 				<div id="leftBox"> 
-					<div id="bcbMainButtons" class="basicCentralPanelBar" style="height:50px">
+					<div id="bcbMainButtons" class="basicCentralPanelBar">
 						<%@ include file="buttons.jsp" %>
 					</div>
 					

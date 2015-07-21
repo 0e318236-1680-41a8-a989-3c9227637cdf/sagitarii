@@ -63,6 +63,12 @@ a {
 	font-weight : bold;
 }
 
+input[type='text'] {
+	font-family: 'Exo 2', Arial,Helvetica,sans;
+	font-size : 9px;
+	border : 1px solid #4D7A93;
+}
+
 td input {
 	font-family: 'Exo 2', Arial,Helvetica,sans;
 	font-size : 9px;
@@ -104,12 +110,13 @@ td input {
 }
 
 .menuButton {
-	width : 30px !important;
-	height : 32px !important;
+	width : 25px !important;
+	height : 25px !important;
 	padding : 4px;
 	margin-right : 5px; 
 	margin-top : 2px !important;
 	margin-left : 0px !important;
+	margin-bottom : 3px !important;
 	border : 1px solid black;
 	float: left;
 	cursor : pointer;
@@ -169,11 +176,11 @@ td input {
 
 
 .menuBarMain .button {
-	width : 24px !important;
-	height : 24px !important;
+	width : 20px !important;
+	height : 20px !important;
 	padding : 4px;
-	margin-top : 5px !important;
-	margin-left : 10px !important;
+	margin-top : 2px !important;
+	margin-left : 5px !important;
 	border : 1px solid black;
 	float: left;
 	cursor : pointer;
@@ -186,7 +193,7 @@ td input {
 	border: 1px solid #ADADAD;
 	/* border-radius: 5px; */
 	font-size: 10px;
-	height: 45px;
+	height: 34px;
 	position: relative;
 	width: 95%;
 	margin-top: 5px;
@@ -496,8 +503,8 @@ td input {
 
 #centerContainer {
 	min-height : 400px;
-	padding-top: 5px;
-	padding-bottom: 5px;
+	padding-top: 2px;
+	padding-bottom: 2px;
 	position:relative;
 }
 
@@ -716,7 +723,6 @@ td input {
 	position : absolute;
 	top : 8px;			
 	left : 45px;
-	
 }
 
 #basicCentralPanel .basicCentralPanelBar img {
@@ -728,15 +734,14 @@ td input {
 }
 
 .basicCentralPanelBar {
-	width : 95%;
-	min-height : 30px;
+	width : 98%;
+	height : 30px;
+	display: table;
 	margin : 0 auto;
 	border-bottom : 1px dotted #ADADAD;
 	position : relative;
-	font-weight : bold;
 	font-size : 13px;			
 	margin-bottom : 5px;
-	/*background-color: #f6f6f6;*/
 }
 
 #basicCentralPanel #basicFrame {
