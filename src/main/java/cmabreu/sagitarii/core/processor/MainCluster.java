@@ -17,13 +17,6 @@ import cmabreu.sagitarii.persistence.entity.Instance;
 import cmabreu.sagitarii.persistence.exceptions.NotFoundException;
 import cmabreu.sagitarii.persistence.services.ActivityService;
 
-/**
- * O Pseudo Cluster executará tarefas locais, como acesso a dados.
- * Atividades do tipo QUERY.
- * 
- * @author Carlos Magno Abreu
- *
- */
 public class MainCluster implements Runnable {
 	private	Logger logger = LogManager.getLogger( this.getClass().getName() );
 	private int maxAllowedTasks = 4;
@@ -81,16 +74,19 @@ public class MainCluster implements Runnable {
 							Activation act = acts.get(0);
 							ClustersManager.getInstance().acceptTask( pipe.getSerial(), macAddress);
 							
+							cluster.setMessage( "running query for executor " + act.getExecutor() );
+
 							MainClusterQueryWrapper mcqw = new MainClusterQueryWrapper();
-							mcqw.executeQuery( act );
-							
-							cluster.setMessage( act.getCommand() );
+							try {
+								mcqw.executeQuery( act );
+							} catch ( Exception e ) {
+								cluster.setMessage( "error " + e.getMessage() +  " when running query for executor " + act.getExecutor() );
+							}
 							
 							console.clear();
 							console.add( act.getCommand() );
 							
 							execLog.clear();
-							//execLog.add( pipe.getContent() );
 							
 							String activityName = act.getActivitySerial();
 							
@@ -103,6 +99,7 @@ public class MainCluster implements Runnable {
 								String errorString = "cannot finish instance " + pipe.getSerial() + ". Activity " + act.getActivitySerial() + " not found.";
 								console.add( errorString );
 								logger.error( errorString );
+								cluster.setMessage( errorString );
 							}
 							
 							MainLog.getInstance().storeLog(activityName , act.getExperiment(), 
