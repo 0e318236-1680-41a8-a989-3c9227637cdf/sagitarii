@@ -73,11 +73,13 @@
 					<input type="hidden" name="macAddress"	value="${cluster.macAddress}">
 					<table style="margin-top: 10px; width:98%; margin-left: 10px">
 						<tr>
-							<td style="width:280px">Command</td>
+							<td style="width:200px">Command</td>
+							<td style="width:80px">Hide command</td>
 							<td style="width:70px">&nbsp;</td>
 						</tr>
 						<tr>
 							<td ><input id="command" autocomplete="off" type="text" name="command"></td>
+							<td ><input id="hideCommand" type="checkbox" style="margin-left: 0px;width:20px;text-align:left;" name="hideCommand"> </td>
 							<td>
 								<img class="miniButton dicas" title="Logout SSH session" src="img/shutdown.png" onclick="logout()">
 								<img class="miniButton dicas" title="Upload a file" src="img/upload.png" onclick="upload()">
@@ -89,19 +91,22 @@
 
 				<form action="nodeSSHUpload" id="frmUpload" method="post" enctype="multipart/form-data">
 					<input type="hidden" name="macAddress"	value="${cluster.macAddress}">
-					<table id="uploadBar" style="margin-top: 10px; width:450px; margin:0 auto; display:none">
+					<table id="uploadBar" style="margin-top: 10px; width:600px; margin:0 auto; display:none">
 						<tr>
-							<td style="width:120px">File to Upload</td>
-							<td style="width:310px">
-							<input type="file" name="fileUpload"></td>
+							<td style="width:150px">File to Upload</td>
+							<td style="width:330px">
+							<input style="width:100%;" type="file" name="fileUpload"></td>
 						</tr>
 						<tr>
-							<td>Target Path</td><td><input type="text" name="targetPath"></td>
+							<td>Target Path</td>
+							<td><input style="width:100%;" type="text" name="targetPath"></td>
 						</tr>
 						<tr>
-							<td>&nbsp;</td><td>
-							<input style="width:145px" type="button" onclick="uploadCancel()" value="Cancel">
-							<input style="width:145px" type="button" onclick="uploadFile()" value="Upload"></td>
+							<td>&nbsp;</td>
+							<td>
+								<input style="width:145px; float:left" type="button" onclick="uploadCancel()" value="Cancel">
+								<input style="width:145px; float:right" type="button" onclick="uploadFile()" value="Upload">
+							</td>
 						</tr>
 					</table>
 				</form>
@@ -109,16 +114,16 @@
 
 				<form action="nodeSSHDownload" id="frmDownload" method="post">
 					<input type="hidden" name="macAddress"	value="${cluster.macAddress}">
-					<table id="downloadBar" style="margin-top: 10px; width:500px; margin:0 auto; display:none">
+					<table id="downloadBar" style="margin-top: 10px; width:600px; margin:0 auto; display:none">
 						<tr>
-							<td style="width:130px">Source File ( and path )</td>
-							<td style="width:310px">
-							<input type="text" name="sourceFile"></td>
+							<td style="width:150px">Source File ( and path )</td>
+							<td style="width:330px">
+							<input style="width:100%;" type="text" name="sourceFile"></td>
 						</tr>
 						<tr>
 							<td>&nbsp;</td><td>
-								<input style="width:145px" type="button" onclick="downloadCancel()" value="Cancel">
-								<input style="width:145px" type="button" onclick="downloadFile()" value="Download">
+								<input style="width:145px; float:left" type="button" onclick="downloadCancel()" value="Cancel">
+								<input style="width:145px; float:right" type="button" onclick="downloadFile()" value="Download">
 							</td>
 						</tr>
 					</table>
@@ -231,11 +236,22 @@
 		
 		$("#command").focus();
 		
-		$("#command").keypress(function(event) {
+		$("#command").keypress( function(event) {
 		    if (event.which == 13) {
 		        event.preventDefault();
 		        $("#frmCommand").submit();
 		    }
+		});
+		
+
+		$("#hideCommand").change( function(event) {
+			if ( $('#hideCommand').is(":checked") )	{
+				var pass = document.getElementById('command');
+				pass.type = 'password';
+			} else {
+				var pass = document.getElementById('command');
+				pass.type = 'text';
+			}
 		});
 		
 		

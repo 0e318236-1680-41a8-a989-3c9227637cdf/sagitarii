@@ -124,7 +124,7 @@ public class SSHSession {
 		 }		
 	}
 	
-	public String run( String command ) throws Exception {
+	public String run( String command, boolean hide ) throws Exception {
 
 		if ( (command == null) || command.equals("") ){
 			throw new Exception("invalid command");
@@ -148,10 +148,14 @@ public class SSHSession {
     	}
     	
     	consoleOut.add( resultString );
-    	lastCommands.add( command );
-    	if ( lastCommands.size() > 25 ) {
-    		lastCommands.remove(0);
+    	
+    	if ( !hide ) {
+	    	lastCommands.add( command );
+	    	if ( lastCommands.size() > 25 ) {
+	    		lastCommands.remove(0);
+	    	}
     	}
+    	
     	return resultString;
 	}
 	

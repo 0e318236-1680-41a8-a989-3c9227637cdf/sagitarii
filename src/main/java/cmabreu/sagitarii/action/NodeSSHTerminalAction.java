@@ -23,6 +23,7 @@ public class NodeSSHTerminalAction extends BasicActionClass {
 	private SSHSession session;
 	private String command;
 	private int port;
+	private String hideCommand;
 	
 	public String execute () {
 		ClustersManager cm = ClustersManager.getInstance();
@@ -46,10 +47,10 @@ public class NodeSSHTerminalAction extends BasicActionClass {
 				
 				if ( (user != null) && (password != null)  ) {
 					String host = cluster.getIpAddress();
-					session = mngr.newSession( cluster.getMacAddress(), host, port, user, password );
+					//session = mngr.newSession( cluster.getMacAddress(), host, port, user, password );
 					
 					// session = mngr.newSession( cluster.getMacAddress(), "eic.cefet-rj.br", 8091, "sagitarii", "Chiron2014!" );
-					// session = mngr.newSession( cluster.getMacAddress(), "10.5.112.214", 22, "sadlog", "sadlog" );
+					session = mngr.newSession( cluster.getMacAddress(), "10.5.112.214", 22, "sadlog", "sadlog" );
 					
 				} else {
 					setMessageText("user and password must be set");						
@@ -60,7 +61,8 @@ public class NodeSSHTerminalAction extends BasicActionClass {
 			
 			if ( session != null ) { // NOT "ELSE" because getSession or newSession
 				if ( command != null && !command.equals("") ) {
-					session.run( command );
+					boolean hide = ( hideCommand != null && hideCommand.equals("on") ); 
+					session.run( command, hide );
 				}
 
 			} else {
@@ -101,6 +103,10 @@ public class NodeSSHTerminalAction extends BasicActionClass {
 	
 	public void setPort(int port) {
 		this.port = port;
+	}
+	
+	public void setHideCommand(String hideCommand) {
+		this.hideCommand = hideCommand;
 	}
 	
 }

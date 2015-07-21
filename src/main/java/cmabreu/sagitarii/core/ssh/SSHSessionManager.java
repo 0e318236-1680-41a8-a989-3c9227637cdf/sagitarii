@@ -84,18 +84,22 @@ public class SSHSessionManager {
 		}
 	}
 
-	public void multipleRun( String command ) throws Exception {
+	public void multipleRun( String command, boolean hide ) throws Exception {
 		logger.debug("sending command to all sessions");
 		for ( SSHSession session : getSessions() ) {
 			if ( session.isOperational() ) {
 				logger.debug(" > " + session.getAlias() );
-				session.run( command );
+				session.run( command, hide );
 			}
 		}
-		lastMultiCommands.add( command );
-		if ( lastMultiCommands.size() > 25 ) {
-			lastMultiCommands.remove(0);
+		
+		if ( !hide ) {
+			lastMultiCommands.add( command );
+			if ( lastMultiCommands.size() > 25 ) {
+				lastMultiCommands.remove(0);
+			}
 		}
+		
 	}
 
 	public void upload( String alias, String file, String toPath ) throws Exception {
@@ -118,11 +122,11 @@ public class SSHSessionManager {
 		}
 	}
 	
-	public void run( String alias, String command ) throws Exception {
+	public void run( String alias, String command, boolean hide ) throws Exception {
 		SSHSession session =  getSession(alias);
 		if ( session != null ) {
 			if ( session.isOperational() ) {
-				session.run( command );
+				session.run( command, hide );
 			}
 		}
 	}

@@ -19,6 +19,7 @@ public class NodeSSHMultiTerminalAction extends BasicActionClass {
 	private String command;
 	private List<SSHSession> sessions;
 	private List<String> lastMultiCommands;
+	private String hideCommand;
 	
 	public String execute () {
 
@@ -29,7 +30,8 @@ public class NodeSSHMultiTerminalAction extends BasicActionClass {
 			sessions = mngr.getSessions();
 			
 			if ( command != null && !command.equals("") ) {
-				mngr.multipleRun(command);
+				boolean hide = ( hideCommand != null && hideCommand.equals("on") ); 
+				mngr.multipleRun( command, hide );
 			}
 
 
@@ -52,6 +54,10 @@ public class NodeSSHMultiTerminalAction extends BasicActionClass {
 	
 	public List<String> getLastMultiCommands() {
 		return lastMultiCommands;
+	}
+	
+	public void setHideCommand(String hideCommand) {
+		this.hideCommand = hideCommand;
 	}
 	
 }
