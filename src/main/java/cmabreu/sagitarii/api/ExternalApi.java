@@ -58,6 +58,10 @@ public class ExternalApi {
 						return receiveData( map );
 					}
 					
+					if ( command.equals("apiRequestNewUser") ) {
+						return requestNewUser( map );
+					}
+
 					if ( command.equals("apiCreateExperiment") ) {
 						return createExperiment( map, user );
 					}
@@ -130,6 +134,23 @@ public class ExternalApi {
 		
 	}
 	
+	private String requestNewUser( Map<String, Object> map ) {
+		try {
+			String fullName = (String)map.get("fullName");
+			String username = (String)map.get("username");
+			String password = (String)map.get("password");
+			String mailAddress = (String)map.get("mailAddress");
+			if( !username.equals("") && !mailAddress.equals("") && !password.equals("") ) {
+				UserService es = new UserService();
+				User user = es.requestAccess(fullName, username, password, mailAddress);
+				return user.getPassword();
+			}
+		} catch ( Exception e ) {
+			logger.error( e.getMessage() );
+			return formatMessage( e.getMessage() );
+		}
+		return "RETURN_REQUEST_ERROR";
+	}
 	
 	private String startExperiment( Map<String, Object> map ) {
 		try {
@@ -147,6 +168,7 @@ public class ExternalApi {
 		}
 		return "RETURN_INVALID_EXPERIMENT_SERIAL";
 	}
+	
 	
 	private String getExperiments( Map<String, Object> map, User user ) {
 		Set<Experiment> experiments = new HashSet<Experiment>();

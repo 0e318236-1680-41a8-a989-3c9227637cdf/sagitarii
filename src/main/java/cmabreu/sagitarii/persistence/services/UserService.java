@@ -1,11 +1,14 @@
 package cmabreu.sagitarii.persistence.services;
 
 import java.security.MessageDigest;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import cmabreu.sagitarii.core.mail.MailService;
+import cmabreu.sagitarii.core.types.UserType;
 import cmabreu.sagitarii.persistence.entity.User;
 import cmabreu.sagitarii.persistence.exceptions.DatabaseConnectException;
 import cmabreu.sagitarii.persistence.exceptions.DeleteException;
@@ -55,6 +58,14 @@ public class UserService {
 		
 		rep.newTransaction();
 		rep.updateUser(oldUser);
+		
+		try {
+			MailService ms = new MailService();
+			ms.notifyUserChange(user);
+		} catch ( Exception e ) {
+			throw new UpdateException( e.getMessage() );
+		}
+		
 	}	
 
 	public User login( String loginName, String password ) throws Exception {
@@ -83,6 +94,29 @@ public class UserService {
 		User expRet = rep.insertUser( user );
 		return expRet ;
 	}	
+
+	public User requestAccess( String fullName, String username, String password, String mailAddress ) throws InsertException {
+		User user = new User();
+		user.setFullName( fullName );
+		user.setLoginName( username );
+		user.setPassword( password );
+		user.setUserMail( mailAddress );
+		
+		try {
+			String sha1Password = convertPassword( user.getPassword().getBytes() );
+			user.setPassword( sha1Password );
+			user.setType( UserType.NEW );
+			rep.insertUser( user );
+			
+			MailService ms = new MailService();
+			ms.sendUserRequest(user);
+			
+		} catch ( Exception e ) {
+			throw new InsertException( e.getMessage() );
+		}
+		
+		return user;
+	}	
 	
 	public void deleteUser( int idUser ) throws DeleteException {
 		try {
@@ -98,5 +132,10 @@ public class UserService {
 	public Set<User> getList( ) throws NotFoundException {
 		return rep.getList( );
 	}
+
+	public List<User> getList( UserType type ) throws NotFoundException {
+		return rep.getList( type );
+	}
+	
 	
 }

@@ -1,9 +1,11 @@
 package cmabreu.sagitarii.persistence.repository;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import cmabreu.sagitarii.core.types.UserType;
 import cmabreu.sagitarii.persistence.entity.User;
 import cmabreu.sagitarii.persistence.exceptions.DatabaseConnectException;
 import cmabreu.sagitarii.persistence.exceptions.DeleteException;
@@ -36,6 +38,21 @@ public class UserRepository extends BasicRepository {
 		return users;
 	}
 
+	public List<User> getList( UserType type ) throws NotFoundException {
+		logger.debug("get list by type " + type.toString() );
+		DaoFactory<User> df = new DaoFactory<User>();
+		IDao<User> fm = df.getDao(this.session, User.class);
+		List<User> users = null;
+		try {
+			users = new ArrayList<User>( fm.getList("select * from users where type = '" + type + "'") );
+		} catch ( Exception e ) {
+			closeSession();
+			throw e;
+		}
+		closeSession();
+		logger.debug("done: " + users.size() + " users.");
+		return users;
+	}
 	
 	public User getUserByName( String userName ) throws NotFoundException {
 		logger.debug("get user by name " + userName );

@@ -1,0 +1,21 @@
+api:
+
+	private String requestNewUser( Map<String, Object> map ) {
+		try {
+			String fullName = (String)map.get("fullName");
+			String username = (String)map.get("username");
+			String password = (String)map.get("password");
+			String mailAddress = (String)map.get("mailAddress");
+			if( !username.equals("") && !mailAddress.equals("") && !password.equals("") ) {
+				UserService es = new UserService();
+				User user = es.requestAccess(fullName, username, password, mailAddress);
+				return user.getPassword();
+			}
+		} catch ( Exception e ) {
+			logger.error( e.getMessage() );
+			return formatMessage( e.getMessage() );
+		}
+		return "RETURN_REQUEST_ERROR";
+	}
+	
+	

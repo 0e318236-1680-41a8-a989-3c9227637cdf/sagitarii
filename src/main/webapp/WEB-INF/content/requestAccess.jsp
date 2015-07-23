@@ -4,33 +4,37 @@
 
 				<div id="leftBoxAlter" style="width:100%; border-right:0px" > 
 				
-					<img src="img/logos/wallpaper.png" style="width:400px; height:300px;display:block;margin:0 auto;margin-top:0px">
-				
-				
-					<div class="userBoard" style="margin:0 auto;margin-top:5px">
-						<div class="userBoardT1" style="text-align:center;width:95%">Login</div>
+					<div class="userBoard" style="margin:0 auto;margin-top:50px; width: 300px;">
+						<div class="userBoardT1" style="text-align:center;width:95%">Request New User Credentials</div>
 						<div class="userBoardT2" style="text-align:center;width:95%">
-							<form action="doLogin" method="post" name="formLogin" id="formLogin">
+							<form action="doRequestAccess" method="post" name="formRequest" id="formRequest">
 								<table>
 									<tr>
-										<td style="width:50%">Username</td><td><input autocomplete="off" id="username" type="text" name="username"></td>
+										<td style="width:30%">Login Name</td><td><input autocomplete="off" id="username" type="text" name="username"></td>
 									</tr>
 									<tr>
-										<td style="width:50%">Password</td><td><input autocomplete="off" id="password" type="password" name="password"></td>
+										<td>Full Name</td><td><input autocomplete="off" id="fullName" type="text" name="fullName"></td>
 									</tr>
 									<tr>
-										<td style="width:50%">&nbsp;</td><td><div style="margin-right: 7px;margin-top: 0px;" class="basicButton" onclick="doLogin()">Login</div></td>
+										<td>Mail Address</td><td><input autocomplete="off" id="mailAddress" type="text" name="mailAddress"></td>
+									</tr>
+									<tr>
+										<td>Password</td><td><input autocomplete="off" id="password" type="password" name="password"></td>
+									</tr>
+									<tr>
+										<td>Retype Password</td><td><input autocomplete="off" id="retypePassword" type="password" name="retypePassword"></td>
+									</tr>
+									<tr>
+										<td>&nbsp;</td><td><div style="margin-right: 10px;margin-top: 0px;" class="basicButton" onclick="doRequest()">Request</div></td>
 									</tr>
 								</table>
 							</form>
+							<span>Your request will be sent to an Administrator and may take some time to process.
+							The notification will be sent to the mail address informed here as soon an Administrator accept your request.</span>
 						</div>
 					</div>
 					
-					<div style="margin:0 auto;margin-top:15px;width: 240px;">
-						<div class="userBoardT1" style="text-align:center;width:95%">
-							<a href="requestAccess">Request Access</a>
-						</div>
-					</div>					
+					
 				</div>
 								
 				<br><br>
@@ -39,24 +43,17 @@
 
 	function doLogin() {
 		var password = $("#password").val();
+		var retypePassword = $("#retypePassword").val();
 		var username = $("#username").val();
 		if ( (password == '') || ( username == '' ) ) {
 			showMessageBox('Please fill all required fields.');
 			return;
 		} 
-		$("#formLogin").submit();
+		$("#formRequest").submit();
 	}
 
 	$(document).ready(function() {
 		$("#username").focus();
-		
-		$("#password").keypress(function(event) {
-		    if (event.which == 13) {
-		        event.preventDefault();
-		        doLogin();
-		    }
-		});
-
 	});
 	
 </script>				
