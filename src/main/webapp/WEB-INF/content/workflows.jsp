@@ -173,7 +173,7 @@
 	}
 	
 	function exportWf(idWf) {
-		window.open("getXMLWorkflow?idWorkflow=" + idWf);
+		window.location.href ="getXMLWorkflow?idWorkflow=" + idWf;
 	}
 	
 	function newExperiment(idWf) {

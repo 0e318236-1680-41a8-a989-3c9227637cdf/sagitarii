@@ -95,6 +95,10 @@ public class WorkflowService {
 		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 		sb.append("<workflow tag=\""+wf.getTag()+"\">\n");
 		
+		sb.append("<specification>\n");
+		//sb.append( wf.getActivitiesSpecs() );
+		sb.append("</specification>\n");
+		
 		for( Experiment exp : wf.getExperiments() ) {
 			exp = new ExperimentService().previewExperiment( exp.getIdExperiment() );
 			sb.append("<experiment tag=\""+exp.getTagExec()+"\">\n");
