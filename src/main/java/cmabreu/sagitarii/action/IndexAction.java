@@ -8,7 +8,7 @@ import org.apache.struts2.convention.annotation.Result;
 @Action (value = "index", results = { @Result (location = "index_login.jsp", name = "ok") } ) 
 
 @ParentPackage("default")
-public class IndexAction  {
+public class IndexAction extends BasicActionClass {
 	
 	public String execute () {
 		return "ok";

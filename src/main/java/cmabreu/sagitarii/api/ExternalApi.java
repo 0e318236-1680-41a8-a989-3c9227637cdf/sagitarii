@@ -92,7 +92,6 @@ public class ExternalApi {
 	}
 	
 	
-	
 	private String createTable( Map<String, Object> map ) {
 		String tableName = (String)map.get("tableName");
 		String tableDescription = (String)map.get("tableDescription");

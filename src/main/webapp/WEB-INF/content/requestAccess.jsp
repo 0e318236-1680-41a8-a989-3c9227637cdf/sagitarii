@@ -41,14 +41,23 @@
 				
 <script>
 
-	function doLogin() {
+	function doRequest() {
 		var password = $("#password").val();
 		var retypePassword = $("#retypePassword").val();
 		var username = $("#username").val();
-		if ( (password == '') || ( username == '' ) ) {
+		var mailAddress = $("#mailAddress").val();
+		var fullName = $("#fullName").val();
+
+		if ( (fullName == '') || (mailAddress == '') || (password == '') || ( username == '' ) ) {
 			showMessageBox('Please fill all required fields.');
 			return;
 		} 
+
+		if ( password != retypePassword) {
+			showMessageBox('Passwords do not match');
+			return;
+		}
+		
 		$("#formRequest").submit();
 	}
 
