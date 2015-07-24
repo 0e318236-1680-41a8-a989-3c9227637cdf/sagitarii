@@ -14,7 +14,7 @@
 	
 	<loggers>
 
-		<Logger name="cmabreu.sagitarii.core.ssh.SSHSessionManager" level="debug" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.core.ssh.SSHSessionManager" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 
@@ -83,7 +83,7 @@
 		</Logger>
 
 
-		<Logger name="cmabreu.sagitarii.core.FragmentInstancer" level="debug" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.core.FragmentInstancer" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 
@@ -96,7 +96,7 @@
 			<appender-ref ref="File"/> 
 		</Logger>
 
-		<Logger name="cmabreu.sagitarii.core.Sagitarii" level="debug" additivity="false"> 
+		<Logger name="cmabreu.sagitarii.core.Sagitarii" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 
