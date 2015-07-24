@@ -259,11 +259,11 @@
 				</div>
 				<div id="rightBox"> 
 					<%@ include file="commonpanel.jsp" %>
-					<div id="imageCanvas" class="userBoard" style="height:180px"></div>	
+					<div id="imageCanvas" class="userBoard" style="width: 240px;height:180px"></div>	
 					
 					<div id="tblCanvas" class="userBoard" style="display:none; padding-bottom:5px;">
-						<div class="userBoardT1" style="text-align:center;width:95%">Table "<span id='tabNme'></span>"</div>
-						<div id="tableContent" class="userBoardT2" style="text-align:center;width:95%"></div>
+						<div class="userBoardT1" style="text-align:center;width: 225px;">Table "<span id='tabNme'></span>"</div>
+						<div id="tableContent" class="userBoardT2" style="text-align:center;width: 225px;"></div>
 					</div>					
 									
 				</div>

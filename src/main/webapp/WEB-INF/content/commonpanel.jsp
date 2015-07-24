@@ -3,8 +3,8 @@
 
 
 <div class="userBoard">
-	<div class="userBoardT1" style="text-align:center;width:95%">Logged User</div>
-	<div class="userBoardT2" style="text-align:center;width:95%">
+	<div class="userBoardT1" style="text-align:center;width: 225px;">Logged User</div>
+	<div class="userBoardT2" style="text-align:center;width: 225px;">
 		<table>
 			<tr>
 				<td style="text-align:center">${loggedUser.fullName}</td>
@@ -17,8 +17,8 @@
 </div>
 
 <div class="userBoard">
-	<div class="userBoardT1" style="text-align:center;width:95%">Virtual Machine Status</div>
-	<div class="userBoardT2" style="text-align:center;width:95%">
+	<div class="userBoardT1" style="text-align:center;width: 225px;">Virtual Machine Status</div>
+	<div class="userBoardT2" style="text-align:center;width: 225px;">
 		<table>
 			<tr>
 				<td>Total Memory</td>
@@ -36,13 +36,19 @@
 
 <script>
 
-	function reloadImages() {
+	function reloadImage2() {
+		d = new Date();
+		$("#imgRam").attr("src", "getMetrics?metricName=Memory&time=XYZ"+d.getTime());
+	}
+	
+	function reloadImage1() {
 		d = new Date();
 		$("#imgCpu").attr("src", "getMetrics?metricName=CPU&time=ABC"+d.getTime());
-		$("#imgRam").attr("src", "getMetrics?metricName=Memory&time=XYZ"+d.getTime());
 	}
 
 	$(document).ready(function() {
-		window.setInterval(reloadImages, 4000);
+		window.setInterval(reloadImage1, 4200);
+		window.setInterval(reloadImage2, 4000);
 	});
+	
 </script>

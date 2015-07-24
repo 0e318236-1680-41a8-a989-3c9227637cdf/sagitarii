@@ -115,7 +115,7 @@
 				</div>
 				<div id="rightBox"> 
 					<%@ include file="commonpanel.jsp" %>
-					<div id="imageCanvas" class="userBoard" style="height:180px"></div>					
+					<div id="imageCanvas" class="userBoard" style="width: 240px;height:180px"></div>					
 				</div>
 				
 <script>

@@ -169,8 +169,8 @@
 
 
 	<div id="tblIds" class="userBoard" style="padding-bottom:5px;">
-		<div class="userBoardT1" style="text-align:center;width:95%">History : Click to repeat</div>
-		<div class="userBoardT2" style="text-align:center;width:95%">
+			<div class="userBoardT1" style="text-align:center;width: 225px;">History : Click to repeat</div>
+			<div class="userBoardT2" style="text-align:center;width: 225px;overflow: hidden;">
 			<table>
 				<c:forEach var="command" varStatus="index" items="${session.lastCommands}">
 					<tr style="cursor:pointer" onclick="repeat('${command}')"><td>${command}</td></tr>
