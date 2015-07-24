@@ -27,7 +27,7 @@ public class ActivationExecutor {
 	@Column(length=150)
 	private String executorAlias;
 
-	@Column(length=10)
+	@Column(length=50)
 	private String hash;
 
 	@Column(length=15)

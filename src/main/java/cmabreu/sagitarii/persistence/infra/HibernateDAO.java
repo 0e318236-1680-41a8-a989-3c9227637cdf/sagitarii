@@ -27,7 +27,6 @@ public class HibernateDAO<T> implements IDao<T>  {
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 	private String sqlDLL;
 	private boolean globalWithCommit;
-
 	private long startTime;    
 	private long estimatedTime;	
 	

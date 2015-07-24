@@ -2,7 +2,6 @@ package cmabreu.sagitarii.spectral;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import cmabreu.sagitarii.sdk.IWrapperProcessor;
 import cmabreu.sagitarii.sdk.LineData;
@@ -27,29 +26,21 @@ public class Processor implements IWrapperProcessor {
 	
 	@Override
 	public void processLine( LineData ld, WrapperHelper helper ) throws Exception {
-		String maxDegree = ld.getData("maxdegree"); 
-		String minDegree = ld.getData("mindegree");
-		String order = ld.getData("gorder");
 		
-		List<String> configFile = helper.readFromLibraryFolder( "spectral.config" );
-		if ( configFile.size() > 0 ) {
-			String libraryDirectory = configFile.get(0);
-			
-			String degreeOptions = " -d" + minDegree + " -D" + maxDegree;
-			
-			String fileName = UUID.randomUUID().toString().toUpperCase().substring(0,8) + "_" + order + ".g6";
+		String attr01 = ld.getData("attr01"); 
+		String attr02 = ld.getData("attr02");
+		String attr03 = ld.getData("attr03");
+		
+		// List<String> configFile = helper.readFromLibraryFolder( "myapp.config" );
+		// helper.runExternal("/my/path/myapplication.jar");
 
-			String gengOutput = helper.getWorkFolder() + fileName;
-			String geng = libraryDirectory + "/geng " + degreeOptions + " -g -q " + order + " " + gengOutput;
-
-			helper.runExternal(geng);
-
-			// Send back original data plus file name
-			ld.addValue("g6file", fileName);		
-			csvLines.add( ld );
+		ld.addValue("attr04", attr01 + ":" + attr02 + ":" + attr03);		
+		csvLines.add( ld );
+		
+		try {
+			Thread.currentThread().wait(4000);
+		} catch ( Exception e ) {
 			
-		} else {
-			System.out.println("Config file 'spectral.config' not found at library folder.");
 		}
 		
 	}

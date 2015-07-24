@@ -57,7 +57,7 @@
 
 								</table>
 							</form>
-							<div onclick="doPost()" class="basicButton">Submit</div>							
+							<div onclick="doPost()" class="basicButton">Create</div>							
 							<div onclick="cancelNewPanel()" class="basicButton">Cancel</div>							
 						
 						</div>

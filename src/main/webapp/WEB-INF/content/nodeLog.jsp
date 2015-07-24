@@ -37,15 +37,11 @@
 												<fmt:formatDate type="both" timeStyle="short" value="${data.time}"/>&nbsp;
 											</td>
 											<td class="tableCellFormLeft">${data.experiment}<br>${data.activity}<br>${data.executorAlias}</td>
-											<td class="tableCellFormRight">
-												<c:forEach var="line" items="${data.console}">
-													${line}<br> 
-												</c:forEach> 
+											<td class="tableCellFormLeft">
+												<c:forEach var="line" items="${data.console}">${line}<br></c:forEach>&nbsp; 
 											</td>
 											<td class="tableCellFormRight">
-												<c:forEach var="line" items="${data.execLog}">
-													${line}<br> 
-												</c:forEach> 
+												<c:forEach var="line" items="${data.execLog}">${line}<br></c:forEach>&nbsp; 
 											</td>
 										</tr>
 									</c:forEach>

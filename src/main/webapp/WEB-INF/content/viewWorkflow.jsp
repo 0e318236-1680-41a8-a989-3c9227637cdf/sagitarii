@@ -122,7 +122,7 @@
 
 	function viewImageCanvas() {
 		var cyImage = "${workflow.imagePreviewData}";
-	    var image = "<img name='compman' style='border-radius:5px;margin:0px;height:100%;width:100%' src='"+cyImage+"' />";
+	    var image = "<img name='compman' style='border-radius:5px;margin:0px;height:180px;width:100%' src='"+cyImage+"' />";
 	    $("#imageCanvas").html(image);
 	}
 

@@ -19,3 +19,22 @@ api:
 	}
 	
 	
+	
+Joining with Local Data
+
+This is the major area where DbLink falls short. While you can join remote dblinked tables with local tables, for large tables, this tends to be really slow as indexes are not used and DBLinked function call needs to return the full dataset before they can be joined. Below is a simple example of a join:
+
+
+SELECT realestate.address, realestate.parcel, s.sale_year, s.sale_amount, 
+        FROM realestate INNER JOIN 
+                dblink('dbname=somedb port=5432 host=someserver 
+                user=someuser password=somepwd',
+                'SELECT parcel_id, sale_year, 
+                    sale_amount FROM parcel_sales')
+            AS s(parcel_id char(10),sale_year int, sale_amount int)
+             ON realestate.parcel_id = s.parcel_id;
+
+
+
+	
+	

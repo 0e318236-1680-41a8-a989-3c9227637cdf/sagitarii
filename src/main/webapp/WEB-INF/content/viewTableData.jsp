@@ -14,6 +14,10 @@
 							<div class="basicCentralPanelBarText">Inspect table "${tableName}" for Experiment ${experiment.tagExec}</div>
 						</div>
 						
+						<div class="menuBarMain">
+							<img onclick="back();" title="Back"	class="button dicas" src="img/back.png">
+						</div>
+						
 						<form method="post" action="inspectExperiment" id="frmSave">
 							<input type="hidden" id="sqlQuery" name="sql">
 							<input type="hidden" name="idExperiment" value="${experiment.idExperiment}">
@@ -69,7 +73,6 @@
 						<div class="basicCentralPanelBar">
 							<img src="img/right.png">
 							<div class="basicCentralPanelBarText">SQL Result</div>
-							<div style="margin-top: 4px;" title="Back to Experiment Data" onclick="viewData('${experiment.idExperiment}')" class="basicButton dicas">Back</div>
 						</div>
 						
 						<div   style="width:95%; margin:0 auto;margin-top:10px;margin-bottom:10px">
@@ -155,9 +158,6 @@
 		$(".dataTables_scroll").css("padding-top","10px");
 	}
 
-	function viewData(idExp) {
-		window.location.href="inspectExperiment?idExperiment=" + idExp;
-	}
 			
 	// Show table schema on the right side panel
 	function showTable( tblName ) {
@@ -171,6 +171,10 @@
 			$("#tabNme").text( tblName );
 		});
 	}
+	
+	function back() {
+		window.location.href="inspectExperiment?idExperiment=${experiment.idExperiment}";
+	}	
 	
 </script>				
 				

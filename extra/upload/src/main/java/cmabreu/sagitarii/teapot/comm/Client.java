@@ -74,9 +74,13 @@ public class Client {
 				"\" experiment=\""+experimentSerial + "\" id=\""+sessionSerial+"\" targetTable=\""+targetTable+"\">\n");
 		
 		xml.append("<file name=\""+fileName+"\" type=\"FILE_TYPE_CSV\" />\n");
-		filesToSend.add( folder + File.separator + fileName );
+		filesToSend.add( folder + "/" + fileName );
 		
-		File filesFolder = new File( folder + File.separator + "outbox" );
+		File filesFolder = new File( folder + "/outbox" );
+		if ( !filesFolder.exists() ) {
+			filesFolder.mkdirs();
+		}		
+		
 	    for (final File fileEntry : filesFolder.listFiles() ) {
 	        if ( !fileEntry.isDirectory() ) {
 	    		xml.append("<file name=\""+fileEntry.getName()+"\" type=\"FILE_TYPE_FILE\" />\n");

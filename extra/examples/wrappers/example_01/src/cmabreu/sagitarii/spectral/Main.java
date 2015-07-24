@@ -8,7 +8,7 @@ public class Main {
 	public static void main(String[] args) throws Exception{
 		Processor myProcessor = new Processor();
 		try {
-			Wrapper wrapper = new Wrapper("GenGraph Wrapper", args[0], args[1], myProcessor );
+			Wrapper wrapper = new Wrapper("Echo Wrapper", args[0], args[1], myProcessor );
 			wrapper.process();
 			wrapper.save();
 		} catch ( Exception e ) {

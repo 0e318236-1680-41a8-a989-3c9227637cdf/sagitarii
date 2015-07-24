@@ -141,7 +141,7 @@ public class Wrapper {
 	    }
 	    pw.close();
 	    
-		System.out.println( "[" + wrapperAlias + "] Saved " + outputData.size() + " lines of output data data");
+		System.out.println( "[" + wrapperAlias + "] Saved " + outputData.size() + " lines of output data");
 	}
 	
 	

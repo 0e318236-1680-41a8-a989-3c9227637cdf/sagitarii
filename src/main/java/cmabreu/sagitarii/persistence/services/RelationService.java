@@ -636,6 +636,75 @@ public class RelationService {
 	}
 	
 
+	public void sendToSlave(String host, String dbName, String user, String password, String port) throws Exception {
+		sendData("users", host, dbName, user, password, port);
+		sendData("executors", host, dbName, user, password, port);
+		sendData("tables", host, dbName, user, password, port);
+		sendData("domains", host, dbName, user, password, port);
+		sendData("fragments", host, dbName, user, password, port);
+		sendData("activities", host, dbName, user, password, port);
+		sendData("files", host, dbName, user, password, port);
+		sendData("workflows", host, dbName, user, password, port);
+		sendData("experiments", host, dbName, user, password, port);
+		sendData("dependencies", host, dbName, user, password, port);
+		sendData("instances", host, dbName, user, password, port);
+		sendData("consumptions", host, dbName, user, password, port);
+		sendData("queries", host, dbName, user, password, port);
+		sendData("relationship", host, dbName, user, password, port);
+		sendData("timecontrol", host, dbName, user, password, port);
+	}
+	
+	
+	private void sendData(String tableName, String host, String dbName, String user, String password, String port) throws Exception {
+		String myHost = "127.0.0.1";
+		String myPort = "5432";
+		String myUser = "postgres";
+		String myDb = "sagitarii";
+		String myPassword = "admin";
+		
+		/*
+		 * CREATE EXTENSION dblink
+		 * 
+		 * select * from dblink_exec('hostaddr=127.0.0.1 dbname=testea port=5432 user=postgres password=admin',
+				'insert into teste select * from dblink(''hostaddr=127.0.0.1 dbname=testeb port=5432 user=postgres password=admin'', 
+				''select id,nome from teste'') as t1(a integer,b text);');
+		 *
+		 *
+		*/
+		
+		System.out.println("Table: " + tableName );
+		
+		Set<UserTableEntity> fields = getTableStructure( tableName );
+		StringBuilder fieldNames = new StringBuilder();
+		StringBuilder fieldDefs = new StringBuilder();
+		String prefix = "";
+		for ( UserTableEntity ute : fields ) {
+			String columnName = ute.getData("column_name");
+			String dataType = ute.getData("data_type");
+			if( dataType.equals("character varying") ) {
+				//dataType = "text";
+			}
+			fieldNames.append( prefix + columnName );
+			fieldDefs.append( prefix + columnName + " " + dataType );
+			prefix = ",";
+		}
+			
+		String remoteSql = "select " + fieldNames.toString() + " from " + tableName;
+		String remoteDef = fieldDefs.toString();
+		
+		String copyQuery = "truncate table "+tableName+" cascade; insert into " + tableName + " select * from dblink(''hostaddr="+myHost+
+				" dbname="+myDb+" port="+myPort+" user="+myUser+" password="+myPassword+"''," +
+				"''"+remoteSql+"'') as " + "t1("+remoteDef+");";
+
+		String toRun = "select * from dblink_exec('hostaddr="+host+" dbname="+dbName+" port="+port+
+				" user="+user+" password="+password+"','"+copyQuery+"');";
+		
+		System.out.println( toRun );
+		executeQuery( toRun );
+		
+	}
+	
+	
 	public List<Relation> getList() throws NotFoundException {
 		return rep.getList();	
 	}	

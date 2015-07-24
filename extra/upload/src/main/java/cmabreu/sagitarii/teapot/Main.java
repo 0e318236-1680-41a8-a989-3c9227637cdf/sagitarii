@@ -22,6 +22,8 @@ package cmabreu.sagitarii.teapot;
 	http://www.codejava.net/coding/swing-application-to-upload-files-to-http-server-with-progress-bar
  */
  
+import java.io.File;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -40,6 +42,8 @@ public class Main {
 	    	System.out.println("Carlos Magno Abreu        magno.mabreu@gmail.com");
 			System.out.println("------------------------------------------------");
 			System.out.println("");
+			System.out.println("Use upload <file.csv> <target_table> <experiment_tag> <work_folder>");
+			System.out.println("");
 
 			configurator = new Configurator("config.xml");
 			configurator.loadMainConfig();
@@ -53,15 +57,11 @@ public class Main {
 				String relationName = args[1];
 				String experimentSerial = args[2];
 				String folderName = args[3];
+				
 				new Uploader(configurator).uploadCSV(fileName, relationName, experimentSerial, folderName, configurator.getSystemProperties() );
 				System.exit(0);
 			} else {
-				if ( (args.length == 1) && (args[0].equals("withgui")) ) {
-					new SwingFileUploadHTTP( configurator ).runUi();
-				} else {	
-					System.out.println("Use upload <file.csv> <target_table> <experiment_tag> <work_folder> | withgui");
-					System.exit(0);
-				}
+				new SwingFileUploadHTTP( configurator ).runUi();
 			}
 			
 		} catch (Exception e) {
