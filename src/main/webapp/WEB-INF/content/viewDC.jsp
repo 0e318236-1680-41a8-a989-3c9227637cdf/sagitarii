@@ -27,12 +27,14 @@
 						<div style="margin : 0 auto; width : 95%; margin-bottom:30px; margin-top:10px;" id="dtAgeContainer">
 							<table>
 								<tr>
+									<th style="width:5%">ID</th>
 									<th style="width:15%">Instance Content</th>
 									<th style="width:10%">Average Time</th>
 									<th style="width:10%">Total Calculated</th>
 								</tr>
 								<c:forEach var="age" items="${ageStatistics}">
 									<tr>
+										<td class="tableCellFormRight">${age.idTimeControl}</td>
 										<td class="tableCellFormRight">${age.content}</td>
 										<td class="tableCellFormRight">
 											<fmt:formatDate type="time" value="${age.averageAge}" />

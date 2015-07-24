@@ -46,6 +46,7 @@
 		<mapping class="cmabreu.sagitarii.persistence.entity.User"/>
 		<mapping class="cmabreu.sagitarii.persistence.entity.Consumption"/>
 		<mapping class="cmabreu.sagitarii.persistence.entity.CustomQuery"/>
+		<mapping class="cmabreu.sagitarii.persistence.entity.TimeControl"/>
 		
 	</session-factory> 
 </hibernate-configuration>

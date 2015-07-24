@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 import cmabreu.sagitarii.core.delivery.DeliveryUnit;
 import cmabreu.sagitarii.misc.DateLibrary;
+import cmabreu.sagitarii.persistence.entity.TimeControl;
 
 public class Accumulator {
 	private Date averageAge;
@@ -12,12 +13,31 @@ public class Accumulator {
 	private int calculatedCount = 0;
 	private String hash;
 	private long totalAgeMilis = 0;
+	private int idTimeControl = -1;
 	private String content;
 	
+	public int getIdTimeControl() {
+		return idTimeControl;
+	}
+	
+	public void setIdTimeControl(int idTimeControl) {
+		this.idTimeControl = idTimeControl;
+	}
+
 	public Accumulator( DeliveryUnit du  ) {
 		this.hash = du.getHash();
 		this.content = du.getInstanceActivities();
 		addToStack( du );
+	}
+
+	public Accumulator( TimeControl tc  ) {
+		this.averageAge = tc.getAverageAge();
+		this.averageMilis = tc.getAverageMilis();
+		this.calculatedCount = tc.getCalculatedCount();
+		this.hash = tc.getHash();
+		this.idTimeControl = tc.getIdTimeControl();
+		this.totalAgeMilis = tc.getTotalAgeMilis();
+		this.content = tc.getContent();
 	}
 	
 	public String getContent() {

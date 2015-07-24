@@ -13,6 +13,7 @@ import javax.servlet.annotation.WebListener;
 import cmabreu.sagitarii.core.config.Configurator;
 import cmabreu.sagitarii.core.filetransfer.FileReceiverManager;
 import cmabreu.sagitarii.core.processor.MainCluster;
+import cmabreu.sagitarii.core.statistics.AgeCalculator;
 import cmabreu.sagitarii.core.types.UserType;
 import cmabreu.sagitarii.metrics.Chronos;
 import cmabreu.sagitarii.misc.PathFinder;
@@ -46,15 +47,13 @@ public class Orchestrator implements ServletContextListener {
     	ServletContext context = event.getServletContext();
     	System.setProperty("rootPath", context.getRealPath("/") );
     	
-    	System.out.println( context.getRealPath("/")  );
     	try {
-    		System.out.println( PathFinder.getInstance().getPath() );
+    		AgeCalculator.getInstance().retrieveList();
     	} catch ( Exception e ) {
-    		
+    		loggerDebug("Error retrieving Time Calculator list: " + e.getMessage() );
     	}
     	
     	UserService us;
-    	
     	try {
 			us = new UserService();
 			
