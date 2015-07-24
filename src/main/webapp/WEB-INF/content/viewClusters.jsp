@@ -17,6 +17,7 @@
 		</div>
 			
 		<div class="menuBarMain">
+			<img alt="" onclick="back();" title="Back" class="button dicas" src="img/back.png" />
 			<img onclick="clean();" title="Clean all workspaces" class="button dicas" src="img/clean.png"> 
 			<img onclick="reloadWrappers();" title="Force nodes to reload all wrappers" class="button dicas" src="img/refresh.png"> 
 			<img onclick="openMultipleConsole();" title="Open SSH terminal for all nodes" class="button dicas" src="img/bash.png">
@@ -133,6 +134,11 @@
 		window.setInterval(reloadPage, 5000);
 
 	});
+	
+	function back() {
+		window.history.back();
+	}	
+	
 </script>
 
 <%@ include file="../../footer.jsp"%>

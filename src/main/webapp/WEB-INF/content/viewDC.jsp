@@ -13,6 +13,11 @@
 							<img src="img/time.png">
 							<div class="basicCentralPanelBarText">Execution Time Statistics</div>
 						</div>
+						
+						<div class="menuBarMain" style="position:relative">
+							<img alt="" onclick="back();" title="Back" class="button dicas" src="img/back.png" />
+						</div>
+												
 						<div style="margin : 0 auto; width : 95%; margin-bottom:10px; margin-top:10px;" id="dtAgeContainer">
 							<table>
 								<tr>
@@ -99,6 +104,11 @@
 	$(document).ready(function() {
 		//window.setInterval(reloadPage, 5000);
 	});
+	
+	function back() {
+		window.history.back();
+	}	
+	
 
 </script>					
 <%@ include file="../../footer.jsp" %>

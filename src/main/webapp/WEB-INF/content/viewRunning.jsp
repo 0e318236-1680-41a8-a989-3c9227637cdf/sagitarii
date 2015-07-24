@@ -13,6 +13,11 @@
 							<img src="img/table.png">
 							<div class="basicCentralPanelBarText">Orchestrator Buffer Status</div>
 						</div>
+						
+						<div class="menuBarMain" style="position:relative">
+							<img alt="" onclick="back();" title="Back" class="button dicas" src="img/back.png" />
+						</div>
+												
 						<div style="margin : 0 auto; width : 95%; margin-top:10px;margin-bottom:50px;" >
 							<table>
 								<tr>
@@ -158,6 +163,10 @@
 		window.location.href="resumeExperiment?idExperiment=" + idExp;
 	}
 
+	function back() {
+		window.history.back();
+	}	
+	
 </script>					
 				
 <%@ include file="../../footer.jsp" %>

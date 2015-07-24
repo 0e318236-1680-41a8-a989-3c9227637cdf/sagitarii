@@ -14,6 +14,33 @@
 							<div class="basicCentralPanelBarText">Experiment ${experiment.tagExec}</div>
 						</div>
 						
+						<div class="menuBarMain" style="position:relative">
+							<img alt="" onclick="back();" title="Back" class="button dicas" src="img/back.png" />
+							<img alt="" onclick="viewWf('${experiment.workflow.idWorkflow}')" title="Workflow" class="button dicas" src="img/workflow.png" />
+							<img alt="" onclick="queries('${experiment.idExperiment}')" title="Custom Queries" class="button dicas" src="img/sql.png" />
+
+							<c:if test="${experiment.availability == 'FALSE' }">
+								<img style="opacity:0.5" alt="" title="Cannot run: Missing source data" class="button dicas" src="img/start.png" />
+							</c:if>
+
+							<c:if test="${experiment.availability == 'TRUE' }">
+								<c:if test="${experiment.status == 'RUNNING' }">
+									<img alt="" onclick="pause('${experiment.idExperiment}')" title="Pause Experiment" class="button dicas" src="img/pause.png" />
+								</c:if>
+								<c:if test="${experiment.status == 'STOPPED' }">
+									<img alt="" onclick="run('${experiment.idExperiment}')" title="Start Experiment" class="button dicas" src="img/start.png" />
+								</c:if>
+								<c:if test="${experiment.status == 'PAUSED' }">
+									<img alt="" onclick="resume('${experiment.idExperiment}')" title="Resume Experiment" class="button dicas" src="img/start.png" />
+								</c:if>
+
+								<c:if test="${experiment.status != 'STOPPED' }">
+									<img alt="" onclick="inspect('${experiment.idExperiment}')" title="Inspect Experiment Data" class="button dicas" src="img/search.png" />
+								</c:if>
+								
+							</c:if>
+
+						</div>
 						
 						<div id="pannel" style="width:95%; margin:0 auto;margin-top:10px;margin-bottom:60px;">
 							<div style="height:130px;">
@@ -78,30 +105,6 @@
 								</table>
 							</div>
 
-							<c:if test="${experiment.availability == 'FALSE' }">
-								<div title="Cannot run: Missing source data" style="border: 1px solid #F90101;background-color:#F6F6F6;color:#F90101" class="basicButton dicas">Missing Data</div>
-							</c:if>
-
-							<c:if test="${experiment.availability == 'TRUE' }">
-								<c:if test="${experiment.status == 'RUNNING' }">
-									<div title="Pause Experiment" onclick="pause('${experiment.idExperiment}')" style="border: 1px solid #F90101;background-color:#F6F6F6;color:#F90101" class="basicButton dicas">Pause Experiment</div>
-								</c:if>
-								<c:if test="${experiment.status == 'STOPPED' }">
-									<div title="Start experiment" onclick="run('${experiment.idExperiment}')" class="basicButton dicas">Start Experiment</div>
-								</c:if>
-								<c:if test="${experiment.status == 'PAUSED' }">
-									<div title="Resume experiment" onclick="resume('${experiment.idExperiment}')" class="basicButton dicas">Resume Experiment</div>
-								</c:if>
-
-								<c:if test="${experiment.status != 'STOPPED' }">
-									<div title="Inspect" onclick="inspect('${experiment.idExperiment}')" class="basicButton dicas">Inspect Data</div>
-								</c:if>
-								
-							</c:if>
-
-							<div title="View Custom Queries" onclick="queries('${experiment.idExperiment}')" class="basicButton dicas">Custom Queries</div>
-							<div title="Back to Workflow" onclick="viewWf('${experiment.workflow.idWorkflow}')" class="basicButton dicas">Back to Workflow</div>
-														
 						</div>
 
 						<div class="basicCentralPanelBar">
@@ -323,6 +326,10 @@
 			$("#tabNme").text( tblName );
 		});
 	}
+	
+	function back() {
+		window.history.back();
+	}	
 
 </script>				
 				

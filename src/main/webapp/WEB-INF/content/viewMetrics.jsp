@@ -15,6 +15,7 @@
 						</div>
 
 						<div class="menuBarMain">
+							<img alt="" onclick="back();" title="Back" class="button dicas" src="img/back.png" />
 							<img onclick="reset();" title="Reset all Metrics" class="button dicas" src="img/refresh.png">
 							<img onclick="nodes();" title="View Nodes Statistics" class="button dicas" src="img/node.png">
 							<img onclick="activitiesTag();" title="View Activities Statistics by Tag" class="button dicas" src="img/workflow.png">
@@ -81,6 +82,10 @@
 	function files() {
 		window.location.href="viewMetrics?type=FILE";
 	}
+	
+	function back() {
+		window.history.back();
+	}		
 	
 </script>					
 				

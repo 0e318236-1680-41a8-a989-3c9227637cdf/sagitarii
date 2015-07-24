@@ -14,6 +14,10 @@
 							<div class="basicCentralPanelBarText">File Transfer Sessions</div>
 						</div>
 						
+						<div class="menuBarMain" style="position:relative">
+							<img alt="" onclick="back();" title="Back" class="button dicas" src="img/back.png" />
+						</div>	
+						
 						<div style="margin : 0 auto; width : 95%; margin-top:10px;"  >
 							<table class="tableForm"  id="example">
 								<thead>
@@ -119,6 +123,9 @@
 		});
 	}
 
+	function back() {
+		window.history.back();
+	}		
 </script>
 				
 <%@ include file="../../footer.jsp" %>

@@ -14,7 +14,14 @@
 							<div class="basicCentralPanelBarText">Workflow ${workflow.tag}</div>
 						</div>
 						
-						
+						<div class="menuBarMain" style="position:relative">
+							<img alt="" onclick="viewList()" title="Back to Workflow List" class="button dicas" src="img/back.png" />
+							<c:if test="${fn:length(workflow.activitiesSpecs) != '' }">
+								<img alt="" onclick="newExperiment('${workflow.idWorkflow}')" title="Create new Experiment" class="button dicas" src="img/experiment.png" />
+							</c:if>
+						</div>
+
+
 						<div id="pannel" style="width:95%; margin:0 auto;margin-top:10px;margin-bottom:60px;">
 							<div style="height:60px;">
 								<table style="width:100%"> 
@@ -48,11 +55,6 @@
 								</table>
 							</div>
 
-							<div title="Back to Workflow List" onclick="viewList()" class="basicButton dicas">Back to List</div>
-							<c:if test="${fn:length(workflow.activitiesSpecs) != '' }">
-								<div title="Create new Experiment" onclick="newExperiment('${workflow.idWorkflow}')" class="basicButton dicas">New Experiment</div>
-							</c:if>
-							
 						</div>
 
 						<div class="basicCentralPanelBar">

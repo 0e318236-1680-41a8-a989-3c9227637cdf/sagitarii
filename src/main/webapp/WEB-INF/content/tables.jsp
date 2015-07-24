@@ -16,8 +16,8 @@
 						
 						
 						<div class="menuBarMain">
+							<img alt="" onclick="back();" title="Back" class="button dicas" src="img/back.png" />
 							<img onclick="showNewPannel();" title="New Relation" class="button dicas" src="img/add.png">
-							<div style="display:${showWarning};padding-top: 25px; padding-left: 52px;color:red">Sagitarii cannot alter database structure while experiments are running. You cannot create new tables for now. Pause all experiments first.</div>
 						</div>
 
 

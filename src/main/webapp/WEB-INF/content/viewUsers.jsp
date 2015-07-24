@@ -17,6 +17,7 @@
 						
 						
 						<div class="menuBarMain">
+							<img alt="" onclick="back();" title="Back" class="button dicas" src="img/back.png" />
 							<img onclick="showNewPannel();" title="New User" class="button dicas" src="img/add.png">
 						</div>
 
@@ -179,6 +180,9 @@
 		} ).fnSort( [[0,'desc']] );
 	} );	
 	
+	function back() {
+		window.history.back();
+	}		
 </script>				
 				
 <%@ include file="../../footer.jsp" %>

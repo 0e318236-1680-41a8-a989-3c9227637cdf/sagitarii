@@ -13,7 +13,11 @@
 							<img src="img/experiment.png">
 							<div class="basicCentralPanelBarText">Inspect Experiment ${experiment.tagExec}</div>
 						</div>
-						
+
+						<div class="menuBarMain" style="position:relative">
+							<img alt="" onclick="back();" title="Back" class="button dicas" src="img/back.png" />
+						</div>
+												
 						<form method="post" action="inspectExperiment" id="frmSave">
 							<input type="hidden" id="sqlQuery" name="sql">
 							<input type="hidden" name="idExperiment" value="${experiment.idExperiment}">
@@ -73,7 +77,7 @@
 							</div>
 						</div>
 
-						<div class="basicCentralPanelBar" style="background-color:#f6f6f6">
+						<div class="basicCentralPanelBar" style="margin-top:20px;">
 							<img src="img/right.png">
 							<div class="basicCentralPanelBarText">Tables used by this experiment</div>
 						</div>
@@ -263,6 +267,9 @@
 		window.location.href="viewTableData?idExperiment=${experiment.idExperiment}&tableName=" + tblName;
 	}
 
+	function back() {
+		window.location.href="viewExperiment?idExperiment=${experiment.idExperiment}";
+	}
 	
 	function executeQuery( idQuery ) {
 		window.location.href="executeQuery?idQuery=" + idQuery;

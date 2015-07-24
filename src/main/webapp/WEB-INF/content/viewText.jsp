@@ -18,7 +18,7 @@
 						</div>
 						
 						<div class="menuBarMain" style="position:relative">
-							<img alt="" onclick="back();" title="Cancel" class="button dicas" src="img/back.png" />
+							<img alt="" onclick="back();" title="Back" class="button dicas" src="img/back.png" />
 						</div>
 
 							
