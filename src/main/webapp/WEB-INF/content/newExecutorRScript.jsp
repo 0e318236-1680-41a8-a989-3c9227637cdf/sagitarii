@@ -13,7 +13,7 @@
 					<div id="basicCentralPanel">
 					
 						<div class="basicCentralPanelBar">
-							<img alt="" src="img/function.png" />
+							<img alt="" src="img/r.png" />
 							<div class="basicCentralPanelBarText">Create R Script Executor</div>
 						</div>
 						

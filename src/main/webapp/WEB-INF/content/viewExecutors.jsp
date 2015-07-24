@@ -20,7 +20,7 @@
 							<img onclick="newExecutorMap();" title="New Executor: MAP" class="button dicas" src="img/map.png">
 							<img onclick="newExecutorReduce();" title="New Executor: REDUCE" class="button dicas" src="img/reduce.png">
 							<img onclick="newExecutorSplit();" title="New Executor: SPLIT MAP" class="button dicas" src="img/split.png">
-							<img onclick="newExecutorRScript();" title="New Executor: R SCRIPT" class="button dicas" src="img/function.png">
+							<img onclick="newExecutorRScript();" title="New Executor: R SCRIPT" class="button dicas" src="img/r.png">
 							<img onclick="newExecutorBash();" title="New Executor: Bash SCRIPT" class="button dicas" src="img/bash.png">
 							<img onclick="newExecutorLibrary();" title="New Executor Library" class="button dicas" src="img/library.png">
 						</div>

@@ -9,7 +9,7 @@
 <!DOCTYPE configuration [
 	<!ELEMENT configuration (sagitarii) >
 	<!ELEMENT sagitarii (poolIntervalSeconds,pseudoClusterIntervalSeconds,pseudoMaxTasks, 
-		maxInputBufferCapacity,mainNodesQuant,fileReceiverPort,fileReceiverChunkBufferSize,CSVDelimiter)>
+		maxInputBufferCapacity,mainNodesQuant,fileReceiverPort,fileReceiverChunkBufferSize,firstDelayLimitSeconds,CSVDelimiter)>
 ]>
 
 <configuration>
@@ -22,6 +22,7 @@
 		<mainNodesQuant>1</mainNodesQuant>
 		<fileReceiverPort>3333</fileReceiverPort>
 		<fileReceiverChunkBufferSize>100</fileReceiverChunkBufferSize>
+		<firstDelayLimitSeconds>180</firstDelayLimitSeconds>
 		<CSVDelimiter>,</CSVDelimiter>
 	</sagitarii>
 	

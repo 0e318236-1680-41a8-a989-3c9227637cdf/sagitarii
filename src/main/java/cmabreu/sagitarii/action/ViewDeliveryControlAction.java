@@ -10,8 +10,8 @@ import org.apache.struts2.convention.annotation.Result;
 
 import cmabreu.sagitarii.core.delivery.DeliveryUnit;
 import cmabreu.sagitarii.core.delivery.InstanceDeliveryControl;
-import cmabreu.sagitarii.core.statistics.AgeCalculator;
 import cmabreu.sagitarii.core.statistics.Accumulator;
+import cmabreu.sagitarii.core.statistics.AgeCalculator;
 
 @Action (value = "viewDeliveryControl", results = { @Result (location = "viewDC.jsp", name = "ok") 
 }, interceptorRefs= { @InterceptorRef("seguranca")	 } ) 
@@ -20,8 +20,10 @@ import cmabreu.sagitarii.core.statistics.Accumulator;
 public class ViewDeliveryControlAction extends BasicActionClass {
 	private List<DeliveryUnit> units;
 	private List<Accumulator> ageStatistics;
+	private String firstDelayLimitSeconds;
 	
 	public String execute () {
+		firstDelayLimitSeconds = InstanceDeliveryControl.getInstance().getFirstDelayLimitSeconds();
 		units = InstanceDeliveryControl.getInstance().getUnits();
 		ageStatistics = AgeCalculator.getInstance().getList();
 		return "ok";
@@ -33,6 +35,10 @@ public class ViewDeliveryControlAction extends BasicActionClass {
 
 	public List<Accumulator> getAgeStatistics() {
 		return ageStatistics;
+	}
+	
+	public String getFirstDelayLimitSeconds() {
+		return firstDelayLimitSeconds;
 	}
 
 }

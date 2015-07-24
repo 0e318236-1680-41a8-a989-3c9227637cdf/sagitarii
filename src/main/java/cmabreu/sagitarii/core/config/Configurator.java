@@ -30,6 +30,11 @@ public class Configurator {
 	private int fileReceiverPort;
 	private int fileReceiverChunkBufferSize;
 	private char CSVDelimiter;
+	private long firstDelayLimitSeconds;
+	
+	public long getFirstDelayLimitSeconds() {
+		return firstDelayLimitSeconds;
+	}
 	
     public double getProcessCpuLoad() {
     	try {
@@ -149,6 +154,7 @@ public class Configurator {
 			mainNodesQuant = Integer.valueOf( getTagValue("mainNodesQuant", mpElement) );
 			fileReceiverPort = Integer.valueOf( getTagValue("fileReceiverPort", mpElement) );
 			fileReceiverChunkBufferSize = Integer.valueOf( getTagValue("fileReceiverChunkBufferSize", mpElement) );
+			firstDelayLimitSeconds = Long.valueOf( getTagValue("firstDelayLimitSeconds", mpElement) );
 			CSVDelimiter = getTagValue("CSVDelimiter", mpElement).charAt(0);
 		} catch ( Exception e ) {
 			System.out.println( e.getMessage() );

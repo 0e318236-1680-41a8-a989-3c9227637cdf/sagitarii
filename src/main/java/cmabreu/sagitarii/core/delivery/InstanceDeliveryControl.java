@@ -3,11 +3,13 @@ package cmabreu.sagitarii.core.delivery;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import cmabreu.sagitarii.core.ClustersManager;
+import cmabreu.sagitarii.core.config.Configurator;
 import cmabreu.sagitarii.core.statistics.Accumulator;
 import cmabreu.sagitarii.core.statistics.AgeCalculator;
 import cmabreu.sagitarii.misc.DateLibrary;
@@ -24,6 +26,22 @@ public class InstanceDeliveryControl {
 		}
 		return instance;
 	}
+	
+	public String getFirstDelayLimitSeconds() {
+		try {
+			long millis = Configurator.getInstance().getFirstDelayLimitSeconds() * 1000;
+			String retorno = String.format("%02d:%02d:%02d", 
+					TimeUnit.MILLISECONDS.toHours(millis),
+					TimeUnit.MILLISECONDS.toMinutes(millis) -  
+					TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)), 
+					TimeUnit.MILLISECONDS.toSeconds(millis) - 
+					TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
+			return retorno;
+		} catch ( Exception e ) {
+			return "CONFIG_ERROR";
+		}
+	}
+
 	
 	/**
 	 * Check if Sagitarii must ask the node for an instance that is take much more time
@@ -67,6 +85,27 @@ public class InstanceDeliveryControl {
 			return false;
 		}
 	}
+
+	/**
+	 * Check if an instance that is taking many time as we think is too much
+	 * For all first run is a time limit. After first run, the average time is taken. 
+	 */
+	private boolean isTakingTooMuchTime( DeliveryUnit unity ) {
+		try {
+			long m1 = unity.getAgeMillis();
+			long m2 = Configurator.getInstance().getFirstDelayLimitSeconds();
+			long secs = ( ( m1 / 1000 ) - m2 + 1 ) ;
+			
+			if ( secs > 0 ) { // Is taking too much.
+				return true;
+			} else {
+				return false;
+			}
+		} catch ( Exception e ) {
+			return false;
+		}
+	}
+	
 	
 	public void checkLostPackets() {
 		// For each Instance we have with nodes...
@@ -79,6 +118,11 @@ public class InstanceDeliveryControl {
 					unity.setDelayed();
 				}
 				if ( mustInform( ac, unity ) ) {
+					ClustersManager.getInstance().inform( unity.getMacAddress(), unity.getInstance().getSerial() );
+				}
+			} else {
+				if ( isTakingTooMuchTime( unity ) ) {
+					logger.debug( "instance '" + unity.getInstanceActivities() + "' is taking too much time than the system limit");
 					ClustersManager.getInstance().inform( unity.getMacAddress(), unity.getInstance().getSerial() );
 				}
 			}

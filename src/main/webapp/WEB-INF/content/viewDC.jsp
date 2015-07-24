@@ -10,15 +10,21 @@
 					<div id="basicCentralPanel">
 
 						<div class="basicCentralPanelBar">
-							<img src="img/time.png">
-							<div class="basicCentralPanelBarText">Execution Time Statistics</div>
+							<img src="img/fragment.png">
+							<div class="basicCentralPanelBarText">Instance Delivery Control</div>
 						</div>
 						
 						<div class="menuBarMain" style="position:relative">
 							<img alt="" onclick="back();" title="Back" class="button dicas" src="img/back.png" />
 						</div>
+										
+										
+						<div class="basicCentralPanelBar">
+							<img src="img/time.png">
+							<div class="basicCentralPanelBarText">Time Control: First Run Limit: ${firstDelayLimitSeconds}</div>
+						</div>
 												
-						<div style="margin : 0 auto; width : 95%; margin-bottom:10px; margin-top:10px;" id="dtAgeContainer">
+						<div style="margin : 0 auto; width : 95%; margin-bottom:30px; margin-top:10px;" id="dtAgeContainer">
 							<table>
 								<tr>
 									<th style="width:15%">Instance Content</th>
@@ -38,10 +44,10 @@
 						</div>
 
 						<div class="basicCentralPanelBar">
-							<img src="img/fragment.png">
+							<img src="img/verify.png">
 							<div class="basicCentralPanelBarText">Instance Delivery Control Status</div>
 						</div>
-						<div style="margin : 0 auto; width : 95%; margin-bottom:10px; margin-top:10px;"  >
+						<div style="margin : 0 auto; width : 95%; margin-bottom:30px; margin-top:10px;"  >
 							<table>
 								<tr>
 									<th style="width:10%">Instance ID</th>
