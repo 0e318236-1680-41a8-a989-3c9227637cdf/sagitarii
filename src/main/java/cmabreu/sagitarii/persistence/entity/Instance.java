@@ -159,16 +159,6 @@ public class Instance implements Serializable {
 		this.status = status;
 	}
 
-	/*
-	public String getExecutorAlias--XX() {
-		return executorAlias;
-	}
-
-	public void setExecutorAlias--XX(String executorAlias) {
-		this.executorAlias = executorAlias;
-	}
-	*/
-
 	public Set<Consumption> getConsumptions() {
 		return consumptions;
 	}

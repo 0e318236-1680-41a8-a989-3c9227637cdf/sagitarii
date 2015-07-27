@@ -454,7 +454,9 @@ public class RelationService {
 		if ( !rep.isOpen() ) {
 			rep.newTransaction();
 		}
-		return genericFetchList("SELECT column_name, data_type FROM information_schema.columns WHERE table_name='"+tableName+"'");
+		return genericFetchList("SELECT column_name, data_type FROM information_schema.columns WHERE "
+				+ "table_schema <> 'information_schema' and "
+				+ "table_name='"+tableName+"'");
 	}
 	
 	
@@ -658,11 +660,11 @@ public class RelationService {
 		sendData("domains", host, dbName, user, password, port);
 		sendData("fragments", host, dbName, user, password, port);
 		sendData("activities", host, dbName, user, password, port);
-		sendData("files", host, dbName, user, password, port);
 		sendData("workflows", host, dbName, user, password, port);
 		sendData("experiments", host, dbName, user, password, port);
 		sendData("dependencies", host, dbName, user, password, port);
 		sendData("instances", host, dbName, user, password, port);
+		sendData("files", host, dbName, user, password, port);
 		sendData("consumptions", host, dbName, user, password, port);
 		sendData("queries", host, dbName, user, password, port);
 		sendData("relationship", host, dbName, user, password, port);
@@ -697,7 +699,7 @@ public class RelationService {
 			String columnName = ute.getData("column_name");
 			String dataType = ute.getData("data_type");
 			if( dataType.equals("character varying") ) {
-				//dataType = "text";
+				dataType = "text";
 			}
 			fieldNames.append( prefix + columnName );
 			fieldDefs.append( prefix + columnName + " " + dataType );
