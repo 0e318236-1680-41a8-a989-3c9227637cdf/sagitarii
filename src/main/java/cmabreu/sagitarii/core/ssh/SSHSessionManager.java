@@ -139,12 +139,12 @@ public class SSHSessionManager {
 		}
 	}
 	
-	public SSHSession newSession( String alias, String host, int port, String user, String password ) throws Exception {
+	public SSHSession newSession(String machineName, String alias, String host, int port, String user, String password ) throws Exception {
 		SSHSession sess = getSessionByHost(host);
     	if ( sess != null ) {
     		throw new Exception("already connected to " + host + " as '" + sess.getAlias() + "'");
     	}
-		sess = new SSHSession( alias, host, port, user, password );
+		sess = new SSHSession(machineName, alias, host, port, user, password );
 		sessions.add( sess );
 		return sess;
 	}

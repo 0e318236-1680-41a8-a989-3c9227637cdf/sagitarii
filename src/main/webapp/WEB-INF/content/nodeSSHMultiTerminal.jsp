@@ -98,7 +98,7 @@
 		<div class="userBoardT2" style="text-align:center;width:95%">
 			<table>
 				<c:forEach var="session" varStatus="index" items="${sessions}">
-					<tr style="cursor:pointer" onclick="show('${session.alias}')"><td>${session.alias}</td><td>${session.host}</td></tr>
+					<tr style="cursor:pointer" onclick="show('${session.alias}')"><td>${session.machineName}</td><td>${session.host}</td></tr>
 				</c:forEach>
 			</table>
 		</div>

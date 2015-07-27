@@ -29,6 +29,7 @@ public class SSHSession {
 	private List<String> lastCommands;
 	private String host;
 	private String user;
+	private String machineName;
 	private Expect expect;
 	private Shell shell;
 	
@@ -38,6 +39,10 @@ public class SSHSession {
 	
 	public String getHost() {
 		return host;
+	}
+	
+	public String getMachineName() {
+		return machineName;
 	}
 	
 	private void init(String alias, String host, String user, String password ) throws Exception {
@@ -52,8 +57,9 @@ public class SSHSession {
 		return lastCommands;
 	}
 	
-	public SSHSession( String alias, String host, int port, String user, String password ) throws Exception {
+	public SSHSession(String machineName, String alias, String host, int port, String user, String password ) throws Exception {
 		this.port = port;
+		this.machineName = machineName;
 		init( alias, host, user, password );
 	}
 	

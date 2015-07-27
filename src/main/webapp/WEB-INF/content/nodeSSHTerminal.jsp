@@ -13,7 +13,7 @@
 	<div id="basicCentralPanel">
 		<div class="basicCentralPanelBar">
 			<img src="img/bash.png">
-			<div class="basicCentralPanelBarText">SSH Terminal for node ${cluster.macAddress}</div>
+			<div class="basicCentralPanelBarText">SSH Terminal for node ${cluster.machineName} (${cluster.ipAddress})</div>
 		</div>
 
 		<div class="menuBarMain">

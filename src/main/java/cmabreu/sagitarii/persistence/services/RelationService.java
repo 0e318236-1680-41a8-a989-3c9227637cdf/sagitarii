@@ -21,6 +21,7 @@ import cmabreu.sagitarii.core.UserTableEntity;
 import cmabreu.sagitarii.core.config.Configurator;
 import cmabreu.sagitarii.core.filetransfer.FileImporter;
 import cmabreu.sagitarii.misc.DatabaseConnectionItem;
+import cmabreu.sagitarii.misc.DatabaseInfo;
 import cmabreu.sagitarii.misc.json.JsonUserTableConversor;
 import cmabreu.sagitarii.persistence.entity.Consumption;
 import cmabreu.sagitarii.persistence.entity.CustomQuery;
@@ -653,31 +654,37 @@ public class RelationService {
 	}
 	
 
-	public void sendToSlave(String host, String dbName, String user, String password, String port) throws Exception {
-		sendData("users", host, dbName, user, password, port);
-		sendData("executors", host, dbName, user, password, port);
-		sendData("tables", host, dbName, user, password, port);
-		sendData("domains", host, dbName, user, password, port);
-		sendData("fragments", host, dbName, user, password, port);
-		sendData("activities", host, dbName, user, password, port);
-		sendData("workflows", host, dbName, user, password, port);
-		sendData("experiments", host, dbName, user, password, port);
-		sendData("dependencies", host, dbName, user, password, port);
-		sendData("instances", host, dbName, user, password, port);
-		sendData("files", host, dbName, user, password, port);
-		sendData("consumptions", host, dbName, user, password, port);
-		sendData("queries", host, dbName, user, password, port);
-		sendData("relationship", host, dbName, user, password, port);
-		sendData("timecontrol", host, dbName, user, password, port);
+	public void copyDatabase(DatabaseInfo source, DatabaseInfo target) throws Exception {
+		sendData("users", source, target);
+		sendData("executors",  source, target);
+		sendData("tables",  source, target);
+		sendData("domains",  source, target);
+		sendData("fragments",  source, target);
+		sendData("activities",  source, target);
+		sendData("workflows",  source, target);
+		sendData("experiments",  source, target);
+		sendData("dependencies",  source, target);
+		sendData("instances",  source, target);
+		sendData("files",  source, target);
+		sendData("consumptions",  source, target);
+		sendData("queries",  source, target);
+		sendData("relationship",  source, target);
+		sendData("timecontrol",  source, target);
 	}
 	
 	
-	private void sendData(String tableName, String host, String dbName, String user, String password, String port) throws Exception {
-		String myHost = "127.0.0.1";
-		String myPort = "5432";
-		String myUser = "postgres";
-		String myDb = "sagitarii";
-		String myPassword = "admin";
+	private void sendData(String tableName, DatabaseInfo source, DatabaseInfo target) throws Exception {
+		String myHost = source.getHost();
+		String myPort = source.getPort();
+		String myUser = source.getUser();
+		String myDb = source.getDb();
+		String myPassword = source.getPassword();
+
+		String targetHost = target.getHost();
+		String targetPort = target.getPort();
+		String targetUser = target.getUser();
+		String targetDb = target.getDb();
+		String targetPassword = target.getPassword();
 		
 		/*
 		 * CREATE EXTENSION dblink
@@ -713,8 +720,8 @@ public class RelationService {
 				" dbname="+myDb+" port="+myPort+" user="+myUser+" password="+myPassword+"''," +
 				"''"+remoteSql+"'') as " + "t1("+remoteDef+");";
 
-		String toRun = "select * from dblink_exec('hostaddr="+host+" dbname="+dbName+" port="+port+
-				" user="+user+" password="+password+"','"+copyQuery+"');";
+		String toRun = "select * from dblink_exec('hostaddr="+targetHost+" dbname="+targetDb+" port="+targetPort+
+				" user="+targetUser+" password="+targetPassword+"','"+copyQuery+"');";
 		
 		System.out.println( toRun );
 		executeQuery( toRun );
