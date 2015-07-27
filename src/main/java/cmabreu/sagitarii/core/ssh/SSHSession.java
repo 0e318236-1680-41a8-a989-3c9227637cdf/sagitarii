@@ -129,14 +129,16 @@ public class SSHSession {
 		if ( (command == null) || command.equals("") ){
 			throw new Exception("invalid command");
 		}
-		
+
+		/*
 		if ( command.toLowerCase().equals("logout") || command.toLowerCase().equals("exit") ) {
 			disconnect();
 			consoleOut.add( "disconnected." );
 			return "disconnected.";
 		}
-		consoleOut.clear();
+		*/
 		
+		consoleOut.clear();
     	expect.sendLine( command );
     	String resultString = "";
     	Result result;

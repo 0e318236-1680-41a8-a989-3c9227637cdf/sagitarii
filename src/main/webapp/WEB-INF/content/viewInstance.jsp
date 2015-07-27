@@ -14,6 +14,11 @@
 							<div class="basicCentralPanelBarText">View Instance ${instance.serial}</div>
 						</div>
 						
+						<div class="menuBarMain" style="position:relative">
+							<img alt="" onclick="back();" title="Back" class="button dicas" src="img/back.png" />
+						</div>
+
+						
 						<div id="pannel" style="width:95%; margin:0 auto;margin-top:10px;margin-bottom:20px;">
 							<div>
 								<table style="width:100%">
@@ -42,7 +47,6 @@
 						<div class="basicCentralPanelBar" style="background-color:#f6f6f6">
 							<img src="img/right.png">
 							<div class="basicCentralPanelBarText">Source data (consumption)</div>
-							<div style="margin-top: 4px;" title="Back to Experiment Data" onclick="viewData('${idExperiment}','${tableName}')" class="basicButton dicas">Back</div>
 						</div>
 						<div style="margin : 0 auto; width : 95%; margin-top:10px"  >
 							<table style="width:99%;" class="tableForm" id="conTable" >
@@ -50,7 +54,7 @@
 									<tr><c:forEach var="column" items="${consumptions.toArray()[0].columnNames}"><th>${column}</th></c:forEach></tr>
 								</thead>
 								<tbody>
-									<c:forEach var="row" items="${consumptions}"><tr><c:forEach var="value" items="${row.dataValues}"><td>${value}</td></c:forEach></tr></c:forEach>
+									<c:forEach var="row" items="${consumptions}"><tr><c:forEach var="value" items="${row.dataValues}"><td>${value}&nbsp;</td></c:forEach></tr></c:forEach>
 								</tbody>
 							</table>
 						</div>
@@ -130,6 +134,10 @@ function doComplete() {
 
 function viewData(idExp,tbl) {
 	window.location.href="viewTableData?idExperiment=" + idExp + "&tableName=" + tbl;
+}
+
+function back() {
+	window.history.back();
 }
 
 </script>
