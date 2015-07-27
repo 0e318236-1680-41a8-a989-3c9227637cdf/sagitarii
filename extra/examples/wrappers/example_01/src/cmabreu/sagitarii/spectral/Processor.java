@@ -33,6 +33,7 @@ public class Processor implements IWrapperProcessor {
 		
 		// List<String> configFile = helper.readFromLibraryFolder( "myapp.config" );
 		// helper.runExternal("/my/path/myapplication.jar");
+		// helper.copyFile(source, dest);
 
 		ld.addValue("attr04", attr01 + ":" + attr02 + ":" + attr03);		
 		csvLines.add( ld );

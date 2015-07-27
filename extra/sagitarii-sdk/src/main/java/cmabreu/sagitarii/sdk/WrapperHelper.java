@@ -121,5 +121,30 @@ public class WrapperHelper {
 			System.out.println( "[" + wrapperAlias + "] Error when moving file");
 			throw e;
 		}
+	}
+	
+	/**
+	 * If you need to copy files
+	 */
+	public void copyFile(String source, String dest) throws Exception {
+		System.out.println( "[" + wrapperAlias + "] Copy file " );
+		System.out.println( "[" + wrapperAlias + "]  > from " + source);
+		System.out.println( "[" + wrapperAlias + "]  > to   " + dest );
+		try {
+			File src = new File(source);
+			File trgt = new File(dest);
+			if ( src.exists() ) {
+			    Files.copy(src.toPath(), trgt.toPath());
+			    src.delete();
+				System.out.println( "[" + wrapperAlias + "] Copied");
+			} else {
+				System.out.println( "[" + wrapperAlias + "] Source file not found");
+			}
+		} catch ( Exception e ) {
+			System.out.println( "[" + wrapperAlias + "] Error when copying file");
+			throw e;
+		}
 	}		
+	
+	
 }

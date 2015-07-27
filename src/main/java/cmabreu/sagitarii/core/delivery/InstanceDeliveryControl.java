@@ -49,6 +49,11 @@ public class InstanceDeliveryControl {
 	 */
 	private boolean mustInform( Accumulator ac, DeliveryUnit unity ) {
 
+		// Below this limit all is normal
+		if ( !isTakingTooMuchTime(unity)  ) {
+			return false;
+		}
+		
 		long m1 = unity.getAgeMillis();
 		long m2 = ac.getAverageMilis();
 		long mt = ac.getTotalAgeMilis();

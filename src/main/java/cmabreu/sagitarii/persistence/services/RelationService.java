@@ -363,9 +363,24 @@ public class RelationService {
 			UserTableEntity ute = new UserTableEntity(data);
 			result.add(ute);
 		} else {
+			FileService fs = new FileService();
 			for ( UserTableEntity ute : result ) {
+				String tableName = ute.getData("table_name");
+				List<String> columns = ute.getColumnNames();
+				for ( String column : columns ) {
+					String domainName = tableName + "." + column;
+					if ( DomainStorage.getInstance().domainExists(domainName)  ) {
+						fs.newTransaction();
+						File fil = fs.getFile( Integer.valueOf( ute.getData(column) ) );
+						ute.setData(column, "<a href='getFile?idFile="+ute.getData(column)+
+								"'>" + fil.getFileName() + "</a>" );
+					}
+				}				
+				
 				String sIdInstance = ute.getData("id_instance"); 
-				if ( (sIdInstance == null) || ( sIdInstance.equals("") ) ) {
+				if ( (sIdInstance != null) && ( !sIdInstance.equals("") ) ) {
+					ute.setData("id_instance", "<a href='viewInstance?tableName="+tableName+"&idExperiment="+idExperiment+"&idInstance="+sIdInstance+"'>"+sIdInstance+"</a>");
+				} else {
 					ute.setData("id_instance", "n/e");
 				}					
 			}
