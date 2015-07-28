@@ -47,7 +47,13 @@ public class NodeSSHTerminalAction extends BasicActionClass {
 				
 				if ( (user != null) && (password != null)  ) {
 					String host = cluster.getIpAddress();
-					session = mngr.newSession( cluster.getMachineName(), cluster.getMacAddress(), host, port, user, password );
+
+					
+					//session = mngr.newSession( cluster.getMachineName(), cluster.getMacAddress(), host, port, user, password );
+					session = mngr.newSession( "SADLOG", cluster.getMacAddress(), "10.5.112.214", 22, "root", "sadlog" );
+
+					
+					
 				} else {
 					setMessageText("user and password must be set");						
 				}

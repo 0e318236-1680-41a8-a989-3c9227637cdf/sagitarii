@@ -41,6 +41,30 @@
 			</form>
 		</div>	
 
+		<div id="uploadBar" class="menuBarMain" style=" display:none; height:90px; margin-top: 5px; font-size: 11px !important;">
+			<form action="nodeSSHUpload" id="frmUpload" method="post" enctype="multipart/form-data">
+				<input type="hidden" name="option"	value="multi">
+				<table style="width:600px; margin:0 auto; margin-top: 10px;">
+					<tr>
+						<td style="width:150px">File to Upload</td>
+						<td style="width:330px">
+						<input style="width:100%;" type="file" name="fileUpload"></td>
+					</tr>
+					<tr>
+						<td>Target Path</td>
+						<td><input style="width:100%;" type="text" name="targetPath"></td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+						<td>
+							<input style="width:145px; float:left" type="button" onclick="uploadCancel()" value="Cancel">
+							<input style="width:145px; float:right" type="button" onclick="uploadFile()" value="Upload">
+						</td>
+					</tr>
+				</table>
+			</form>				
+		</div>
+
 		<c:forEach var="session" items="${sessions}">
 			<div id="${session.alias}" class="menuBarMain host"
 				style="display: table;  margin-top: 5px; font-size: 11px !important;padding-bottom: 10px;">
@@ -57,28 +81,6 @@
 						<td>${session.user}</td>
 					</tr>
 				</table>
-				
-				<form action="nodeSSHUpload" id="frmUpload" method="post" enctype="multipart/form-data">
-					<input type="hidden" name="option"	value="multi">
-					<table id="uploadBar" style="width:600px; margin:0 auto; margin-top: 10px; display:none">
-						<tr>
-							<td style="width:150px">File to Upload</td>
-							<td style="width:330px">
-							<input style="width:100%;" type="file" name="fileUpload"></td>
-						</tr>
-						<tr>
-							<td>Target Path</td>
-							<td><input style="width:100%;" type="text" name="targetPath"></td>
-						</tr>
-						<tr>
-							<td>&nbsp;</td>
-							<td>
-								<input style="width:145px; float:left" type="button" onclick="uploadCancel()" value="Cancel">
-								<input style="width:145px; float:right" type="button" onclick="uploadFile()" value="Upload">
-							</td>
-						</tr>
-					</table>
-				</form>				
 				
 				<div class="menuBarMain" style="height: 300px; margin-top: 5px; font-size: 11px !important;">
 					<textarea name="tx${session.alias}" id="tx${session.alias}" style="border: 0px;"><c:forEach var="line" items="${session.consoleOut}">${line}&#13;&#10;</c:forEach></textarea>

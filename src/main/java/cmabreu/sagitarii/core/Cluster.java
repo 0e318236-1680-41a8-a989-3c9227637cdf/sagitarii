@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.sound.sampled.DataLine;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -456,8 +458,13 @@ public class Cluster {
 	}
 	
 	public void setMessage(String logItem) {
+		
+		DateLibrary dl = DateLibrary.getInstance();
+		dl.setTo( new Date() );
+		logItem = dl.getHourTextHuman() + " " + logItem;
+		
 		this.lastError = logItem;
-		if ( log.size() > 30 ) {
+		if ( log.size() > 40 ) {
 			log.remove(0);
 		}
 		log.add( logItem );

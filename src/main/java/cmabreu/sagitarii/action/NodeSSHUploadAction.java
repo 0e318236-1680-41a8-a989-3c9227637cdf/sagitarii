@@ -32,11 +32,12 @@ public class NodeSSHUploadAction extends BasicActionClass {
 		try {
 
 			if ( fileUpload != null ) {
+				
 				String filePath = PathFinder.getInstance().getPath() + "/cache/";			  
 				File fileToCreate = new File(filePath, fileUploadFileName);
 		        FileUtils.copyFile( fileUpload, fileToCreate);
-		        
 		        SSHSessionManager mngr = SSHSessionManager.getInstance();
+		        
 		        if ( option != null && option.equals("multi") ){
 		        	mngr.multipleUpload( filePath+"/"+fileUploadFileName, targetPath );
 		        } else {
@@ -74,6 +75,10 @@ public class NodeSSHUploadAction extends BasicActionClass {
 	
 	public String getLocation() {
 		return location;
+	}
+	
+	public void setOption(String option) {
+		this.option = option;
 	}
 	
 }
