@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -226,6 +227,53 @@ public class RelationService {
 		}
 		return new JsonUserTableConversor().asJson( result, totalRecords, Integer.valueOf( sEcho ) ).replace("\\", "\\\\");
 	}
+	
+	public String runUserSqlPagination(String sql, String sortColumn, String sSortDir0,
+			String iDisplayStart, String iDisplayLength, String sEcho, String sSearch) throws Exception {
+
+		Set<UserTableEntity> result = new HashSet<UserTableEntity>();
+		int totalRecords = 0;
+		
+		if ( !sortColumn.equals("ERROR") ) {
+			result = genericFetchList( "select * from ("+sql+") as t1 order by " + 
+				sortColumn + " " + sSortDir0 + " offset " + iDisplayStart + " limit " + iDisplayLength ); 
+			
+			for ( UserTableEntity ute : result  ) {
+				for ( String columnName : ute.getColumnNames() ) {
+					String data = ute.getData( columnName ); 
+					
+					byte[] encodedBytes = Base64.encodeBase64( data.getBytes() );
+					String newData = new String( encodedBytes ) + "&nbsp;";
+					ute.setData(columnName, newData);
+				}
+			}
+			
+			newTransaction();
+			totalRecords = getCount( sql );
+		} else {
+			Map<String,String> data = new HashMap<String,String>();
+			data.put("ERROR", "No data");
+			UserTableEntity ute = new UserTableEntity(data);
+			result.add(ute);
+
+		}
+		return new JsonUserTableConversor().asJson( result, totalRecords, Integer.valueOf( sEcho ) ).replace("\\", "\\\\");
+	}
+	
+	public Set<UserTableEntity> runUserSql( String sql ) throws Exception {
+		Set<UserTableEntity> result = genericFetchList( sql );
+		if ( result.size() == 0 ) {
+			Map<String,String> data = new HashMap<String,String>();
+			data.put("ERROR", "No Data");
+			UserTableEntity ute = new UserTableEntity(data);
+			result.add(ute);
+		} else {
+			//
+		}
+		
+		return result;
+	}
+	
 	
 	public Set<UserTableEntity> inspectExperimentTable( String tableName, Experiment experiment ) throws Exception {
 		String sql = "select * from " + tableName + " where id_experiment = " + experiment.getIdExperiment();
@@ -490,6 +538,23 @@ public class RelationService {
 		}
 		return rep.getCount( tableName, criteria );
 	}
+
+	public int getCount( String sql ) throws Exception {
+		if ( !rep.isOpen() ) {
+			rep.newTransaction();
+		}
+		
+		List<UserTableEntity> res = new ArrayList<UserTableEntity> ( 
+				genericFetchList("select count (*) as qtd from ( "+sql+" ) as t1") );
+		int qtd = 0;
+		if ( res.size() > 0 ) {
+			UserTableEntity ute = res.get(0);
+			String sQtd = ute.getData("qtd");
+			qtd = Integer.valueOf( sQtd );
+		}
+		return qtd;
+	}
+	
 	
 	@SuppressWarnings("rawtypes")
 	public Set<UserTableEntity> genericFetchList(String query) throws Exception {
