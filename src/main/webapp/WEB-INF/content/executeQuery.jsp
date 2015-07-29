@@ -14,6 +14,10 @@
 							<div class="basicCentralPanelBarText">Execute query "${query.name}" for Experiment ${query.experiment.tagExec}</div>
 						</div>
 						
+						<div class="menuBarMain">
+							<img onclick="viewData('${query.experiment.idExperiment}')" title="Back" class="button dicas" src="img/back.png">
+						</div>
+						
 						<form method="post" action="inspectExperiment" id="frmSave">
 							<input type="hidden" id="sqlQuery" name="sql">
 							<input type="hidden" name="idExperiment" value="${query.experiment.idExperiment}">
@@ -69,7 +73,6 @@
 						<div class="basicCentralPanelBar">
 							<img src="img/right.png">
 							<div class="basicCentralPanelBarText">SQL Result</div>
-							<div style="margin-top: 4px;" title="Back to Experiment Data" onclick="viewData('${query.experiment.idExperiment}')" class="basicButton dicas">Back</div>
 						</div>
 						
 						<div   style="width:95%; margin:0 auto;margin-top:10px;margin-bottom:10px">
@@ -102,6 +105,16 @@
 				
 				
 <script>
+
+	function decorateRow(row) {
+		
+	    $(row).children().each( function(index, td) {
+			var data = $(td).text();
+			var decodedData = window.atob( data );
+			$(td).html( decodedData );
+	    });
+	    
+	}
 
 	$(document).ready(function() {
 		
@@ -140,6 +153,10 @@
 	              "data": aoData,
 	              "success": fnCallback
 	         	}); 
+	         },
+	         "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+	             decorateRow( nRow );
+	             return nRow;
 	         },
 	         
 	        "fnInitComplete": function(oSettings, json) {

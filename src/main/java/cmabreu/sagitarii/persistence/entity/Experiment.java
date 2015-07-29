@@ -227,8 +227,7 @@ public class Experiment {
 	}
 
 	
-	private String evaluateElapsedTime() {
-		
+	public long getElapsedMillis() {
 		DateLibrary dl = DateLibrary.getInstance();
 		dl.setTo( lastExecutionDate );
 		Calendar cl = Calendar.getInstance();
@@ -244,6 +243,12 @@ public class Experiment {
 		if ( status == ExperimentStatus.STOPPED ) {
 			millis = 0;
 		}
+		return millis;
+	}
+	
+	private String evaluateElapsedTime() {
+		
+		long millis = getElapsedMillis();
 		
 		String time = String.format("%03d %02d:%02d:%02d", 
 				TimeUnit.MILLISECONDS.toDays( millis ),

@@ -6,8 +6,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.sound.sampled.DataLine;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -98,7 +96,7 @@ public class Cluster {
 			}
 		} catch ( Exception e ) { }
 		if ( total > 0 ) {
-			logger.debug( total + " listeners deleted" );
+			debug( total + " listeners deleted" );
 		}
 	}
 	
@@ -159,12 +157,12 @@ public class Cluster {
 	}
 	
 	public void informReport( String instanceSerial, String status ) {
-		logger.debug( instanceSerial + " status is " + status );
+		debug( instanceSerial + " status is " + status );
 		askingForInstance = false;
 		lostInstance = "";
 		
 		if ( status.equals("NOT_FOUND") ) {
-			logger.debug("resubmiting instance " + instanceSerial + " to job queue");
+			debug("resubmiting instance " + instanceSerial + " to job queue");
 			cancelAndRemoveInstance( instanceSerial );
 		} 
 		
@@ -232,7 +230,7 @@ public class Cluster {
 	public synchronized boolean confirmReceiveData( ReceivedData rd ) throws Exception {
 		setLastAnnounce( Calendar.getInstance().getTime() );
 		if ( rd.hasData() ) {
-			logger.debug( "[" + this.macAddress +  "] data received from instance " + rd.getInstance().getSerial() + " (" + rd.getActivity().getTag() + ") is done");
+			debug( "[" + this.macAddress +  "] data received from instance " + rd.getInstance().getSerial() + " (" + rd.getActivity().getTag() + ") is done");
 		} else {
 			logger.error( "[" + this.macAddress +  "] no data produced by instance " + rd.getInstance().getSerial() + " (" + rd.getActivity().getTag() + ")" );
 			setMessage("No data produced by instance " + rd.getInstance().getSerial() + " (" + rd.getActivity().getTag() + ")" );
@@ -261,7 +259,7 @@ public class Cluster {
 	
 	
 	public void setInstanceAsDone( String instanceSerial, Activity actvt ) {
-		logger.debug("checking if instance " + instanceSerial + " (" + actvt.getTag() + ") is done");
+		debug("checking if instance " + instanceSerial + " (" + actvt.getTag() + ") is done");
 		for( Instance pipe : runningInstances ) {
 			if ( pipe.getSerial().equals( instanceSerial ) ) {
 				pipe.decreaseQtdActivations();
@@ -271,18 +269,23 @@ public class Cluster {
 					pipe.setFinishedActivities( finished + " " + actvt.getTag() );
 				}
 				if( pipe.getQtdActivations() == 0 ) {
-					logger.debug("instance " + instanceSerial + " finished");
+					debug("instance " + instanceSerial + " finished");
 					processedPipes++;
 					pipe.setStatus( InstanceStatus.FINISHED );
 					
 					Sagitarii.getInstance().finishInstance( pipe );
 					InstanceDeliveryControl.getInstance().removeUnit( instanceSerial );
 				} else {
-					logger.debug("instance " + instanceSerial + " (" + actvt.getTag() + ") have " + pipe.getQtdActivations() + " tasks running");
+					debug("instance " + instanceSerial + " (" + actvt.getTag() + ") have " + pipe.getQtdActivations() + " tasks running");
 				}
 				break;
 			}
 		}
+	}
+	
+	private void debug (String s ) {
+		logger.debug( s );
+		setMessage( s );
 	}
 	
 	public List<Instance> getRunningInstances() {

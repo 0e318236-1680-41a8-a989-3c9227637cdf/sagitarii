@@ -54,7 +54,7 @@
 									<tr><c:forEach var="column" items="${consumptions.toArray()[0].columnNames}"><th>${column}</th></c:forEach></tr>
 								</thead>
 								<tbody>
-									<c:forEach var="row" items="${consumptions}"><tr><c:forEach var="value" items="${row.dataValues}"><td>${value}&nbsp;</td></c:forEach></tr></c:forEach>
+									<c:forEach var="row" items="${consumptions}"><tr><c:forEach var="value" items="${row.dataValues}"><td>${value}</td></c:forEach></tr></c:forEach>
 								</tbody>
 							</table>
 						</div>
@@ -84,6 +84,17 @@
 		
 <script>
 
+function decorateRow(row) {
+	
+    $(row).children().each( function(index, td) {
+		var data = $(td).text();
+		var decodedData = window.atob( data );
+		$(td).html( decodedData );
+    });
+    
+}
+
+
 $(document).ready(function() {
 
 	$('#conTable').dataTable({
@@ -94,6 +105,10 @@ $(document).ready(function() {
 		"fnInitComplete": function(oSettings, json) {
 			doComplete();
 		},
+        "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+            decorateRow( nRow );
+            return nRow;
+        },
 		"sPaginationType": "full_numbers",	
 		"iDisplayLength" : 20,	
 		"bAutoWidth" : false,
@@ -110,6 +125,11 @@ $(document).ready(function() {
 		"fnInitComplete": function(oSettings, json) {
 			doComplete();
 		},
+		
+        "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+            decorateRow( nRow );
+            return nRow;
+        },
 		"sPaginationType": "full_numbers",	
 		"iDisplayLength" : 20,	
 		"bAutoWidth" : false,

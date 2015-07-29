@@ -48,6 +48,14 @@
 				
 <script>
 
+	function decorateRow(row) {
+	    $(row).children().each(function(index, td){
+	       var data = $(td).text();
+	       var decodedData = window.atob( data.trim() );
+	       $(td).html( decodedData );
+	    });
+	}
+
 	$(document).ready(function() {
 		showTable('${tableName}');
 		
@@ -71,6 +79,10 @@
        			</c:forEach>
 	        ],
 
+	        "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+	            decorateRow( nRow );
+                return nRow;
+	        },
 	        
 	        "fnServerData": function ( sSource, aoData, fnCallback, oSettings ) {
 	        	<c:forEach var="column" items="${result.toArray()[0].columnNames}">

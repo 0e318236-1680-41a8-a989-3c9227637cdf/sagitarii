@@ -62,7 +62,7 @@
 							<div class="basicCentralPanelBarText">Experiments</div>
 						</div>
 
-						<div style="margin : 0 auto; width : 95%; margin-top:10px;"  >
+						<div style="margin : 0 auto; width : 95%; margin-top:10px;margin-bottom:10px;"  >
 							<table class="tableForm"  id="example">
 								<thead>
 								<tr>
@@ -71,6 +71,7 @@
 									<th>Owner</th>
 									<th>Last Edit</th>
 									<th>Last Run</th>
+									<th>Elapsed Time</th>
 									<th>Status</th>
 									<th>&nbsp;</th>
 									
@@ -92,6 +93,12 @@
 										<td class="tableCellFormRight">
 											<fmt:formatDate type="both" timeStyle="short" value="${experiment.lastExecutionDate}"/>&nbsp;
 										</td>
+										
+										<td class="tableCellFormRight">
+											${experiment.elapsedTime}&nbsp;
+										</td>
+										
+										
 										<td class="tableCellFormRight">${experiment.status}&nbsp;</td>
 										<td class="tableCellFormRight">
 											<c:if test="${experiment.status != 'RUNNING'}">
@@ -110,7 +117,20 @@
 							</table>						
 						</div>
 
+
+						<div class="basicCentralPanelBar">
+							<img src="img/time.png">
+							<div class="basicCentralPanelBarText">Experiment Runtime Comparison</div>
+						</div>
+					
+					
+						<div style="margin : 0 auto; width : 95%; margin-top:10px;text-align:center;"  >
+							<img src="getExperimentTimes?idWorkflow=${workflow.idWorkflow}" style="width:700px; height:300px; padding:0px;margin:0px;">
+						</div>
+
+
 					</div>												
+					
 					
 				</div>
 				<div id="rightBox"> 
@@ -145,8 +165,9 @@
 			"bAutoWidth": false,
 			"sPaginationType": "full_numbers",
 			"aoColumns": [ 
-						  { "sWidth": "20%" },
-						  { "sWidth": "20%" },
+						  { "sWidth": "10%" },
+						  { "sWidth": "10%" },
+						  { "sWidth": "10%" },
 						  { "sWidth": "10%" },
 						  { "sWidth": "10%" },
 						  { "sWidth": "10%" },

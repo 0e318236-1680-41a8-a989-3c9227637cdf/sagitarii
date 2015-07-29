@@ -82,6 +82,8 @@ public class MainCluster implements Runnable {
 							} catch ( Exception e ) {
 								cluster.setMessage( "error " + e.getMessage() +  " when running query for executor " + act.getExecutor() );
 							}
+
+							cluster.setMessage( "done query for executor " + act.getExecutor() );
 							
 							console.clear();
 							console.add( act.getCommand() );
@@ -94,6 +96,7 @@ public class MainCluster implements Runnable {
 							try {
 								Activity activity = as.getActivity( act.getActivitySerial() );
 								activityName = activity.getTag();
+								cluster.setMessage( "finishing activity " + activity.getTag() + " (" + act.getExecutor() + ")" );
 								cluster.setInstanceAsDone( pipe.getSerial(), activity );
 							} catch ( NotFoundException nf ) {
 								String errorString = "cannot finish instance " + pipe.getSerial() + ". Activity " + act.getActivitySerial() + " not found.";

@@ -16,9 +16,11 @@
 						</div>
 				
 						<div class="menuBarMain">
-							<img onclick="view('${idExperiment}');" title="Back to Experiment" class="button dicas" src="img/experiment.png">
+							<img onclick="view('${idExperiment}');" title="Back to Experiment" class="button dicas" src="img/back.png">
 							<img onclick="showNewPannel();" title="New Custom Query" class="button dicas" src="img/add.png">
 						</div>
+						
+						
 						<div id="newPannel" style="display:none; height:200px; width:95%; margin:0 auto;margin-top:10px;margin-bottom:10px;">
 							<form action="doNewQuery" method="POST" id="formPost">
 								<input type="hidden" id="codeSql" name="query.query">

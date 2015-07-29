@@ -84,21 +84,12 @@
 		$("#frmSave").submit();
 	}
 
-	var ttt = false;
-	function decorateRow(row, data) {
+	function decorateRow(row) {
 	    $(row).children().each(function(index, td){
-	        if ( ttt ) {
-	            $(td).css("color", "red");
-	            $(td).text( data );
-	            ttt = false;
-	        }
-	        else {
-	            $(td).css("color", "");
-	            $(td).text( data );
-	            ttt = true;
-	        }
+           var data = $(td).text();
+           var decodedData = window.atob( data );
+           $(td).html( decodedData );
 	    });
-	     
 	}
 
 	$(document).ready(function() {
@@ -138,7 +129,7 @@
 	        ],
 
 	        "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-	            decorateRow(nRow, "dsdsd");
+	            decorateRow( nRow );
                 return nRow;
 	        },
 	        

@@ -26,7 +26,6 @@ import cmabreu.sagitarii.misc.DatabaseInfo;
 import cmabreu.sagitarii.misc.json.JsonUserTableConversor;
 import cmabreu.sagitarii.persistence.entity.Consumption;
 import cmabreu.sagitarii.persistence.entity.CustomQuery;
-import cmabreu.sagitarii.persistence.entity.Domain;
 import cmabreu.sagitarii.persistence.entity.Experiment;
 import cmabreu.sagitarii.persistence.entity.File;
 import cmabreu.sagitarii.persistence.entity.Relation;
@@ -133,6 +132,11 @@ public class RelationService {
         return new ByteArrayInputStream( csvData.toString().getBytes("UTF-8") );
 	}
 	
+	
+	
+	// ======================== TABLE JSON REQUESTS ========================================================
+
+	// ======================== CUSTOM QUERY ===============================================================
 	public String inspectExperimentQueryPagination(CustomQuery query, String sortColumn, String sSortDir0,
 			String iDisplayStart, String iDisplayLength, String sEcho) throws Exception {
 		
@@ -151,22 +155,48 @@ public class RelationService {
 			newTransaction();
 			
 			String countSql = "select count(*) as count from (" + query.getQuery() + ") as qq";
-			
-			logger.debug( countSql );
-			
 			Set<UserTableEntity> resultCount = genericFetchList( countSql );
+
+			for ( UserTableEntity ute : result  ) {
+				for ( String columnName : ute.getColumnNames() ) {
+					String data = ute.getData( columnName ); 
+					byte[] encodedBytes = Base64.encodeBase64( data.getBytes() );
+					String newData = new String( encodedBytes );
+					ute.setData(columnName, newData);
+				}
+			}
+			
 			UserTableEntity count = resultCount.iterator().next();
 			totalRecords = Integer.valueOf( count.getData("count") ); 
 		} else {
 			Map<String,String> data = new HashMap<String,String>();
-			data.put("ERROR", "No data in query '" + query.getName() + "'");
+			String warning = "No data in query '" + query.getName() + "'";
+			byte[] encodedBytes = Base64.encodeBase64( warning.getBytes() );
+			String newData = new String( encodedBytes );
+			data.put("ERROR", newData);
 			UserTableEntity ute = new UserTableEntity(data);
 			result.add(ute);
-
 		}
 		return new JsonUserTableConversor().asJson( result, totalRecords, Integer.valueOf( sEcho ) );
 	}
+	
+	// ======================== INSPECT EXPERIMENT TABLE ====================================================
+	public Set<UserTableEntity> inspectExperimentTable( String tableName, Experiment experiment ) throws Exception {
+		String sql = "select * from " + tableName + " where id_experiment = " + experiment.getIdExperiment();
+		Set<UserTableEntity> result = genericFetchList( sql );
 
+		if ( result.size() == 0 ) {
+			Map<String,String> data = new HashMap<String,String>();
+			byte[] encodedBytes = Base64.encodeBase64( "No Data".getBytes() );
+			String newData = new String( encodedBytes );
+			data.put("ERROR", newData);
+			UserTableEntity ute = new UserTableEntity(data);
+			result.add(ute);
+		} else {
+		}
+		
+		return result;
+	}
 	
 	public String inspectExperimentTablePagination(String tableName, int idExperiment, String sortColumn, String sSortDir0,
 			String iDisplayStart, String iDisplayLength, String sEcho, String sSearch) throws Exception {
@@ -195,22 +225,30 @@ public class RelationService {
 			for ( UserTableEntity ute : result  ) {
 				
 				List<String> columns = ute.getColumnNames();
-				for ( String column : columns ) {
-					String domainName = tableName + "." + column;
+				for ( String columnName : columns ) {
+					String domainName = tableName + "." + columnName;
+					String data = ute.getData( columnName ); 
+					
 					if ( DomainStorage.getInstance().domainExists(domainName)  ) {
 						fs.newTransaction();
-						File fil = fs.getFile( Integer.valueOf( ute.getData(column) ) );
-						ute.setData(column, "<a href='getFile?idFile="+ute.getData(column)+
-								"'>" + fil.getFileName() + "</a>" );
+						File fil = fs.getFile( Integer.valueOf( ute.getData(columnName) ) );
+						data = "<a href='getFile?idFile="+data+"'>" + fil.getFileName() + "</a>";
 					}
+
+					if ( columnName.equals("id_instance") ) {
+						String idInstance = data; 
+						if ( (idInstance != null) && ( !idInstance.equals("") ) ) {
+							data = "<a href='viewInstance?tableName="+tableName+"&idExperiment="+idExperiment+"&idInstance="+idInstance+"'>"+idInstance+"</a>";
+						} else {
+							data = "n/e";
+						}
+					}
+					
+					byte[] encodedBytes = Base64.encodeBase64( data.getBytes() );
+					String newData = new String( encodedBytes );
+					ute.setData(columnName, newData);					
 				}
 				
-				String idInstance = ute.getData("id_instance"); 
-				if ( (idInstance != null) && ( !idInstance.equals("") ) ) {
-					ute.setData("id_instance", "<a href='viewInstance?tableName="+tableName+"&idExperiment="+idExperiment+"&idInstance="+idInstance+"'>"+idInstance+"</a>");
-				} else {
-					ute.setData("id_instance", "n/e");
-				}
 			}
 			
 			newTransaction();
@@ -228,6 +266,8 @@ public class RelationService {
 		return new JsonUserTableConversor().asJson( result, totalRecords, Integer.valueOf( sEcho ) ).replace("\\", "\\\\");
 	}
 	
+	// ======================== CUSTOM SQL TERMINAL =========================================================
+	
 	public String runUserSqlPagination(String sql, String sortColumn, String sSortDir0,
 			String iDisplayStart, String iDisplayLength, String sEcho, String sSearch) throws Exception {
 
@@ -241,9 +281,8 @@ public class RelationService {
 			for ( UserTableEntity ute : result  ) {
 				for ( String columnName : ute.getColumnNames() ) {
 					String data = ute.getData( columnName ); 
-					
 					byte[] encodedBytes = Base64.encodeBase64( data.getBytes() );
-					String newData = new String( encodedBytes ) + "&nbsp;";
+					String newData = new String( encodedBytes );
 					ute.setData(columnName, newData);
 				}
 			}
@@ -252,10 +291,11 @@ public class RelationService {
 			totalRecords = getCount( sql );
 		} else {
 			Map<String,String> data = new HashMap<String,String>();
-			data.put("ERROR", "No data");
+			byte[] encodedBytes = Base64.encodeBase64( "No Data".getBytes() );
+			String newData = new String( encodedBytes );
+			data.put("ERROR", newData);
 			UserTableEntity ute = new UserTableEntity(data);
 			result.add(ute);
-
 		}
 		return new JsonUserTableConversor().asJson( result, totalRecords, Integer.valueOf( sEcho ) ).replace("\\", "\\\\");
 	}
@@ -264,7 +304,9 @@ public class RelationService {
 		Set<UserTableEntity> result = genericFetchList( sql );
 		if ( result.size() == 0 ) {
 			Map<String,String> data = new HashMap<String,String>();
-			data.put("ERROR", "No Data");
+			byte[] encodedBytes = Base64.encodeBase64( "No Data".getBytes() );
+			String newData = new String( encodedBytes );
+			data.put("ERROR", newData);
 			UserTableEntity ute = new UserTableEntity(data);
 			result.add(ute);
 		} else {
@@ -274,56 +316,20 @@ public class RelationService {
 		return result;
 	}
 	
-	
-	public Set<UserTableEntity> inspectExperimentTable( String tableName, Experiment experiment ) throws Exception {
-		String sql = "select * from " + tableName + " where id_experiment = " + experiment.getIdExperiment();
-		Set<UserTableEntity> result = genericFetchList( sql );
-
-		if ( result.size() == 0 ) {
-			Map<String,String> data = new HashMap<String,String>();
-			data.put("ERROR", "No Data");
-			UserTableEntity ute = new UserTableEntity(data);
-			result.add(ute);
-		} else {
-		
-			for ( UserTableEntity ute : result  ) {
-				
-				for ( String columnName : ute.getColumnNames() ) {
-					String domainName = tableName + "." + columnName;
-					Domain domain = DomainStorage.getInstance().getDomain( domainName );
-					if ( domain != null ) {
-						String idFile = ute.getData( columnName ); 
-						ute.setData(columnName, "<a href='viewInstance?tableName="+idFile+"'>"+columnName+"</a>");
-					}
-				}
-				
-				
-				String idInstance = ute.getData("id_instance"); 
-				if ( (idInstance != null) && ( !idInstance.equals("") ) ) {
-					ute.setData("id_instance", "<a href='viewInstance?tableName="+tableName+"&idExperiment="+experiment.getIdExperiment()+"&idInstance="+idInstance+"'>"+idInstance+"</a>");
-				} else {
-					ute.setData("id_instance", "n/e");
-				}
-			}
-			
-		}
-		
-		return result;
-	}
-
-
+	// ======================== VIEW SQL ( INSPECT TABLE ) =====================================================
 	public Set<UserTableEntity> viewSql( String tableName ) throws Exception {
 		String sql = "select * from " + tableName;
 		Set<UserTableEntity> result = genericFetchList( sql );
 		if ( result.size() == 0 ) {
 			Map<String,String> data = new HashMap<String,String>();
-			data.put("ERROR", "No Data");
+			byte[] encodedBytes = Base64.encodeBase64( "No Data".getBytes() );
+			String newData = new String( encodedBytes );
+			data.put("ERROR", newData);
 			UserTableEntity ute = new UserTableEntity(data);
 			result.add(ute);
 		}
 		return result;
 	}
-
 	public String viewSqlPagination(String tableName, String sortColumn, String sSortDir0,
 			String iDisplayStart, String iDisplayLength, String sEcho, String sSearch) throws Exception {
 		
@@ -348,14 +354,19 @@ public class RelationService {
 			
 			for ( UserTableEntity ute : result  ) { // Each line of result ...
 				List<String> columns = ute.getColumnNames();
-				for ( String column : columns ) {
-					String domainName = tableName + "." + column;
+				for ( String columnName : columns ) {
+					String domainName = tableName + "." + columnName;
+					String data = ute.getData( columnName ); 
+					
 					if ( DomainStorage.getInstance().domainExists(domainName)  ) {
 						fs.newTransaction();
-						File fil = fs.getFile( Integer.valueOf( ute.getData(column) ) );
-						ute.setData(column, "<a href='getFile?idFile="+ute.getData(column)+
-								"'>" + fil.getFileName() + "</a>" );
+						File fil = fs.getFile( Integer.valueOf( ute.getData(columnName) ) );
+						data = "<a href='getFile?idFile="+data+"'>" + fil.getFileName() + "</a>";
 					}
+
+					byte[] encodedBytes = Base64.encodeBase64( data.getBytes() );
+					String newData = new String( encodedBytes );
+					ute.setData(columnName, newData);					
 				}
 			}
 			newTransaction();
@@ -364,31 +375,39 @@ public class RelationService {
 			
 		} else {
 			Map<String,String> data = new HashMap<String,String>();
-			data.put("ERROR", "No data in table '" + tableName + "' for this experiment");
+			String warning = "No data in table '" + tableName + "' for this experiment";
+			byte[] encodedBytes = Base64.encodeBase64( warning.getBytes() );
+			String newData = new String( encodedBytes );
+			data.put("ERROR", newData);
 			UserTableEntity ute = new UserTableEntity(data);
 			result.add(ute);
-
 		}
 		return new JsonUserTableConversor().asJson( result, totalRecords, Integer.valueOf( sEcho ) ).replace("\\", "\\\\");
 	}
 
+	
+	// ======================================================================================================
+	
 	
 	public Set<UserTableEntity> getGeneratedData( String tableName, int idInstance, int idExperiment ) throws Exception {
 		String sql = "select * from " + tableName + " where id_instance = " + idInstance;
 		Set<UserTableEntity> result = genericFetchList( sql );
 		if ( result.size() == 0 ) {
 			Map<String,String> data = new HashMap<String,String>();
-			data.put("ERROR",  "No data in table '" + tableName + "' for this instance");
+			String warning = "No data in table '" + tableName + "' for this instance";
+			byte[] encodedBytes = Base64.encodeBase64( warning.getBytes() );
+			String newData = new String( encodedBytes );
+			data.put("ERROR", newData);
 			UserTableEntity ute = new UserTableEntity(data);
 			result.add(ute);
 		} else {
 			for ( UserTableEntity ute : result ) {
-				String sIdInstance = ute.getData("id_instance"); 
-				if ( (sIdInstance != null) && ( !sIdInstance.equals("") ) ) {
-					ute.setData("id_instance", "<a href='viewInstance?tableName="+tableName+"&idExperiment="+idExperiment+"&idInstance="+sIdInstance+"'>"+sIdInstance+"</a>");
-				} else {
-					ute.setData("id_instance", "n/e");
-				}					
+				for ( String columnName : ute.getColumnNames() ) {
+					String data = ute.getData( columnName ); 
+					byte[] encodedBytes = Base64.encodeBase64( data.getBytes() );
+					String newData = new String( encodedBytes );
+					ute.setData(columnName, newData);
+				}
 			}
 		}
 		return result;
@@ -408,7 +427,9 @@ public class RelationService {
 		
 		if ( result.size() == 0 ) {
 			Map<String,String> data = new HashMap<String,String>();
-			data.put("ERROR",  "No consumptions found for this instance");
+			byte[] encodedBytes = Base64.encodeBase64( "No consumptions found for this instance".getBytes() );
+			String newData = new String( encodedBytes );
+			data.put("ERROR", newData);
 			UserTableEntity ute = new UserTableEntity(data);
 			result.add(ute);
 		} else {
@@ -416,22 +437,31 @@ public class RelationService {
 			for ( UserTableEntity ute : result ) {
 				String tableName = ute.getData("table_name");
 				List<String> columns = ute.getColumnNames();
-				for ( String column : columns ) {
-					String domainName = tableName + "." + column;
+				for ( String columnName : columns ) {
+					String domainName = tableName + "." + columnName;
+					String data = ute.getData( columnName );
+					
 					if ( DomainStorage.getInstance().domainExists(domainName)  ) {
 						fs.newTransaction();
-						File fil = fs.getFile( Integer.valueOf( ute.getData(column) ) );
-						ute.setData(column, "<a href='getFile?idFile="+ute.getData(column)+
-								"'>" + fil.getFileName() + "</a>" );
+						File fil = fs.getFile( Integer.valueOf( data ) );
+						data = "<a href='getFile?idFile="+data+"'>" + fil.getFileName() + "</a>";
 					}
+
+					if ( columnName.equals("id_instance") ) {
+						String sIdInstance = data; 
+						if ( (sIdInstance != null) && ( !sIdInstance.equals("") ) ) {
+							data = "<a href='viewInstance?tableName="+tableName+"&idExperiment="+idExperiment+"&idInstance="+sIdInstance+"'>"+sIdInstance+"</a>";
+						} else {
+							data = "n/e";
+						}					
+					}
+					
+					byte[] encodedBytes = Base64.encodeBase64( data.getBytes() );
+					String newData = new String( encodedBytes );
+					ute.setData(columnName, newData);
+					
 				}				
 				
-				String sIdInstance = ute.getData("id_instance"); 
-				if ( (sIdInstance != null) && ( !sIdInstance.equals("") ) ) {
-					ute.setData("id_instance", "<a href='viewInstance?tableName="+tableName+"&idExperiment="+idExperiment+"&idInstance="+sIdInstance+"'>"+sIdInstance+"</a>");
-				} else {
-					ute.setData("id_instance", "n/e");
-				}					
 			}
 		}
 
@@ -488,6 +518,7 @@ public class RelationService {
 		}
 		rep.executeQuery(query);
 	}
+	
 	public void executeQueryAndKeepOpen(String query) throws Exception {
 		if ( !rep.isOpen() ) {
 			newTransaction();
