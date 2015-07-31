@@ -33,10 +33,13 @@ public class Processor implements IWrapperProcessor {
 		
 		// List<String> configFile = helper.readFromLibraryFolder( "myapp.config" );
 		// helper.runExternal("/my/path/myapplication.jar");
-		// helper.copyFile(source, dest);
+		
+		helper.copyFile(helper.getWorkFolder() + "sagi_input.txt", helper.getOutboxFolder() + "sourcedata.csv");
 
-		ld.addValue("attr04", attr01 + ":" + attr02 + ":" + attr03);		
+		ld.addValue("attr04", "sourcedata.csv");		
 		csvLines.add( ld );
+		
+		System.out.println("Source Data: " + attr01 + "/" + attr02 + "/" + attr03);
 		
 		try {
 			Thread.currentThread().wait(4000);

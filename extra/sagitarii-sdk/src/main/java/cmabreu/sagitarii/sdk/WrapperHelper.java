@@ -44,14 +44,14 @@ public class WrapperHelper {
 	 *	Returns the complete path to the activity instance exclusive work folder used by Teapot.  
 	 */
 	public String getWorkFolder() {
-		return workFolder;
+		return workFolder + "/";
 	}
 	
 	/**
 	 *	Returns the complete path to the wrappers folder used by Teapot.  
 	 */
 	public String getWrapperFolder() {
-		return wrapperFolder;
+		return wrapperFolder + "/";
 	}
 	
 	/**

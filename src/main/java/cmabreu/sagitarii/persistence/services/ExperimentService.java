@@ -262,12 +262,6 @@ public class ExperimentService {
 				throw new DeleteException("You cannot delete a running experiment.");
 			}
 
-			/*
-			if ( Sagitarii.getInstance().experimentIsStillQueued( experiment ) ) {
-				logger.error( "deletion of buffered experiment " + idExperiment + " not allowed." );
-				throw new DeleteException("This experiment still have buffered instances. Try again when experiment is finished or buffer flushed.");
-			}
-			*/
 
 			RelationService rs = new RelationService();
 			List<Relation> tables = rs.getList();
@@ -279,6 +273,13 @@ public class ExperimentService {
 				logger.debug("done.");
 			}
 
+
+			logger.debug("removing custom queries...");
+			sql = "delete from queries where id_experiment = " + idExperiment;
+			rs.executeQuery( sql );
+			logger.debug("done.");
+			
+			
 			logger.debug("removing files...");
 			sql = "delete from files where id_experiment = " + idExperiment;
 			rs.executeQuery( sql );
