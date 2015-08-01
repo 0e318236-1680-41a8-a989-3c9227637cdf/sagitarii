@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   
   <groupId>cmabreu</groupId>
-  <artifactId>Sagitarii</artifactId>
+  <artifactId>sagitarii</artifactId>
   <packaging>war</packaging>
   <version>1.0.345</version>
   <name>Sagitarii Data Science Workflow System</name>

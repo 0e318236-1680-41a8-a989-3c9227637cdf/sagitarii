@@ -8,7 +8,6 @@
   <classpathentry kind="var" path="M2_REPO/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/javax/servlet/jstl/1.2/jstl-1.2.jar"/>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/hierynomus/sshj/0.12.0/sshj-0.12.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/bouncycastle/bcpkix-jdk15on/1.51/bcpkix-jdk15on-1.51.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/bouncycastle/bcprov-jdk15on/1.51/bcprov-jdk15on-1.51.jar"/>
@@ -20,6 +19,7 @@
   <classpathentry kind="var" path="M2_REPO/org/apache/struts/struts2-jfreechart-plugin/2.3.20/struts2-jfreechart-plugin-2.3.20.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/struts/struts2-core/2.3.20/struts2-core-2.3.20.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/struts/xwork/xwork-core/2.3.20/xwork-core-2.3.20.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/commons/commons-lang3/3.2/commons-lang3-3.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/ognl/ognl/3.0.6/ognl-3.0.6.jar"/>
   <classpathentry kind="var" path="M2_REPO/javassist/javassist/3.11.0.GA/javassist-3.11.0.GA.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/ow2/asm/asm/5.0.2/asm-5.0.2.jar"/>

@@ -54,6 +54,9 @@ public class TableDataAjaxProcessAction extends BasicActionClass {
 			resp = rs.inspectExperimentTablePagination(tableName, idExperiment, sortColumn, sSortDir0, iDisplayStart,
 					iDisplayLength, sEcho, sSearch);
 			
+			
+			System.out.println( resp );
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

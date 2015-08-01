@@ -49,8 +49,8 @@ public class NodeSSHTerminalAction extends BasicActionClass {
 					String host = cluster.getIpAddress();
 
 					
-					//session = mngr.newSession( cluster.getMachineName(), cluster.getMacAddress(), host, port, user, password );
-					session = mngr.newSession( "SADLOG", cluster.getMacAddress(), "10.5.112.214", 22, "root", "sadlog" );
+					session = mngr.newSession( cluster.getMachineName(), cluster.getMacAddress(), host, port, user, password );
+					//session = mngr.newSession( "SADLOG", cluster.getMacAddress(), "10.5.112.214", 22, "root", "sadlog" );
 
 					
 					

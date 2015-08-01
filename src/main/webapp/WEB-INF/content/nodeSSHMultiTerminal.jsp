@@ -174,7 +174,9 @@
 			readOnly: true,
 			lineNumbers: true,
 			lineWrapping:true
-        });		
+        });	
+		
+		$('.CodeMirror-scroll').scrollTop($('.CodeMirror-scroll')[0].scrollHeight);
 	}
 
 	$(document).ready(function() {
@@ -206,7 +208,7 @@
 
 		show( lastId );
 		
-		$('.CodeMirror-scroll').scrollTop($('.CodeMirror-scroll')[0].scrollHeight);
+		
 	
 	});
 

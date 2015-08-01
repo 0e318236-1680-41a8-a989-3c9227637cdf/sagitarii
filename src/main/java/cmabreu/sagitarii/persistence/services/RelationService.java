@@ -27,7 +27,7 @@ import cmabreu.sagitarii.misc.json.JsonUserTableConversor;
 import cmabreu.sagitarii.persistence.entity.Consumption;
 import cmabreu.sagitarii.persistence.entity.CustomQuery;
 import cmabreu.sagitarii.persistence.entity.Experiment;
-import cmabreu.sagitarii.persistence.entity.File;
+import cmabreu.sagitarii.persistence.entity.FileLight;
 import cmabreu.sagitarii.persistence.entity.Relation;
 import cmabreu.sagitarii.persistence.exceptions.DatabaseConnectException;
 import cmabreu.sagitarii.persistence.exceptions.DeleteException;
@@ -220,10 +220,9 @@ public class RelationService {
 		if ( !sortColumn.equals("ERROR") ) {
 			result = genericFetchList( sql );
 			FileService fs = new FileService();
-			
+
 			// Show ID instance as a link
 			for ( UserTableEntity ute : result  ) {
-				
 				List<String> columns = ute.getColumnNames();
 				for ( String columnName : columns ) {
 					String domainName = tableName + "." + columnName;
@@ -231,7 +230,7 @@ public class RelationService {
 					
 					if ( DomainStorage.getInstance().domainExists(domainName)  ) {
 						fs.newTransaction();
-						File fil = fs.getFile( Integer.valueOf( ute.getData(columnName) ) );
+						FileLight fil = fs.getFileLight( Integer.valueOf( ute.getData(columnName) ) );
 						data = "<a href='getFile?idFile="+data+"'>" + fil.getFileName() + "</a>";
 					}
 
@@ -246,7 +245,8 @@ public class RelationService {
 					
 					byte[] encodedBytes = Base64.encodeBase64( data.getBytes() );
 					String newData = new String( encodedBytes );
-					ute.setData(columnName, newData);					
+					ute.setData(columnName, newData);
+					
 				}
 				
 			}
@@ -258,7 +258,7 @@ public class RelationService {
 			totalRecords = getCount( tableName, "where id_experiment = " + idExperiment + search);
 		} else {
 			Map<String,String> data = new HashMap<String,String>();
-			data.put("ERROR", "No data in table '" + tableName + "' for this experiment");
+			data.put("ERROR", "No data in table " + tableName + " for this experiment");
 			UserTableEntity ute = new UserTableEntity(data);
 			result.add(ute);
 
@@ -330,6 +330,8 @@ public class RelationService {
 		}
 		return result;
 	}
+	
+	
 	public String viewSqlPagination(String tableName, String sortColumn, String sSortDir0,
 			String iDisplayStart, String iDisplayLength, String sEcho, String sSearch) throws Exception {
 		
@@ -360,7 +362,7 @@ public class RelationService {
 					
 					if ( DomainStorage.getInstance().domainExists(domainName)  ) {
 						fs.newTransaction();
-						File fil = fs.getFile( Integer.valueOf( ute.getData(columnName) ) );
+						FileLight fil = fs.getFileLight( Integer.valueOf( ute.getData(columnName) ) );
 						data = "<a href='getFile?idFile="+data+"'>" + fil.getFileName() + "</a>";
 					}
 
@@ -375,7 +377,7 @@ public class RelationService {
 			
 		} else {
 			Map<String,String> data = new HashMap<String,String>();
-			String warning = "No data in table '" + tableName + "' for this experiment";
+			String warning = "No data in table " + tableName + " for this experiment";
 			byte[] encodedBytes = Base64.encodeBase64( warning.getBytes() );
 			String newData = new String( encodedBytes );
 			data.put("ERROR", newData);
@@ -394,7 +396,7 @@ public class RelationService {
 		Set<UserTableEntity> result = genericFetchList( sql );
 		if ( result.size() == 0 ) {
 			Map<String,String> data = new HashMap<String,String>();
-			String warning = "No data in table '" + tableName + "' for this instance";
+			String warning = "No data in table " + tableName + " for this instance";
 			byte[] encodedBytes = Base64.encodeBase64( warning.getBytes() );
 			String newData = new String( encodedBytes );
 			data.put("ERROR", newData);
@@ -443,7 +445,7 @@ public class RelationService {
 					
 					if ( DomainStorage.getInstance().domainExists(domainName)  ) {
 						fs.newTransaction();
-						File fil = fs.getFile( Integer.valueOf( data ) );
+						FileLight fil = fs.getFileLight( Integer.valueOf( data ) );
 						data = "<a href='getFile?idFile="+data+"'>" + fil.getFileName() + "</a>";
 					}
 
@@ -792,8 +794,6 @@ public class RelationService {
 		 *
 		*/
 		
-		System.out.println("Table: " + tableName );
-		
 		Set<UserTableEntity> fields = getTableStructure( tableName );
 		StringBuilder fieldNames = new StringBuilder();
 		StringBuilder fieldDefs = new StringBuilder();
@@ -819,9 +819,7 @@ public class RelationService {
 		String toRun = "select * from dblink_exec('hostaddr="+targetHost+" dbname="+targetDb+" port="+targetPort+
 				" user="+targetUser+" password="+targetPassword+"','"+copyQuery+"');";
 		
-		System.out.println( toRun );
 		executeQuery( toRun );
-		
 	}
 	
 	
