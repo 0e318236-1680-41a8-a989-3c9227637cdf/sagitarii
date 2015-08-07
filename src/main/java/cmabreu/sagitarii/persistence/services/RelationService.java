@@ -258,9 +258,13 @@ public class RelationService {
 			totalRecords = getCount( tableName, "where id_experiment = " + idExperiment + search);
 		} else {
 			Map<String,String> data = new HashMap<String,String>();
-			data.put("ERROR", "No data in table " + tableName + " for this experiment");
+			String message = "No data in table " + tableName + " for this experiment";
+			byte[] encodedBytes = Base64.encodeBase64( message.getBytes() );
+			String newData = new String( encodedBytes );
+			data.put("ERROR", newData);
 			UserTableEntity ute = new UserTableEntity(data);
-			result.add(ute);
+			result.add(ute);			
+			
 
 		}
 		return new JsonUserTableConversor().asJson( result, totalRecords, Integer.valueOf( sEcho ) ).replace("\\", "\\\\");
