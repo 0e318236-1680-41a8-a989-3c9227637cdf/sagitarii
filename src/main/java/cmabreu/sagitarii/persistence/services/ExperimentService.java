@@ -76,7 +76,7 @@ public class ExperimentService {
 		if ( exp.getStatus() == ExperimentStatus.STOPPED ) {
 			return new Genesis().generate( exp );
 		} else {
-			return exp;
+			return new Genesis().checkTables( exp );
 		}
 		
 	}

@@ -46,7 +46,7 @@ public class ViewExperimentAction extends BasicActionClass {
 			for ( Fragment frag : experiment.getFragments()  ) {
 				activities.addAll( frag.getActivities() );
 			}
-
+			
 			try {
 				CustomQueryService cqs = new CustomQueryService();
 				queries = cqs.getList( idExperiment );

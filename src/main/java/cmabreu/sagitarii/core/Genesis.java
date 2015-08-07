@@ -12,6 +12,7 @@ import java.util.TreeSet;
 import cmabreu.sagitarii.misc.json.JsonElementConversor;
 import cmabreu.sagitarii.persistence.entity.Activity;
 import cmabreu.sagitarii.persistence.entity.Experiment;
+import cmabreu.sagitarii.persistence.entity.Fragment;
 import cmabreu.sagitarii.persistence.entity.Relation;
 import cmabreu.sagitarii.persistence.services.RelationService;
 
@@ -67,6 +68,17 @@ public class Genesis {
 		checkEntrancePointsAvailability();
 		return this.experiment;
 	}
+
+
+	public Experiment checkTables( Experiment experiment ) throws Exception {
+		this.experiment = experiment;
+		for ( Fragment frag : experiment.getFragments()  ) {
+			activities.addAll( frag.getActivities() );
+		}
+		checkEntrancePointsAvailability();
+		return this.experiment;
+	}
+	
 	
 	public Activity getRoot() {
 		return root;
