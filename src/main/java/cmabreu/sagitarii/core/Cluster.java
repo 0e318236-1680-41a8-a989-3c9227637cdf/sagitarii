@@ -20,6 +20,8 @@ import cmabreu.sagitarii.misc.ProgressListener;
 import cmabreu.sagitarii.misc.json.NodeTask;
 import cmabreu.sagitarii.persistence.entity.Activity;
 import cmabreu.sagitarii.persistence.entity.Instance;
+import cmabreu.sagitarii.persistence.entity.LogEntry;
+import cmabreu.sagitarii.persistence.services.LogService;
 
 public class Cluster {
 	private ClusterType type;
@@ -53,6 +55,8 @@ public class Cluster {
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 	private List<ProgressListener> progressListeners;
 	private List<String> log = new ArrayList<String>();
+	private List<LogEntry> logEntries = new ArrayList<LogEntry>();
+	private int counter = 0;
 	
 	public boolean signaled() {
 		return ( restartSignal || quitSignal || cleanWorkspaceSignal || reloadWrappersSignal || askingForInstance );
@@ -169,7 +173,7 @@ public class Cluster {
 	}
 	
 	public void inform( String instanceSerial ) {
-		logger.warn("asking Teapot for lost instance " + instanceSerial + " from node " + macAddress );
+		logger.warn("asking Teapot for lost instance " + instanceSerial + " working at node " + macAddress );
 		
 		if ( status == ClusterStatus.DEAD ) {
 			logger.warn("this node is DEAD. try to recover lost instance from output buffer");
@@ -460,11 +464,33 @@ public class Cluster {
 		return lastError;
 	}
 	
+	private void flushLog() {
+		try {
+			LogService ls = new LogService();
+			ls.insetLogEntryList( logEntries );
+		} catch ( Exception e ) {
+			setMessage("cannot save log activity: " + e.getMessage() );
+		}
+		logEntries.clear();
+	}
+	
 	public void setMessage(String logItem) {
 		
 		DateLibrary dl = DateLibrary.getInstance();
 		dl.setTo( new Date() );
 		logItem = dl.getHourTextHuman() + " " + logItem;
+		
+		LogEntry le = new LogEntry();
+		le.setDateTime( Calendar.getInstance().getTime() );
+		le.setLog( logItem );
+		le.setNode( macAddress );
+		logEntries.add( le );
+		
+		counter++;
+		if ( counter == 100 ) {
+			flushLog();
+			counter = 0;
+		}
 		
 		this.lastError = logItem;
 		if ( log.size() > 40 ) {
