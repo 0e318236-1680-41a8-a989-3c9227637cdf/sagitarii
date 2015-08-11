@@ -188,7 +188,7 @@
 										<td>${table.name}</td>
 										<td>${table.description}&nbsp;</td>
 										<td>
-											<a href="getTableFull?tableName=${table.name}">
+											<a href="getTableFull?tableName=${table.name}&idExperiment=${experiment.idExperiment}">
 												<img title="Get full table CSV data" class="miniButton dicas" src="img/download.png")">
 											</a>
 											<a href="getTableSample?tableName=${table.name}">

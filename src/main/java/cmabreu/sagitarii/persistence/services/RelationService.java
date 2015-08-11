@@ -110,8 +110,8 @@ public class RelationService {
 	}
 	
 	// Get the all lines and export as CSV to the user.
-	public ByteArrayInputStream getTableFull( String tableName ) throws Exception {
-		Set<UserTableEntity> utes = genericFetchList( "select * from " + tableName );
+	public ByteArrayInputStream getTableFull( String tableName, int idExperiment ) throws Exception {
+		Set<UserTableEntity> utes = genericFetchList( "select * from " + tableName + " where id_experiment = " + idExperiment );
 		StringBuilder columns = new StringBuilder();
 		StringBuilder dataLine = new StringBuilder();
 		boolean columnsDone = false;

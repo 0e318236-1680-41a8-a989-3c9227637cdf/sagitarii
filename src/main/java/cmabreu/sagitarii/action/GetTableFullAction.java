@@ -23,12 +23,13 @@ public class GetTableFullAction extends BasicActionClass {
 	private String fileName;
 	private ByteArrayInputStream fileInputStream;
 	private String tableName;
+	private int idExperiment;
 	
 	public String execute () {
 		
 		try {
 			RelationService rs = new RelationService();
-			fileInputStream = rs.getTableFull( tableName );
+			fileInputStream = rs.getTableFull( tableName, idExperiment );
 	        fileName = tableName + ".csv";
 		} catch ( Exception e ) {
             //
@@ -53,4 +54,9 @@ public class GetTableFullAction extends BasicActionClass {
 	public void setTableName(String tableName) {
 		this.tableName = tableName;
 	}
+	
+	public void setIdExperiment(int idExperiment) {
+		this.idExperiment = idExperiment;
+	}
+	
 }
