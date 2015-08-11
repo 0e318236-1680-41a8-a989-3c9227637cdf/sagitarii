@@ -533,7 +533,7 @@ public class RelationService {
 	}
 
 	/**
-	 * Retorns a table structure 
+	 * Returns a table structure 
 	 */
 	public Set<UserTableEntity> getTableStructure(String tableName) throws Exception {
 		logger.debug("get schema from " + tableName );

@@ -293,6 +293,11 @@ public class FileImporter extends Thread {
 		Activity activity = retrieveActivity(activitySerial,macAddress, table); // Resp. por sinalizar initialLoad
 		Instance instance = retrieveInstance(instanceSerial, activity);
 
+		if ( instance.getStatus() == InstanceStatus.FINISHED ) {
+			logger.debug("instance " + instance.getSerial() + " already done. aborting...");
+			return;
+		}
+		
 		List<String> contentLines = new ArrayList<String>();
 		StringBuilder sb = new StringBuilder();
 		String prefix = "";
