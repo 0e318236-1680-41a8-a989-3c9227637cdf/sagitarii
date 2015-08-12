@@ -44,5 +44,15 @@ public class DomainStorage {
 		}
 		return false;
 	}
+
+	public boolean isColumnADomain( String columnName ) {
+		for ( Domain domain : domains  ) {
+			if ( domain.getDomainName().contains( "." + columnName ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	
 }

@@ -11,7 +11,7 @@
 					
 						<div class="basicCentralPanelBar">
 							<img src="img/experiment.png">
-							<div class="basicCentralPanelBarText">Run User SQL</div>
+							<div class="basicCentralPanelBarText">Interactive SQL</div>
 						</div>
 						
 						<div class="menuBarMain">
@@ -22,19 +22,6 @@
 							<input type="hidden" id="sqlQuery" name="sql">
 						</form>						
 						
-						<div id="pannel" style="width:95%; margin:0 auto;margin-top:10px;margin-bottom:5px;display:table;">
-							<div style="height:60px;font-family:'Consolas','Bitstream Vera Sans Mono','Courier New',Courier,monospace">
-								${sql}
-							</div>
-						</div>
-
-
-						<div class="basicCentralPanelBar">
-							<img src="img/right.png">
-							<div class="basicCentralPanelBarText">SQL Result</div>
-						</div>
-
-
 						<div class="menuBarMain" style="display:table;height:52px;margin-top:5px">
 							<div style="float:left; width:85%">
 								<table style="margin-top:10px;margin-left:10px" >
@@ -53,6 +40,10 @@
 							
 						</div>							
 
+						<div class="basicCentralPanelBar">
+							<img src="img/right.png">
+							<div class="basicCentralPanelBarText">SQL Result</div>
+						</div>
 
 						
 						<div   style="width:95%; margin:0 auto;margin-top:10px;margin-bottom:10px">
