@@ -15,6 +15,8 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.Cascade;
 
 @Entity
@@ -110,6 +112,22 @@ public class Relation {
 		this.domains = domains;
 	}
 
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 31).append(name).toHashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+       if (!(obj instanceof Relation) ) return false;
+       if (obj == this) return true;
+
+        Relation rhs = (Relation) obj;
+        return new EqualsBuilder().append(name, rhs.name).isEquals();
+    }	
+	
+	
 	
 
 }

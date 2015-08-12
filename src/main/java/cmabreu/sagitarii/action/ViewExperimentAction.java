@@ -16,12 +16,10 @@ import cmabreu.sagitarii.persistence.entity.Activity;
 import cmabreu.sagitarii.persistence.entity.CustomQuery;
 import cmabreu.sagitarii.persistence.entity.Experiment;
 import cmabreu.sagitarii.persistence.entity.Fragment;
-import cmabreu.sagitarii.persistence.entity.Relation;
 import cmabreu.sagitarii.persistence.exceptions.DatabaseConnectException;
 import cmabreu.sagitarii.persistence.exceptions.NotFoundException;
 import cmabreu.sagitarii.persistence.services.CustomQueryService;
 import cmabreu.sagitarii.persistence.services.ExperimentService;
-import cmabreu.sagitarii.persistence.services.RelationService;
 
 @Action (value = "viewExperiment", 
 	results = { 
@@ -53,17 +51,6 @@ public class ViewExperimentAction extends BasicActionClass {
 			} catch ( NotFoundException ignored ) {
 				//
 			} 
-			
-			try {
-				RelationService rs = new RelationService();
-				for ( Relation rel : experiment.getUsedTables() ) {
-					rs.newTransaction();
-					Relation relation = rs.getTable( rel.getName() );
-					rel.setDescription( relation.getDescription() );
-				}
-			} catch ( Exception ignored ) {
-				
-			}
 			
 			
 		} catch (DatabaseConnectException e) {
