@@ -78,11 +78,7 @@ public class HibernateDAO<T> implements IDao<T>  {
         return rows;
 	}
 
-	/**
-	 * Executa uma expressão em SQL fora do controle do Hibernate, mas usando a mesma
-	 * sessão aberta pelo repositório.
-	 * 
-	 */
+
 	public void executeQuery(String hql, boolean withCommit) throws Exception {
 		logger.debug("query");
 		sqlDLL = hql;

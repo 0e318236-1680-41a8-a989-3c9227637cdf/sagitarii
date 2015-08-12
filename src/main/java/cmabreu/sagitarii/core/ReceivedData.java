@@ -36,7 +36,7 @@ public class ReceivedData {
 	}
 	
 	public ReceivedData( List<String> contentLines, String macAddress, Instance instance, Activity activity, Relation table, 
-			ReceivedFile csvDataFile ) throws Exception {
+			ReceivedFile csvDataFile ) {
 
 		this.activity = activity;
 		this.instance = instance;

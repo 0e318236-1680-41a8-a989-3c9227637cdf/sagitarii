@@ -608,9 +608,7 @@ public class RelationService {
 	}
 	
 	
-	/**
-	 * Verifica se uma coluna de determinado nome existe na estrutura de uma tabela.
-	 */
+
 	private boolean attributeExists( String attribute, Set<UserTableEntity> structure ) {
 		for ( UserTableEntity ute : structure  ) {
 			if ( ute.hasContent( attribute ) ) {

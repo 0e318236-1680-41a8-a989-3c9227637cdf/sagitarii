@@ -82,27 +82,37 @@ public class DataReceiver {
 	public String receive( List<String> contentLines, String macAddress, Instance instance, Activity activity, Relation table, 
 			ReceivedFile csvDataFile, FileImporter importer, boolean initialLoad ) {
 
+		ReceivedData rd = new ReceivedData(contentLines, macAddress, instance, activity, table, csvDataFile);
+		String result = "";
 		try {
 			logger.debug("receiving data from " + macAddress + " instance " + instance.getSerial() + " activity " + activity.getSerial() );
 	
-			ReceivedData rd = new ReceivedData(contentLines, macAddress, instance, activity, table, csvDataFile);
-			
-			RelationService relationService = new RelationService();
-			relationService.importCSVData( rd, importer );
-	
-			if ( !initialLoad ) {
-				logger.debug("node data");
-				ClustersManager.getInstance().confirmReceiveData( rd );
-			}		
+			try {
+				RelationService relationService = new RelationService();
+				relationService.importCSVData( rd, importer );
+			} catch ( Exception e ) {
+				logger.error("error importing CSV data to database: " + e.getMessage() );
+			}
 			
 			logger.debug("done. instance | activity:  " + rd.getInstance().getSerial() + "|" + rd.getActivity().getSerial() );
-			return rd.getInstance().getSerial() + ";" + rd.getActivity().getSerial();
+			result = rd.getInstance().getSerial() + ";" + rd.getActivity().getSerial();
 			
 		} catch ( Exception e ) {
-			logger.error( e.getMessage() );
-			return e.getMessage();
+			logger.error( "critical error receiving data: " + e.getMessage() );
+			result = e.getMessage();
 		}
+
+		if ( !initialLoad ) {
+			logger.debug("closing instance " + instance.getSerial() );
+			try {
+				ClustersManager.getInstance().confirmReceiveData( rd );
+				logger.debug("instance " + instance.getSerial() + " close.");
+			} catch ( Exception e ) {
+				logger.debug("cannot close instance " + instance.getSerial() + ". this may cause trouble...");
+			}
+		}		
 		
+		return result;
 	}
 	
 	
