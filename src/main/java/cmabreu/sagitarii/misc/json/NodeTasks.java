@@ -9,10 +9,19 @@ public class NodeTasks {
 	private String totalMemory;
 	private String freeDiskSpace;
 	private String totalDiskSpace;
+	private String maximunLimit;
 	private List<NodeTask> data;
 	
 	public long getFreeDiskSpace() {
 		return Long.parseLong(freeDiskSpace);
+	}
+	
+	public void setMaximunLimit(String maximunLimit) {
+		this.maximunLimit = maximunLimit;
+	}
+	
+	public int getMaximunLimit() {
+		return Integer.parseInt( maximunLimit );
 	}
 	
 	public long getTotalDiskSpace() {

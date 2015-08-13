@@ -91,6 +91,7 @@ public class ClustersManager {
 				cluster.setFreeDiskSpace( tasks.getFreeDiskSpace() );
 				cluster.setTotalDiskSpace( tasks.getTotalDiskSpace() );
 				cluster.setTasks( tasks.getData() );
+				cluster.setMaxAllowedTasks( tasks.getMaximunLimit() );
 				cluster.updateStatus();
 			}
 			

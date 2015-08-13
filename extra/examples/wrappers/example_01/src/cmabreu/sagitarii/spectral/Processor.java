@@ -41,11 +41,28 @@ public class Processor implements IWrapperProcessor {
 		
 		System.out.println("Source Data: " + attr01 + "/" + attr02 + "/" + attr03);
 		
-		try {
-			Thread.currentThread().wait(4000);
-		} catch ( Exception e ) {
-			
-		}
+		String str = "";
+		double xxx = 0.0;
+        try {
+            // sleep for 1 second to simulate a remote call,
+            // just waiting for the call to return
+            Thread.sleep(4000);
+            // loop that just concatenate a str to simulate
+            // work on the result form remote call
+            for (int index = 0; index < 20000; index++) {
+            	xxx = 23 * 3 + index / 34 + Math.acos( xxx ) + Math.PI / 2;
+                str = str + 't';
+            }
+            for (int index = 0; index < 20000; index++) {
+            	xxx = 23 * 3 + index / 34 + Math.acos( xxx ) + Math.PI / 2;
+                str = str + 't';
+            }
+            for (int index = 0; index < 20000; index++) {
+            	xxx = 23 * 3 + index / 34 + Math.acos( xxx ) + Math.PI / 2;
+                str = str + 't';
+            }
+        } catch (InterruptedException e) {
+        }
 		
 	}
 

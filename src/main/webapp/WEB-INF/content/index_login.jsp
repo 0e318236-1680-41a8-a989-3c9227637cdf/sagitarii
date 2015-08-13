@@ -4,15 +4,15 @@
 
 				<div id="leftBoxAlter" style="width:100%; border-right:0px;position:relative" > 
 				
+					<!-- 
 					<div style="position:absolute;top: 0; left: 0; bottom: 0; right: 0;margin:auto;width: 1200px;" >
 					    <img src="img/logos/background.jpg" style="width:1200px; height:470px;opacity:0.2;z-index:-9999;">
 					</div>				
-				
-				
+					 -->
+					 
 					<div style="width:400px; height:300px;margin:0 auto;margin-top:0px;position:relative">
 						<img src="img/logos/wallpaper.png" style="width:400px; height:300px;margin-top:0px;z-index:3;position:absolute">
 					</div>
-				
 				
 					<div class="userBoard" style="margin:0 auto;margin-top:5px">
 						<div class="userBoardT1" style="text-align:center;width:95%">Login</div>
