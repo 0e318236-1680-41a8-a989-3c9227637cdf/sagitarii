@@ -66,11 +66,12 @@ public class Sagitarii {
 	 */
 	private synchronized void electExperiment() {
 		Experiment exp = null;
-		if (runningExperiments.size() > 0 ) {
-			exp = runningExperiments.get( spinPointer );
+		List<Experiment> running = getRunningExperiments();
+		if (running.size() > 0 ) {
+			exp = running.get( spinPointer );
 			logger.debug("experiment " + exp.getTagExec() + " elected for common buffer");
 			spinPointer++;
-			if ( spinPointer > (runningExperiments.size() -1 ) ) {
+			if ( spinPointer > (running.size() -1 ) ) {
 				spinPointer = 0;
 			}
 		} else {
@@ -759,7 +760,6 @@ public class Sagitarii {
 	}
 	
 	public synchronized List<Experiment> getRunningExperiments() {
-		// Para evitar acesso concorrente, fornecer imutável.
 		return new ArrayList<Experiment>( runningExperiments );
 	}
 

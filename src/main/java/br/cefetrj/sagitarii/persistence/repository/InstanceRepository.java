@@ -211,6 +211,7 @@ public class InstanceRepository extends BasicRepository {
 		DaoFactory<Instance> df = new DaoFactory<Instance>();
 		IDao<Instance> fm = df.getDao(this.session, Instance.class);
 		try {
+			instance.evaluateTime();
 			fm.updateDO(instance);
 			commit();
 		} catch (UpdateException e) {

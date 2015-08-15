@@ -159,6 +159,7 @@
 							<table class="tableForm"  id="experimentFiles" >
 								<thead>
 									<tr>
+										<th>Experiment</th>
 										<th>Name</th>
 										<th>Source Activity</th>
 										<th>Owner Table</th>
@@ -206,12 +207,14 @@
 	        "sAjaxSource" : "experimentFilesAjaxProcess?idExperiment=${experiment.idExperiment}", 
 	        "sServerMethod": "POST",
 	        "aoColumns": [
+             			{ "mDataProp": "id_experiment" },
              			{ "mDataProp": "filename" },
              			{ "mDataProp": "activity" },
              			{ "mDataProp": "table" },
 	      	        ],
 	        
 	        "fnServerData": function ( sSource, aoData, fnCallback, oSettings ) {
+	        	aoData.push( { "name": "columns", "value": "id_experiment" } );
 	        	aoData.push( { "name": "columns", "value": "filename" } );
 	        	aoData.push( { "name": "columns", "value": "activity" } );
 	        	aoData.push( { "name": "columns", "value": "table" } );

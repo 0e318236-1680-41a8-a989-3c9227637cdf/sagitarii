@@ -40,6 +40,12 @@
 											${instance.finishDateTime}
 										</td>
 									</tr>
+									<tr>
+										<td class="tableCellFormLeft">Elapsed</td>
+										<td class="tableCellFormRight"> 
+											${instance.elapsedTime}
+										</td>
+									</tr>
 								</table>
 							</div>
 						</div>

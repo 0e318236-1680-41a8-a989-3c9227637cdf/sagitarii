@@ -27,17 +27,19 @@ public class FileService {
 			String iDisplayStart, String iDisplayLength, String sEcho, String sSearch) throws Exception {
 
 		String search = "";
+		String pare = "";
 		if ( (sSearch != null) && ( !sSearch.equals("") ) ) {
-			search = " and cast(f as text) like '%" + sSearch + "%' or cast(a as text) like '%" + sSearch + "%'";
+			pare = "(";
+			search = " and cast(f as text) like '%" + sSearch + "%') or (a.tag like '%" + sSearch + "%' and f.id_experiment = " + idExperiment + ") ";
 		}
 		
 		String sql = "select f.*, a.tag as activity from files f join activities a on f.id_activity = a.id_activity "
-				+ "where f.id_experiment = " + idExperiment + search + 
+				+ "where " + pare + "f.id_experiment = " + idExperiment + search + 
 				" order by " + 
 				sortColumn + " " + sSortDir0 + " offset " + iDisplayStart + " limit " + iDisplayLength ;
 
 		String countSql = "select count(*) as qtd from files f join activities a on f.id_activity = a.id_activity "
-				+ "where f.id_experiment = " + idExperiment + search;
+				+ "where " + pare + "f.id_experiment = " + idExperiment + search;
 		
 		
 		Set<UserTableEntity> result = new HashSet<UserTableEntity>();

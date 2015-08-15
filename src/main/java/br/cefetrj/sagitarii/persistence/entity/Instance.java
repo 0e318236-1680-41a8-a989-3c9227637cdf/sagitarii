@@ -1,10 +1,12 @@
 package br.cefetrj.sagitarii.persistence.entity;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,6 +27,7 @@ import org.hibernate.annotations.Type;
 
 import br.cefetrj.sagitarii.core.types.ActivityType;
 import br.cefetrj.sagitarii.core.types.InstanceStatus;
+import br.cefetrj.sagitarii.misc.DateLibrary;
 
 @SuppressWarnings("serial")
 @Entity
@@ -74,6 +77,9 @@ public class Instance implements Serializable {
 	
 	@Transient
 	String finishedActivities;
+	
+	@Column(name="elapsed_time", length=50)
+	private String elapsedTime;
 	
 	public void decreaseQtdActivations() {
 		if ( qtdActivations > 0 ) {
@@ -184,6 +190,50 @@ public class Instance implements Serializable {
 
 	public void setFinishDateTime(Date finishDateTime) {
 		this.finishDateTime = finishDateTime;
+		evaluateTime();
 	}
+	
+	public void evaluateTime() {
+		elapsedTime = evaluateElapsedTime();
+	}
+	
+	private String evaluateElapsedTime() {
+		long millis = getElapsedMillis();
+		String time = String.format("%03d %02d:%02d:%02d", 
+				TimeUnit.MILLISECONDS.toDays( millis ),
+				TimeUnit.MILLISECONDS.toHours(millis),
+				TimeUnit.MILLISECONDS.toMinutes(millis) -  
+				TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)), 
+				TimeUnit.MILLISECONDS.toSeconds(millis) - 
+				TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
+		
+		return time;
+	}
+	
+	
+	public long getElapsedMillis() {
+		if ( status == InstanceStatus.PIPELINED ) return 0;
+		
+		DateLibrary dl = DateLibrary.getInstance();
+		dl.setTo( startDateTime );
+		Calendar cl = Calendar.getInstance();
+		
+		if ( finishDateTime != null ) {
+			cl.setTime( finishDateTime );
+		} else {
+			cl.setTime( Calendar.getInstance().getTime() );
+		}
+		
+		long millis = dl.getDiffMillisTo( cl ) ;
+
+		return millis;
+	}	
+	
+	
+	public String getElapsedTime() {
+		elapsedTime = evaluateElapsedTime();
+		return elapsedTime;
+	}
+	
 
 }

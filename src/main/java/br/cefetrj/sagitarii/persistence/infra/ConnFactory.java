@@ -8,7 +8,7 @@ import org.hibernate.service.ServiceRegistry;
 
 public class ConnFactory {
 	private static SessionFactory factory;
-	private static String myClass = "cmabreu.infra.database.ConnFactory";
+	private static String myClass = "br.cefetrj.infra.database.ConnFactory";
 	
 	private static void doLog( String s ) {
 		System.out.println(myClass + " " + s);

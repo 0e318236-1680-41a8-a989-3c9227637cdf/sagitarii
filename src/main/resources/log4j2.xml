@@ -75,7 +75,7 @@
 		</Logger>
 
 		<Logger name="br.cefetrj.sagitarii.persistence.services.RelationService" level="error" additivity="false"> 
-			<appender-ref ref="File"/> 
+			<appender-ref ref="Console"/> 
 		</Logger>
 
 		<Logger name="br.cefetrj.sagitarii.persistence.services.ExperimentService" level="error" additivity="false"> 

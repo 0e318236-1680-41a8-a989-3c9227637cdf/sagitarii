@@ -248,9 +248,7 @@ public class Experiment {
 	}
 	
 	private String evaluateElapsedTime() {
-		
 		long millis = getElapsedMillis();
-		
 		String time = String.format("%03d %02d:%02d:%02d", 
 				TimeUnit.MILLISECONDS.toDays( millis ),
 				TimeUnit.MILLISECONDS.toHours(millis),
@@ -260,7 +258,6 @@ public class Experiment {
 				TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
 		
 		return time;
-		
 	}
 	
 	public String getElapsedTime() {
