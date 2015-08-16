@@ -31,6 +31,10 @@ public class UserTableEntity {
 		return false;
 	}
 
+	public void removeColumn( String columnName ) {
+		data.remove(columnName);
+	}
+	
 	@SuppressWarnings("unchecked")
 	public void setData( String columnName, String value ) {
 		data.remove(columnName);

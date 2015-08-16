@@ -29,6 +29,14 @@ public class ClustersManager {
 		return cm;
 	}
 	
+	public int getCores() {
+		int cores = 0;
+		for ( Cluster clu : getClusterList()  ) {
+			cores = cores + clu.getAvailableProcessors();
+		}
+		return cores;
+	}
+	
 	public void clearNodeListeners( String macAddress ) {
 		logger.debug( "will clear listeners for node " + macAddress );
 		Cluster clu = getCluster(macAddress);

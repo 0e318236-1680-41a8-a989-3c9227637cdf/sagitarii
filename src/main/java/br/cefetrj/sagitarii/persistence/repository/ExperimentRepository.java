@@ -73,6 +73,7 @@ public class ExperimentRepository extends BasicRepository {
 		DaoFactory<Experiment> df = new DaoFactory<Experiment>();
 		IDao<Experiment> fm = df.getDao(this.session, Experiment.class);
 		try {
+			experiment.updateMetrics();
 			fm.updateDO(experiment);
 			commit();
 		} catch (UpdateException e) {

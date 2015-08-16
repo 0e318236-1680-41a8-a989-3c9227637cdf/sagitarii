@@ -79,7 +79,10 @@ public class Instance implements Serializable {
 	String finishedActivities;
 	
 	@Column(name="elapsed_time", length=50)
-	private String elapsedTime;
+	private String elapsedTime = "000 00:00:00";
+
+	@Column(name="elapsed_millis")
+	private long elapsedMillis = 0;
 	
 	public void decreaseQtdActivations() {
 		if ( qtdActivations > 0 ) {
@@ -212,21 +215,23 @@ public class Instance implements Serializable {
 	
 	
 	public long getElapsedMillis() {
-		if ( status == InstanceStatus.PIPELINED ) return 0;
-		
-		DateLibrary dl = DateLibrary.getInstance();
-		dl.setTo( startDateTime );
-		Calendar cl = Calendar.getInstance();
-		
-		if ( finishDateTime != null ) {
-			cl.setTime( finishDateTime );
+		if ( status == InstanceStatus.PIPELINED ) {
+			elapsedMillis = 0;
 		} else {
-			cl.setTime( Calendar.getInstance().getTime() );
-		}
 		
-		long millis = dl.getDiffMillisTo( cl ) ;
-
-		return millis;
+			DateLibrary dl = DateLibrary.getInstance();
+			dl.setTo( startDateTime );
+			Calendar cl = Calendar.getInstance();
+			
+			if ( finishDateTime != null ) {
+				cl.setTime( finishDateTime );
+			} else {
+				cl.setTime( Calendar.getInstance().getTime() );
+			}
+			
+			elapsedMillis = dl.getDiffMillisTo( cl ) ;
+		}
+		return elapsedMillis;
 	}	
 	
 	

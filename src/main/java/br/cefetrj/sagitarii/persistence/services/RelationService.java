@@ -117,6 +117,9 @@ public class RelationService {
 		boolean columnsDone = false;
 		StringBuilder csvData = new StringBuilder(); 
 		for ( UserTableEntity ute : utes ) {
+			ute.removeColumn("id_experiment");
+			ute.removeColumn("id_activity");
+			ute.removeColumn("id_instance");
 			String prefix = "";
 			for ( String column : ute.getColumnNames() ) {
 				String data = ute.getData( column );
@@ -599,6 +602,8 @@ public class RelationService {
 		}
 		return qtd;
 	}
+
+	
 	
 	
 	@SuppressWarnings("rawtypes")

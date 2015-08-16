@@ -7,11 +7,11 @@
 		<property name="hibernate.connection.driver_class">org.postgresql.Driver</property> 
 		<property name="hibernate.connection.url">jdbc:postgresql://localhost/sagitarii?ApplicationName=Sagitarii</property> 
 
-		<property name="hibernate.connection.username-p">sagitarii</property> 
-		<property name="hibernate.connection.password-p">Chiron2014!</property>  
+		<property name="hibernate.connection.username">sagitarii</property> 
+		<property name="hibernate.connection.password">Chiron2014!</property>  
 
-		<property name="hibernate.connection.username">postgres</property> 
-		<property name="hibernate.connection.password">admin</property>  
+		<property name="hibernate.connection.username-d">postgres</property> 
+		<property name="hibernate.connection.password-d">admin</property>  
 
 		<property name="hibernate.hbm2ddl.auto">update</property>
 

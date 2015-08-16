@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -25,9 +26,11 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Type;
 
+import br.cefetrj.sagitarii.core.UserTableEntity;
 import br.cefetrj.sagitarii.core.types.ExperimentStatus;
 import br.cefetrj.sagitarii.misc.DateLibrary;
 import br.cefetrj.sagitarii.misc.ZipUtil;
+import br.cefetrj.sagitarii.persistence.services.RelationService;
 
 @Entity
 @Table(name="experiments", indexes = {
@@ -75,6 +78,9 @@ public class Experiment {
 	@Column(length=15, name="elapsed_time")
 	private String elapsedTime;
 
+	@Column(length=15, name="serial_time")
+	private String serialTime;
+	
 	@Column
 	@Type(type="timestamp")
 	private Date finishDateTime;
@@ -85,6 +91,15 @@ public class Experiment {
 	@Column
 	@Type(type="timestamp")
 	private Date alterationDate;
+
+	@Column
+	private double speedUp;
+	
+	@Column
+	private double parallelEfficiency;
+
+	@Column
+	private int coresWorking;
 	
     public Experiment() {
         UUID uuid = UUID.randomUUID();
@@ -224,7 +239,7 @@ public class Experiment {
 
 	public void setFinishDateTime(Date finishDateTime) {
 		this.finishDateTime = finishDateTime;
-		elapsedTime = evaluateElapsedTime();
+		elapsedTime = getStringVersionOfTime( getElapsedMillis() );
 	}
 
 	
@@ -247,8 +262,7 @@ public class Experiment {
 		return millis;
 	}
 	
-	private String evaluateElapsedTime() {
-		long millis = getElapsedMillis();
+	private String getStringVersionOfTime( long millis ) {
 		String time = String.format("%03d %02d:%02d:%02d", 
 				TimeUnit.MILLISECONDS.toDays( millis ),
 				TimeUnit.MILLISECONDS.toHours(millis),
@@ -261,8 +275,65 @@ public class Experiment {
 	}
 	
 	public String getElapsedTime() {
-		elapsedTime = evaluateElapsedTime();
+		elapsedTime = getStringVersionOfTime( getElapsedMillis() );
 		return elapsedTime;
 	}
+	
+	public void updateMetrics() {
+		getSerialTime();
+		getParallelEfficiency();
+	}
+	
+	public String getSerialTime() {
+		serialTime = getStringVersionOfTime( getSerialTimeMillis() ); 
+		return serialTime;
+	}
 
+	public double getParallelEfficiency() {
+		double speedUp = getSpeedUp();
+		parallelEfficiency = speedUp * coresWorking;
+		return parallelEfficiency;
+	}
+	
+	public double getSpeedUp() {
+		double res = 0.0;
+		try {
+			double v1 = getElapsedMillis() + 0.0;
+			double v2 = getSerialTimeMillis() + 0.0;
+			res = v2 / v1;
+		} catch ( Exception  e) {
+			e.printStackTrace();
+		}
+		speedUp = res;
+		return speedUp;
+	}
+	
+	private long getSerialTimeMillis() {
+		int qtd = 0;
+		try {
+			RelationService rs = new RelationService();
+			Set<UserTableEntity> result = rs.genericFetchList("select sum(elapsed_millis) as sum from "
+					+ "instances where id_fragment in ( select id_fragment from fragments where id_experiment = "+idExperiment+" )");
+			
+			List<UserTableEntity> res = new ArrayList<UserTableEntity> ( result );
+			if ( res.size() > 0 ) {
+				UserTableEntity ute = res.get(0);
+				String sQtd = ute.getData("sum");
+				qtd = Integer.valueOf( sQtd );
+			}
+		} catch ( Exception e ) {
+			//
+		}
+		return qtd;
+	}
+	
+	
+	public void setCoresWorking(int coresWorking) {
+		this.coresWorking = coresWorking;
+	}
+	
+	public int getCoresWorking() {
+		return coresWorking;
+	}
+	
 }

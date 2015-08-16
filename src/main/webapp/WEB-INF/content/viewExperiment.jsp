@@ -89,6 +89,22 @@
 										<td class="tableCellFormLeft">Elapsed Time</td>
 										<td class="tableCellFormRight">${experiment.elapsedTime}</td>
 									</tr>
+
+									<tr>
+										<td class="tableCellFormLeft">Serial Time</td>
+										<td class="tableCellFormRight">${experiment.serialTime}</td>
+									</tr>
+
+									<tr>
+										<td class="tableCellFormLeft">Speedup Ratio</td>
+										<td class="tableCellFormRight">${experiment.speedUp}</td>
+									</tr>
+									
+									<tr>
+										<td class="tableCellFormLeft">Parallel Efficiency</td>
+										<td class="tableCellFormRight">${experiment.parallelEfficiency}</td>
+									</tr>
+
 									<tr>
 										<td class="tableCellFormLeft">Fragments</td>
 										<td class="tableCellFormRight"> 

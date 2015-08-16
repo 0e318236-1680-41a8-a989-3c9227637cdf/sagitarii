@@ -9,6 +9,7 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import br.cefetrj.sagitarii.core.ClustersManager;
 import br.cefetrj.sagitarii.core.FragmentInstancer;
 import br.cefetrj.sagitarii.core.Genesis;
 import br.cefetrj.sagitarii.core.Sagitarii;
@@ -169,6 +170,7 @@ public class ExperimentService {
 		oldExperiment.setFinishDateTime( experiment.getFinishDateTime() );
 		oldExperiment.setActivitiesSpecs( experiment.getActivitiesSpecs() );
 		oldExperiment.setImagePreviewData( experiment.getImagePreviewData() );
+		oldExperiment.setCoresWorking( ClustersManager.getInstance().getCores() );
 		
 		rep.newTransaction();
 		rep.updateExperiment(oldExperiment);
