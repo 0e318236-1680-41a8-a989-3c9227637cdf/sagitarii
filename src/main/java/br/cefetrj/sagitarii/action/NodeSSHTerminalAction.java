@@ -37,7 +37,7 @@ public class NodeSSHTerminalAction extends BasicActionClass {
 		SSHSessionManager mngr = SSHSessionManager.getInstance();
 
 		try {
-			session = mngr.getSession( cluster.getMacAddress() );
+			session = mngr.getSession( cluster.getMacAdress() );
 			if ( session == null ) {
 				
 				//No command / No login : Just entering the screen 
@@ -49,7 +49,7 @@ public class NodeSSHTerminalAction extends BasicActionClass {
 					String host = cluster.getIpAddress();
 
 					
-					session = mngr.newSession( cluster.getMachineName(), cluster.getMacAddress(), host, port, user, password );
+					session = mngr.newSession( cluster.getMachineName(), cluster.getMacAdress(), host, port, user, password );
 					//session = mngr.newSession( "SADLOG", cluster.getMacAddress(), "10.5.112.214", 22, "root", "sadlog" );
 
 					

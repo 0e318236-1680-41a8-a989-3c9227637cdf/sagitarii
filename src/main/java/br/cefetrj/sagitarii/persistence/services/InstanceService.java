@@ -28,24 +28,26 @@ public class InstanceService {
 		rep.closeSession();
 	}
 
-	public void finishInstance( Instance Instance ) throws UpdateException {
+	public void finishInstance( Instance instance ) throws UpdateException {
 		Instance oldInstance;
 		try {
-			oldInstance = rep.getInstance( Instance.getSerial() );
+			oldInstance = rep.getInstance( instance.getSerial() );
 		} catch (NotFoundException e) {
 			throw new UpdateException( e.getMessage() );
 		}
 		
 		oldInstance.setStatus(  InstanceStatus.FINISHED );
-		oldInstance.setStartDateTime( Instance.getStartDateTime() );
+		oldInstance.setStartDateTime( instance.getStartDateTime() );
 		oldInstance.setFinishDateTime( Calendar.getInstance().getTime() );
+		oldInstance.setExecutedBy( instance.getExecutedBy() );
+		oldInstance.setCoresUsed( instance.getCoresUsed() );
 
 		rep.newTransaction();
 		rep.updateInstance(oldInstance);
 	}	
 
-	public int insertInstance(Instance Instance) throws InsertException {
-		rep.insertInstance( Instance );
+	public int insertInstance(Instance instance) throws InsertException {
+		rep.insertInstance( instance );
 		return 0;
 	}
 	

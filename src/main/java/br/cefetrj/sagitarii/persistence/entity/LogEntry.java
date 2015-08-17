@@ -23,7 +23,7 @@ public class LogEntry {
 	@Column(name="id_log")
 	private int idLog;
 	
-	@Column(length=250, name="node_mac")
+	@Column(length=20, name="node_mac")
 	private String node;
 
 	@Column(name="date_time")

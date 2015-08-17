@@ -52,6 +52,12 @@ public class Instance implements Serializable {
 
 	@Column(name="id_fragment")
 	private int idFragment;
+
+	@Column( name = "cores_used")
+	private int coresUsed;
+	
+	@Column(length=20, name="executed_by")
+	private String executedBy;	
 	
 	@Column(length=15)
 	private String serial;
@@ -234,11 +240,25 @@ public class Instance implements Serializable {
 		return elapsedMillis;
 	}	
 	
-	
 	public String getElapsedTime() {
 		elapsedTime = evaluateElapsedTime();
 		return elapsedTime;
 	}
 	
-
+	public String getExecutedBy() {
+		return executedBy;
+	}
+	
+	public void setExecutedBy(String executedBy) {
+		this.executedBy = executedBy;
+	}
+	
+	public int getCoresUsed() {
+		return coresUsed;
+	}
+	
+	public void setCoresUsed(int coresUsed) {
+		this.coresUsed = coresUsed;
+	}
+	
 }

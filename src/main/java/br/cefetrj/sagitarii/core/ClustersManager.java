@@ -32,7 +32,9 @@ public class ClustersManager {
 	public int getCores() {
 		int cores = 0;
 		for ( Cluster clu : getClusterList()  ) {
-			cores = cores + clu.getAvailableProcessors();
+			if ( !clu.isMainCluster() ) {
+				cores = cores + clu.getAvailableProcessors();
+			}
 		}
 		return cores;
 	}
@@ -234,7 +236,7 @@ public class ClustersManager {
 	
 	private synchronized String getNextInstance( Cluster cluster ) {
 		String resposta = "";
-		String macAddress = cluster.getMacAddress();
+		String macAddress = cluster.getMacAdress();
 		Instance instance = Sagitarii.getInstance().getNextInstance();
 		if ( instance != null ) {
 			logger.debug( "sending instance (" + instance.getSerial() + ") "+ instance.getSerial() +" data to node " + macAddress );
@@ -308,7 +310,7 @@ public class ClustersManager {
 	
 	public Cluster getCluster(String macAddress) {
 		for ( Cluster clu : getClusterList()  ) {
-			if ( clu.getMacAddress().equalsIgnoreCase( macAddress ) ) {
+			if ( clu.getMacAdress().equalsIgnoreCase( macAddress ) ) {
 				return clu;
 			}
 		}

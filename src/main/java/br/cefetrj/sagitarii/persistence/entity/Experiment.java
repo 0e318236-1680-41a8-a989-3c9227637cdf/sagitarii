@@ -93,10 +93,10 @@ public class Experiment {
 	private Date alterationDate;
 
 	@Column
-	private double speedUp;
+	private double speedUp = 0.0;
 	
 	@Column
-	private double parallelEfficiency;
+	private double parallelEfficiency = 0.0;
 
 	@Column
 	private int coresWorking;
@@ -291,16 +291,16 @@ public class Experiment {
 
 	public double getParallelEfficiency() {
 		double speedUp = getSpeedUp();
-		parallelEfficiency = speedUp * coresWorking;
+		parallelEfficiency = speedUp / coresWorking;
 		return parallelEfficiency;
 	}
 	
 	public double getSpeedUp() {
 		double res = 0.0;
 		try {
-			double v1 = getElapsedMillis() + 0.0;
-			double v2 = getSerialTimeMillis() + 0.0;
-			res = v2 / v1;
+			double parallelTime = getElapsedMillis() + 0.0;
+			double sequencialTime = getSerialTimeMillis() + 0.0;
+			res = sequencialTime / parallelTime;
 		} catch ( Exception  e) {
 			e.printStackTrace();
 		}

@@ -26,7 +26,7 @@ import br.cefetrj.sagitarii.persistence.services.LogService;
 public class Cluster {
 	private ClusterType type;
 	private String soName;
-	private String macAddress;
+	private String macAdress;
 	private String ipAddress;
 	private ClusterStatus status;
 	private String machineName;
@@ -173,7 +173,7 @@ public class Cluster {
 	}
 	
 	public void inform( String instanceSerial ) {
-		logger.warn("asking Teapot for lost instance " + instanceSerial + " working at node " + macAddress );
+		logger.warn("asking Teapot for lost instance " + instanceSerial + " working at node " + macAdress );
 		
 		if ( status == ClusterStatus.DEAD ) {
 			logger.warn("this node is DEAD. try to recover lost instance from output buffer");
@@ -234,9 +234,9 @@ public class Cluster {
 	public synchronized boolean confirmReceiveData( ReceivedData rd ) throws Exception {
 		setLastAnnounce( Calendar.getInstance().getTime() );
 		if ( rd.hasData() ) {
-			debug( "[" + this.macAddress +  "] data received from instance " + rd.getInstance().getSerial() + " (" + rd.getActivity().getTag() + ") is done");
+			debug( "[" + this.macAdress +  "] data received from instance " + rd.getInstance().getSerial() + " (" + rd.getActivity().getTag() + ") is done");
 		} else {
-			logger.error( "[" + this.macAddress +  "] no data produced by instance " + rd.getInstance().getSerial() + " (" + rd.getActivity().getTag() + ")" );
+			logger.error( "[" + this.macAdress +  "] no data produced by instance " + rd.getInstance().getSerial() + " (" + rd.getActivity().getTag() + ")" );
 			setMessage("No data produced by instance " + rd.getInstance().getSerial() + " (" + rd.getActivity().getTag() + ")" );
 		}
 		
@@ -277,6 +277,8 @@ public class Cluster {
 					processedPipes++;
 					pipe.setStatus( InstanceStatus.FINISHED );
 					
+					pipe.setExecutedBy(macAdress);
+					pipe.setCoresUsed( availableProcessors );
 					Sagitarii.getInstance().finishInstance( pipe );
 					InstanceDeliveryControl.getInstance().removeUnit( instanceSerial );
 				} else {
@@ -316,7 +318,7 @@ public class Cluster {
 	public Cluster(ClusterType type, String javaVersion, String soFamily, String macAddress, String ipAddress, String machineName, Double cpuLoad, 
 			String soName, int availableProcessors,  int maxAllowedTasks, long freeMemory, long totalMemory) {
 		this.soName = soName;
-		this.macAddress = macAddress;
+		this.macAdress = macAddress;
 		this.ipAddress = ipAddress;
 		this.machineName = machineName;
 		this.cpuLoad = cpuLoad.intValue();
@@ -335,12 +337,12 @@ public class Cluster {
 	}
 	
 
-	public String getMacAddress() {
-		return macAddress;
+	public String getMacAdress() {
+		return macAdress;
 	}
 	
 	public void setMacAddress(String macAddress) {
-		this.macAddress = macAddress;
+		this.macAdress = macAddress;
 	}
 	public String getIpAddress() {
 		return ipAddress;
@@ -483,7 +485,7 @@ public class Cluster {
 		LogEntry le = new LogEntry();
 		le.setDateTime( Calendar.getInstance().getTime() );
 		le.setLog( logItem );
-		le.setNode( macAddress );
+		le.setNode( macAdress );
 		logEntries.add( le );
 		
 		counter++;
