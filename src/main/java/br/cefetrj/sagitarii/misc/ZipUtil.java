@@ -5,8 +5,18 @@ import java.io.ByteArrayOutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-public class ZipUtil {
+import javax.xml.bind.DatatypeConverter;
 
+public class ZipUtil {
+	
+	public static String toHexString( byte[] array ) {
+	    return DatatypeConverter.printHexBinary(array);
+	}
+	
+	public static byte[] toByteArray( String s ) {
+	    return DatatypeConverter.parseHexBinary(s);
+	}	
+	
 	public static byte[] compress(String string) {
 		byte[] compressed = null;
 		try {

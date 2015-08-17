@@ -11,6 +11,7 @@ import br.cefetrj.sagitarii.core.delivery.InstanceDeliveryControl;
 import br.cefetrj.sagitarii.core.types.ClusterType;
 import br.cefetrj.sagitarii.core.types.InstanceStatus;
 import br.cefetrj.sagitarii.misc.ProgressListener;
+import br.cefetrj.sagitarii.misc.ZipUtil;
 import br.cefetrj.sagitarii.misc.json.NodeTasks;
 import br.cefetrj.sagitarii.persistence.entity.Instance;
 
@@ -234,29 +235,40 @@ public class ClustersManager {
 	}
 	
 	
-	private synchronized String getNextInstance( Cluster cluster ) {
+	private synchronized String getNextInstance( Cluster cluster, int packageSize ) {
 		String resposta = "";
 		String macAddress = cluster.getMacAdress();
-		Instance instance = Sagitarii.getInstance().getNextInstance();
-		if ( instance != null ) {
-			logger.debug( "sending instance (" + instance.getSerial() + ") "+ instance.getSerial() +" data to node " + macAddress );
-			instance.setStatus( InstanceStatus.WAITING );
-			cluster.addInstance(instance);
-			resposta = fillInstanceID ( instance );
-			instance.setContent( resposta );
-			InstanceDeliveryControl.getInstance().addUnit(instance, macAddress);
-		} 
-		return resposta;
+		if ( packageSize < 1 ) { packageSize = 1; }
+		List<String> instancePack = new ArrayList<String>();
+		for ( int x=0; x < packageSize; x++) {
+			Instance instance = Sagitarii.getInstance().getNextInstance();
+			if ( instance != null ) {
+				logger.debug( "sending instance (" + instance.getSerial() + ") "+ instance.getSerial() +" data to node " + macAddress );
+				instance.setStatus( InstanceStatus.WAITING );
+				cluster.addInstance(instance);
+				resposta = fillInstanceID ( instance );
+				instance.setContent( resposta );
+				InstanceDeliveryControl.getInstance().addUnit(instance, macAddress);
+				
+				byte[] respCompressed = ZipUtil.compress( resposta );
+				String respHex = ZipUtil.toHexString( respCompressed );
+				
+				instancePack.add( respHex );
+				
+			}
+		}
+		
+		return instancePack.toString();
 	}
 	
-	public  String getTask(String macAddress) {
+	public  String getTask(String macAddress, int packageSize) {
 		logger.debug("node " + macAddress + " requesting task");
 		String resposta = "";
 		Cluster cluster = cm.getCluster(macAddress);
 		if ( (cluster != null)  ) {
 			// if it is allowed to receive new tasks...
 			if ( !cluster.signaled() ) {
-				resposta = getNextInstance( cluster );
+				resposta = getNextInstance( cluster, packageSize );
 			} else {
 				logger.warn("node " + macAddress + " not allowed to run tasks for now");
 				// if not...

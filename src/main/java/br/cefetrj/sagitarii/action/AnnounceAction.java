@@ -31,6 +31,7 @@ public class AnnounceAction  {
 	private Integer maxAllowedTasks;
 	private Long totalMemory;
 	private Long freeMemory;
+	private int packageSize;
 	
 	
 	public String execute(){
@@ -51,7 +52,9 @@ public class AnnounceAction  {
 				ClustersManager.getInstance().addOrUpdateCluster( ClusterType.NODE, javaVersion, soFamily, macAddress, 
 						localIpAddress, machineName, cpu, soName, availableProcessors, 
 						maxAllowedTasks, freeMemory, totalMemory );
-				resposta = ClustersManager.getInstance().getTask( macAddress );
+				
+				resposta = ClustersManager.getInstance().getTask( macAddress, packageSize );
+				
 			} catch ( Exception e ) {
 				e.printStackTrace();
 			}
@@ -118,6 +121,10 @@ public class AnnounceAction  {
 	
 	public void setTotalMemory(Long totalMemory) {
 		this.totalMemory = totalMemory;
+	}
+
+	public void setPackageSize(int packageSize) {
+		this.packageSize = packageSize;
 	}
 	
 }
