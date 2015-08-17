@@ -7,7 +7,7 @@
   <packaging>war</packaging>
   <version>1.0.345</version>
   <name>Sagitarii Data Science Workflow System</name>
-  <url>https://github.com/eic-cefet-rj/sagitarii/</url>
+  <url>http://eic-cefet-rj.github.io/sagitarii/</url>
 
 	<properties>
 		<jdk.version>1.7</jdk.version>
@@ -223,17 +223,21 @@
 			<id>icemagno</id>
 		</developer>
 	</developers>	
+	
 	<organization>
-		<name>Carlos Magno Oliveira de Abreu</name>
-		<url>http://www.cmabreu.com.br</url>
+		<name>Centro Federal de Educação Tecnológica Celso Suckow da Fonseca</name>
+		<url>http://www.cefet-rj.br</url>
 	</organization>
+	
 	<issueManagement>
 		<system>Github</system>
 		<url>https://github.com/eic-cefet-rj/sagitarii/issues</url>
 	</issueManagement>
+	
 	<ciManagement>
 		<system>Github</system>
 		<url>https://github.com/eic-cefet-rj/sagitarii</url>
 	</ciManagement>
 	
+	<description>Data Science Workflow System</description>
 </project>
