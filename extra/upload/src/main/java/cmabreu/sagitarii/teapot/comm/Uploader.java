@@ -37,7 +37,7 @@ public class Uploader {
 	public void uploadCSV(String fileName, String relationName, String experimentSerial, 
 			String filesFolderName, SystemProperties tm) throws Exception {
 		
-		String macAddress = tm.getMacAddress();
+		String macAddress = tm.getmacAddress();
 		logger.debug( "uploading " + fileName + " to " + relationName + " for experiment " + experimentSerial );
 		
 		Client client = new Client( gf );

@@ -237,13 +237,14 @@ public class ClustersManager {
 	
 	private synchronized String getNextInstance( Cluster cluster, int packageSize ) {
 		String resposta = "";
-		String macAddress = cluster.getMacAdress();
+		String macAddress = cluster.getmacAddress();
 		if ( packageSize < 1 ) { packageSize = 1; }
 		List<String> instancePack = new ArrayList<String>();
+		logger.debug( "node " + macAddress + " needs a package size of " + packageSize + " instance(s).");
 		for ( int x=0; x < packageSize; x++) {
 			Instance instance = Sagitarii.getInstance().getNextInstance();
 			if ( instance != null ) {
-				logger.debug( "sending instance (" + instance.getSerial() + ") "+ instance.getSerial() +" data to node " + macAddress );
+				logger.debug( " > sending instance (" + instance.getSerial() + ") "+ instance.getSerial() +" data to node " + macAddress );
 				instance.setStatus( InstanceStatus.WAITING );
 				cluster.addInstance(instance);
 				resposta = fillInstanceID ( instance );
@@ -252,13 +253,15 @@ public class ClustersManager {
 				
 				byte[] respCompressed = ZipUtil.compress( resposta );
 				String respHex = ZipUtil.toHexString( respCompressed );
-				
 				instancePack.add( respHex );
-				
-			}
+				logger.debug(" > compacted: " + respHex );
+			} 
 		}
-		
-		return instancePack.toString();
+		if ( instancePack.size() > 0 ) {
+			return instancePack.toString();
+		} else {
+			return "";
+		}
 	}
 	
 	public  String getTask(String macAddress, int packageSize) {
@@ -322,7 +325,7 @@ public class ClustersManager {
 	
 	public Cluster getCluster(String macAddress) {
 		for ( Cluster clu : getClusterList()  ) {
-			if ( clu.getMacAdress().equalsIgnoreCase( macAddress ) ) {
+			if ( clu.getmacAddress().equalsIgnoreCase( macAddress ) ) {
 				return clu;
 			}
 		}

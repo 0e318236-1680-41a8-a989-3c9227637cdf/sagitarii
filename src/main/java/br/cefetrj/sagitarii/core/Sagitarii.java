@@ -365,7 +365,9 @@ public class Sagitarii {
 		logger.debug("done updating fragments.");
 	}
 	
-
+	/**
+	 *	Discard instances in buffer that have no experiments (deleted) 
+	 */
 	private boolean hasOwner( Instance instance ) {
 		for ( Experiment exp : runningExperiments ) {
 			for( Fragment frag : exp.getFragments() ) {
@@ -384,7 +386,7 @@ public class Sagitarii {
 	 * 
 	 * @return Instance
 	 */
-	public Instance getNextInstance() {
+	public synchronized Instance getNextInstance() {
 		Instance next = instanceInputBuffer.poll();
 		if ( next != null ) {
 			if ( hasOwner(next) ) {

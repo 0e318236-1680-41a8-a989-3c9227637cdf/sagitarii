@@ -71,7 +71,7 @@ public class SystemProperties  {
 		}
 	}
 
-    public String getMacAddress() {
+    public String getmacAddress() {
     	return this.macAddress;
     }
 	
