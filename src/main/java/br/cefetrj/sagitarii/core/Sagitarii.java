@@ -137,6 +137,7 @@ public class Sagitarii {
 	 */
 	public synchronized void finishInstance( Instance instance ) {
 		logger.debug("instance " + instance.getSerial() + " is finished by " + instance.getExecutedBy() );
+		
 		try {
 			// Set as finished (database)
 			InstanceService instanceService = new InstanceService();
@@ -152,6 +153,9 @@ public class Sagitarii {
 			
 		} catch ( Exception e ) {
 			logger.error( e.getMessage() );
+			
+			e.printStackTrace();
+			
 		}
 	}
 	

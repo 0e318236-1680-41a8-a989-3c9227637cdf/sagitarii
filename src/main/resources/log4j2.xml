@@ -157,6 +157,9 @@
 			<appender-ref ref="File"/> 
 		</Logger>
 
+		<Logger name="br.cefetrj.sagitarii.core.processor.MainCluster" level="error" additivity="false"> 
+			<appender-ref ref="File"/> 
+		</Logger>
 		
 		<Logger name="br.cefetrj.sagitarii.persistence.repository.InstanceRepository" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 

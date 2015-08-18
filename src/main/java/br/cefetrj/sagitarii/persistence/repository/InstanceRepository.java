@@ -214,11 +214,13 @@ public class InstanceRepository extends BasicRepository {
 			instance.evaluateTime();
 			fm.updateDO(instance);
 			commit();
-		} catch (UpdateException e) {
+		} catch (Exception e) {
+			e.printStackTrace();
+			
 			logger.error( e.getMessage() );
 			rollBack();
 			closeSession();
-			throw e;
+			throw new UpdateException( e.getMessage() );
 		}
 		closeSession();
 		logger.debug("done");

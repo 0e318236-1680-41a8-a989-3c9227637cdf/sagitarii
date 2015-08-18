@@ -56,7 +56,7 @@ public class Instance implements Serializable {
 	@Column( name = "cores_used")
 	private int coresUsed;
 	
-	@Column(length=20, name="executed_by")
+	@Column(length=50, name="executed_by")
 	private String executedBy;	
 	
 	@Column(length=15)
