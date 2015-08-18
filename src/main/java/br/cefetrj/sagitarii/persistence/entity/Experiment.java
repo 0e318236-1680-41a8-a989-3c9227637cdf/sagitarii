@@ -290,21 +290,24 @@ public class Experiment {
 	}
 
 	public double getParallelEfficiency() {
-		double speedUp = getSpeedUp();
-		parallelEfficiency = speedUp / coresWorking;
+		getSpeedUp();
+		if ( speedUp == 0.0 ) {
+			parallelEfficiency = speedUp;
+		} else {
+			try {
+				parallelEfficiency = speedUp / coresWorking;
+			} catch ( Exception e ) { e.printStackTrace(); }
+		}
 		return parallelEfficiency;
 	}
 	
 	public double getSpeedUp() {
-		double res = 0.0;
+		speedUp = 0.0;
 		try {
-			double parallelTime = getElapsedMillis() + 0.0;
-			double sequencialTime = getSerialTimeMillis() + 0.0;
-			res = sequencialTime / parallelTime;
-		} catch ( Exception  e) {
-			e.printStackTrace();
-		}
-		speedUp = res;
+			long parallelTime = getElapsedMillis();
+			long sequencialTime = getSerialTimeMillis();
+			speedUp = (float)sequencialTime / (float)parallelTime;
+		} catch ( Exception  e) {	}
 		return speedUp;
 	}
 	
