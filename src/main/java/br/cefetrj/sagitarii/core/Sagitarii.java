@@ -136,7 +136,12 @@ public class Sagitarii {
 	 * processou e já entregou os dados produzidos de todas as tarefas)
 	 */
 	public synchronized void finishInstance( Instance instance ) {
-		logger.debug("instance " + instance.getSerial() + " is finished by " + instance.getExecutedBy() );
+		logger.debug("instance " + instance.getSerial() + " is finished by " + instance.getExecutedBy() +
+				". execution time: " + instance.getElapsedTime() );
+
+		System.out.println("instance " + instance.getSerial() + " is finished by " + instance.getExecutedBy() +
+				". execution time: " + instance.getElapsedTime() );
+		
 		
 		try {
 			// Set as finished (database)

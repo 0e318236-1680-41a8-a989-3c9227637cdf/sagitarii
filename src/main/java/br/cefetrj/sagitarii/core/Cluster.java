@@ -276,7 +276,7 @@ public class Cluster {
 					debug("instance " + instanceSerial + " finished");
 					processedPipes++;
 					pipe.setStatus( InstanceStatus.FINISHED );
-					
+					pipe.setFinishDateTime( Calendar.getInstance().getTime() );
 					pipe.setExecutedBy(macAddress);
 					pipe.setCoresUsed( availableProcessors );
 					Sagitarii.getInstance().finishInstance( pipe );
@@ -299,7 +299,6 @@ public class Cluster {
 	}
 	
 	public void addInstance( Instance pipe ) {
-		pipe.setStartDateTime( Calendar.getInstance().getTime() );
 		runningInstances.add( pipe ); 
 	}
 
@@ -308,7 +307,7 @@ public class Cluster {
 			if ( instance.getSerial().equalsIgnoreCase( instanceSerial ) ) {
 				instance.setStatus( InstanceStatus.PIPELINED );
 				runningInstances.remove( instance ); 
-				InstanceDeliveryControl.getInstance().removeUnit( instanceSerial );
+				InstanceDeliveryControl.getInstance().cancelUnit( instanceSerial );
 				Sagitarii.getInstance().returnToBuffer(instance);
 				break;
 			}

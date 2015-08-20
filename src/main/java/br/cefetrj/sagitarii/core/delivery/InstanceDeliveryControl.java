@@ -150,6 +150,14 @@ public class InstanceDeliveryControl {
 		units.add(du);
 	}
 
+	public void cancelUnit( String instanceSerial ) {
+		for ( DeliveryUnit du : units ) {
+			if ( du.getInstance().getSerial().equalsIgnoreCase( instanceSerial ) ) {
+				units.remove( du );
+				break;
+			}
+		}
+	}
 	
 	public void removeUnit( String instanceSerial ) {
 		for ( DeliveryUnit du : units ) {

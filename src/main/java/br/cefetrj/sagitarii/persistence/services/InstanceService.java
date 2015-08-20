@@ -1,6 +1,5 @@
 package br.cefetrj.sagitarii.persistence.services;
 
-import java.util.Calendar;
 import java.util.List;
 
 import br.cefetrj.sagitarii.core.types.InstanceStatus;
@@ -38,7 +37,7 @@ public class InstanceService {
 		
 		oldInstance.setStatus(  InstanceStatus.FINISHED );
 		oldInstance.setStartDateTime( instance.getStartDateTime() );
-		oldInstance.setFinishDateTime( Calendar.getInstance().getTime() );
+		oldInstance.setFinishDateTime( instance.getFinishDateTime() );
 		oldInstance.setExecutedBy( instance.getExecutedBy() );
 		oldInstance.setCoresUsed( instance.getCoresUsed() );
 

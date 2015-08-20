@@ -232,9 +232,13 @@ public class RelationService {
 					String data = ute.getData( columnName ); 
 					
 					if ( DomainStorage.getInstance().domainExists(domainName)  ) {
-						fs.newTransaction();
-						FileLight fil = fs.getFileLight( Integer.valueOf( ute.getData(columnName) ) );
-						data = "<a href='getFile?idFile="+data+"'>" + fil.getFileName() + "</a>";
+						try {
+							fs.newTransaction();
+							FileLight fil = fs.getFileLight( Integer.valueOf( ute.getData(columnName) ) );
+							data = "<a href='getFile?idFile="+data+"'>" + fil.getFileName() + "</a>";
+						} catch ( Exception e ) {
+							//
+						}
 					}
 
 					if ( columnName.equals("id_instance") ) {

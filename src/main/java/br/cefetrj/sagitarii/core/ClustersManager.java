@@ -245,6 +245,7 @@ public class ClustersManager {
 			Instance instance = Sagitarii.getInstance().getNextInstance();
 			if ( instance != null ) {
 				logger.debug( " > sending instance (" + instance.getSerial() + ") "+ instance.getSerial() +" data to node " + macAddress );
+				instance.setStartDateTime( Calendar.getInstance().getTime() );
 				instance.setStatus( InstanceStatus.WAITING );
 				cluster.addInstance(instance);
 				resposta = fillInstanceID ( instance );

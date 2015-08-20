@@ -93,10 +93,10 @@ public class Experiment {
 	private Date alterationDate;
 
 	@Column
-	private double speedUp = 0.0;
+	private Double speedUp = 0.0;
 	
 	@Column
-	private double parallelEfficiency = 0.0;
+	private Double parallelEfficiency = 0.0;
 
 	@Column
 	private int coresWorking;
@@ -298,6 +298,7 @@ public class Experiment {
 				parallelEfficiency = speedUp / coresWorking;
 			} catch ( Exception e ) { e.printStackTrace(); }
 		}
+		if ( parallelEfficiency.isNaN() ) parallelEfficiency = 0.0;
 		return parallelEfficiency;
 	}
 	
@@ -306,8 +307,9 @@ public class Experiment {
 		try {
 			long parallelTime = getElapsedMillis();
 			long sequencialTime = getSerialTimeMillis();
-			speedUp = (float)sequencialTime / (float)parallelTime;
+			speedUp = (double)sequencialTime / (double)parallelTime;
 		} catch ( Exception  e) {	}
+		if ( speedUp.isNaN() ) speedUp = 0.0;
 		return speedUp;
 	}
 	
