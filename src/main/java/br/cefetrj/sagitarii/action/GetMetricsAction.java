@@ -10,7 +10,7 @@ import org.jfree.chart.JFreeChart;
 import br.cefetrj.sagitarii.metrics.MetricController;
 
 @Action (value = "getMetrics", results = { 
-		@Result ( type="chart", params = {"width", "420", "height", "220"} , name = "ok") }, 
+		@Result ( type="chart", params = {"width", "210", "height", "110"} , name = "ok") }, 
 		interceptorRefs= { @InterceptorRef("seguranca") } 
 ) 
 

@@ -89,26 +89,18 @@ public class MetricValueEntity implements IMetricEntity {
         
         StandardChartTheme chartTheme = (StandardChartTheme)org.jfree.chart.StandardChartTheme.createJFreeTheme();
         
-        final Font oldExtraLargeFont = chartTheme.getExtraLargeFont();
-        final Font oldLargeFont = chartTheme.getLargeFont();
-        final Font oldRegularFont = chartTheme.getRegularFont();
         final Font oldSmallFont = chartTheme.getSmallFont();
+        final Font smallFont = new Font("Consolas", oldSmallFont.getStyle(), 8);
 
-        final Font extraLargeFont = new Font("Consolas", oldExtraLargeFont.getStyle(), oldExtraLargeFont.getSize());
-        final Font largeFont = new Font("Consolas", oldLargeFont.getStyle(), oldLargeFont.getSize());
-        final Font regularFont = new Font("Consolas", oldRegularFont.getStyle(), oldRegularFont.getSize());
-        final Font smallFont = new Font("Consolas", oldSmallFont.getStyle(), oldSmallFont.getSize());
-
-        chartTheme.setExtraLargeFont(extraLargeFont);
-        chartTheme.setLargeFont(largeFont);
-        chartTheme.setRegularFont(regularFont);
+        chartTheme.setExtraLargeFont(smallFont);
+        chartTheme.setLargeFont(smallFont);
+        chartTheme.setRegularFont(smallFont);
         chartTheme.setSmallFont(smallFont);
-
         chartTheme.apply(retChart);        
 
-        
         retChart.setAntiAlias(true);
         retChart.setTextAntiAlias(true);
+        
         
         XYPlot plot = (XYPlot) retChart.getPlot();
         plot.setBackgroundPaint( Color.white );
@@ -116,7 +108,7 @@ public class MetricValueEntity implements IMetricEntity {
         plot.setRangeGridlinePaint( new Color(  220, 220, 220) );
         
         plot.getRenderer().setSeriesPaint( 0, new Color( 200, 2, 3) );
-        plot.getRenderer().setSeriesStroke( 0, new BasicStroke( 2 ) );
+        plot.getRenderer().setSeriesStroke( 0, new BasicStroke( 1 ) );
         
         ValueAxis domain = plot.getDomainAxis();
         domain.setVisible(false);
