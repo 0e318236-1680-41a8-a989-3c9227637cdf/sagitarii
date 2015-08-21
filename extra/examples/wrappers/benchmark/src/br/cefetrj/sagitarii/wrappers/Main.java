@@ -1,4 +1,4 @@
-package cmabreu.sagitarii.spectral;
+package br.cefetrj.sagitarii.wrappers;
 
 import cmabreu.sagitarii.sdk.Wrapper;
 

@@ -1,4 +1,4 @@
-package cmabreu.sagitarii.spectral;
+package br.cefetrj.sagitarii.wrappers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,26 +41,8 @@ public class Processor implements IWrapperProcessor {
 		
 		System.out.println("Source Data: " + attr01 + "/" + attr02 + "/" + attr03);
 		
-		String str = "";
-		double xxx = 0.0;
         try {
-            // sleep for 1 second to simulate a remote call,
-            // just waiting for the call to return
-            Thread.sleep(4000);
-            // loop that just concatenate a str to simulate
-            // work on the result form remote call
-            for (int index = 0; index < 20000; index++) {
-            	xxx = 23 * 3 + index / 34 + Math.acos( xxx ) + Math.PI / 2;
-                str = str + 't';
-            }
-            for (int index = 0; index < 20000; index++) {
-            	xxx = 23 * 3 + index / 34 + Math.acos( xxx ) + Math.PI / 2;
-                str = str + 't';
-            }
-            for (int index = 0; index < 20000; index++) {
-            	xxx = 23 * 3 + index / 34 + Math.acos( xxx ) + Math.PI / 2;
-                str = str + 't';
-            }
+            Thread.sleep(20000);
         } catch (InterruptedException e) {
         }
 		
