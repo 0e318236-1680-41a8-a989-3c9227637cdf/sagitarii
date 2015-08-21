@@ -32,6 +32,7 @@ public class AnnounceAction  {
 	private Long totalMemory;
 	private Long freeMemory;
 	private int packageSize;
+	private double memoryPercent;
 	
 	
 	public String execute(){
@@ -51,7 +52,7 @@ public class AnnounceAction  {
 				cpu = Double.valueOf( cpuLoad );
 				ClustersManager.getInstance().addOrUpdateCluster( ClusterType.NODE, javaVersion, soFamily, macAddress, 
 						localIpAddress, machineName, cpu, soName, availableProcessors, 
-						maxAllowedTasks, freeMemory, totalMemory );
+						maxAllowedTasks, freeMemory, totalMemory, memoryPercent );
 				
 				resposta = ClustersManager.getInstance().getTask( macAddress, packageSize );
 				
@@ -125,6 +126,10 @@ public class AnnounceAction  {
 
 	public void setPackageSize(int packageSize) {
 		this.packageSize = packageSize;
+	}
+	
+	public void setMemoryPercent(double memoryPercent) {
+		this.memoryPercent = memoryPercent;
 	}
 	
 }

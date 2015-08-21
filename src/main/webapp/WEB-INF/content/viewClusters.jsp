@@ -61,7 +61,7 @@
 						</tr>
 						<tr>
 							<td><span class="dicas" title="Status">${cluster.status}</span></td>
-							<td><span class="dicas" title="Running / Max">${fn:length(cluster.runningInstances)}
+							<td><span class="dicas" title="Running / Max">${fn:length(cluster.tasks)}
 									/ ${cluster.maxAllowedTasks}</span></td>
 							<td><span class="dicas" title="Finished">${cluster.processedPipes}</span></td>
 						</tr>

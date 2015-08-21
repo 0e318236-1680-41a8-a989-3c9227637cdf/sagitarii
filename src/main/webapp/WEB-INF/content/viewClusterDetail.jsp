@@ -111,6 +111,14 @@
 				</table>
 
 				<c:if test="${not fn:contains(cluster.type, 'MAIN')}">
+					<table	style="margin-bottom: 5px; width: 98%; margin-left: 10px; margin-top: 20px">
+						<tr>
+							<td colspan="3"><img style="width:100%;height:200px" src="getNodeMetrics?macAddress=${cluster.macAddress}"> </td>
+						</tr>
+					</table>
+				</c:if>
+
+				<c:if test="${not fn:contains(cluster.type, 'MAIN')}">
 					<c:if test="${fn:length(cluster.progressListeners) > 0}">
 						<table
 							style="margin-bottom: 5px; width: 98%; margin-left: 10px; margin-top: 20px">

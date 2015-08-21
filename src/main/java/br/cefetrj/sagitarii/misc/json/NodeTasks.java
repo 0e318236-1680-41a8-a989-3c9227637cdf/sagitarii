@@ -10,7 +10,16 @@ public class NodeTasks {
 	private String freeDiskSpace;
 	private String totalDiskSpace;
 	private String maximunLimit;
+	private double memoryPercent; 
 	private List<NodeTask> data;
+	
+	public void setMemoryPercent(double memoryPercent) {
+		this.memoryPercent = memoryPercent;
+	}
+	
+	public double getMemoryPercent() {
+		return memoryPercent;
+	}
 	
 	public long getFreeDiskSpace() {
 		return Long.parseLong(freeDiskSpace);

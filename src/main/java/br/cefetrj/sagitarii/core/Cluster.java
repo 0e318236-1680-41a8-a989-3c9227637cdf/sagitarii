@@ -15,6 +15,7 @@ import br.cefetrj.sagitarii.core.types.ClusterType;
 import br.cefetrj.sagitarii.core.types.InstanceStatus;
 import br.cefetrj.sagitarii.metrics.MetricController;
 import br.cefetrj.sagitarii.metrics.MetricType;
+import br.cefetrj.sagitarii.metrics.NodeLoadMonitorEntity;
 import br.cefetrj.sagitarii.misc.DateLibrary;
 import br.cefetrj.sagitarii.misc.ProgressListener;
 import br.cefetrj.sagitarii.misc.json.NodeTask;
@@ -57,6 +58,16 @@ public class Cluster {
 	private List<String> log = new ArrayList<String>();
 	private List<LogEntry> logEntries = new ArrayList<LogEntry>();
 	private int counter = 0;
+	private NodeLoadMonitorEntity metrics;
+	private double memoryPercent;
+	
+	public void setMemoryPercent(double memoryPercent) {
+		this.memoryPercent = memoryPercent;
+	}
+	
+	public NodeLoadMonitorEntity getMetrics() {
+		return metrics;
+	}
 	
 	public boolean signaled() {
 		return ( restartSignal || quitSignal || cleanWorkspaceSignal || reloadWrappersSignal || askingForInstance );
@@ -125,11 +136,13 @@ public class Cluster {
 	}
 	
 	public double getMemoryPercent() {
+		/*
 		double percent = 0;
 		try {
 			percent = Math.round( (freeMemory * 100 ) / totalMemory );
 		} catch ( Exception ignored ) {}
-		return percent;
+		*/
+		return Math.ceil( memoryPercent );
 	}
 	
 	public double getDiskPercent() {
@@ -333,8 +346,12 @@ public class Cluster {
 		this.runningInstances = new ArrayList<Instance>();
 		this.progressListeners = new ArrayList<ProgressListener>(); 
 		this.type = type;
+		metrics = new NodeLoadMonitorEntity( macAddress, MetricType.NODE_LOAD );
 	}
 	
+	private void addMetrics(  double valueCpu, double valueRam, double valueTasks ) {
+		metrics.set(valueCpu, valueRam, valueTasks);
+	}
 
 	public String getmacAddress() {
 		return macAddress;
@@ -390,6 +407,12 @@ public class Cluster {
 				this.status = ClusterStatus.ACTIVE;
 			}
 		}
+		try {
+			addMetrics( cpuLoad, memoryPercent, tasks.size());
+		} catch ( Exception e ) {
+			
+		}
+
 	}
 	
 	public String getLastAnnounce() {

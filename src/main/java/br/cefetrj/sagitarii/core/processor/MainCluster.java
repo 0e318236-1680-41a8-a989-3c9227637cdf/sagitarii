@@ -44,7 +44,8 @@ public class MainCluster implements Runnable {
     	}
     	return result;
     }   	
-	
+    
+
 	@Override
 	public void run() {
 		long freeMemory = 0;
@@ -54,7 +55,11 @@ public class MainCluster implements Runnable {
 			totalMemory = Configurator.getInstance().getTotalMemory();
 		} catch ( Exception e ) {  }
 			
-		Cluster cluster = ClustersManager.getInstance().addOrUpdateCluster(ClusterType.MAIN, "0.0", "Local System", macAddress, "Local Machine", "Sagitarii Server", getProcessCpuLoad(), "Main Cluster", 8, maxAllowedTasks, freeMemory, totalMemory );
+		Cluster cluster = ClustersManager.getInstance()
+				.addOrUpdateCluster(ClusterType.MAIN, "0.0", "Local System", macAddress, 
+						"Local Machine", "Sagitarii Server", getProcessCpuLoad(), 
+						"Main Cluster", 8, maxAllowedTasks, 
+						freeMemory, totalMemory, Math.round( (freeMemory * 100 ) / totalMemory ) );
 		try {
 			if ( cluster != null ) {
 				cluster.setAsMainCluster();

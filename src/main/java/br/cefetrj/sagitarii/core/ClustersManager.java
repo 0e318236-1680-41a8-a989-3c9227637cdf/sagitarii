@@ -103,6 +103,7 @@ public class ClustersManager {
 				cluster.setTotalDiskSpace( tasks.getTotalDiskSpace() );
 				cluster.setTasks( tasks.getData() );
 				cluster.setMaxAllowedTasks( tasks.getMaximunLimit() );
+				cluster.setMemoryPercent( tasks.getMemoryPercent() );
 				cluster.updateStatus();
 			}
 			
@@ -343,7 +344,8 @@ public class ClustersManager {
 	
 	public Cluster addOrUpdateCluster(ClusterType type, String javaVersion, String soFamily, String macAddress, 
 			String ipAddress, String machineName, Double cpuLoad, String soName, 
-			int availableProcessors, int maxAllowedTasks, long freeMemory, long totalMemory) {
+			int availableProcessors, int maxAllowedTasks, long freeMemory, long totalMemory,
+			double memoryPercent) {
 		Cluster retorno = null;
 		
 		Cluster clu = cm.getCluster(macAddress);
@@ -357,6 +359,7 @@ public class ClustersManager {
 			clu.setMaxAllowedTasks( maxAllowedTasks );
 			clu.setTotalMemory(totalMemory);
 			clu.setFreeMemory(freeMemory);
+			clu.setMemoryPercent( memoryPercent );
 			clu.updateStatus();
 			retorno = clu;
 		} else {
