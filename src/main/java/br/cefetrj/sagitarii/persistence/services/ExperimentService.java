@@ -120,39 +120,53 @@ public class ExperimentService {
 		rep.newTransaction();
 		rep.updateExperiment(experiment);
 
-		logger.debug("Genesis is converting JSON specifications and fragmenting...");
-		// Gerar atividades basado na especificação JSON
-		Genesis ag = new Genesis();
-		ag.generate(experiment);
-
-		// Fragmentar baseado nos tipos de atividades e dados disponíveis.
-		int acts = ag.getActivities().size();
-		int frgs = experiment.getFragments().size();
-
-		logger.debug("fragmenting is done. storing now.");
-		new FragmentService().insertFragmentList( experiment.getFragments() );
 		
-		experiment.setStatus( ExperimentStatus.RUNNING );
-		experiment.setLastExecutionDate( Calendar.getInstance().getTime() );
-
-		// Gerar instances do primeiro fragmento que pode ser executado.
-		logger.debug("creating instances");
-		FragmentInstancer fp = new FragmentInstancer( experiment );
-		fp.generate();
+		try {
 		
-		int pips = fp.getInstances().size();
-		
-		logger.debug( acts + " activities generated." );
-		logger.debug( frgs + " fragments generated." );
-		logger.debug( pips + " instances generated." );
+			logger.debug("Genesis is converting JSON specifications and fragmenting...");
+			// Gerar atividades basado na especificação JSON
+			Genesis ag = new Genesis();
+			ag.generate(experiment);
+	
+			// Fragmentar baseado nos tipos de atividades e dados disponíveis.
+			int acts = ag.getActivities().size();
+			int frgs = experiment.getFragments().size();
+	
+			logger.debug("fragmenting is done. storing now.");
+			new FragmentService().insertFragmentList( experiment.getFragments() );
+			
+			experiment.setStatus( ExperimentStatus.RUNNING );
+			experiment.setLastExecutionDate( Calendar.getInstance().getTime() );
+	
+			// Gerar instances do primeiro fragmento que pode ser executado.
+			logger.debug("creating instances");
+			FragmentInstancer fp = new FragmentInstancer( experiment );
+			fp.generate();
+			
+			int pips = fp.getInstances().size();
+			
+			logger.debug( acts + " activities generated." );
+			logger.debug( frgs + " fragments generated." );
+			logger.debug( pips + " instances generated." );
+	
+			logger.debug("saving experiment");
+			rep.newTransaction();
+			rep.updateExperiment(experiment);
+	
+			Sagitarii.getInstance().addRunningExperiment(experiment);
+			
+			logger.debug( "Experiment " + experiment.getTagExec() + " is now running with " + acts + " activities, " + frgs + " fragments and " + pips + " instances.");
+			
+		} catch ( Exception e ) {
+			logger.error( e.getMessage() );
 
-		logger.debug("saving experiment");
-		rep.newTransaction();
-		rep.updateExperiment(experiment);
-
-		Sagitarii.getInstance().addRunningExperiment(experiment);
-		
-		logger.debug( "Experiment " + experiment.getTagExec() + " is now running with " + acts + " activities, " + frgs + " fragments and " + pips + " instances.");
+			logger.debug("setting experiment status to STOPPED due to starting error");
+			experiment.setStatus( ExperimentStatus.STOPPED );
+			rep.newTransaction();
+			rep.updateExperiment(experiment);
+			
+			throw e;
+		}
 		return experiment;
 	}
 
