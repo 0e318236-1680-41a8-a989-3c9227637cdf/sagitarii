@@ -122,6 +122,11 @@
 
 <script>
 
+	function submit() {
+		showMessageBox("Wait...");
+		$("#frmCommand").submit();
+	}
+
 	function upload() {
 		$("#uploadBar").css("display","block");
 	}
@@ -142,17 +147,17 @@
 
 	function repeat( command ) {
 		$("#command").val( command );
-		$("#frmCommand").submit();
+		submit();
 	}
 
 	function logout( ) {
 		$("#command").val( "logout" );
-		$("#frmCommand").submit();
+		submit();
 	}
 	
 	function callSudo( ) {
 		$("#command").val( "sudo" );
-		$("#frmCommand").submit();
+		submit();
 	}
 	
 	function back() {
@@ -186,7 +191,7 @@
 		$("#command").keypress(function(event) {
 		    if (event.which == 13) {
 		        event.preventDefault();
-		        $("#frmCommand").submit();
+		        submit();
 		    }
 		});
 		
