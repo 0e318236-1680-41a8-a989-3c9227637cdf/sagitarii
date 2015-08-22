@@ -13,19 +13,19 @@ import br.cefetrj.sagitarii.core.ClustersManager;
 
 import com.opensymphony.xwork2.ActionContext;
 
-@Action(value="receiveErrorLog", results= {  
+@Action(value="receiveNodeLog", results= {  
 	    @Result(name="ok", type="httpheader", params={"status", "200"}) }
 )   
 
 @ParentPackage("default")
-public class ReceiveErrorLogAction extends BasicActionClass {
+public class ReceiveNodeLogAction extends BasicActionClass {
 	private String macAddress;
 	private String errorLog;
 	
 	public String execute(){
 		String resposta = "";
 		
-		ClustersManager.getInstance().setTeapotMessage(errorLog, macAddress);
+		ClustersManager.getInstance().receiveNodeLog(errorLog, macAddress);
 		
 		try { 
 			HttpServletResponse response = (HttpServletResponse)ActionContext.getContext().get(StrutsStatics.HTTP_RESPONSE);

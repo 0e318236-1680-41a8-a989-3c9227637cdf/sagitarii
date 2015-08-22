@@ -112,7 +112,7 @@ public class ClustersManager {
 		}
 	}
 
-	public void setTeapotMessage( String message, String macAddress) {
+	public void receiveNodeLog( String message, String macAddress) {
 		logger.debug( "node " + macAddress + " report: " + message );
 		Cluster clu = getCluster(macAddress);
 		clu.setMessage( message );
