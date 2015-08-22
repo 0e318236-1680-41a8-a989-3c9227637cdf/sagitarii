@@ -55,6 +55,13 @@ public class Sagitarii {
 		}
 	}
 	
+	
+	public void updateExperimentsWorkingCores( int coresWorking ) {
+		for ( Experiment experiment : runningExperiments ) {
+			experiment.setCoresWorking( ClustersManager.getInstance().getCores() );
+		}
+	}
+	
 	/** 
 	 * A cada ciclo, elege um experimento para ter seus instances processados.
 	 * No momento estou usando uma roleta simples, onde todos os experimentos
@@ -139,10 +146,6 @@ public class Sagitarii {
 		logger.debug("instance " + instance.getSerial() + " is finished by " + instance.getExecutedBy() +
 				". execution time: " + instance.getElapsedTime() );
 
-		System.out.println("instance " + instance.getSerial() + " is finished by " + instance.getExecutedBy() +
-				". execution time: " + instance.getElapsedTime() );
-		
-		
 		try {
 			// Set as finished (database)
 			InstanceService instanceService = new InstanceService();

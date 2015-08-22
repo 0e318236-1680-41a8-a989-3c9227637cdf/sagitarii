@@ -290,12 +290,16 @@ public class Experiment {
 	}
 
 	public double getParallelEfficiency() {
+		if ( coresWorking == 0 ) return 0.0;
 		getSpeedUp();
 		if ( speedUp == 0.0 ) {
 			parallelEfficiency = speedUp;
 		} else {
 			try {
 				parallelEfficiency = speedUp / coresWorking;
+				
+				System.out.println( parallelEfficiency + " = " + speedUp + " / " + coresWorking );
+				
 			} catch ( Exception e ) { e.printStackTrace(); }
 		}
 		if ( parallelEfficiency.isNaN() ) parallelEfficiency = 0.0;
