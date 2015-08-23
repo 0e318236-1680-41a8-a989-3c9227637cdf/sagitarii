@@ -31,6 +31,11 @@ public class Configurator {
 	private int fileReceiverChunkBufferSize;
 	private char CSVDelimiter;
 	private long firstDelayLimitSeconds;
+	private boolean useDynamicLoadBalancer;
+	
+	public boolean useDynamicLoadBalancer() {
+		return this.useDynamicLoadBalancer;
+	}
 	
 	public long getFirstDelayLimitSeconds() {
 		return firstDelayLimitSeconds;
@@ -155,11 +160,18 @@ public class Configurator {
 			fileReceiverPort = Integer.valueOf( getTagValue("fileReceiverPort", mpElement) );
 			fileReceiverChunkBufferSize = Integer.valueOf( getTagValue("fileReceiverChunkBufferSize", mpElement) );
 			firstDelayLimitSeconds = Long.valueOf( getTagValue("firstDelayLimitSeconds", mpElement) );
+			
+			String tempUseDLB = getTagValue("useDynamicLoadBalancer", mpElement).toLowerCase(); 
+			String fisrtIsUpper = Character.toUpperCase(tempUseDLB.charAt(0)) + tempUseDLB.substring(1);
+			
+			useDynamicLoadBalancer = Boolean.valueOf( tempUseDLB );
+			
+			System.out.println(tempUseDLB + " " + fisrtIsUpper + " " + useDynamicLoadBalancer );
+					
 			CSVDelimiter = getTagValue("CSVDelimiter", mpElement).charAt(0);
 		} catch ( Exception e ) {
 			System.out.println( e.getMessage() );
 		}
 	}
-	
 	
 }

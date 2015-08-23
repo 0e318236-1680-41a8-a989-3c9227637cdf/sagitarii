@@ -1,21 +1,16 @@
 package br.cefetrj.sagitarii.action;
 
 import java.util.List;
-import java.util.Queue;
 
 import br.cefetrj.sagitarii.core.Sagitarii;
 import br.cefetrj.sagitarii.core.config.Configurator;
 import br.cefetrj.sagitarii.persistence.entity.Experiment;
-import br.cefetrj.sagitarii.persistence.entity.Instance;
 import br.cefetrj.sagitarii.persistence.entity.User;
 
 import com.opensymphony.xwork2.ActionContext;
 
 public class BasicActionClass {
 	private List<Experiment> runningExperiments;
-	private Queue<Instance> instanceInputBuffer;
-	private Queue<Instance> instanceJoinInputBuffer;
-	private Queue<Instance> instanceOutputBuffer;	
 	private Experiment experimentOnTable;
 	private Experiment experimentOnTableJoin;
 	private int maxBufferCapacity;
@@ -23,6 +18,11 @@ public class BasicActionClass {
 	private long freeMemory = 0;
 	private long totalMemory = 0;
 	private double cpuLoad = 0;
+	private String useDLB;
+	
+	public String getUseDLB() {
+		return useDLB;
+	}
 	
 	public double getMemoryPercent() {
 		double percent = Math.round( (freeMemory * 100 ) / totalMemory );
@@ -59,10 +59,17 @@ public class BasicActionClass {
 
 	public BasicActionClass() {
 		Sagitarii sagi = Sagitarii.getInstance();
+		useDLB = "No";
+		try {
+			if ( Configurator.getInstance().useDynamicLoadBalancer() ) {
+				useDLB = "Yes";
+			}
+		} catch ( Exception e ) {
+			e.printStackTrace();
+		}
+				
+		
 		runningExperiments = sagi.getRunningExperiments();
-		instanceInputBuffer = sagi.getInstanceInputBuffer();
-		instanceJoinInputBuffer = sagi.getInstanceJoinInputBuffer();
-		instanceOutputBuffer = sagi.getInstanceOutputBuffer();
 		experimentOnTable = sagi.getExperimentOnTable();
 		experimentOnTableJoin = sagi.getExperimentOnTableJoin();
 		maxBufferCapacity = sagi.getMaxInputBufferCapacity();
@@ -77,18 +84,6 @@ public class BasicActionClass {
 
 	public List<Experiment> getRunningExperiments() {
 		return runningExperiments;
-	}
-
-	public Queue<Instance> getInstanceInputBuffer() {
-		return instanceInputBuffer;
-	}
-
-	public Queue<Instance> getInstanceJoinInputBuffer() {
-		return instanceJoinInputBuffer;
-	}
-
-	public Queue<Instance> getInstanceOutputBuffer() {
-		return instanceOutputBuffer;
 	}
 
 	public int getMaxBufferCapacity() {

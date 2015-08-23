@@ -83,7 +83,7 @@ public class MetricValueEntity implements IMetricEntity {
         
         final TimeSeriesCollection dataset = new TimeSeriesCollection(series);
         final JFreeChart retChart = ChartFactory.createTimeSeriesChart(
-            name + " (" + value + "%)", "", "",  dataset,  false,  false, false
+            "", "", "",  dataset,  false,  false, false
         );
        	
         

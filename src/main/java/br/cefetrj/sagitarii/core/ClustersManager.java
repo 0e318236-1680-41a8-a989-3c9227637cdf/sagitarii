@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import br.cefetrj.sagitarii.core.config.Configurator;
 import br.cefetrj.sagitarii.core.delivery.InstanceDeliveryControl;
 import br.cefetrj.sagitarii.core.types.ClusterType;
 import br.cefetrj.sagitarii.core.types.InstanceStatus;
@@ -240,6 +241,12 @@ public class ClustersManager {
 		String resposta = "";
 		String macAddress = cluster.getmacAddress();
 		if ( packageSize < 1 ) { packageSize = 1; }
+		try {
+			if ( !Configurator.getInstance().useDynamicLoadBalancer() ) {
+				logger.debug( "not using Dynamic Load Balancer. Sending 1 Instance per packet.");
+				packageSize = 1;
+			}
+		} catch ( Exception e ) { }
 		List<String> instancePack = new ArrayList<String>();
 		logger.debug( "node " + macAddress + " needs a package size of " + packageSize + " instance(s).");
 		for ( int x=0; x < packageSize; x++) {

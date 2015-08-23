@@ -17,18 +17,32 @@
 </div>
 
 <div class="userBoard">
+	<div class="userBoardT1" style="text-align:center;width: 225px;">Sagitarii Status</div>
+	<div class="userBoardT2" style="text-align:center;width: 225px;">
+		<table>
+			<tr>
+				<td>Dynamic Load Balancer<td>${useDLB}</td>
+			</tr>
+			<tr>
+				<td>Running<td>${fn:length(runningExperiments)}</td>
+			</tr>
+			<tr>
+				<td>Total VM Memory</td><td>${totalMemory}Mb</td>
+			</tr>		
+		</table>
+	</div>
+</div>
+
+
+<div class="userBoard">
 	<div class="userBoardT1" style="text-align:center;width: 225px;">Virtual Machine Status</div>
 	<div class="userBoardT2" style="text-align:center;width: 225px;">
 		<table>
 			<tr>
-				<td>Total Memory</td>
-				<td>${totalMemory}Mb</td>
-			</tr>
-			<tr>
-				<td colspan="3"><img class="dicas" title="Free Heap Memory %" id="imgRam" style="width:210px;height:110px;margin:0px;padding:0px;" src="getMetrics?metricName=Memory"></td>
+				<td colspan="3"><img class="dicas" title="Free Heap Memory %" id="imgRam" style="width:210px;height:40px;margin:0px;padding:0px;" src="getMetrics?metricName=Memory"></td>
 			</tr>
 			<tr> 
-				<td colspan="3"><img class="dicas" title="CPU Load" id="imgCpu" style="width:210px;height:110px;margin:0px;padding:0px;" src="getMetrics?metricName=CPU"></td>
+				<td colspan="3"><img class="dicas" title="CPU Load" id="imgCpu" style="width:210px;height:40px;margin:0px;padding:0px;" src="getMetrics?metricName=CPU"></td>
 			</tr>
 		</table>
 	</div>
