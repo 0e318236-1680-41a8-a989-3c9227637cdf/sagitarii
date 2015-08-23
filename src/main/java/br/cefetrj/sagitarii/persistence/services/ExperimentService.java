@@ -230,7 +230,7 @@ public class ExperimentService {
 	/** 
 	 * Gera um experimento baseado nos dados de um workflow.
 	 */
-	public Experiment generateExperiment( int idWorkflow, User owner ) throws InsertException {
+	public Experiment generateExperiment( int idWorkflow, User owner, String description ) throws InsertException {
 		Experiment ex = new Experiment();
 		try {
 			Workflow workflow = new WorkflowService().getWorkflow(idWorkflow);
@@ -238,7 +238,7 @@ public class ExperimentService {
 			ex.setActivitiesSpecs( workflow.getActivitiesSpecs() );
 			ex.setImagePreviewData(workflow.getImagePreviewData() );
 			ex.setOwner(owner);
-			
+			ex.setDescription(description);
 			ex = insertExperiment(ex);
 		} catch ( Exception e ) {
 			throw new InsertException( e.getMessage() );

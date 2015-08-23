@@ -178,7 +178,7 @@
 	});
 
 	function newExperiment(idWf) {
-		window.location.href="doNewExperiment?idWorkflow=" + idWf;
+		window.location.href="newExperiment?idWorkflow=" + idWf;
 	}
 
 	function viewExperiment(idWf) {

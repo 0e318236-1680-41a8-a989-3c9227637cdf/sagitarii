@@ -57,6 +57,9 @@ public class Experiment {
 	@Column(columnDefinition = "TEXT", name="image_data")
 	private String imagePreviewData;	
 	
+	@Column
+	private String description;	
+	
 	@ManyToOne
 	@JoinColumn(name="id_workflow", foreignKey = @ForeignKey(name = "fk_exp_wf"))
 	@Fetch(FetchMode.JOIN)
@@ -297,9 +300,6 @@ public class Experiment {
 		} else {
 			try {
 				parallelEfficiency = speedUp / coresWorking;
-				
-				System.out.println( parallelEfficiency + " = " + speedUp + " / " + coresWorking );
-				
 			} catch ( Exception e ) { e.printStackTrace(); }
 		}
 		if ( parallelEfficiency.isNaN() ) parallelEfficiency = 0.0;
@@ -343,6 +343,14 @@ public class Experiment {
 	
 	public int getCoresWorking() {
 		return coresWorking;
+	}
+	
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
+	public String getDescription() {
+		return description;
 	}
 	
 }

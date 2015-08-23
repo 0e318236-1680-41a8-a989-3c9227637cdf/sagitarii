@@ -19,14 +19,15 @@ public class DoNewExperimentAction extends BasicActionClass {
 	private int idWorkflow;
 	private Experiment experiment;
 	private String destiny;
+	private String description;
 	
 	public String execute () {
 		destiny = "viewWorkflow?idWorkflow=" + idWorkflow;
 		try {
 			
 			ExperimentService es = new ExperimentService();
-			experiment = es.generateExperiment( idWorkflow, getLoggedUser() );
-			setMessageText("You have a new Experiment!");
+			experiment = es.generateExperiment( idWorkflow, getLoggedUser(), description );
+			setMessageText("Experiment created.");
 			
 		} catch ( DatabaseConnectException e ) {
 			e.printStackTrace();
@@ -49,5 +50,8 @@ public class DoNewExperimentAction extends BasicActionClass {
 		return destiny;
 	}
 
+	public void setDescription(String description) {
+		this.description = description;
+	}
 	
 }

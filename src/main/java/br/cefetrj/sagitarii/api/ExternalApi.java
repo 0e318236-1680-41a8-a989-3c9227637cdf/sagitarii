@@ -275,7 +275,7 @@ public class ExternalApi {
 				WorkflowService ws = new WorkflowService();
 				Workflow wk = ws.getWorkflow( workflowTag );
 				ExperimentService es = new ExperimentService();
-				Experiment experiment = es.generateExperiment( wk.getIdWorkflow(), user );
+				Experiment experiment = es.generateExperiment( wk.getIdWorkflow(), user, "Created via API" );
 				return formatMessage( experiment.getTagExec() );
 			} catch ( Exception e ) {
 				logger.error( e.getMessage() );

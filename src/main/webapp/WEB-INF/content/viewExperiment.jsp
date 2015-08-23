@@ -55,14 +55,14 @@
 									<tr>
 										<td class="tableCellFormLeft">Workflow</td>
 										<td class="tableCellFormRight"> 
-											${experiment.workflow.tag} 
+											${experiment.workflow.tag} - ${experiment.workflow.description} 
 										</td>
 									</tr>
 	
 									<tr>
 										<td class="tableCellFormLeft">Description</td>
 										<td class="tableCellFormRight"> 
-											${experiment.workflow.description} 
+											${experiment.description} 
 										</td>
 									</tr>
 								

@@ -57,8 +57,17 @@ public class Sagitarii {
 	
 	
 	public void updateExperimentsWorkingCores( int coresWorking ) {
-		for ( Experiment experiment : runningExperiments ) {
-			experiment.setCoresWorking( ClustersManager.getInstance().getCores() );
+		try {
+			ExperimentService experimentService = new ExperimentService();
+			for ( Experiment experiment : runningExperiments ) {
+				if ( experiment.getCoresWorking() != coresWorking ) {
+					experiment.setCoresWorking( ClustersManager.getInstance().getCores() );
+					experimentService.newTransaction();
+					experimentService.updateExperiment(experiment);
+				}
+			}
+		} catch ( Exception e ) {
+			
 		}
 	}
 	

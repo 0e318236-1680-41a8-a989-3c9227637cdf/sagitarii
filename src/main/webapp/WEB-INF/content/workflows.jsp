@@ -177,7 +177,7 @@
 	}
 	
 	function newExperiment(idWf) {
-		showDialogBox( "A new experiment will be created for this workflow. Are you sure?", "doNewExperiment?idWorkflow=" + idWf );
+		window.location.href="newExperiment?idWorkflow=" + idWf;
 	}
 	
 	function activity(idWf) {
