@@ -17,8 +17,9 @@ public class Chronos implements Runnable  {
 			MetricController.getInstance().set( cpuLoad, "CPU", MetricType.LOAD );
 			
 		} catch ( Exception e ) {  }	
-		
+
 		MetricController.getInstance().computeMetrics();
+
 	}
 	
 	

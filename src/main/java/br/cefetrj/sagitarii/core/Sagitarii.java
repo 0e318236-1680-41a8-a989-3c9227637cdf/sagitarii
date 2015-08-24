@@ -57,6 +57,8 @@ public class Sagitarii {
 	
 	
 	public void updateExperimentsWorkingCores( int coresWorking ) {
+		if ( runningExperiments.size() == 0 ) return;
+		
 		try {
 			ExperimentService experimentService = new ExperimentService();
 			for ( Experiment experiment : runningExperiments ) {

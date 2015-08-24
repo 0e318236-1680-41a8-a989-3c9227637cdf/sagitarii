@@ -60,7 +60,8 @@ public class MainCluster implements Runnable {
 						"Local Machine", "Sagitarii Server", getProcessCpuLoad(), 
 						"Main Cluster", 8, maxAllowedTasks, 
 						freeMemory, totalMemory, Math.round( (freeMemory * 100 ) / totalMemory ) );
-		try {
+    	
+    	try {
 			if ( cluster != null ) {
 				cluster.setAsMainCluster();
 				if ( currentTaskCount < maxAllowedTasks ) {
@@ -71,7 +72,7 @@ public class MainCluster implements Runnable {
 						content = content.replace("%ID_PIP%", String.valueOf( pipe.getIdInstance() ) ); 
 						pipe.setContent( content );
 						
-						currentTaskCount++;
+				    	currentTaskCount++;
 						logger.debug("will process instance " + pipe.getSerial() );
 						cluster.addInstance(pipe);
 						List<Activation> acts = parser.parseActivations( pipe.getContent() );

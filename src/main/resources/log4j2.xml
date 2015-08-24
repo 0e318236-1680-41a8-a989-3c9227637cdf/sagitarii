@@ -2,7 +2,7 @@
 <configuration status="OFF">
 	<appenders>
 		
-		<Console name="Console" target="SYSTEM_OUT">
+		<Console name="File" target="SYSTEM_OUT">
 			<PatternLayout pattern="%d{dd/MM/YYYY HH:mm:ss} %-5level %logger{36} - %msg%n" />
 		</Console>
 		
@@ -13,6 +13,10 @@
 	</appenders>
 	
 	<loggers>
+
+		<Logger name="br.cefetrj.sagitarii.persistence.repository.TimeControl" level="error" additivity="false"> 
+			<appender-ref ref="File"/> 
+		</Logger>
 
 		<Logger name="br.cefetrj.sagitarii.core.ssh.SSHSessionManager" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 
@@ -75,7 +79,7 @@
 		</Logger>
 
 		<Logger name="br.cefetrj.sagitarii.persistence.services.RelationService" level="error" additivity="false"> 
-			<appender-ref ref="Console"/> 
+			<appender-ref ref="File"/> 
 		</Logger>
 
 		<Logger name="br.cefetrj.sagitarii.persistence.services.ExperimentService" level="error" additivity="false"> 

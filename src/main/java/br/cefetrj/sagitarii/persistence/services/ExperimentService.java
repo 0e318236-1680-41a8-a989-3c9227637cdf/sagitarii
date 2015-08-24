@@ -69,9 +69,6 @@ public class ExperimentService {
 		
 	}
 	
-	/**
-	 * Gera as atividades e os fragmentos para um experimento mas não salva no banco de dados.
-	 */
 	public Experiment previewExperiment( int idExperiment ) throws Exception {
 		Experiment exp = getExperiment(idExperiment);
 		if ( exp.getStatus() == ExperimentStatus.STOPPED ) {
@@ -86,13 +83,6 @@ public class ExperimentService {
 		rep.closeSession();
 	}
 
-	
-	/**
-	 * Gera as atividades e os fragmentos para um experimento, 
-	 * ordena os fragmentos, coloca o experimento com status = RUNNING 
-	 * e grava tudo no banco de dados.
-	 * 
-	 */
 	public Experiment runExperiment( int idExperiment ) throws Exception {
 	
 		logger.debug( "Generating Activities to run Experiment " + idExperiment );  
@@ -172,6 +162,7 @@ public class ExperimentService {
 
 	
 	public void updateExperiment(Experiment experiment) throws UpdateException {
+		logger.debug("update " + experiment.getTagExec() );
 		Experiment oldExperiment;
 		try {
 			oldExperiment = rep.getExperiment( experiment.getIdExperiment() );
@@ -190,11 +181,7 @@ public class ExperimentService {
 		rep.updateExperiment(oldExperiment);
 	}	
 	
-	/**
-	 * Apos carregar um experimento do banco de dados, completar com os fragmentos e as
-	 * respectivas atividades.
-
-	 */
+	
 	private Experiment fillExperiment( Experiment experiment ) {
 		try {
 			FragmentService fs = new FragmentService();
@@ -210,11 +197,13 @@ public class ExperimentService {
 	
 	
 	public Experiment getExperiment(String tag) throws NotFoundException{
+		logger.debug("get " + tag);
 		return fillExperiment( rep.getExperiment(tag) );
 		
 	}
 
 	public Experiment getExperiment(int idExperiment) throws NotFoundException{
+		logger.debug("get " + idExperiment);
 		return fillExperiment( rep.getExperiment(idExperiment) );
 	}
 	
@@ -227,9 +216,6 @@ public class ExperimentService {
 		return expRet ;
 	}	
 	
-	/** 
-	 * Gera um experimento baseado nos dados de um workflow.
-	 */
 	public Experiment generateExperiment( int idWorkflow, User owner, String description ) throws InsertException {
 		Experiment ex = new Experiment();
 		try {
@@ -374,11 +360,13 @@ public class ExperimentService {
 	}
 	
 	public Set<Experiment> getList() throws NotFoundException {
+		logger.debug("get list");
 		Set<Experiment> preList = rep.getList();
 		return preList;	
 	}
 
 	public Set<Experiment> getList( User user ) throws NotFoundException {
+		logger.debug("get list : user " + user.getLoginName() );
 		Set<Experiment> preList = rep.getList( user );
 		return preList;	
 	}

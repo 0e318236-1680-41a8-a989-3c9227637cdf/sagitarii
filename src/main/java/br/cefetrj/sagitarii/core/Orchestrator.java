@@ -49,8 +49,10 @@ public class Orchestrator implements ServletContextListener {
     	
     	try {
     		AgeCalculator.getInstance().retrieveList();
+    	} catch ( NotFoundException e ) {
+    		//
     	} catch ( Exception e ) {
-    		loggerDebug("Error retrieving Time Calculator list: " + e.getMessage() );
+    		loggerError("Error retrieving Time Calculator list: " + e.getMessage() );
     	}
     	
     	UserService us;
