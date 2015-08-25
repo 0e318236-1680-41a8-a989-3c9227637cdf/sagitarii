@@ -55,7 +55,13 @@ public class Instance implements Serializable {
 
 	@Column( name = "cores_used")
 	private int coresUsed;
+
+	@Column( name = "real_start_time_millis")
+	private long realStartTimeMillis;
 	
+	@Column( name = "real_finish_time_millis")
+	private long realFinishTimeMillis;
+
 	@Column(length=50, name="executed_by")
 	private String executedBy;	
 	
@@ -259,6 +265,22 @@ public class Instance implements Serializable {
 	
 	public void setCoresUsed(int coresUsed) {
 		this.coresUsed = coresUsed;
+	}
+	
+	public void setRealFinishTimeMillis(long realFinishTimeMillis) {
+		this.realFinishTimeMillis = realFinishTimeMillis;
+	}
+	
+	public long getRealFinishTimeMillis() {
+		return realFinishTimeMillis;
+	}
+	
+	public void setRealStartTimeMillis(long realStartTimeMillis) {
+		this.realStartTimeMillis = realStartTimeMillis;
+	}
+	
+	public long getRealStartTimeMillis() {
+		return realStartTimeMillis;
 	}
 	
 }

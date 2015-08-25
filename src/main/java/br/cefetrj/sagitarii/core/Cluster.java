@@ -136,12 +136,6 @@ public class Cluster {
 	}
 	
 	public double getMemoryPercent() {
-		/*
-		double percent = 0;
-		try {
-			percent = Math.round( (freeMemory * 100 ) / totalMemory );
-		} catch ( Exception ignored ) {}
-		*/
 		return Math.ceil( memoryPercent );
 	}
 	
@@ -296,9 +290,13 @@ public class Cluster {
 					pipe.setFinishDateTime( Calendar.getInstance().getTime() );
 					pipe.setExecutedBy(macAddress);
 					pipe.setCoresUsed( availableProcessors );
+					
+					pipe.setRealStartTimeMillis( Long.valueOf( startTimeMillis) );
+					pipe.setRealFinishTimeMillis( Long.valueOf( finishTimeMillis ) );
+					
 					Sagitarii.getInstance().finishInstance( pipe );
 					
-					// System.out.println("CLUSTER: From " + startTimeMillis + " to " + finishTimeMillis );
+					//System.out.println("CLUSTER: From " + startTimeMillis + " to " + finishTimeMillis );
 					
 					InstanceDeliveryControl.getInstance().removeUnit( instanceSerial );
 				} else {
