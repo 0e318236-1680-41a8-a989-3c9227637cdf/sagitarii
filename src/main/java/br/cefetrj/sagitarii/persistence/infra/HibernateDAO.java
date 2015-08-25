@@ -16,6 +16,7 @@ import org.hibernate.transform.Transformers;
 
 import br.cefetrj.sagitarii.metrics.MetricController;
 import br.cefetrj.sagitarii.metrics.MetricType;
+import br.cefetrj.sagitarii.persistence.ConnectionMonitor;
 import br.cefetrj.sagitarii.persistence.exceptions.DeleteException;
 import br.cefetrj.sagitarii.persistence.exceptions.InsertException;
 import br.cefetrj.sagitarii.persistence.exceptions.NotFoundException;
@@ -36,6 +37,13 @@ public class HibernateDAO<T> implements IDao<T>  {
 		this.classe = classe;
 		startTime = System.nanoTime();
 		MetricController.getInstance().hit( classe.getSimpleName(), MetricType.ENTITY );
+
+		ConnectionMonitor.getinstance().startMonitor( this.classe.getSimpleName() );
+
+	}
+	
+	private void postClose() {
+		ConnectionMonitor.getinstance().releaseMonitor( this.classe.getSimpleName() );
 	}
 
 	public int insertDO(T objeto) throws InsertException {
@@ -52,6 +60,7 @@ public class HibernateDAO<T> implements IDao<T>  {
 		estimatedTime = System.nanoTime() - startTime;
 		logger.debug("DAO finished in " + estimatedTime / 1000000000.0 + " seconds");
 		MetricController.getInstance().setTimeSpent( classe.getSimpleName(), estimatedTime / 1000000000.0);
+		postClose();
 		return res;		
 	}
 
@@ -63,6 +72,7 @@ public class HibernateDAO<T> implements IDao<T>  {
 		estimatedTime = System.nanoTime() - startTime;
 		logger.debug("DAO finished in " + estimatedTime / 1000000000.0 + " seconds");
 		MetricController.getInstance().setTimeSpent( classe.getSimpleName(), estimatedTime / 1000000000.0);
+		postClose();
         return retorno;
 	}
 
@@ -75,6 +85,7 @@ public class HibernateDAO<T> implements IDao<T>  {
 		estimatedTime = System.nanoTime() - startTime;
 		logger.debug("DAO finished in " + estimatedTime / 1000000000.0 + " seconds");
 		MetricController.getInstance().setTimeSpent( classe.getSimpleName(), estimatedTime / 1000000000.0);
+		postClose();
         return rows;
 	}
 
@@ -101,8 +112,10 @@ public class HibernateDAO<T> implements IDao<T>  {
 		    	}
 				logger.debug("DAO finished in " + estimatedTime / 1000000000.0 + " seconds");
 				MetricController.getInstance().setTimeSpent( classe.getSimpleName(), estimatedTime / 1000000000.0);
+				postClose();
 		    }
 		});
+		
 	}
 	
 	
@@ -116,6 +129,7 @@ public class HibernateDAO<T> implements IDao<T>  {
 		estimatedTime = System.nanoTime() - startTime;
 		logger.debug("DAO finished in " + estimatedTime / 1000000000.0 + " seconds");
 		MetricController.getInstance().setTimeSpent( classe.getSimpleName(), estimatedTime / 1000000000.0);
+		postClose();
 	}
 	
 
@@ -129,6 +143,7 @@ public class HibernateDAO<T> implements IDao<T>  {
 		estimatedTime = System.nanoTime() - startTime;
 		logger.debug("DAO finished in " + estimatedTime / 1000000000.0 + " seconds");
 		MetricController.getInstance().setTimeSpent( classe.getSimpleName(), estimatedTime / 1000000000.0);
+		postClose();
 	}
 
 
@@ -145,6 +160,7 @@ public class HibernateDAO<T> implements IDao<T>  {
 			estimatedTime = System.nanoTime() - startTime;
 			logger.debug("DAO finished in " + estimatedTime / 1000000000.0 + " seconds");
 			MetricController.getInstance().setTimeSpent( classe.getSimpleName(), estimatedTime / 1000000000.0);
+			postClose();
 			return retorno;
 		} catch (HibernateException e) {
 			throw new NotFoundException( e.getMessage() );
@@ -162,6 +178,7 @@ public class HibernateDAO<T> implements IDao<T>  {
 		estimatedTime = System.nanoTime() - startTime;
 		logger.debug("DAO finished in " + estimatedTime / 1000000000.0 + " seconds");
 		MetricController.getInstance().setTimeSpent( classe.getSimpleName(), estimatedTime / 1000000000.0);
+		postClose();
 		return (T)objeto;		
 	}
 

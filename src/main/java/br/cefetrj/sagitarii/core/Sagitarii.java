@@ -56,23 +56,6 @@ public class Sagitarii {
 	}
 	
 	
-	public void updateExperimentsWorkingCores( int coresWorking ) {
-		if ( runningExperiments.size() == 0 ) return;
-		
-		try {
-			ExperimentService experimentService = new ExperimentService();
-			for ( Experiment experiment : runningExperiments ) {
-				if ( experiment.getCoresWorking() != coresWorking ) {
-					experiment.setCoresWorking( ClustersManager.getInstance().getCores() );
-					experimentService.newTransaction();
-					experimentService.updateExperiment(experiment);
-				}
-			}
-		} catch ( Exception e ) {
-			
-		}
-	}
-	
 	/** 
 	 * A cada ciclo, elege um experimento para ter seus instances processados.
 	 * No momento estou usando uma roleta simples, onde todos os experimentos
@@ -261,6 +244,8 @@ public class Sagitarii {
 						exp.setFinishDateTime( Calendar.getInstance().getTime() );
 						
 							ExperimentService experimentService = new ExperimentService();
+							exp.setCoresWorking( ClustersManager.getInstance().getCores() );
+
 							experimentService.updateExperiment(exp);
 							runningExperiments.remove( exp );
 							logger.debug("experiment " + exp.getTagExec() + " is finished.");

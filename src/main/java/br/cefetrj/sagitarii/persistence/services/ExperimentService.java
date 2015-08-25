@@ -141,6 +141,7 @@ public class ExperimentService {
 	
 			logger.debug("saving experiment");
 			rep.newTransaction();
+			experiment.setCoresWorking( ClustersManager.getInstance().getCores() );
 			rep.updateExperiment(experiment);
 	
 			Sagitarii.getInstance().addRunningExperiment(experiment);

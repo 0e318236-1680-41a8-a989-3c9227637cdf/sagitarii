@@ -30,8 +30,9 @@
 		<property name="hibernate.connection.provider_class">org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider</property>
 
 		<property name="hibernate.c3p0.autoCommitOnClose">true</property>
-		<property name="hibernate.c3p0.debugUnreturnedConnectionStackTraces">false</property>
-		<property name="hibernate.c3p0.unreturnedConnectionTimeout">0</property>
+		<property name="hibernate.c3p0.debugUnreturnedConnectionStackTraces">true</property>
+		<property name="hibernate.c3p0.unreturnedConnectionTimeout">60</property>
+		                                
 
 		<mapping class="br.cefetrj.sagitarii.persistence.entity.Workflow"/>
 		<mapping class="br.cefetrj.sagitarii.persistence.entity.Activity"/>

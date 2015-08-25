@@ -376,8 +376,6 @@ public class ClustersManager {
 			retorno = c1;
 		}
 		
-		Sagitarii.getInstance().updateExperimentsWorkingCores( getCores() );
-		
 		return retorno;
 	}
 	
