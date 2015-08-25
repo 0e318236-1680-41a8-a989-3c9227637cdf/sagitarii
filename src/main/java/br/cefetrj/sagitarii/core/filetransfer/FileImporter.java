@@ -501,7 +501,6 @@ public class FileImporter extends Thread {
 		
 			logger.debug("session " + sessionSerial + " commited");
 		} catch ( Exception e ) {
-			e.printStackTrace();
 			logger.error( e.getMessage() + " while commiting session " + sessionSerial);
 			cleanFiles();
 		}

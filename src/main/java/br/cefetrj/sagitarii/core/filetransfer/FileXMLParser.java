@@ -1,6 +1,8 @@
 package br.cefetrj.sagitarii.core.filetransfer;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,6 +36,12 @@ public class FileXMLParser {
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		dbFactory.setNamespaceAware(true);
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+		
+		File fil = new File(xmlFile);
+		if ( !fil.exists() ) {
+			throw new FileNotFoundException("file " + xmlFile + " not found");
+		}
+		
 		
 		InputStream ism = new FileInputStream( xmlFile );
 		InputSource is = new InputSource( ism );

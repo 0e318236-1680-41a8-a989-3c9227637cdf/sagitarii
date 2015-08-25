@@ -621,6 +621,7 @@ public class RelationService {
 			UserTableEntity ut = new UserTableEntity( (Map)obj );
 			result.add(ut);
 		}
+		rep.closeSession();
 		return result;
 	}
 	

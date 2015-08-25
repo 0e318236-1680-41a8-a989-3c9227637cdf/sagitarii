@@ -71,6 +71,16 @@
 										</td>
 									</tr>
 									
+									<tr>
+										<td class="tableCellFormLeft">Speedup / Cores</td>
+										<td class="tableCellFormRight"> 
+											${experiment.speedUp} / ${experiment.coresWorking} 
+										</td>
+										<td class="tableCellFormLeft">Parallel Efficiency</td>
+										<td class="tableCellFormRight">
+											${experiment.parallelEfficiency}
+										</td>
+									</tr>
 
 								
 								</table>

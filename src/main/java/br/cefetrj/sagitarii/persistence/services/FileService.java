@@ -25,7 +25,7 @@ public class FileService {
 
 	public String getFilesPagination( int idExperiment, String sortColumn, String sSortDir0,
 			String iDisplayStart, String iDisplayLength, String sEcho, String sSearch) throws Exception {
-
+		
 		String search = "";
 		String pare = "";
 		if ( (sSearch != null) && ( !sSearch.equals("") ) ) {
@@ -45,14 +45,13 @@ public class FileService {
 		Set<UserTableEntity> result = new HashSet<UserTableEntity>();
 		
 		int totalRecords = 0;
-		
+
 		if ( !sortColumn.equals("ERROR") ) {
-			
+
 			RelationService rs = new RelationService();
 			result = rs.genericFetchList( sql );
 			
 			ActivityService as = new ActivityService();
-			
 			
 			for ( UserTableEntity ute : result  ) { // Each line of result ...
 				String fileName = ute.getData("filename"); 
@@ -83,8 +82,9 @@ public class FileService {
 			data.put("ERROR", "No files for this experiment");
 			UserTableEntity ute = new UserTableEntity(data);
 			result.add(ute);
-
 		}
+		rep.closeSession();
+
 		return new JsonUserTableConversor().asJson( result, totalRecords, Integer.valueOf( sEcho ) );
 	}
 
