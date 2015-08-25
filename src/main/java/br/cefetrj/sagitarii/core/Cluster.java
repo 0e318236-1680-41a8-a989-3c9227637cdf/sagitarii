@@ -269,13 +269,17 @@ public class Cluster {
 		Activity actvt = rd.getActivity();
 		String activity = actvt.getTag();
 		
+		String startTimeMillis = rd.getCsvDataFile().getRealStartTime();
+		String finishTimeMillis = rd.getCsvDataFile().getRealFinishTime();
+		
 		MainLog.getInstance().storeLog( activity, experiment, rd.getCsvDataFile().getTaskId(), rd.getActivity().getExecutorAlias(), rd.getCsvDataFile().getExitCode(),
 				rd.getMacAddress(), rd.getCsvDataFile().getConsole(), rd.getCsvDataFile().getExecLog() );
-		setInstanceAsDone( instanceSerial, actvt );
+		
+		setInstanceAsDone( instanceSerial, actvt, startTimeMillis, finishTimeMillis);
 	}
 	
 	
-	public void setInstanceAsDone( String instanceSerial, Activity actvt ) {
+	public void setInstanceAsDone( String instanceSerial, Activity actvt, String startTimeMillis, String finishTimeMillis ) {
 		debug("checking if instance " + instanceSerial + " (" + actvt.getTag() + ") is done");
 		for( Instance pipe : runningInstances ) {
 			if ( pipe.getSerial().equals( instanceSerial ) ) {
@@ -293,6 +297,9 @@ public class Cluster {
 					pipe.setExecutedBy(macAddress);
 					pipe.setCoresUsed( availableProcessors );
 					Sagitarii.getInstance().finishInstance( pipe );
+					
+					// System.out.println("CLUSTER: From " + startTimeMillis + " to " + finishTimeMillis );
+					
 					InstanceDeliveryControl.getInstance().removeUnit( instanceSerial );
 				} else {
 					debug("instance " + instanceSerial + " (" + actvt.getTag() + ") have " + pipe.getQtdActivations() + " tasks running");

@@ -278,7 +278,7 @@ public class FileImporter extends Thread {
 		String activitySerial = csvDataFile.getActivity();
 		String instanceSerial = csvDataFile.getInstance();
 		String macAddress = csvDataFile.getMacAddress();
-		
+
 		logger.debug("start CSV data import: relation " + relationName + " activity: " + activitySerial + " instance: " + instanceSerial);
 		
 		RelationService relationService = new RelationService();

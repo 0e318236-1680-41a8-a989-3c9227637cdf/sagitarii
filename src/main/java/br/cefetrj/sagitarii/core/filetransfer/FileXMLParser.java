@@ -42,7 +42,6 @@ public class FileXMLParser {
 			throw new FileNotFoundException("file " + xmlFile + " not found");
 		}
 		
-		
 		InputStream ism = new FileInputStream( xmlFile );
 		InputSource is = new InputSource( ism );
 		is.setEncoding("UTF-8");		
@@ -63,6 +62,9 @@ public class FileXMLParser {
 
 		String taskId = pipeElement.getAttribute("taskId");
 		String exitCode = pipeElement.getAttribute("exitCode");
+		
+		String startTimeMillis = pipeElement.getAttribute("startTime");
+		String finishTimeMillis = pipeElement.getAttribute("finishTime");		
 
 		List<String> consoleLines = new ArrayList<String>();
 		try {
@@ -72,7 +74,6 @@ public class FileXMLParser {
 			// Just an empty node. Nothing dangerous.
 		}
 		
-
 		List<String> execLog = new ArrayList<String>();
 		try {
 			String log = getTagValue("execLog", pipeElement);
@@ -108,6 +109,9 @@ public class FileXMLParser {
 				
 				receivedFile.setExitCode( exitCode );
 				receivedFile.setTaskId( taskId );
+				
+				receivedFile.setRealStartTime(startTimeMillis);
+				receivedFile.setRealFinishTime(finishTimeMillis);
 				
 				resp.add(receivedFile);
 				

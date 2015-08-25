@@ -17,12 +17,30 @@ public class ReceivedFile {
 	private String exitCode;
 	private List<String> console;
 	private List<String> execLog;
+	private String realStartTime;
+	private String realFinishTime;
 
 	public ReceivedFile() {
 		exitCode = "0";
 		console = new ArrayList<String>();
 		execLog = new ArrayList<String>();
 		
+	}
+	
+	public String getRealFinishTime() {
+		return realFinishTime;
+	}
+	
+	public String getRealStartTime() {
+		return realStartTime;
+	}
+	
+	public void setRealFinishTime(String realFinishTime) {
+		this.realFinishTime = realFinishTime;
+	}
+	
+	public void setRealStartTime(String realStartTime) {
+		this.realStartTime = realStartTime;
 	}
 	
 	public String getTaskId() {
