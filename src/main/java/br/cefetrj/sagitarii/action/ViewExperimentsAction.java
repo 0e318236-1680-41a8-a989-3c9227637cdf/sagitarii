@@ -24,7 +24,7 @@ public class ViewExperimentsAction extends BasicActionClass {
 	public String execute () {
 		try {
 			ExperimentService es = new ExperimentService();
-			experiments = es.getList();
+			experiments = es.getList( getLoggedUser());
 		} catch ( NotFoundException e ) {
 			//
 		} catch ( Exception e ) {

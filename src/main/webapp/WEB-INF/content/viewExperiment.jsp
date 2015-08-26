@@ -76,13 +76,13 @@
 									<tr>
 										<td class="tableCellFormLeft">Start Date/Time</td>
 										<td class="tableCellFormRight">
-											<fmt:formatDate type="both" timeStyle="short" value="${experiment.lastExecutionDate}" />&nbsp;
+											<fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" type="both" timeStyle="short" value="${experiment.lastExecutionDate}" />&nbsp;
 										</td>
 									</tr>
 									<tr>
 										<td class="tableCellFormLeft">Finish Date/Time</td>
 										<td class="tableCellFormRight">
-											<fmt:formatDate type="both" timeStyle="short" value="${experiment.finishDateTime}" />&nbsp;
+											<fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" type="both" timeStyle="short" value="${experiment.finishDateTime}" />&nbsp;
 										</td>
 									</tr>
 									<tr>

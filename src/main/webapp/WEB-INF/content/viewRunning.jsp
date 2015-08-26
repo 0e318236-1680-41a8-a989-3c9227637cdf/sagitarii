@@ -92,10 +92,10 @@
 										
 										
 										<td class="tableCellFormRight">
-											<fmt:formatDate type="both" timeStyle="short" value="${experiment.creationDate}"/><br>by ${experiment.owner.loginName}
+											<fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" type="both" timeStyle="short" value="${experiment.creationDate}"/><br>by ${experiment.owner.loginName}
 										</td>
 										<td class="tableCellFormRight">
-											<fmt:formatDate type="both" timeStyle="short" value="${experiment.lastExecutionDate}"/>&nbsp;
+											<fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" type="both" timeStyle="short" value="${experiment.lastExecutionDate}"/>&nbsp;
 										</td>
 										<td class="tableCellFormRight">${experiment.status}&nbsp;</td>
 										<td class="tableCellFormRight">

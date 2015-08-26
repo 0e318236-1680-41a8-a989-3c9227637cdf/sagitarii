@@ -34,7 +34,7 @@
 									<c:forEach var="data" items="${log}">
 										<tr>
 											<td class="tableCellFormLeft">
-												<fmt:formatDate type="both" timeStyle="short" value="${data.time}"/>&nbsp;
+												<fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" type="both" timeStyle="short" value="${data.time}"/>&nbsp;
 											</td>
 											<td class="tableCellFormLeft">${data.experiment}<br>${data.activity}<br>${data.executorAlias}</td>
 											<td class="tableCellFormLeft">

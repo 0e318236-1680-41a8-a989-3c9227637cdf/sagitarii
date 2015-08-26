@@ -40,7 +40,7 @@
 														<tr class="saverControl">
 															<td style="border:0px;" class="tableCellFormRight">${saver.status}</td>
 															<td style="border:0px;" class="tableCellFormRight">${saver.fileName}</td>
-															<td style="border:0px;" class="tableCellFormRight"><fmt:formatDate type="both" timeStyle="short" value="${saver.startDateTime}"/></td>
+															<td style="border:0px;" class="tableCellFormRight"><fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" type="both" timeStyle="short" value="${saver.startDateTime}"/></td>
 															<td style="border:0px;" class="tableCellFormRight">${saver.experimentSerial}</td>
 															<td style="border:0px;" class="tableCellFormRight">${saver.bytes}</td>
 															<td style="border:0px;" class="tableCellFormRight">${saver.totalBytes}</td>
@@ -59,7 +59,7 @@
 															<td style="border:0px;" class="tableCellFormRight">${importer.mainCsvFile.targetTable}&nbsp;</td>
 															<td style="border:0px;" class="tableCellFormRight">${importer.mainCsvFile.activity}&nbsp;</td>
 															<td style="border:0px;" class="tableCellFormRight">
-															<fmt:formatDate type="both" timeStyle="short" value="${importer.startTime}"/></td>
+															<fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" type="both" timeStyle="short" value="${importer.startTime}"/></td>
 															<td style="border:0px;" class="tableCellFormRight">${importer.log}</td>
 															
 														</tr>

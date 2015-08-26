@@ -24,8 +24,7 @@
 									<tr>
 										<th>Experiment</th>
 										<th>Workflow</th>
-										<th>Owner</th>
-										<th>Last Run</th>
+										<th>Description</th>
 										<th>Finish Date</th>
 										<th>Elapsed Time</th>
 										<th>Status</th>
@@ -40,13 +39,10 @@
 												<a class="dicas" title="View Workflow" href="viewWorkflow?idWorkflow=${experiment.workflow.idWorkflow}">${experiment.workflow.tag}</a>
 											</td>
 											<td class="tableCellFormRight">
-												${experiment.owner.loginName}
+												${experiment.description}
 											</td>
 											<td class="tableCellFormRight">
-												<fmt:formatDate type="both" timeStyle="short" value="${experiment.lastExecutionDate}"/>&nbsp;
-											</td>
-											<td class="tableCellFormRight">
-												<fmt:formatDate type="both" timeStyle="short" value="${experiment.finishDateTime}"/>&nbsp;
+												<fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" type="both" timeStyle="short" value="${experiment.finishDateTime}"/>&nbsp;
 											</td>
 											<td class="tableCellFormRight">${experiment.elapsedTime}&nbsp;</td>
 											<td class="tableCellFormRight">${experiment.status}&nbsp;</td>
@@ -122,7 +118,6 @@
 			"aoColumns": [ 
 						  { "sWidth": "10%" },
 						  { "sWidth": "10%" },
-						  { "sWidth": "5%" },
 						  { "sWidth": "10%" },
 						  { "sWidth": "10%" },
 						  { "sWidth": "10%" },

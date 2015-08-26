@@ -51,11 +51,11 @@
 									<tr>
 										<td class="tableCellFormLeft">Start Date/Time</td>
 										<td class="tableCellFormRight">
-											<fmt:formatDate type="both" timeStyle="short" value="${query.experiment.lastExecutionDate}" />&nbsp;
+											<fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" type="both" timeStyle="short" value="${query.experiment.lastExecutionDate}" />&nbsp;
 										</td>
 										<td class="tableCellFormLeft">Finish Date/Time</td>
 										<td class="tableCellFormRight">
-											<fmt:formatDate type="both" timeStyle="short" value="${query.experiment.finishDateTime}" />&nbsp;
+											<fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" type="both" timeStyle="short" value="${query.experiment.finishDateTime}" />&nbsp;
 										</td>
 									</tr>
 	
