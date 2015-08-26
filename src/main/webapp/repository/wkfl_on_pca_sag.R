@@ -2,7 +2,7 @@
 #---- Deixar trecho abaixo comentado no Sagitarii
 #sagitariiWorkFolder <- "/Users/eogasawara/Dropbox/Eduardo/R/Star-Galaxy"
 
-# versao 30/07/2015
+# versao de 12/08/2015
 
 # ----------- SAGITARII REQUIREMENTS ---------------------------------------
 inputFileFolder <- paste( sagitariiWorkFolder, "inbox", sep = "/")
@@ -47,15 +47,26 @@ if (FALSE) { # uso de lasso
 }
 
 if (TRUE) { # uso de pca
-  print("pca")
-  
+  print("pca") 
   set.seed(1)
   x.train.raw <- x.train
-  x.list <- pca(x.train.raw, varacum=0.52)
+  
+  if (arquivoTreino=="round1_training_set_r.rdata")
+  {
+    k=0.6
+  } else if (arquivoTreino=="round2_training_set_r.rdata")
+  {
+    k=0.69
+  } else if (arquivoTreino=="round3_training_set_r.rdata")
+  {
+    k=0.69
+  }
+  
+  x.list <- pca(x.train.raw, varacum=k)
   x.train <-x.list[[1]]
   x.train.transf <- x.list[[2]]
-
-  x.list <- pca(x.train.raw, test=x.test, transf = x.train.transf, varacum=0.52)
+  
+  x.list <- pca(x.train.raw, test=x.test, transf = x.train.transf, varacum=k)
   x.test <- x.list[[1]]
   
   x.train.pca.raw <- x.train
@@ -68,7 +79,6 @@ tab$resultadov <- 0
 
   if (metodo=="rn")
   {
-    print("rn")
     set.seed(1)
     x.rn2 <- rn2(x.train, x.test, tamanho, par_r, par_i)
     aa <- croc(x.rn2[,2], x.test$alvo)
@@ -82,13 +92,15 @@ tab$resultadov <- 0
     aa <- unlist(slot(aa, "y.values"))
     tab$resultadov[1] <- aa
     write.table(x.svm4, file=outpuClassifica, row.names=FALSE, quote = FALSE)
-  } else if (metodo=="rbfdot_nu-svc")
-  {
-    x.svm4 <- svm4(x.train, x.test, x.train$alvo~., "rbfdot", tamanho, "nu-svc")
-    aa <- croc(x.svm4[,2], x.test$alvo)
-    aa <- unlist(slot(aa, "y.values"))
-    tab$resultadov[1] <- aa
-    write.table(x.svm4, file=outpuClassifica, row.names=FALSE, quote = FALSE)
+# }
+#   else if (metodo=="rbfdot_nu-svc")
+#   {
+#     x.svm4 <- svm4(x.train, x.test, x.train$alvo~., "rbfdot", tamanho, "nu-svc")
+#     aa <- croc(x.svm4[,2], x.test$alvo)
+#     aa <- unlist(slot(aa, "y.values"))
+#     tab$resultadov[1] <- aa
+#     write.table(x.svm4, file=outpuClassifica, row.names=FALSE, quote = FALSE)
+#   }
   } else if (metodo=="rbfdot_C-bsvc")
   {
     x.svm4 <- svm4(x.train, x.test, x.train$alvo~., "rbfdot", tamanho, "C-bsvc")
@@ -116,6 +128,6 @@ tab$resultadov <- 0
     aa <- croc(x.nb[,2], x.test$alvo)
     aa <- unlist(slot(aa, "y.values"))
     tab$resultadov[1] <- aa
-    write.table(x.nb, file=outpuClassifica, row.names=FALSE, quote = FALSE)
+    write.table(x.nb, file=outpuClassifica, row.names = FALSE, quote = FALSE, sep = ",", col.names=TRUE)
   }
-  write.table(tab, file=outputFile, row.names=FALSE, quote = FALSE)
+  write.table(tab, file=outputFile, row.names = FALSE, quote = FALSE, sep = ",", col.names=TRUE)
