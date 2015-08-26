@@ -283,20 +283,28 @@ public class ExperimentService {
 			logger.debug("done.");
 			
 			
-			logger.debug("removing files...");
+			logger.debug("removing large objects...");
 			try {
-				logger.debug(" > large objects");
 				sql = "delete from pg_catalog.pg_largeobject where loid in ( select file from " + 
 						" files where id_experiment = " + idExperiment + " )";
 				rs.executeQuery( sql );
-	
-				logger.debug(" > files");
+				logger.debug("done.");
+			} catch ( Exception e ) {
+				logger.error("cannot remove LOBs: " + e.getMessage() +": You MUST do it by yourself by running this query:" );
+				logger.error(" > " + sql);
+			}
+			
+
+			logger.debug("removing files...");
+			try {
 				sql = "delete from files where id_experiment = " + idExperiment;
 				rs.executeQuery( sql );
 				logger.debug("done.");
 			} catch ( Exception e ) {
 				logger.error("cannot remove files: " + e.getMessage() );
 			}
+			
+			
 			
 			logger.debug("removing fragments and activities...");
 			
