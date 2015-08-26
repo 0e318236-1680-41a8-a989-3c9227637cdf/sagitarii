@@ -103,7 +103,8 @@ public class MainCluster implements Runnable {
 								Activity activity = as.getActivity( act.getActivitySerial() );
 								activityName = activity.getTag();
 								cluster.setMessage( "finishing activity " + activity.getTag() + " (" + act.getExecutor() + ")" );
-								cluster.setInstanceAsDone( pipe.getSerial(), activity, "MN:No Data", "MN:No Data" );
+								cluster.setInstanceAsDone( pipe.getSerial(), activity, String.valueOf( mcqw.getStartTime() ),
+										String.valueOf( mcqw.getFinishTime() ) );
 							} catch ( NotFoundException nf ) {
 								String errorString = "cannot finish instance " + pipe.getSerial() + ". Activity " + act.getActivitySerial() + " not found.";
 								console.add( errorString );

@@ -118,7 +118,7 @@
 			"aoColumns": [ 
 						  { "sWidth": "10%" },
 						  { "sWidth": "10%" },
-						  { "sWidth": "10%" },
+						  { "sWidth": "35%" },
 						  { "sWidth": "10%" },
 						  { "sWidth": "10%" },
 						  { "sWidth": "5%" },
