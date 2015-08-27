@@ -11,6 +11,7 @@ encoding//src/main/java/br/cefetrj/sagitarii/action/PauseExperimentAction.java=U
 encoding//src/main/java/br/cefetrj/sagitarii/action/ResumeExperimentAction.java=UTF-8
 encoding//src/main/java/br/cefetrj/sagitarii/action/RunExperimentAction.java=UTF-8
 encoding//src/main/java/br/cefetrj/sagitarii/action/SaveExecutorAction.java=UTF-8
+encoding//src/main/java/br/cefetrj/sagitarii/action/SaveExecutorTextAction.java=UTF-8
 encoding//src/main/java/br/cefetrj/sagitarii/action/UpdateExecutorAction.java=UTF-8
 encoding//src/main/java/br/cefetrj/sagitarii/action/ViewWorkflowAction.java=UTF-8
 encoding//src/main/java/br/cefetrj/sagitarii/core/Cluster.java=UTF-8

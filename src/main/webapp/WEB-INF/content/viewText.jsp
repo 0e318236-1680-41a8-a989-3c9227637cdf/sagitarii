@@ -19,8 +19,15 @@
 						
 						<div class="menuBarMain" style="position:relative">
 							<img alt="" onclick="back();" title="Back" class="button dicas" src="img/back.png" />
+							<c:if test="${edit == 'yes' }">
+								<img alt="" onclick="save();" title="Save" class="button dicas" src="img/save.png" />
+							</c:if>
 						</div>
 
+						<form method="post" action="saveExecutorText" id="frmSave" enctype="multipart/form-data">
+							<input type="hidden" id="fileName" name="fileName" value="${fileName}">
+							<input type="hidden" id="fileContent" name="fileContent" >
+						</form>
 							
 						<div class="menuBarMain" style="display:table;height:500px;margin-top:5px">
 							<div style="float:left; width:99%">
@@ -54,7 +61,11 @@
 			indentWithTabs: true,
 			smartIndent: true,
 			matchBrackets : true,
-			readOnly: true,
+
+			<c:if test="${edit != 'yes' }">
+				readOnly: true,
+			</c:if>
+			
 			lineNumbers: true,
 			lineWrapping:true
         });
@@ -65,6 +76,11 @@
 		window.history.back();
 	}
 
+	function save() {
+		$("#fileContent").val( codeMirrorEditor.getDoc().getValue()  );
+		$("#frmSave").submit();
+	}
+	
 
 </script>				
 				

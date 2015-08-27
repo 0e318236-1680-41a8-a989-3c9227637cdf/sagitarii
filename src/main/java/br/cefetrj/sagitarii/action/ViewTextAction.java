@@ -10,6 +10,7 @@ import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 
+import br.cefetrj.sagitarii.core.types.UserType;
 import br.cefetrj.sagitarii.misc.PathFinder;
 
 @Action(value="viewText", results= {  
@@ -20,6 +21,7 @@ import br.cefetrj.sagitarii.misc.PathFinder;
 public class ViewTextAction extends BasicActionClass {
 	private String textContent;
 	private String fileName;
+	private String edit;
 	
 	private String readFile(String fileName) throws IOException {
 		String path = PathFinder.getInstance().getPath() + "/" + fileName;
@@ -42,6 +44,10 @@ public class ViewTextAction extends BasicActionClass {
 	
 	public String execute () {
 		
+		if ( getLoggedUser().getType() != UserType.ADMIN ) {
+			edit = "no";
+		}
+		
 		try {
 			textContent = readFile( fileName );
 		} catch ( Exception e ) {
@@ -61,6 +67,14 @@ public class ViewTextAction extends BasicActionClass {
 	
 	public String getFileName() {
 		return fileName;
+	}
+	
+	public void setEdit(String edit) {
+		this.edit = edit;
+	}
+	
+	public String getEdit() {
+		return edit;
 	}
 	
 }
