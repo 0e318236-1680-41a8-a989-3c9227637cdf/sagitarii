@@ -89,17 +89,22 @@
 											<td>${workflow.owner.loginName}</td>
 											<td>${fn:length(workflow.experiments)}</td>
 											<td>
-												<img class="miniButton dicas" title="Delete" onclick="deleteWf('${workflow.idWorkflow}','${workflow.tag}')" src="img/delete.png">
-												<img class="miniButton dicas" title="Edit" onclick="edit('${workflow.idWorkflow}','${workflow.tag}','${workflow.description}');" src="img/edit.png">
+												<c:if test="${loggedUser.type == 'ADMIN'}">
+													<img class="miniButton dicas" title="Delete" onclick="deleteWf('${workflow.idWorkflow}','${workflow.tag}')" src="img/delete.png">
+													<img class="miniButton dicas" title="Edit" onclick="edit('${workflow.idWorkflow}','${workflow.tag}','${workflow.description}');" src="img/edit.png">
+													<img class="miniButton dicas" title="Details" onclick="viewWorkflow('${workflow.idWorkflow}')" src="img/search.png">
+													<img class="miniButton dicas" title="Export as XML" onclick="exportWf('${workflow.idWorkflow}')" src="img/xml.png">
+													<img class="miniButton dicas" title="Manage Activities" onclick="activity('${workflow.idWorkflow}')" src="img/family3.png">
+													<span style="float:right; height: 20px; margin-left:0px; margin-right: 8px; border-right:1px dotted #ADADAD" >&nbsp;</span>
+												</c:if>
+
 												<c:if test="${fn:length(workflow.activitiesSpecs) != '' }">
-													<img class="miniButton dicas" title="Generate New Experiment" onclick="newExperiment('${workflow.idWorkflow}')" src="img/experiment.png">
+													<img class="miniButton dicas" style="margin-right:0px" title="Generate New Experiment" onclick="newExperiment('${workflow.idWorkflow}')" src="img/add.png">
 												</c:if>
 												<c:if test="${fn:length(workflow.activitiesSpecs) == '' }">
-													<img class="miniButton dicas" style="opacity:0.3" title="New Experiment: Missing Activities" src="img/experiment.png">
+													<img class="miniButton dicas" style="margin-right:0px;opacity:0.3;border-right:1px dotted #ADADAD" title="New Experiment: Missing Activities" src="img/add.png">
 												</c:if>
-												<img class="miniButton dicas" title="Details" onclick="viewWorkflow('${workflow.idWorkflow}')" src="img/search.png">
-												<img class="miniButton dicas" title="Export as XML" onclick="exportWf('${workflow.idWorkflow}')" src="img/xml.png">
-												<img class="miniButton dicas" title="Manage Activities" onclick="activity('${workflow.idWorkflow}')" src="img/family3.png">
+												
 											</td>
 											
 										</tr>
