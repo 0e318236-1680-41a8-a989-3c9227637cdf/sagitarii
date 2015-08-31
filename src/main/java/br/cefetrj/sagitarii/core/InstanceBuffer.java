@@ -29,15 +29,6 @@ public class InstanceBuffer {
 	}
 	
 	private List<Instance> merge( List<Instance> a, List<Instance> b ) {
-		System.out.println("MERGE 01:");
-		for ( Instance in : a ) {
-			System.out.println(" > " + in.getSerial() );
-		}
-		System.out.println("MERGE 02:");
-		for ( Instance in : b ) {
-			System.out.println(" > " + in.getSerial() );
-		}
-
 		int c1 = 0, c2 = 0;
 	    List<Instance> res = new ArrayList<Instance>();
 
@@ -48,12 +39,6 @@ public class InstanceBuffer {
 	            res.add( b.get(c2++) );
 	    }
 	    logger.debug("done");
-
-		System.out.println("MERGE RESULT:");
-		for ( Instance in : res ) {
-			System.out.println(" > " + in.getSerial() );
-		}
-	    
 	    return res;
 	}	
 	
