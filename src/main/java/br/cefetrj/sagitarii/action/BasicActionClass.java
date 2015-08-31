@@ -11,8 +11,6 @@ import com.opensymphony.xwork2.ActionContext;
 
 public class BasicActionClass {
 	private List<Experiment> runningExperiments;
-	private Experiment experimentOnTable;
-	private Experiment experimentOnTableJoin;
 	private int maxBufferCapacity;
 	private User loggedUser;
 	private long freeMemory = 0;
@@ -68,10 +66,7 @@ public class BasicActionClass {
 			e.printStackTrace();
 		}
 				
-		
 		runningExperiments = sagi.getRunningExperiments();
-		experimentOnTable = sagi.getExperimentOnTable();
-		experimentOnTableJoin = sagi.getExperimentOnTableJoin();
 		maxBufferCapacity = sagi.getMaxInputBufferCapacity();
 		
 		try {
@@ -90,11 +85,4 @@ public class BasicActionClass {
 		return maxBufferCapacity;
 	}
 	
-	public Experiment getExperimentOnTable() {
-		return experimentOnTable;
-	}
-	
-	public Experiment getExperimentOnTableJoin() {
-		return experimentOnTableJoin;
-	}
 }

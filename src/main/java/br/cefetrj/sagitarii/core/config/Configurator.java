@@ -161,13 +161,8 @@ public class Configurator {
 			fileReceiverChunkBufferSize = Integer.valueOf( getTagValue("fileReceiverChunkBufferSize", mpElement) );
 			firstDelayLimitSeconds = Long.valueOf( getTagValue("firstDelayLimitSeconds", mpElement) );
 			
-			String tempUseDLB = getTagValue("useDynamicLoadBalancer", mpElement).toLowerCase(); 
-			String fisrtIsUpper = Character.toUpperCase(tempUseDLB.charAt(0)) + tempUseDLB.substring(1);
+			useDynamicLoadBalancer = Boolean.valueOf( getTagValue("useDynamicLoadBalancer", mpElement).toLowerCase() );
 			
-			useDynamicLoadBalancer = Boolean.valueOf( tempUseDLB );
-			
-			System.out.println(tempUseDLB + " " + fisrtIsUpper + " " + useDynamicLoadBalancer );
-					
 			CSVDelimiter = getTagValue("CSVDelimiter", mpElement).charAt(0);
 		} catch ( Exception e ) {
 			System.out.println( e.getMessage() );

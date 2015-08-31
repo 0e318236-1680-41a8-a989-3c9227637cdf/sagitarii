@@ -89,7 +89,7 @@ public class Orchestrator implements ServletContextListener {
 		} catch ( NotFoundException e ) {
 			loggerDebug("no running experiments found");	
 		} catch (Exception e) {
-			loggerError( e.getMessage() );	
+			e.printStackTrace();
 		} 
 		loggerDebug("done.");
 		

@@ -2,8 +2,6 @@ package br.cefetrj.sagitarii.core;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
@@ -32,110 +30,25 @@ public class Sagitarii {
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 	private static Sagitarii sagitarii;
 	private List<Experiment> runningExperiments;
-	private Queue<Instance> instanceInputBuffer;
-	private Queue<Instance> instanceJoinInputBuffer;
-	private Queue<Instance> instanceOutputBuffer;
-	private int maxInputBufferCapacity;
-	private int spinPointer = 0;
-	private int spinPointerJoin = 0;
-	private Experiment experimentOnTable;
-	private Experiment experimentOnTableJoin;
 	private boolean stopped = false;
-	private boolean canLoadJoinBuffer = true;
+	private InstanceBuffer instanceBuffer;
 	
 	public void removeExperiment( Experiment exp ) {
 		for ( Experiment experiment : runningExperiments ) {
 			if ( experiment.getTagExec().equals( exp.getTagExec() ) ) {
 				logger.debug("removing experiment " + exp.getTagExec() + " from execution queue.");
 				runningExperiments.remove( experiment );
-				electExperiment();
-				electExperimentJoin();
 				break;
 			}
 		}
 	}
 	
 	
-	/** 
-	 * A cada ciclo, elege um experimento para ter seus instances processados.
-	 * No momento estou usando uma roleta simples, onde todos os experimentos
-	 * possuem igual preferência. A cada ciclo de verificação, o ponteiro (spinPointer) 
-	 * é incrementado até atingir o fim da fila, quando retorna para o primeiro da fila.
-	 * 
-	 * Ver também "electExperimentJoin()"
-	 * 
-	 */
-	private synchronized void electExperiment() {
-		Experiment exp = null;
-		List<Experiment> running = getRunningExperiments();
-		if (running.size() > 0 ) {
-			exp = running.get( spinPointer );
-			logger.debug("experiment " + exp.getTagExec() + " elected for common buffer");
-			spinPointer++;
-			if ( spinPointer > (running.size() -1 ) ) {
-				spinPointer = 0;
-			}
-		} else {
-			logger.debug("no running experiments for common buffer");
-		}
-		experimentOnTable = exp;
-	}
-
-	/**
-	 * O mesmo que electExperiment(), mas
-	 * trata de instances que serão processados pelo MainCluster
-	 * ou seja, atividades que envolvam SQL (JOIN).
-	 * Dessa forma, posso ter instances de dois experimentos
-	 * sendo lidos para o buffer simultaneamente, um com
-	 * instances de SQL e outro com instances SQL (MainCluster) 
-	 * 
-	 */
-	private synchronized void electExperimentJoin() {
-		Experiment exp = null;
-		if (runningExperiments.size() > 0 ) {
-			exp = runningExperiments.get( spinPointerJoin );
-			logger.debug("experiment " + exp.getTagExec() + " elected for JOIN buffer");
-			spinPointerJoin++;
-			if ( spinPointerJoin > (runningExperiments.size() -1 ) ) {
-				spinPointerJoin = 0;
-			}
-		} else {
-			logger.debug("no running experiments for JOIN buffer");
-		}
-		experimentOnTableJoin = exp;
-	}
-	
-	/**
-	 * Dado um experimento, verifica se existe ainda algum instance pertencente a um de seus
-	 * fragmentos nos buffers de entrada ou de saida.
-	 */
 	public boolean experimentIsStillQueued( Experiment exp ) {
-		for( Fragment frag : exp.getFragments() ) {
-
-			for( Instance pipe : instanceOutputBuffer  ) {
-				if( pipe.getIdFragment() == frag.getIdFragment() ) {
-					return true;
-				}
-			}
-			
-			for( Instance pipe : instanceInputBuffer  ) {
-				if( pipe.getIdFragment() == frag.getIdFragment() ) {
-					return true;
-				}
-			}
-			for( Instance pipe : instanceJoinInputBuffer  ) {
-				if( pipe.getIdFragment() == frag.getIdFragment() ) {
-					return true;
-				}
-			}
-		}
-		return false;
+		return instanceBuffer.experimentIsStillQueued(exp);
 	}
+
 	
-	/**
-	 * Marca um instance como encerrado ( já foi entregue a um nó e este já o 
-	 * processou e já entregou os dados produzidos de todas as tarefas)
-	 */
 	public synchronized void finishInstance( Instance instance ) {
 		logger.debug("instance " + instance.getSerial() + " is finished by " + instance.getExecutedBy() +
 				". execution time: " + instance.getElapsedTime() );
@@ -146,12 +59,7 @@ public class Sagitarii {
 			instanceService.finishInstance( instance );
 			
 			// Remove from output buffer if any
-			for ( Instance pipe : instanceOutputBuffer ) {
-				if ( pipe.getSerial().equals( instance.getSerial() ) ) {
-					instanceOutputBuffer.remove( pipe );
-					break;
-				}
-			}
+			instanceBuffer.removeFromOutputBuffer( instance );
 			
 		} catch ( Exception e ) {
 			logger.error( e.getMessage() );
@@ -188,6 +96,7 @@ public class Sagitarii {
 	 * 
 	 */
 	private synchronized void checkFinished() {
+		logger.debug("checking finished experiments...");
 		for ( Experiment exp : runningExperiments ) {
 			boolean allFinished = true;
 			boolean haveReady = false;
@@ -199,7 +108,7 @@ public class Sagitarii {
 					allFinished = ( allFinished && ( frag.getStatus() == FragmentStatus.FINISHED ) );
 				} else {
 					haveReady = true;
-					logger.debug("experiment " + exp.getTagExec() + " fragment " + frag.getSerial() +" : " + frag.getStatus() );
+					logger.debug(" > experiment " + exp.getTagExec() + " fragment " + frag.getSerial() +" : " + frag.getStatus() );
 				}
 			}
 			
@@ -221,9 +130,7 @@ public class Sagitarii {
 					if ( pips == 0) {
 						logger.error("experiment " + exp.getTagExec() + " generate empty instance list. Will finish it" );
 						haveReady = false;
-					} else {
-						canLoadJoinBuffer = true;
-					}
+					} 
 				} catch (Exception e) {
 					logger.error("cannot generate instances for experiment " + exp.getTagExec() + ": " + e.getMessage() );
 					haveReady = false;
@@ -272,6 +179,7 @@ public class Sagitarii {
 			}
 			
 		}
+		logger.debug("done checking finished experiments.");
 	}
 	
 	
@@ -297,7 +205,6 @@ public class Sagitarii {
 				if ( (frag.getStatus() == FragmentStatus.PIPELINED) && (count > 0) ) {
 					logger.debug(" > " + count + " instances found. Changing fragment " + frag.getSerial() + " status from PIPELINED to RUNNING");
 					frag.setStatus( FragmentStatus.RUNNING );
-					canLoadJoinBuffer = true;
 				}
 
 				// Case 2 --------------------------------------------------------------------
@@ -330,12 +237,6 @@ public class Sagitarii {
 							}
 						}
 
-						logger.debug("Instances in Output buffer:");
-						for ( Instance pip : instanceOutputBuffer ) {
-							logger.debug(" > Instance: " + pip.getSerial() + " FragID: " + pip.getIdFragment() );
-						}
-						
-						
 						logger.debug("current importers");
 						for( FileImporter importer :  FileReceiverManager.getInstance().getImporters() ) {
 							try {
@@ -352,7 +253,6 @@ public class Sagitarii {
 						} else {
 							logger.debug(" > Yeap! setting fragment " + frag.getSerial() + " to finished.");
 							frag.setStatus( FragmentStatus.FINISHED );
-							canLoadJoinBuffer = true;
 						}
 						// ===============================================================================
 					}
@@ -373,21 +273,6 @@ public class Sagitarii {
 		logger.debug("done updating fragments.");
 	}
 	
-	/**
-	 *	Discard instances in buffer that have no experiments (deleted) 
-	 */
-	private boolean hasOwner( Instance instance ) {
-		for ( Experiment exp : runningExperiments ) {
-			for( Fragment frag : exp.getFragments() ) {
-				if ( instance.getIdFragment() == frag.getIdFragment() ) {
-					return true;
-				}
-			}
-		}
-		logger.warn("owner of instance " + instance.getSerial() + " not found. Will discard this instance.");
-		return false;
-	}
-	
 	
 	/**
 	 * Entrega um instance a um cluster
@@ -395,199 +280,24 @@ public class Sagitarii {
 	 * @return Instance
 	 */
 	public synchronized Instance getNextInstance() {
-		Instance next = instanceInputBuffer.poll();
-		if ( next != null ) {
-			if ( hasOwner(next) ) {
-				instanceOutputBuffer.add( next );
-			} else {
-				return getNextInstance();
-			}
-		} else {
-			if ( instanceInputBuffer.size() > 0 ) {
-				logger.error("null instance detected in output buffer. Run sanitization...");
-				sanitizeBuffer();
-			} 
-		}
-		return next;
+		return instanceBuffer.getNextInstance( runningExperiments );
 	}
 
-	/**
-	 * Remove all null elements of buffer
-	 * Note: The buffer cannot have null elements, so
-	 * if we're here, something very bad is in course...
-	 * 
-	 */
-	private void sanitizeBuffer() {
-		int total = 0;
-		Iterator<Instance> i = instanceInputBuffer.iterator();
-		while ( i.hasNext() ) {
-			Instance req = i.next(); 
-			if ( req == null ) {
-				i.remove();
-				total++;
-			}
-		}
-		logger.warn(total + " null instances removed from buffer. This is not a normal behaviour.");
-	}
 	
-	/**
-	 * Retorna um instance que estava na fila de processamento mas foi 
-	 * perdido (foi entregue para um nó mas não retornou dentro do tempo esperado)
-
-	 */
 	public synchronized void returnToBuffer( Instance instance ) {
-		logger.debug("instance refund: " + instance.getSerial() );
-		if ( instanceOutputBuffer.remove( instance ) ) {
-			if ( instance.getType().isJoin() ) {
-				instanceJoinInputBuffer.add( instance );
-				logger.debug(" > to the join buffer" );
-			} else {
-				instanceInputBuffer.add( instance );
-				logger.debug(" > to the common buffer" );
-			}
-		}
+		instanceBuffer.returnToBuffer(instance);
 	}
 	
 	
-	/**
-	 * Entrega um instance JOIN (SQL) ao MainCluster
-	 * 
-	 * @return Instance
-	 */
 	public synchronized Instance getNextJoinInstance() {
-		Instance next = instanceJoinInputBuffer.poll();
-		if ( next != null ) {
-			logger.debug("serving join instance " + next.getSerial() );
-			instanceOutputBuffer.add(next);
-		}
-		
-		
-		
-		return next;
+		return instanceBuffer.getNextJoinInstance();
 	}
 
-	/**
-	 * Dada uma lista de instances, separa os que serão entregues ao cluster e os que serão
-	 * processados no servidor ( MainCluster ) e adiciona nas listas apropriadas.
-	 */
-	private synchronized void processAndInclude( List<Instance> pipes ) {
-		for( Instance pipe : pipes ) {
-			if( pipe.getType().isJoin() ) {
-				// Os SELECT vão para o MainCluster
-				instanceJoinInputBuffer.add(pipe);
-			} else {
-				// Os demais vão para os nós.
-				instanceInputBuffer.add(pipe);
-			}
-		}
-	}
 
-	
-	/**
-	 * Recarrega os instances que ficaram nomo RUNNING no banco após
-	 * o servidor ser reiniciado.
-	 * Este método é chamado pelo Orchestrator após recuperar os experimentos 
-	 * interrompidos.
-	 *  
-	 */
 	public synchronized void reloadAfterCrash() {
-		logger.debug("after crash reloading " + runningExperiments.size() + " experiments.");
-		try {
-			try {
-				InstanceService instanceService = new InstanceService();
-				processAndInclude( instanceService.recoverFromCrash() );
-				logger.debug( instanceInputBuffer.size() + " common instances recovered.");
-				logger.debug( instanceJoinInputBuffer.size() + " JOIN instances recovered.");
-			} catch ( NotFoundException e ) {
-				logger.debug("no instances to recover");
-			}
-			
-		} catch ( Exception e) {
-			logger.error( e.getMessage() );
-		} 
-		logger.debug("after crash reload done.");
+		instanceBuffer.reloadAfterCrash( runningExperiments );
 	}
 	
-	/**
-	 * Dado um experimento, retorna o fragmento que está sendo executado no momento.
-	 * 
-	 */
-	private synchronized Fragment getRunningFragment( Experiment experiment ) {
-		for ( Fragment frag : experiment.getFragments() ) {
-			if ( frag.getStatus() == FragmentStatus.RUNNING ) {
-				return frag;
-			}
-		}
-		return null;
-	}
-	
-	/**
-	 * Carrega do banco de dados uma lista com os primeiros N instances disponíveis
-	 * que possam ser processados por clusters.
-	 * 
-	 * *** ESTE MÉTODO PRECISA SER APRIMORADO PARA SER MAIS EFICIENTE ***
-	 * 
-	 */
-	private synchronized void loadCommonBuffer() {
-		
-		logger.debug("loading common buffer...");
-
-		if( instanceInputBuffer.size() < maxInputBufferCapacity ) {
-			int diff = maxInputBufferCapacity - instanceInputBuffer.size();
-			try {
-				Fragment running = getRunningFragment( experimentOnTable );
-				if ( running == null ) {
-					logger.debug("no fragments running");
-					return;
-				}
-
-				logger.debug("running fragment found: " + running.getSerial() );
-				InstanceService ps = new InstanceService();
-				List<Instance> pipes = ps.getHead( diff, running.getIdFragment() );
-				processAndInclude( pipes );
-				
-			} catch (NotFoundException e) {
-				logger.debug("no running instances found for experiment " + experimentOnTable.getTagExec() );
-			} catch ( Exception e) {
-				logger.error( e.getMessage() );
-			} 
-			if ( instanceInputBuffer.size() > 0 ) {
-				logger.debug("common buffer size: " + instanceInputBuffer.size() );
-			}
-		}
-	}
-	
-
-	/**
-	 * Carrega do banco de dados uma lista com os primeiros N instances disponíveis
-	 * que possam ser processados pelo cluster local ( MainCluster )
-	 * 
-	 * *** ESTE MÉTODO PRECISA SER APRIMORADO PARA SER MAIS EFICIENTE ***
-	 */
-	private synchronized void loadJoinBuffer() {
-		logger.debug("loading SELEC buffer");
-		if( instanceJoinInputBuffer.size() < maxInputBufferCapacity ) {
-			int diff = maxInputBufferCapacity - instanceJoinInputBuffer.size();
-			try {
-				InstanceService ps = new InstanceService();
-				Fragment running = getRunningFragment( experimentOnTableJoin );
-				if ( running == null ) {
-					logger.debug("no SELECT fragments running");
-					return;
-				}
-				logger.debug("running SELECT fragment found: " + running.getSerial() );
-				processAndInclude( ps.getHeadJoin( diff, running.getIdFragment() ) );
-			} catch (NotFoundException e) {
-				logger.debug("no running SELECT instances found for experiment " + experimentOnTableJoin.getTagExec() );
-			} catch (Exception e) {
-				//logger.error( e.getMessage() );
-			} 
-			if ( instanceJoinInputBuffer.size() > 0 ) {
-				logger.debug("SELECT buffer size: " + instanceJoinInputBuffer.size() );
-			}
-		} 
-	}
-
 	
 	/**
 	 * Chamado pelo Orchestrator de tempos em tempos.
@@ -634,61 +344,15 @@ public class Sagitarii {
 
 		if ( ClustersManager.getInstance().hasClusters() ) {
 			
-			logger.debug("COMMON buffer...");
-			// Se o buffer comum está com 1/3 de sua capacidade, é hora de ler mais instances do banco
-			if ( instanceInputBuffer.size() < ( maxInputBufferCapacity / 3 ) ) {
-				// ... mas antes rodamos a roleta de experimentos para processar o próximo da lista (comum)
-				int mark = 0;
-				do {
-					logger.debug("electing experiment");
-					electExperiment();
-					mark++;
-					// Não podemos colocar na mesa experimentos pausados....
-					// Também não podemos repetir o laço indefinidamente, pois travaria aqui se todos
-					// estivessem pausados. Usamos o contador "mark" para desistir de repetir quando verificarmos todos
-					// e não encontrarmos nenhum rodando.
-				} while ( experimentOnTable != null && (experimentOnTable.getStatus() == ExperimentStatus.PAUSED) && (mark <= runningExperiments.size() ) ) ;
-				if ( (experimentOnTable != null) && (experimentOnTable.getStatus() != ExperimentStatus.PAUSED) ) {
-					loadCommonBuffer();
-				}
-			}
-		
-			if ( canLoadJoinBuffer ) {
-				logger.debug("JOIN buffer...");
-				// Se o buffer JOIN (SQL) está com 1/5 de sua capacidade, é hora de ler mais instances do banco
-				if ( instanceJoinInputBuffer.size() < ( maxInputBufferCapacity / 5 ) ) {
-					// ... mas antes rodamos a roleta de experimentos para processar o próximo da lista (JOIN)
-					int mark = 0;
-					do {
-						electExperimentJoin();
-						mark++;
-						// Não podemos colocar na mesa experimentos pausados....
-						// Também não podemos repetir o laço indefinidamente, pois travaria aqui se todos
-						// estivessem pausados. Usamos o contador "mark" para desistir de repetir quando verificarmos todos
-						// e não encontrarmos nenhum rodando.
-					} while ( experimentOnTableJoin != null &&  (experimentOnTableJoin.getStatus() == ExperimentStatus.PAUSED) && (mark <= runningExperiments.size() ) ) ;
-					
-					if ( (experimentOnTableJoin != null) && (experimentOnTableJoin.getStatus() != ExperimentStatus.PAUSED) ) {
-						loadJoinBuffer();
-					} 
-					
-				}
-				if ( instanceJoinInputBuffer.size() == 0 ) {
-					canLoadJoinBuffer = false;
-				}
-			} else {
-				logger.debug("nothing has changed since last JOIN check so will not touch database now.");
-			}
-		
+			instanceBuffer.loadBuffers();
+			
 			try {
 				updateFragments();
 			} catch (Exception e) {
 				logger.error( "update fragments error: " + e.getMessage() );
 			}
 		
-			if( ( instanceJoinInputBuffer.size() == 0 ) && ( instanceInputBuffer.size() == 0 ) ) {
-				checkFinished();
-			}
+			checkFinished();
 
 		} else {
 			// logger.debug("will not work until have nodes to process.");
@@ -723,11 +387,8 @@ public class Sagitarii {
 	}
 	
 	private Sagitarii() {
-		
+		instanceBuffer = new InstanceBuffer();
 		runningExperiments = new ArrayList<Experiment>();
-		instanceInputBuffer = new LinkedList<Instance>();
-		instanceJoinInputBuffer = new LinkedList<Instance>();
-		instanceOutputBuffer = new LinkedList<Instance>();
 	}
 	
 	/**
@@ -773,8 +434,6 @@ public class Sagitarii {
 
 	public void setRunningExperiments(List<Experiment> runningExperiments) {
 		this.runningExperiments = runningExperiments;
-		electExperiment();
-		electExperimentJoin();
 	}
 	
 	public synchronized void addRunningExperiment( Experiment experiment ) throws Exception {
@@ -786,40 +445,28 @@ public class Sagitarii {
 		}
 		if ( !found && ( experiment.getStatus() == ExperimentStatus.RUNNING ) ) {
 			runningExperiments.add( experiment );
-			canLoadJoinBuffer = true;
-			electExperiment();
-			electExperimentJoin();
 			updateFragments();
 		}
 	}
 
 	public Queue<Instance> getInstanceInputBuffer() {
-		return new LinkedList<Instance>( instanceInputBuffer );
+		return instanceBuffer.getInstanceInputBuffer();
 	}
 
 	public Queue<Instance> getInstanceOutputBuffer() {
-		// To avoid concurrency on frontend showing 
-		return new LinkedList<Instance>( instanceOutputBuffer );
+		return instanceBuffer.getInstanceOutputBuffer();
 	}
 
 	public void setMaxInputBufferCapacity(int maxInputBufferCapacity) {
-		this.maxInputBufferCapacity = maxInputBufferCapacity;
+		instanceBuffer.setBufferSize( maxInputBufferCapacity );
 	}
 	
 	public int getMaxInputBufferCapacity() {
-		return maxInputBufferCapacity;
+		return instanceBuffer.getBufferSize();
 	}
 
 	public Queue<Instance> getInstanceJoinInputBuffer() {
-		return new LinkedList<Instance>( instanceJoinInputBuffer );
+		return instanceBuffer.getInstanceJoinInputBuffer();
 	}
 	
-	public Experiment getExperimentOnTable() {
-		return experimentOnTable;
-	}
-
-	public Experiment getExperimentOnTableJoin() {
-		return experimentOnTableJoin;
-	}
-
 }

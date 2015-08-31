@@ -19,7 +19,7 @@
 		<poolIntervalSeconds>4</poolIntervalSeconds>
 		<pseudoClusterIntervalSeconds>5</pseudoClusterIntervalSeconds>
 		<pseudoMaxTasks>5</pseudoMaxTasks>
-		<maxInputBufferCapacity>300</maxInputBufferCapacity>
+		<maxInputBufferCapacity>30</maxInputBufferCapacity>
 		<mainNodesQuant>1</mainNodesQuant>
 		<fileReceiverPort>3333</fileReceiverPort>
 		<fileReceiverChunkBufferSize>100</fileReceiverChunkBufferSize>

@@ -16,6 +16,7 @@
 						
 						<div class="menuBarMain" style="position:relative">
 							<img alt="" onclick="back();" title="Back" class="button dicas" src="img/back.png" />
+							<img onclick="reloadBuffers();" alt="" title="Ask now for all delayed Instances" class="button dicas" src="img/turn.png">
 						</div>
 										
 										
@@ -116,6 +117,10 @@
 	function back() {
 		window.history.back();
 	}	
+
+	function reloadBuffers() {
+		window.location.href="reloadBuffers";
+	}
 	
 
 </script>					

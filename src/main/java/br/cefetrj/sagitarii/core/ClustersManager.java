@@ -225,13 +225,6 @@ public class ClustersManager {
 	}
 
 	
-	/**
-	 * Troca a TAG ##TAG_ID_INSTANCE## pelo ID do instance.
-	 * Isto eh necessario pois nao se possuia o ID do instance quando o XML foi
-	 * gerado (antes de gravar no banco) e eh necessário enviar este ID ao No
-	 * para facilitar o encontro do mesmo instance quando a tarefa for concluida.
-	 * (O no nao precisa do ID, ele vai devolver ao Sagitarii junto com os dados).
-	 */
 	private String fillInstanceID( Instance instance ) {
 		return instance.getContent().replace("##TAG_ID_INSTANCE##", String.valueOf( instance.getIdInstance() ) );
 	}
@@ -325,9 +318,7 @@ public class ClustersManager {
 		return new ArrayList<Cluster>( clusterList );
 	}
 	
-	/**
-	 * A classe não pode ser instanciada por outras.
-	 */
+
 	private ClustersManager() {
 		clusterList = new ArrayList<Cluster>();
 	}

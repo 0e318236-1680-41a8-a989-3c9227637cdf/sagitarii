@@ -25,7 +25,6 @@
 									<th>SELECT type Instances in output buffer</th>
 									<th>Instances with nodes</th>
 									<th>Buffers capacity</th>
-									<th>Selected Experiments (Common / Blocking)</th>
 									<th>&nbsp;</th>
 								</tr>
 								<tr>
@@ -33,12 +32,6 @@
 									<td>${fn:length(instanceJoinInputBuffer)}</td>
 									<td>${fn:length(instanceOutputBuffer)}</td>
 									<td>${maxBufferCapacity}</td>
-									<td>${experimentOnTable.tagExec} / ${experimentOnTableJoin.tagExec}</td>
-									<td>
-										<a href="reloadBuffers">
-											<img title="Call AfterCrash Routine : WARNING! Experimental" class="miniButton dicas" src="img/turn.png">
-										</a>
-									</td>
 								</tr>
 							</table>
 						</div>
@@ -67,7 +60,6 @@
 											<table style="width:100%">
 												<tr>
 													<th style="width:50px">Serial</th>
-													<th style="width:50px">Type</th>
 													<th style="width:100px">Status</th>
 													<th style="width:100px">Total</th>
 													<th style="width:100px">Remaining</th>
@@ -76,7 +68,6 @@
 												<c:forEach var="fragment" items="${experiment.fragments}">
 													<tr>
 														<td>${fragment.serial}</td>
-														<td>${fragment.type}</td>
 														<td>${fragment.status}</td>
 														<td>${fragment.totalInstances}</td>
 														<td>${fragment.remainingInstances}</td>
@@ -117,31 +108,9 @@
 				</div>
 				<div id="rightBox"> 
 					<%@ include file="commonpanel.jsp" %>
-					
-					<div id="tblCanvas" class="userBoard" style="padding-bottom:5px;">
-						<div class="userBoardT1" style="text-align:center;width:95%">Legend (Scheduler)</div>
-						<div id="tableContent" class="userBoardT2" style="text-align:center;width:95%">
-							<table>
-								<tr><td class="tableCellFormLeft" style="width:30px;background-color:#FFF0F0">&nbsp;</td><td>Selected for SERVER processing</td></tr>
-								<tr><td class="tableCellFormLeft" style="width:30px;background-color:#F0F6FC">&nbsp;</td><td>Selected for NODE processing</td></tr>
-								<tr><td class="tableCellFormLeft" style="width:30px;background-color:#FFFFFF">&nbsp;</td><td>Waiting</td></tr>
-							</table>
-						</div>
-					</div>					
-					
 				</div>
 
 <script>
-	
-	$(document).ready(function() {
-		highlight();
-	});	
-	
-	function highlight() {
-		$("#dtTableContainer td").css("background-color","#FFFFFF");
-		$("#${experimentOnTableJoin.tagExec} td").css("background-color","#FFF0F0");
-		$("#${experimentOnTable.tagExec} td").css("background-color","#F0F6FC");
-	}
 	
 	function reloadPage() {
 		//location.reload();

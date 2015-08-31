@@ -14,6 +14,10 @@
 	
 	<loggers>
 
+		<Logger name="br.cefetrj.sagitarii.core.InstanceBuffer" level="error" additivity="false"> 
+			<appender-ref ref="File"/> 
+		</Logger>
+
 		<Logger name="br.cefetrj.sagitarii.persistence.ConnectionMonitor" level="error" additivity="false"> 
 			<appender-ref ref="Console"/> 
 		</Logger>
@@ -105,7 +109,7 @@
 
 
 		<Logger name="br.cefetrj.sagitarii.persistence.infra.HibernateDAO" level="error" additivity="false"> 
-			<appender-ref ref="Console"/> 
+			<appender-ref ref="File"/> 
 		</Logger>
 
 		<Logger name="br.cefetrj.sagitarii.core.Sagitarii" level="error" additivity="false"> 

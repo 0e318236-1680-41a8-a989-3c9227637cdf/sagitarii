@@ -5,7 +5,7 @@ import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 
-import br.cefetrj.sagitarii.core.Sagitarii;
+import br.cefetrj.sagitarii.core.delivery.InstanceDeliveryControl;
 
 @Action (value = "reloadBuffers", results = { @Result (type="redirect", location = "viewRunning", name = "ok") 
 }, interceptorRefs= { @InterceptorRef("seguranca")	 } ) 
@@ -16,8 +16,8 @@ public class ReloadBuffersAction extends BasicActionClass {
 	public String execute(){
 
 		try {
-			Sagitarii.getInstance().reloadAfterCrash();
-			setMessageText( "AfterCrash Routine Called. This may cause buffer overload. Be carefull.");
+			InstanceDeliveryControl.getInstance().forceInformAllDelayed();
+			setMessageText( "Sagitarii is asking nodes for all delayed Instances...");
 		} catch ( Exception e ) {
 			setMessageText( e.getMessage() );
 		} 

@@ -133,6 +133,19 @@ public class InstanceDeliveryControl {
 			}
 		}
 	}
+
+	
+	public void forceInformAllDelayed() {
+		for ( DeliveryUnit unity : getUnits() ) {
+			Accumulator ac = AgeCalculator.getInstance().getAccumulator( unity.getHash() );
+			if ( ac != null ) {
+				if ( isDelayed( ac, unity ) ) {
+					ClustersManager.getInstance().inform( unity.getMacAddress(), unity.getInstance().getSerial() );
+				}
+			}
+		}
+	}
+	
 	
 	public synchronized List<DeliveryUnit> getUnits() {
 		return new ArrayList<DeliveryUnit>( units );
