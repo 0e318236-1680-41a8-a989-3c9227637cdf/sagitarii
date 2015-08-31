@@ -225,7 +225,7 @@ svm4 <- function(x.train, x.test, alvo, kn, c, tp)
   }
   if (tp=="nu-svc")
   {
-    tsvm <- ksvm(alvo, data=x.train, kernel=kn, C=c, type="nu-svc", prob.model=TRUE)
+    tsvm <- ksvm(alvo, data=x.train, kernel=kn, C=c, type="nu-svc", nu=0.2, prob.model=TRUE)
   }
   if (tp=="C-bsvc")
   {
@@ -276,6 +276,21 @@ rf <- function(x.train, x.test, nt)
   x.prf <- predict(x.trf, data.test, type="prob")
   return (x.prf)
 }
+#
+# NAIVE BAYES
+#
+nb <- function(x.train, x.test)
+{
+  require(e1071)
+  
+  data.train <- x.train[,1:ncol(x.train)-1]
+  data.test <- x.test[,1:ncol(x.test)-1]
+  alvo <- as.factor(x.train$alvo)
+  x.tnb <- naiveBayes(data.train, alvo, laplace=0)
+  x.pnb <- predict(x.tnb, data.test, type="raw")
+  return (x.pnb)
+}
+#
 # AVALIA REDES NEURAIS
 #
 avalia_rn <- function(pred, alvo.teste)
@@ -287,25 +302,25 @@ avalia_rn <- function(pred, alvo.teste)
   tabela <- round(table(alvo.teste))
   for (i in 1:length(alvo.teste))
   {
-    obj <- ifelse(pred[i,1] > 0.9, 1, 2)
+    obj <- ifelse(pred[i,1] > 0.9, 0, 1)
     if ((alvo.teste[i] - obj) == 0)
     {
-      if (obj == 1)
+      if (obj == 0)
       {
         ntruegal <- ntruegal + 1
       }
-      if (obj == 2)
+      if (obj == 1)
       {
         ntrueest <- ntrueest + 1
       }
     }
     else
     {
-      if (obj == 1)
+      if (obj == 0)
       {
         nfalsegal <- nfalsegal + 1
       }
-      if (obj == 2)
+      if (obj == 1)
       {
         nfalseest <- nfalseest + 1
       }

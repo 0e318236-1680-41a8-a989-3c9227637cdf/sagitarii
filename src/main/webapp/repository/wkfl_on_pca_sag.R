@@ -2,7 +2,7 @@
 #---- Deixar trecho abaixo comentado no Sagitarii
 #sagitariiWorkFolder <- "/Users/eogasawara/Dropbox/Eduardo/R/Star-Galaxy"
 
-# versao de 12/08/2015
+# versao de 25/08/2015
 
 # ----------- SAGITARII REQUIREMENTS ---------------------------------------
 inputFileFolder <- paste( sagitariiWorkFolder, "inbox", sep = "/")
@@ -46,7 +46,7 @@ if (FALSE) { # uso de lasso
   x.test$alvo <- x.test.alvo
 }
 
-if (TRUE) { # uso de pca
+if (FALSE) { # uso de pca
   print("pca") 
   set.seed(1)
   x.train.raw <- x.train
@@ -62,11 +62,11 @@ if (TRUE) { # uso de pca
     k=0.69
   }
   
-  x.list <- pca(x.train.raw, varacum=k)
+  x.list <- pca(x.train.raw, varacum=0.9)
   x.train <-x.list[[1]]
   x.train.transf <- x.list[[2]]
   
-  x.list <- pca(x.train.raw, test=x.test, transf = x.train.transf, varacum=k)
+  x.list <- pca(x.train.raw, test=x.test, transf = x.train.transf, varacum=0.9)
   x.test <- x.list[[1]]
   
   x.train.pca.raw <- x.train
