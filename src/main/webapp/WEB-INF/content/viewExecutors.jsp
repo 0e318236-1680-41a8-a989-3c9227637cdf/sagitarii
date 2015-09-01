@@ -45,7 +45,7 @@
 											<td>${executor.selectStatement}&nbsp;</td>
 											<td>&nbsp;
 												<c:if test="${executor.type == 'RSCRIPT' || executor.type == 'LIBRARY'}">
-													<a href="viewText?edit=yes&fileName=repository/${executor.activationWrapper}">
+													<a href="viewText?idExecutor=${executor.idActivationExecutor}&edit=yes&fileName=repository/${executor.activationWrapper}">
 														<img class="miniButton dicas" title="View" src="img/search.png">
 													</a>
 												</c:if>

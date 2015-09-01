@@ -71,9 +71,6 @@ public class InstanceListContainer {
 			List<Activation> activations = new XMLParser().parseActivations( instance.getContent() );
 			StringBuilder sb = new StringBuilder();
 			for ( Activation act : activations ) {
-				
-				System.out.println(" > " + act.getExecutor() );
-				
 				sb.append( act.getExecutor() );
 			}
 			hash = getHashSHA1( sb.toString().getBytes() );
@@ -86,18 +83,13 @@ public class InstanceListContainer {
 	private List<Instance> optimize( List<Instance> instances ) {
 		try {
 	    	for ( Instance instance : instances ) {
-	    		
-	    		System.out.println("Will optimize with Instance " + instance.getSerial() );
-	    		
 	    		String hash = getInstanceHash( instance );
 	    		Accumulator acc = AgeCalculator.getInstance().getAccumulator(hash);
-	    		
 	    		if ( acc != null ) {
-	    			System.out.println("Estimated time for " + instance.getSerial() + " : " + acc.getAverageAgeAsText() );
+	    			 // Do something with estimated time: instance.getSerial() // acc.getAverageAgeAsText() 
 	    		} else {
-	    			System.out.println("Accumulator " + hash + " not found");
+	    			// Accumulator not found
 	    		}
-	    		
 	    	}
 		} catch ( Exception e ) {
 			e.printStackTrace();

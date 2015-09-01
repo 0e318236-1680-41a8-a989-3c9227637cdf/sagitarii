@@ -27,6 +27,7 @@
 						<form method="post" action="saveExecutorText" id="frmSave" enctype="multipart/form-data">
 							<input type="hidden" id="fileName" name="fileName" value="${fileName}">
 							<input type="hidden" id="fileContent" name="fileContent" >
+							<input type="hidden" name="idExecutor" value="${idExecutor}">
 						</form>
 							
 						<div class="menuBarMain" style="display:table;height:500px;margin-top:5px">

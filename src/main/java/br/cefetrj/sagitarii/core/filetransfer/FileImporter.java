@@ -134,14 +134,16 @@ public class FileImporter extends Thread {
 
 	
 	private void cleanFiles() {
-		logger.error("YOU MUST DELETE THESE FILES:");
-		for( ReceivedFile receivedFile : receivedFiles ) {
-			String name = receivedFile.getFileName();
-			try {
-				Integer fileID = fileIds.get( name );
-				logger.error(" > " + fileID + ": " + name);
-			} catch ( Exception ignored ) {
-				//
+		if ( receivedFiles.size() > 0 ) {
+			logger.error("YOU MUST DELETE THESE FILES:");
+			for( ReceivedFile receivedFile : receivedFiles ) {
+				String name = receivedFile.getFileName();
+				try {
+					Integer fileID = fileIds.get( name );
+					logger.error(" > " + fileID + ": " + name);
+				} catch ( Exception ignored ) {
+					//
+				}
 			}
 		}
 	}
@@ -234,7 +236,6 @@ public class FileImporter extends Thread {
 			logger.debug("found instance " + instance.getSerial() );
 		} catch ( NotFoundException nf ) {
 			instance = new Instance();
-			//instance.setExecutorAlias( activity.getSerial() );
 			instance.setType( ActivityType.LOADER );
 			instance.setStatus( InstanceStatus.NEW_DATA );
 			instance.setStartDateTime( Calendar.getInstance().getTime() );
@@ -297,6 +298,8 @@ public class FileImporter extends Thread {
 			logger.debug("instance " + instance.getSerial() + " already done. aborting...");
 			return;
 		}
+		
+		logger.debug("will import instance " + instance.getSerial() + " with current status of " + instance.getStatus() );
 		
 		List<String> contentLines = new ArrayList<String>();
 		StringBuilder sb = new StringBuilder();

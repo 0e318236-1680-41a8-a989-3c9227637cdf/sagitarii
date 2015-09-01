@@ -101,6 +101,15 @@ public class ExecutorService {
 		}
 	}
 	
+	public void updateExecutorHash( int idExecutor ) throws Exception {
+		ActivationExecutor executor = rep.getActivationExecutor(idExecutor);
+		String hash = UUID.randomUUID().toString().replace("-", "").substring(0, 10);
+		executor.setHash(hash);
+		rep.newTransaction();
+		rep.updateActivationExecutor( executor );
+		ClustersManager.getInstance().reloadWrappers();
+	}
+	
 	public ActivationExecutor insertExecutor(ActivationExecutor executor) throws InsertException {
 		String hash = UUID.randomUUID().toString().replace("-", "").substring(0, 10);
 		executor.setHash(hash);

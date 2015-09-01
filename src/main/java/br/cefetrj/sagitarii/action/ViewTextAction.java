@@ -22,6 +22,7 @@ public class ViewTextAction extends BasicActionClass {
 	private String textContent;
 	private String fileName;
 	private String edit;
+	private int idExecutor;
 	
 	private String readFile(String fileName) throws IOException {
 		String path = PathFinder.getInstance().getPath() + "/" + fileName;
@@ -75,6 +76,14 @@ public class ViewTextAction extends BasicActionClass {
 	
 	public String getEdit() {
 		return edit;
+	}
+	
+	public void setIdExecutor(int idExecutor) {
+		this.idExecutor = idExecutor;
+	}
+	
+	public int getIdExecutor() {
+		return idExecutor;
 	}
 	
 }
