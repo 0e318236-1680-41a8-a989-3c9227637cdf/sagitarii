@@ -44,20 +44,24 @@ public class InstanceBuffer {
 		int runningExperimentCount = runningExperiments.size(); 
 		if ( runningExperimentCount == 0 ) return;
 		int sliceSize;
-		
+		listContainer.clear();
+
 		if ( getInstanceInputBufferSize() < ( bufferSize / 3 ) ) {
 			logger.debug("loading COMMON buffer...");
 			sliceSize = ( bufferSize - getInstanceInputBufferSize() ) / runningExperimentCount + 1;
 			for ( Experiment experiment : runningExperiments ) {
 				List<Instance> common = loadCommonBuffer( sliceSize, experiment );
 				if ( common != null ) {
+					
 					System.out.println("adding buffer for experiment " + experiment.getTagExec() );
+					
+					
 					listContainer.addList( new InstanceList(common, experiment.getTagExec()) );
 				}
 			}
 			if ( listContainer.size() > 0 ) {
 				instanceInputBuffer.addAll( listContainer.merge() );
-			}
+			} 
 		}
 	
 		listContainer.clear();

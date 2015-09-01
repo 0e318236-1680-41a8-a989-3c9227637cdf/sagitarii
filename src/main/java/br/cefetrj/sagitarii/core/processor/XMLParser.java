@@ -63,7 +63,12 @@ public class XMLParser {
 		String fragment = pipeElement.getAttribute("fragment");
 		String experiment = pipeElement.getAttribute("experiment");
 		String workflow = pipeElement.getAttribute("workflow");
-		int instanceId = Integer.valueOf( pipeElement.getAttribute("id") );
+		int instanceId = 0;
+		try {
+			instanceId = Integer.valueOf( pipeElement.getAttribute("id") );
+		} catch (Exception e) {
+			
+		}
 		
 		List<Activation> resp = new ArrayList<Activation>();
 		NodeList mapconfig = doc.getElementsByTagName("activity");

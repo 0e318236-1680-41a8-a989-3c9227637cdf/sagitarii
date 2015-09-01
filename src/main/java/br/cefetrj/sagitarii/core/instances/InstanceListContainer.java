@@ -1,8 +1,13 @@
 package br.cefetrj.sagitarii.core.instances;
 
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.cefetrj.sagitarii.core.processor.Activation;
+import br.cefetrj.sagitarii.core.processor.XMLParser;
+import br.cefetrj.sagitarii.core.statistics.Accumulator;
+import br.cefetrj.sagitarii.core.statistics.AgeCalculator;
 import br.cefetrj.sagitarii.persistence.entity.Instance;
 
 public class InstanceListContainer {
@@ -24,10 +29,6 @@ public class InstanceListContainer {
 		lists = new ArrayList<InstanceList>();
 	}
 	
-	/**
-	 * Get the size of the bigger list
-	 * 
-	 */
 	private int getBiggerSize() {
 		int res = 0;
 		for ( InstanceList list : lists ) {
@@ -39,18 +40,6 @@ public class InstanceListContainer {
 	}
 	
 	public List<Instance> merge() {
-		
-		System.out.println("will merge lists");
-		
-		for ( InstanceList list : lists ) {
-			System.out.println("List: " + list.getId() );
-			for ( Instance i : list.getList() ) {
-				System.out.println(" > " + i.getSerial() );
-			}
-		}
-		
-		System.out.println("------------------------------");
-		
 	    List<Instance> res = new ArrayList<Instance>();
 	    int bigger = getBiggerSize();
 	    for ( int index = 0; index < bigger; index++  ) {
@@ -61,14 +50,60 @@ public class InstanceListContainer {
 	    		}
 	    	}
 	    }
-	    
-	    System.out.println("Result:");
-		for ( Instance i : res ) {
-			System.out.println(" > " + i.getSerial() );
-		}
-	    
-	    
-	    return res;
+	    return optimize( res );
 	}
+	
+	private String getHashSHA1( byte[] subject ) throws Exception {
+		MessageDigest md = MessageDigest.getInstance("SHA-1");
+		byte[] digest = md.digest( subject );
+		
+		String result = "";
+		for (int i=0; i < digest.length; i++) {
+			result +=
+				Integer.toString( ( digest[i] & 0xff ) + 0x100, 16).substring( 1 );
+		}
+		return result;
+	}
+	
+	private String getInstanceHash( Instance instance ) {
+		String hash = null;
+		try {
+			List<Activation> activations = new XMLParser().parseActivations( instance.getContent() );
+			StringBuilder sb = new StringBuilder();
+			for ( Activation act : activations ) {
+				
+				System.out.println(" > " + act.getExecutor() );
+				
+				sb.append( act.getExecutor() );
+			}
+			hash = getHashSHA1( sb.toString().getBytes() );
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return hash;
+	}
+	
+	private List<Instance> optimize( List<Instance> instances ) {
+		try {
+	    	for ( Instance instance : instances ) {
+	    		
+	    		System.out.println("Will optimize with Instance " + instance.getSerial() );
+	    		
+	    		String hash = getInstanceHash( instance );
+	    		Accumulator acc = AgeCalculator.getInstance().getAccumulator(hash);
+	    		
+	    		if ( acc != null ) {
+	    			System.out.println("Estimated time for " + instance.getSerial() + " : " + acc.getAverageAgeAsText() );
+	    		} else {
+	    			System.out.println("Accumulator " + hash + " not found");
+	    		}
+	    		
+	    	}
+		} catch ( Exception e ) {
+			e.printStackTrace();
+		}
+		return instances;
+	}
+	
 
 }
