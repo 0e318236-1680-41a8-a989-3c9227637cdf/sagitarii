@@ -9,13 +9,13 @@ import org.jfree.chart.JFreeChart;
 
 import br.cefetrj.sagitarii.core.ClustersManager;
 
-@Action (value = "getNodeMetrics", results = { 
+@Action (value = "getNodeRamMetrics", results = { 
 		@Result ( type="chart", params = {"width", "400", "height", "200"} , name = "ok") }, 
 		interceptorRefs= { @InterceptorRef("seguranca") } 
 ) 
 
 @ParentPackage("chart")
-public class GetNodeMetricsAction  {
+public class GetNodeRamMetricsAction  {
 	private JFreeChart chart;
 	private String macAddress;
 	private String time;
@@ -23,7 +23,7 @@ public class GetNodeMetricsAction  {
 	public String execute () {
 		try {
 			if ( macAddress != null ) {
-				chart = ClustersManager.getInstance().getCluster(macAddress).getMetrics().getImage();
+				chart = ClustersManager.getInstance().getCluster(macAddress).getRamMetrics().getImage();
 			}
 		} catch ( Exception e ) {
 			e.printStackTrace();

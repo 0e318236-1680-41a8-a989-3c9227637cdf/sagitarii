@@ -16,6 +16,7 @@ import br.cefetrj.sagitarii.core.types.InstanceStatus;
 import br.cefetrj.sagitarii.metrics.MetricController;
 import br.cefetrj.sagitarii.metrics.MetricType;
 import br.cefetrj.sagitarii.metrics.NodeLoadMonitorEntity;
+import br.cefetrj.sagitarii.metrics.NodeVMMonitorEntity;
 import br.cefetrj.sagitarii.misc.DateLibrary;
 import br.cefetrj.sagitarii.misc.ProgressListener;
 import br.cefetrj.sagitarii.misc.json.NodeTask;
@@ -59,6 +60,7 @@ public class Cluster {
 	private List<LogEntry> logEntries = new ArrayList<LogEntry>();
 	private int counter = 0;
 	private NodeLoadMonitorEntity metrics;
+	private NodeVMMonitorEntity metricsVmRam;
 	private double memoryPercent;
 	
 	public void setMemoryPercent(double memoryPercent) {
@@ -69,6 +71,10 @@ public class Cluster {
 		return metrics;
 	}
 	
+	public NodeVMMonitorEntity getRamMetrics() {
+		return metricsVmRam;
+	}
+
 	public boolean signaled() {
 		return ( restartSignal || quitSignal || cleanWorkspaceSignal || reloadWrappersSignal || askingForInstance );
 		
@@ -352,10 +358,12 @@ public class Cluster {
 		this.progressListeners = new ArrayList<ProgressListener>(); 
 		this.type = type;
 		metrics = new NodeLoadMonitorEntity( macAddress, MetricType.NODE_LOAD );
+		metricsVmRam = new NodeVMMonitorEntity( macAddress, MetricType.NODE_LOAD );
 	}
 	
 	private void addMetrics(  double valueCpu, double valueRam, double valueTasks ) {
 		metrics.set(valueCpu, valueRam, valueTasks);
+		metricsVmRam.set(totalMemory);
 	}
 
 	public String getmacAddress() {

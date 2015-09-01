@@ -62,7 +62,7 @@
 
 	$(document).ready(function() {
 		window.setInterval(reloadImage1, 4200);
-		window.setInterval(reloadImage2, 4000);
+		window.setInterval(reloadImage2, 4100);
 	});
 	
 </script>

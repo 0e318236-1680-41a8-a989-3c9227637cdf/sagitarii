@@ -1,6 +1,5 @@
 package br.cefetrj.sagitarii.core;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -9,6 +8,8 @@ import java.util.Queue;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import br.cefetrj.sagitarii.core.instances.InstanceList;
+import br.cefetrj.sagitarii.core.instances.InstanceListContainer;
 import br.cefetrj.sagitarii.core.types.FragmentStatus;
 import br.cefetrj.sagitarii.persistence.entity.Experiment;
 import br.cefetrj.sagitarii.persistence.entity.Fragment;
@@ -23,24 +24,11 @@ public class InstanceBuffer {
 	private Queue<Instance> instanceOutputBuffer;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 	private List<Experiment> runningExperiments;
+	private InstanceListContainer listContainer;
 
 	public boolean isEmpty() {
 		return ( getInstanceJoinInputBufferSize() == 0 ) && ( getInstanceInputBufferSize() == 0 ); 
 	}
-	
-	private List<Instance> merge( List<Instance> a, List<Instance> b ) {
-		int c1 = 0, c2 = 0;
-	    List<Instance> res = new ArrayList<Instance>();
-
-	    while(c1 < a.size() || c2 < b.size()) {
-	        if(c1 < a.size())
-	            res.add( a.get(c1++) );
-	        if(c2 < b.size())
-	            res.add( b.get(c2++) );
-	    }
-	    logger.debug("done");
-	    return res;
-	}	
 	
 	private void processAndInclude( List<Instance> preBuffer ) {
 		for( Instance instance : preBuffer ) {
@@ -52,42 +40,39 @@ public class InstanceBuffer {
 		}
 	}
 	
-	public void loadBuffers() {
+	public void loadBuffers() throws Exception {
 		int runningExperimentCount = runningExperiments.size(); 
 		if ( runningExperimentCount == 0 ) return;
 		int sliceSize;
 		
-		logger.debug("loading COMMON buffer...");
 		if ( getInstanceInputBufferSize() < ( bufferSize / 3 ) ) {
-			List<Instance> commonPreBuffer = new ArrayList<Instance>();
+			logger.debug("loading COMMON buffer...");
 			sliceSize = ( bufferSize - getInstanceInputBufferSize() ) / runningExperimentCount + 1;
 			for ( Experiment experiment : runningExperiments ) {
 				List<Instance> common = loadCommonBuffer( sliceSize, experiment );
 				if ( common != null ) {
-					logger.debug(" > merging " + common.size() + " instances from experiment " + experiment.getTagExec() );
-					commonPreBuffer = merge(commonPreBuffer, common);
-					logger.debug(" > prebuffer is now " + commonPreBuffer.size() + " large" );
+					System.out.println("adding buffer for experiment " + experiment.getTagExec() );
+					listContainer.addList( new InstanceList(common, experiment.getTagExec()) );
 				}
 			}
-			if ( commonPreBuffer.size() > 0 ) {
-				instanceInputBuffer.addAll( commonPreBuffer );
+			if ( listContainer.size() > 0 ) {
+				instanceInputBuffer.addAll( listContainer.merge() );
 			}
 		}
 	
-		logger.debug("loading SELECT buffer...");
+		listContainer.clear();
+		
 		if ( getInstanceJoinInputBufferSize() < ( bufferSize / 5 ) ) {
-			List<Instance> selectPreBuffer = new ArrayList<Instance>();
+			logger.debug("loading SELECT buffer...");
 			sliceSize = ( bufferSize - getInstanceJoinInputBufferSize() ) / runningExperimentCount + 1;
 			for ( Experiment experiment : runningExperiments ) {
 				List<Instance> select = loadJoinBuffer( sliceSize, experiment);
 				if ( select != null ) {
-					logger.debug(" > merging " + select.size() + " instances from experiment " + experiment.getTagExec() );
-					selectPreBuffer = merge( selectPreBuffer, select );
-					logger.debug(" > prebuffer is now " + selectPreBuffer.size() + " large" );
+					listContainer.addList( new InstanceList(select, experiment.getTagExec()) );
 				}
 			}
-			if ( selectPreBuffer.size() > 0 ) {
-				instanceInputBuffer.addAll( selectPreBuffer );
+			if ( listContainer.size() > 0 ) {
+				instanceInputBuffer.addAll( listContainer.merge() );
 			}
 		}
 		
@@ -156,6 +141,7 @@ public class InstanceBuffer {
 		this.instanceJoinInputBuffer = new LinkedList<Instance>();
 		this.instanceOutputBuffer = new LinkedList<Instance>();
 		this.bufferSize = 1000;
+		this.listContainer = new InstanceListContainer();
 	}
 	
 	public void removeFromOutputBuffer( Instance instance ) {

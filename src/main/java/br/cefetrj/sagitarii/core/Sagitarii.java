@@ -344,7 +344,11 @@ public class Sagitarii {
 
 		if ( ClustersManager.getInstance().hasClusters() ) {
 			
-			instanceBuffer.loadBuffers();
+			try {
+				instanceBuffer.loadBuffers();
+			} catch ( Exception e ) {
+				logger.error( "load buffers error: " + e.getMessage() );
+			}
 			
 			try {
 				updateFragments();
