@@ -22,6 +22,7 @@ import org.apache.logging.log4j.Logger;
 
 import br.cefetrj.sagitarii.core.ClustersManager;
 import br.cefetrj.sagitarii.core.DataReceiver;
+import br.cefetrj.sagitarii.core.DomainStorage;
 import br.cefetrj.sagitarii.core.ReceivedData;
 import br.cefetrj.sagitarii.core.config.Configurator;
 import br.cefetrj.sagitarii.core.types.ActivityStatus;
@@ -336,6 +337,16 @@ public class FileImporter extends Thread {
 						// We've stored this file already! get it's ID from list
 						valVal = String.valueOf( fileIds.get(valVal) );
 					}
+				} else {
+					// This data value is not correspondent to any file we have.
+					// But is the column a file domain ?
+					String columnName = headerLine.get(x);
+					if ( DomainStorage.getInstance().isColumnADomain(columnName) ) {
+						// Yes... set it as null
+						logger.warn("the domain column " + columnName + " have no file");
+						valVal = "null";
+					}
+					
 				}
 				sb.append( prefix + valVal );
 				prefix = ",";
