@@ -14,7 +14,7 @@ public class Benchmark {
 
 			// Spend some time to simulate processing...
 	        try {
-	            Thread.sleep(20000);
+	            Thread.sleep(40000);
 	        } catch (InterruptedException e) {
 	        }
 			
