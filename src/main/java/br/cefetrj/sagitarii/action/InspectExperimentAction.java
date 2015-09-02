@@ -12,12 +12,10 @@ import org.apache.struts2.convention.annotation.Result;
 import br.cefetrj.sagitarii.core.UserTableEntity;
 import br.cefetrj.sagitarii.persistence.entity.CustomQuery;
 import br.cefetrj.sagitarii.persistence.entity.Experiment;
-import br.cefetrj.sagitarii.persistence.entity.FileLight;
 import br.cefetrj.sagitarii.persistence.entity.Relation;
 import br.cefetrj.sagitarii.persistence.exceptions.NotFoundException;
 import br.cefetrj.sagitarii.persistence.services.CustomQueryService;
 import br.cefetrj.sagitarii.persistence.services.ExperimentService;
-import br.cefetrj.sagitarii.persistence.services.FileService;
 
 @Action (value = "inspectExperiment", 
 	results = { 

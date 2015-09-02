@@ -190,6 +190,9 @@ public class ExperimentService {
 			FragmentComparator fc = new FragmentComparator();
 			Collections.sort( frags, fc );
 			experiment.setFragments( frags );
+			if ( experiment.getCoresWorking() == 0 ) {
+				experiment.setCoresWorking( ClustersManager.getInstance().getCores() );
+			}
 		} catch ( Exception e ) {
 			//logger.error( e.getMessage() );
 		}

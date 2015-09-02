@@ -52,10 +52,6 @@ public class InstanceBuffer {
 			for ( Experiment experiment : runningExperiments ) {
 				List<Instance> common = loadCommonBuffer( sliceSize, experiment );
 				if ( common != null ) {
-					
-					System.out.println("adding buffer for experiment " + experiment.getTagExec() );
-					
-					
 					listContainer.addList( new InstanceList(common, experiment.getTagExec()) );
 				}
 			}

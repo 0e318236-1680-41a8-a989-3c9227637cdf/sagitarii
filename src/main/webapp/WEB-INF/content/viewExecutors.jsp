@@ -22,6 +22,7 @@
 							<img onclick="newExecutorSplit();" title="New Executor: SPLIT MAP" class="button dicas" src="img/split.png">
 							<img onclick="newExecutorRScript();" title="New Executor: R SCRIPT" class="button dicas" src="img/r.png">
 							<img onclick="newExecutorBash();" title="New Executor: Bash SCRIPT" class="button dicas" src="img/bash.png">
+							<img onclick="newExecutorPython();" title="New Executor: Python" class="button dicas" src="img/python.png">
 							<img onclick="newExecutorLibrary();" title="New Executor Library" class="button dicas" src="img/library.png">
 						</div>
 
@@ -44,7 +45,7 @@
 											<td>${executor.activationWrapper}&nbsp;</td>
 											<td>${executor.selectStatement}&nbsp;</td>
 											<td>&nbsp;
-												<c:if test="${executor.type == 'RSCRIPT' || executor.type == 'LIBRARY'}">
+												<c:if test="${executor.type == 'PYTHON' || executor.type == 'BASH' || executor.type == 'RSCRIPT' || executor.type == 'LIBRARY'}">
 													<a href="viewText?idExecutor=${executor.idActivationExecutor}&edit=yes&fileName=repository/${executor.activationWrapper}">
 														<img class="miniButton dicas" title="View" src="img/search.png">
 													</a>
@@ -88,6 +89,10 @@
 	
 	function newExecutorBash() {
 		window.location.href="newExecutorBash";
+	}
+
+	function newExecutorPython() {
+		window.location.href="newExecutorPython";
 	}
 
 	function newExecutorLibrary() {
