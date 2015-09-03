@@ -9,4 +9,5 @@ public interface IMetricEntity {
 	void setTimeSpent( double time );
 	double getTimeSpent();
 	JFreeChart getImage();
+	void saveImage( String path ) throws Exception;
 }

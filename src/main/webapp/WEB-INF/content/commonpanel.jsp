@@ -39,10 +39,10 @@
 	<div class="userBoardT2" style="text-align:center;width: 225px;">
 		<table>
 			<tr>
-				<td colspan="3"><img class="dicas" title="Free Heap Memory %" id="imgRam" style="width:210px;height:40px;margin:0px;padding:0px;" src="getMetrics?metricName=Memory"></td>
+				<td colspan="3"><img class="dicas" title="Free Heap Memory %" id="imgRam" style="width:210px;height:40px;margin:0px;padding:0px;" src="metrics/Memory.png"></td>
 			</tr>
 			<tr> 
-				<td colspan="3"><img class="dicas" title="CPU Load" id="imgCpu" style="width:210px;height:40px;margin:0px;padding:0px;" src="getMetrics?metricName=CPU"></td>
+				<td colspan="3"><img class="dicas" title="CPU Load" id="imgCpu" style="width:210px;height:40px;margin:0px;padding:0px;" src="metrics/CPU.png"></td>
 			</tr>
 		</table>
 	</div>
@@ -52,12 +52,12 @@
 
 	function reloadImage2() {
 		d = new Date();
-		$("#imgRam").attr("src", "getMetrics?metricName=Memory&time=XYZ"+d.getTime());
+		$("#imgRam").attr("src", "metrics/Memory.png?" + d.getTime() );
 	}
 	
 	function reloadImage1() {
 		d = new Date();
-		$("#imgCpu").attr("src", "getMetrics?metricName=CPU&time=ABC"+d.getTime());
+		$("#imgCpu").attr("src", "metrics/CPU.png?" + d.getTime() );
 	}
 
 	$(document).ready(function() {

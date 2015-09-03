@@ -66,13 +66,10 @@ public class Cluster {
 	public void setMemoryPercent(double memoryPercent) {
 		this.memoryPercent = memoryPercent;
 	}
-	
-	public NodeLoadMonitorEntity getMetrics() {
-		return metrics;
-	}
-	
-	public NodeVMMonitorEntity getRamMetrics() {
-		return metricsVmRam;
+
+	public void saveMetricImages( String path ) throws Exception {
+		metrics.saveImage(path);
+		metricsVmRam.saveImage(path);
 	}
 
 	public boolean signaled() {
@@ -134,10 +131,12 @@ public class Cluster {
 	}
 	
 	public void quit() {
+		setMessage("SIGNALED: Quit");
 		quitSignal = true;
 	}
 	
 	public void reloadWrappers() {
+		setMessage("SIGNALED: Reload Wrappers");
 		reloadWrappersSignal = true;
 	}
 	
@@ -162,6 +161,7 @@ public class Cluster {
 	}
 	
 	public void cleanWorkspace() {
+		setMessage("SIGNALED: Clear Workspace");
 		cleanWorkspaceSignal = true;
 	}
 
@@ -202,6 +202,7 @@ public class Cluster {
 	}
 	
 	public void restart() {
+		setMessage("SIGNALED: Restart");
 		restartSignal = true;
 	}
 
@@ -302,8 +303,6 @@ public class Cluster {
 					
 					Sagitarii.getInstance().finishInstance( pipe );
 					
-					//System.out.println("CLUSTER: From " + startTimeMillis + " to " + finishTimeMillis );
-					
 					InstanceDeliveryControl.getInstance().removeUnit( instanceSerial );
 				} else {
 					debug("instance " + instanceSerial + " (" + actvt.getTag() + ") have " + pipe.getQtdActivations() + " tasks running");
@@ -327,15 +326,18 @@ public class Cluster {
 	}
 
 	public void cancelAndRemoveInstance( String instanceSerial ) {
+		debug("Cancel and remove Instance " + instanceSerial + "..." );
 		for ( Instance instance : getRunningInstances() ) {
 			if ( instance.getSerial().equalsIgnoreCase( instanceSerial ) ) {
 				instance.setStatus( InstanceStatus.PIPELINED );
 				runningInstances.remove( instance ); 
 				InstanceDeliveryControl.getInstance().cancelUnit( instanceSerial );
 				Sagitarii.getInstance().returnToBuffer(instance);
+				debug("Instance " + instanceSerial + " returned to buffer");
 				break;
 			}
 		}
+		debug("Instance " + instanceSerial + " is not in Node process buffer.");
 	}
 
 	public Cluster(ClusterType type, String javaVersion, String soFamily, String macAddress, String ipAddress, String machineName, Double cpuLoad, 
@@ -363,7 +365,7 @@ public class Cluster {
 	
 	private void addMetrics(  double valueCpu, double valueRam, double valueTasks ) {
 		metrics.set(valueCpu, valueRam, valueTasks);
-		metricsVmRam.set(totalMemory);
+		metricsVmRam.set( getTotalMemory() );
 	}
 
 	public String getmacAddress() {
@@ -408,6 +410,7 @@ public class Cluster {
 	
 	public void updateStatus() {
 		cleanUp();
+		ClusterStatus oldStatus = this.status;
 		this.age++;
 		if ( age > 5 ) {
 			this.status = ClusterStatus.DEAD;
@@ -419,6 +422,9 @@ public class Cluster {
 			if ( runningInstances.size() > 0 ) {
 				this.status = ClusterStatus.ACTIVE;
 			}
+		}
+		if ( oldStatus != this.status ) {
+			debug("Node is " + this.status );
 		}
 		try {
 			addMetrics( cpuLoad, memoryPercent, tasks.size());

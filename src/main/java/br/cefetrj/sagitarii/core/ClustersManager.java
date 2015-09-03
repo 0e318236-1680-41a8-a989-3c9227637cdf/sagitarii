@@ -1,5 +1,6 @@
 package br.cefetrj.sagitarii.core;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -7,16 +8,17 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.gson.Gson;
+
 import br.cefetrj.sagitarii.core.config.Configurator;
 import br.cefetrj.sagitarii.core.delivery.InstanceDeliveryControl;
 import br.cefetrj.sagitarii.core.types.ClusterType;
 import br.cefetrj.sagitarii.core.types.InstanceStatus;
+import br.cefetrj.sagitarii.misc.PathFinder;
 import br.cefetrj.sagitarii.misc.ProgressListener;
 import br.cefetrj.sagitarii.misc.ZipUtil;
 import br.cefetrj.sagitarii.misc.json.NodeTasks;
 import br.cefetrj.sagitarii.persistence.entity.Instance;
-
-import com.google.gson.Gson;
 
 public class ClustersManager {
 	private List<Cluster> clusterList;
@@ -30,6 +32,20 @@ public class ClustersManager {
 		}
 		return cm;
 	}
+	
+	public void saveMetrics() {
+		try {
+			String path = PathFinder.getInstance().getPath() + "/metrics/";
+			File newFile = new File(path);
+			newFile.mkdirs();
+			for ( Cluster cluster : getClusterList() ) {
+				cluster.saveMetricImages( path );
+			}
+		} catch ( Exception e ) {
+			e.printStackTrace();
+		}
+	}
+	
 	
 	public int getCores() {
 		int cores = 0;

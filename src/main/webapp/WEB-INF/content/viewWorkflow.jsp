@@ -68,9 +68,8 @@
 								<tr>
 									<th>Experiment</th>
 									<th>Created</th>
+									<th>Description</th>
 									<th>Owner</th>
-									<th>Last Edit</th>
-									<th>Last Run</th>
 									<th>Elapsed Time</th>
 									<th>Status</th>
 									<th>&nbsp;</th>
@@ -85,15 +84,11 @@
 											<fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" type="both" timeStyle="short" value="${experiment.creationDate}"/>&nbsp;
 										</td>
 										<td class="tableCellFormRight">
+											${experiment.description}
+										</td>
+										<td class="tableCellFormRight">
 											${experiment.owner.loginName}
 										</td>
-										<td class="tableCellFormRight">
-											<fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" type="both" timeStyle="short" value="${experiment.alterationDate}"/>&nbsp;
-										</td>
-										<td class="tableCellFormRight">
-											<fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" type="both" timeStyle="short" value="${experiment.lastExecutionDate}"/>&nbsp;
-										</td>
-										
 										<td class="tableCellFormRight">
 											${experiment.elapsedTime}&nbsp;
 										</td>
@@ -166,13 +161,12 @@
 			"sPaginationType": "full_numbers",
 			"aoColumns": [ 
 						  { "sWidth": "10%" },
+						  { "sWidth": "15%" },
+						  { "sWidth": "25%" },
+						  { "sWidth": "5%" },
 						  { "sWidth": "10%" },
-						  { "sWidth": "10%" },
-						  { "sWidth": "10%" },
-						  { "sWidth": "10%" },
-						  { "sWidth": "10%" },
-						  { "sWidth": "10%" },
-						  { "sWidth": "20%" }]						
+						  { "sWidth": "5%" },
+						  { "sWidth": "25%" }]						
 		} ).fnSort( [[0,'desc']] );
 		
 	});

@@ -28,7 +28,7 @@
 							<c:forEach var="metric" items="${metrics}">
 								<c:if test="${metric.type == type}">
 								<div style="float:left">
-									<img id="ID${metric.name}" style="width:210px;height:110px" src="getMetrics?metricName=${metric.name}">
+									<img id="ID${metric.name}" style="width:210px;height:110px" src="metrics/${metric.name}.png">
 								</div>
 								</c:if>
 							</c:forEach>
@@ -48,7 +48,7 @@
 		
 		<c:forEach var="metric" items="${metrics}">
 			<c:if test="${metric.type == type}">
-				$("#ID${metric.name}").attr("src", "getMetrics?metricName=${metric.name}&time=ABC"+d.getTime());
+				$("#ID${metric.name}").attr("src", "metrics/${metric.name}.png?" + d.getTime() );
 			</c:if>
 		</c:forEach>
 		

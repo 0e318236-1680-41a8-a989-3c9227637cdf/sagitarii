@@ -3,8 +3,12 @@ package br.cefetrj.sagitarii.metrics;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -23,6 +27,14 @@ public class NodeVMMonitorEntity implements IMetricEntity {
 	
 	public void set( double valueRamLoad ) {
 		addHistogram( valueRamLoad );
+	}
+	
+	@Override
+	public void saveImage(String path) throws Exception {
+		JFreeChart chart = getImage();
+		BufferedImage image = chart.createBufferedImage( 210, 110);
+        File outputfile = new File( path + name + "_ram.png");
+        ImageIO.write( image, "png", outputfile );		
 	}
 	
 	@Override

@@ -1,12 +1,28 @@
 package br.cefetrj.sagitarii.metrics;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import br.cefetrj.sagitarii.misc.PathFinder;
 
 public class MetricController {
 	private static MetricController instance;
 	private List<IMetricEntity> entities; 
 
+	public void saveMetrics() {
+		try {
+			String path = PathFinder.getInstance().getPath() + "/metrics/";
+			File newFile = new File(path);
+			newFile.mkdirs();
+			for ( IMetricEntity entity : entities ) {
+				entity.saveImage( path );
+			}
+		} catch ( Exception e ) {
+			e.printStackTrace();
+		}
+	}
+	
 	public IMetricEntity addHitEntity( String name, MetricType type ) {
 		IMetricEntity entity = new MetricHitEntity( name, type );
 		entities.add( entity );
