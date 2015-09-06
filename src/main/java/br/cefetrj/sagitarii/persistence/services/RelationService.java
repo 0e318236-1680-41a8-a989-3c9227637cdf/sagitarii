@@ -289,23 +289,32 @@ public class RelationService {
 			result = genericFetchList( "select * from ("+sql+") as t1 order by " + 
 				sortColumn + " " + sSortDir0 + " offset " + iDisplayStart + " limit " + iDisplayLength ); 
 			
-			FileService fs = new FileService();
-			for ( UserTableEntity ute : result  ) {
-				for ( String columnName : ute.getColumnNames() ) {
-					String data = ute.getData( columnName ); 
-					
-					if ( DomainStorage.getInstance().isColumnADomain(columnName)  ) {
-						fs.newTransaction();
-						FileLight fil = fs.getFileLight( Integer.valueOf( ute.getData(columnName) ) );
-						data = "<a href='getFile?idFile="+data+"'>" + fil.getFileName() + "</a>";
+			try {
+				FileService fs = new FileService();
+				for ( UserTableEntity ute : result  ) {
+					for ( String columnName : ute.getColumnNames() ) {
+						String data = ute.getData( columnName ); 
+						if ( DomainStorage.getInstance().isColumnADomain(columnName)  ) {
+							try {
+								int id = Integer.valueOf( ute.getData(columnName) );
+								fs.newTransaction();
+								FileLight fil = fs.getFileLight( id );
+								data = "<a href='getFile?idFile="+data+"'>" + fil.getFileName() + "</a>";
+							} catch ( Exception e ) {
+								
+							}
+						}
+						byte[] encodedBytes = Base64.encodeBase64( data.getBytes() );
+						String newData = new String( encodedBytes );
+						ute.setData(columnName, newData);
 					}
-					
-					byte[] encodedBytes = Base64.encodeBase64( data.getBytes() );
-					String newData = new String( encodedBytes );
-					ute.setData(columnName, newData);
+				}
+			} catch ( Exception e ) {
+				logger.error( "SQL Terminal: " );
+				for (StackTraceElement ste : e.getStackTrace() ) {
+					logger.error( ste.toString() );
 				}
 			}
-			
 			newTransaction();
 			totalRecords = getCount( sql );
 		} else {
