@@ -44,8 +44,8 @@ public class MainLog {
 		return instance;
 	}
 	
-	public synchronized void storeLog(String activity, String experiment, String taskId, String executorAlias, String exitCode, String macAddress, List<String> console, List<String> execLog) {
-		LogItem li = new LogItem(activity, experiment, taskId,  executorAlias,  exitCode,  macAddress, console,  execLog);
+	public synchronized void storeLog( String activity, String experiment, String taskId, String executorAlias, String exitCode, String macAddress, List<String> console, List<String> execLog) {
+		LogItem li = new LogItem( activity, experiment, taskId,  executorAlias,  exitCode,  macAddress, console,  execLog);
 		if ( log.size() > 200 ) {
 			log.remove(0);
 		}

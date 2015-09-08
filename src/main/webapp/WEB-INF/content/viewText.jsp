@@ -31,11 +31,11 @@
 						</form>
 							
 						<div class="menuBarMain" style="display:table;height:500px;margin-top:5px">
-							<div style="float:left; width:99%">
+							<div style="float:left; width:98%">
 								<table style="margin-top:10px;margin-left:10px" >
 									<tr>
 										<td style="padding:0px;">
-											<div class="menuBarMain" style="height:500px;margin-bottom:5px;font-size:11px !important;width:99%;">
+											<div class="menuBarMain" style="position: absolute;height:470px;margin-bottom:5px;font-size:11px !important;width:97%;">
 												<textarea style="border:0px;height:140px" id="code" name="code">${textContent}</textarea>
 											</div>
 										</td>
@@ -68,7 +68,7 @@
 			</c:if>
 			
 			lineNumbers: true,
-			lineWrapping:true
+			lineWrapping:false
         });
 		
 	});

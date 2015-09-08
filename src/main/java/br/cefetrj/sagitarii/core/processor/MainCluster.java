@@ -12,6 +12,7 @@ import br.cefetrj.sagitarii.core.MainLog;
 import br.cefetrj.sagitarii.core.Sagitarii;
 import br.cefetrj.sagitarii.core.config.Configurator;
 import br.cefetrj.sagitarii.core.types.ClusterType;
+import br.cefetrj.sagitarii.core.types.LogType;
 import br.cefetrj.sagitarii.persistence.entity.Activity;
 import br.cefetrj.sagitarii.persistence.entity.Instance;
 import br.cefetrj.sagitarii.persistence.exceptions.NotFoundException;
@@ -80,16 +81,16 @@ public class MainCluster implements Runnable {
 							Activation act = acts.get(0);
 							ClustersManager.getInstance().acceptTask( pipe.getSerial(), macAddress);
 							
-							cluster.setMessage( "running query for executor " + act.getExecutor() );
+							cluster.setMessage(LogType.MAIN_CLUSTER, "running query for executor " + act.getExecutor() );
 
 							MainClusterQueryWrapper mcqw = new MainClusterQueryWrapper();
 							try {
 								mcqw.executeQuery( act );
 							} catch ( Exception e ) {
-								cluster.setMessage( "error " + e.getMessage() +  " when running query for executor " + act.getExecutor() );
+								cluster.setMessage( LogType.MAIN_CLUSTER,"error " + e.getMessage() +  " when running query for executor " + act.getExecutor() );
 							}
 
-							cluster.setMessage( "done query for executor " + act.getExecutor() );
+							cluster.setMessage( LogType.MAIN_CLUSTER, "done query for executor " + act.getExecutor() );
 							
 							console.clear();
 							console.add( act.getCommand() );
@@ -102,17 +103,17 @@ public class MainCluster implements Runnable {
 							try {
 								Activity activity = as.getActivity( act.getActivitySerial() );
 								activityName = activity.getTag();
-								cluster.setMessage( "finishing activity " + activity.getTag() + " (" + act.getExecutor() + ")" );
+								cluster.setMessage( LogType.MAIN_CLUSTER,"finishing activity " + activity.getTag() + " (" + act.getExecutor() + ")" );
 								cluster.setInstanceAsDone( pipe.getSerial(), activity, String.valueOf( mcqw.getStartTime() ),
 										String.valueOf( mcqw.getFinishTime() ) );
 							} catch ( NotFoundException nf ) {
 								String errorString = "cannot finish instance " + pipe.getSerial() + ". Activity " + act.getActivitySerial() + " not found.";
 								console.add( errorString );
 								logger.error( errorString );
-								cluster.setMessage( errorString );
+								cluster.setMessage(LogType.MAIN_CLUSTER, errorString );
 							}
 							
-							MainLog.getInstance().storeLog(activityName , act.getExperiment(), 
+							MainLog.getInstance().storeLog( activityName , act.getExperiment(), 
 									act.getActivitySerial(), act.getExecutor(), "0", macAddress, console, execLog);
 							
 						}
@@ -122,7 +123,7 @@ public class MainCluster implements Runnable {
 			}
 
 		} catch ( Exception e ) {
-			cluster.setMessage( e.getMessage() );
+			cluster.setMessage(LogType.MAIN_CLUSTER, "critical error running Main Cluster: " + e.getMessage() );
 		}
 		
 	}

@@ -13,6 +13,7 @@ import br.cefetrj.sagitarii.core.delivery.InstanceDeliveryControl;
 import br.cefetrj.sagitarii.core.types.ClusterStatus;
 import br.cefetrj.sagitarii.core.types.ClusterType;
 import br.cefetrj.sagitarii.core.types.InstanceStatus;
+import br.cefetrj.sagitarii.core.types.LogType;
 import br.cefetrj.sagitarii.metrics.MetricController;
 import br.cefetrj.sagitarii.metrics.MetricType;
 import br.cefetrj.sagitarii.metrics.NodeLoadMonitorEntity;
@@ -65,6 +66,10 @@ public class Cluster {
 	
 	public void setMemoryPercent(double memoryPercent) {
 		this.memoryPercent = memoryPercent;
+	}
+	
+	private boolean amILookingFor( String instanceSerial ) {
+		return lostInstance.equals( instanceSerial );
 	}
 
 	public void saveMetricImages( String path ) throws Exception {
@@ -131,12 +136,12 @@ public class Cluster {
 	}
 	
 	public void quit() {
-		setMessage("SIGNALED: Quit");
+		setMessage(LogType.SYSTEM, "SIGNALED: Quit");
 		quitSignal = true;
 	}
 	
 	public void reloadWrappers() {
-		setMessage("SIGNALED: Reload Wrappers");
+		setMessage(LogType.SYSTEM, "SIGNALED: Reload Wrappers");
 		reloadWrappersSignal = true;
 	}
 	
@@ -161,7 +166,7 @@ public class Cluster {
 	}
 	
 	public void cleanWorkspace() {
-		setMessage("SIGNALED: Clear Workspace");
+		setMessage(LogType.SYSTEM, "SIGNALED: Clear Workspace");
 		cleanWorkspaceSignal = true;
 	}
 
@@ -193,7 +198,7 @@ public class Cluster {
 			informReport( instanceSerial, "NOT_FOUND");
 		}
 		
-		if ( askingForInstance ) {
+		if ( amILookingFor(instanceSerial) ) {
 			logger.warn("already waiting for instance " + lostInstance);
 			return;
 		}
@@ -202,7 +207,7 @@ public class Cluster {
 	}
 	
 	public void restart() {
-		setMessage("SIGNALED: Restart");
+		setMessage(LogType.SYSTEM, "SIGNALED: Restart");
 		restartSignal = true;
 	}
 
@@ -251,7 +256,7 @@ public class Cluster {
 			debug( "[" + this.macAddress +  "] data received from instance " + rd.getInstance().getSerial() + " (" + rd.getActivity().getTag() + ") is done");
 		} else {
 			logger.error( "[" + this.macAddress +  "] no data produced by instance " + rd.getInstance().getSerial() + " (" + rd.getActivity().getTag() + ")" );
-			setMessage("No data produced by instance " + rd.getInstance().getSerial() + " (" + rd.getActivity().getTag() + ")" );
+			setMessage(LogType.SYSTEM, "No data produced by instance " + rd.getInstance().getSerial() + " (" + rd.getActivity().getTag() + ")" );
 		}
 		
 		MetricController.getInstance().hit( this.machineName, MetricType.NODE );
@@ -269,14 +274,22 @@ public class Cluster {
 		String experiment = rd.getCsvDataFile().getExperimentSerial();
 		Activity actvt = rd.getActivity();
 		String activity = actvt.getTag();
-		
 		String startTimeMillis = rd.getCsvDataFile().getRealStartTime();
 		String finishTimeMillis = rd.getCsvDataFile().getRealFinishTime();
+
+		logger.debug("finishing instance " + instanceSerial );
 		
 		MainLog.getInstance().storeLog( activity, experiment, rd.getCsvDataFile().getTaskId(), rd.getActivity().getExecutorAlias(), rd.getCsvDataFile().getExitCode(),
 				rd.getMacAddress(), rd.getCsvDataFile().getConsole(), rd.getCsvDataFile().getExecLog() );
 		
 		setInstanceAsDone( instanceSerial, actvt, startTimeMillis, finishTimeMillis);
+		
+		if ( amILookingFor(instanceSerial) ) {
+			logger.debug("was waiting instance " + instanceSerial + ". Will clear waiting flag." );
+			askingForInstance = false;
+			lostInstance = "";
+		}
+		
 	}
 	
 	
@@ -314,7 +327,7 @@ public class Cluster {
 	
 	private void debug (String s ) {
 		logger.debug( s );
-		setMessage( s );
+		setMessage( LogType.SYSTEM, s );
 	}
 	
 	public List<Instance> getRunningInstances() {
@@ -512,12 +525,12 @@ public class Cluster {
 			LogService ls = new LogService();
 			ls.insetLogEntryList( logEntries );
 		} catch ( Exception e ) {
-			setMessage("cannot save log activity: " + e.getMessage() );
+			setMessage(LogType.SYSTEM, "cannot save log activity: " + e.getMessage() );
 		}
 		logEntries.clear();
 	}
 	
-	public void setMessage(String logItem) {
+	public void setMessage(LogType type, String logItem) {
 		
 		DateLibrary dl = DateLibrary.getInstance();
 		dl.setTo( new Date() );
@@ -526,6 +539,7 @@ public class Cluster {
 		LogEntry le = new LogEntry();
 		le.setDateTime( Calendar.getInstance().getTime() );
 		le.setLog( logItem );
+		le.setType( type );
 		le.setNode( macAddress );
 		logEntries.add( le );
 		

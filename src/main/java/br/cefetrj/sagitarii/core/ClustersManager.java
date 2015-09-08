@@ -14,6 +14,7 @@ import br.cefetrj.sagitarii.core.config.Configurator;
 import br.cefetrj.sagitarii.core.delivery.InstanceDeliveryControl;
 import br.cefetrj.sagitarii.core.types.ClusterType;
 import br.cefetrj.sagitarii.core.types.InstanceStatus;
+import br.cefetrj.sagitarii.core.types.LogType;
 import br.cefetrj.sagitarii.misc.PathFinder;
 import br.cefetrj.sagitarii.misc.ProgressListener;
 import br.cefetrj.sagitarii.misc.ZipUtil;
@@ -132,7 +133,7 @@ public class ClustersManager {
 	public void receiveNodeLog( String message, String macAddress) {
 		logger.debug( "node " + macAddress + " report: " + message );
 		Cluster clu = getCluster(macAddress);
-		clu.setMessage( message );
+		clu.setMessage( LogType.NODE, message );
 	}
 
 	
@@ -153,7 +154,7 @@ public class ClustersManager {
 	public void refuseTask( String instanceId, String macAddress ) {
 		logger.debug( "node " + macAddress + " refused task in instance " + instanceId );
 		Cluster clu = cm.getCluster(macAddress);
-		clu.setMessage("Cannot run task in instance " + instanceId );
+		clu.setMessage(LogType.SYSTEM, "Cannot run task in instance " + instanceId );
 		clu.cancelAndRemoveInstance( instanceId );
 	}
 
@@ -166,7 +167,7 @@ public class ClustersManager {
 				cluster.confirmReceiveData( rd );
 			} catch ( Exception e ) {
 				logger.error("activity " + rd.getInstance().getSerial() + ": " + e.getMessage() );
-				cluster.setMessage( "activity " + rd.getInstance().getSerial() + ": " + e.getMessage()  );
+				cluster.setMessage( LogType.SYSTEM, "activity " + rd.getInstance().getSerial() + ": " + e.getMessage()  );
 				throw e;
 			}
 		}
@@ -180,7 +181,7 @@ public class ClustersManager {
 				cluster.finishInstance( rd );
 			} catch ( Exception e ) {
 				logger.error("activity " + rd.getInstance().getSerial() + ": " + e.getMessage() );
-				cluster.setMessage( "activity " + rd.getInstance().getSerial() + ": " + e.getMessage()  );
+				cluster.setMessage( LogType.SYSTEM, "activity " + rd.getInstance().getSerial() + ": " + e.getMessage()  );
 				throw e;
 			}
 		}
