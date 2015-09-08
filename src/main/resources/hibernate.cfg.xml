@@ -8,7 +8,7 @@
 		<property name="hibernate.connection.url">jdbc:postgresql://localhost/sagitarii?ApplicationName=Sagitarii</property> 
 
 		<property name="hibernate.connection.username-p">sagitarii</property> 
-		<property name="hibernate.connection.password-p">Chiron2014!</property>  
+		<property name="hibernate.connection.password-p">Sagiarii2015!</property>  
 
 		<property name="hibernate.connection.username">postgres</property> 
 		<property name="hibernate.connection.password">admin</property>  

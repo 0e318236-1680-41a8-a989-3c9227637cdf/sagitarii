@@ -15,7 +15,7 @@ public class MetricController {
 			String path = PathFinder.getInstance().getPath() + "/metrics/";
 			File newFile = new File(path);
 			newFile.mkdirs();
-			for ( IMetricEntity entity : entities ) {
+			for ( IMetricEntity entity : getEntities() ) {
 				entity.saveImage( path );
 			}
 		} catch ( Exception e ) {

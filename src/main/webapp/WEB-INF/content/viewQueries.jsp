@@ -21,7 +21,7 @@
 						</div>
 						
 						
-						<div id="newPannel" style="display:none; height:200px; width:95%; margin:0 auto;margin-top:10px;margin-bottom:10px;">
+						<div id="newPannel" style="display:table; height:200px; width:95%; margin:0 auto;margin-top:10px;margin-bottom:10px;">
 							<form action="doNewQuery" method="POST" id="formPost">
 								<input type="hidden" id="codeSql" name="query.query">
 								<input type="hidden" name="idExperiment" value="${idExperiment}">
@@ -35,10 +35,10 @@
 									<tr>
 										<td class="tableCellFormLeft">SQL</td>
 										<td>
-											<div class="menuBarMain" style=" width: 100%;height:100px;margin-top:5px;font-size:11px !important;">
+											<div class="menuBarMain" style="height:100px;margin-bottom:5px;font-size:11px !important;width:99%;">
 												<textarea style="border:0px;height:140px" id="code" name="code"></textarea>
 											</div>
-										</td>										
+										</td>
 									</tr>
 									
 								</table>
@@ -129,8 +129,8 @@
 		
 		codeMirrorEditor = CodeMirror.fromTextArea(document.getElementById("code"), { 
 			mode: "text/x-sql", 
-			indentWithTabs: true,
-			smartIndent: true,
+			indentWithTabs: false,
+			smartIndent: false,
 			matchBrackets : true,
 			readOnly: false,
 			lineNumbers: true,
@@ -155,7 +155,12 @@
 						  { "sWidth": "15%" }
 						  ]						
 		} ).fnSort( [[0,'desc']] );
+		
 	} );	
+	
+	function doTableComplete() {
+		cancelNewPanel();
+	} 
 	
 	function save() {
 		$("#frmSave").submit();
