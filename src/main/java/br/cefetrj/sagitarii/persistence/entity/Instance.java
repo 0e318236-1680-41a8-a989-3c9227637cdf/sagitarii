@@ -57,10 +57,10 @@ public class Instance implements Serializable {
 	private int coresUsed;
 
 	@Column( name = "real_start_time_millis")
-	private long realStartTimeMillis;
+	private long realStartTimeMillis = 0;
 	
 	@Column( name = "real_finish_time_millis")
-	private long realFinishTimeMillis;
+	private long realFinishTimeMillis = 0;
 
 	@Column(length=50, name="executed_by")
 	private String executedBy;	
@@ -209,11 +209,10 @@ public class Instance implements Serializable {
 	}
 	
 	public void evaluateTime() {
-		elapsedTime = evaluateElapsedTime();
+		elapsedTime = millisToHumanTime( getElapsedMillis() );
 	}
 	
-	private String evaluateElapsedTime() {
-		long millis = getElapsedMillis();
+	private String millisToHumanTime( long millis ) {
 		String time = String.format("%03d %02d:%02d:%02d", 
 				TimeUnit.MILLISECONDS.toDays( millis ),
 				TimeUnit.MILLISECONDS.toHours(millis),
@@ -246,8 +245,13 @@ public class Instance implements Serializable {
 		return elapsedMillis;
 	}	
 	
+	public String getRealElapsedTime() {
+		long realElapsedTime = realFinishTimeMillis - realStartTimeMillis;
+		return millisToHumanTime( realElapsedTime );
+	}
+	
 	public String getElapsedTime() {
-		elapsedTime = evaluateElapsedTime();
+		elapsedTime = millisToHumanTime( getElapsedMillis() );
 		return elapsedTime;
 	}
 	

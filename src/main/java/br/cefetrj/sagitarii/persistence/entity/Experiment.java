@@ -292,6 +292,16 @@ public class Experiment {
 		return serialTime;
 	}
 
+	public String getRealTime() {
+		serialTime = getStringVersionOfTime( getRealTimeMillis() ); 
+		return serialTime;
+	}
+	
+	public String getLazyTime() {
+		serialTime = getStringVersionOfTime( getElapsedMillis() - getRealTimeMillis() ); 
+		return serialTime;
+	}
+
 	public double getParallelEfficiency() {
 		if ( coresWorking == 0 ) return 0.0;
 		getSpeedUp();
@@ -322,6 +332,26 @@ public class Experiment {
 		try {
 			RelationService rs = new RelationService();
 			Set<UserTableEntity> result = rs.genericFetchList("select sum(elapsed_millis) as sum from "
+					+ "instances where id_fragment in ( select id_fragment from fragments where id_experiment = "+idExperiment+" )");
+			
+			List<UserTableEntity> res = new ArrayList<UserTableEntity> ( result );
+			if ( res.size() > 0 ) {
+				UserTableEntity ute = res.get(0);
+				String sQtd = ute.getData("sum");
+				qtd = Integer.valueOf( sQtd );
+			}
+		} catch ( Exception e ) {
+			//
+		}
+		return qtd;
+	}
+	
+
+	private long getRealTimeMillis() {
+		int qtd = 0;
+		try {
+			RelationService rs = new RelationService();
+			Set<UserTableEntity> result = rs.genericFetchList("select sum( real_finish_time_millis - real_start_time_millis ) as sum from "
 					+ "instances where id_fragment in ( select id_fragment from fragments where id_experiment = "+idExperiment+" )");
 			
 			List<UserTableEntity> res = new ArrayList<UserTableEntity> ( result );

@@ -43,7 +43,7 @@
 						</div>
 						
 						<div id="pannel" style="width:95%; margin:0 auto;margin-top:10px;margin-bottom:60px;">
-							<div style="height:130px;">
+							<div style="height:180px;">
 								<table style="width:100%">
 									<tr>
 										<td class="tableCellFormLeft">Label</td>
@@ -93,6 +93,16 @@
 									<tr>
 										<td class="tableCellFormLeft">Serial Time</td>
 										<td class="tableCellFormRight">${experiment.serialTime}</td>
+									</tr>
+
+									<tr>
+										<td class="tableCellFormLeft">Real Time</td>
+										<td class="tableCellFormRight">${experiment.realTime}</td>
+									</tr>
+
+									<tr>
+										<td class="tableCellFormLeft">Lazy Time</td>
+										<td class="tableCellFormRight">${experiment.lazyTime}</td>
 									</tr>
 
 									<tr>

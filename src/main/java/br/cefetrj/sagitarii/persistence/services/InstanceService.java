@@ -40,6 +40,8 @@ public class InstanceService {
 		oldInstance.setFinishDateTime( instance.getFinishDateTime() );
 		oldInstance.setExecutedBy( instance.getExecutedBy() );
 		oldInstance.setCoresUsed( instance.getCoresUsed() );
+		oldInstance.setRealFinishTimeMillis( instance.getRealFinishTimeMillis() );
+		oldInstance.setRealStartTimeMillis( instance.getRealStartTimeMillis() );
 
 		rep.newTransaction();
 		rep.updateInstance(oldInstance);

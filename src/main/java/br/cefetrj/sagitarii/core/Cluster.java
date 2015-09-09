@@ -295,30 +295,30 @@ public class Cluster {
 	
 	public void setInstanceAsDone( String instanceSerial, Activity actvt, String startTimeMillis, String finishTimeMillis ) {
 		debug("checking if instance " + instanceSerial + " (" + actvt.getTag() + ") is done");
-		for( Instance pipe : runningInstances ) {
-			if ( pipe.getSerial().equals( instanceSerial ) ) {
-				pipe.decreaseQtdActivations();
-				String finished = pipe.getFinishedActivities();
+		for( Instance instance : runningInstances ) {
+			if ( instance.getSerial().equals( instanceSerial ) ) {
+				instance.decreaseQtdActivations();
+				String finished = instance.getFinishedActivities();
 				if ( finished == null ) { finished = ""; }
 				if( actvt != null ) {
-					pipe.setFinishedActivities( finished + " " + actvt.getTag() );
+					instance.setFinishedActivities( finished + " " + actvt.getTag() );
 				}
-				if( pipe.getQtdActivations() == 0 ) {
+				if( instance.getQtdActivations() == 0 ) {
 					debug("instance " + instanceSerial + " finished");
 					processedPipes++;
-					pipe.setStatus( InstanceStatus.FINISHED );
-					pipe.setFinishDateTime( Calendar.getInstance().getTime() );
-					pipe.setExecutedBy(macAddress);
-					pipe.setCoresUsed( availableProcessors );
+					instance.setStatus( InstanceStatus.FINISHED );
+					instance.setFinishDateTime( Calendar.getInstance().getTime() );
+					instance.setExecutedBy(macAddress);
+					instance.setCoresUsed( availableProcessors );
 					
-					pipe.setRealStartTimeMillis( Long.valueOf( startTimeMillis) );
-					pipe.setRealFinishTimeMillis( Long.valueOf( finishTimeMillis ) );
+					instance.setRealStartTimeMillis( Long.valueOf( startTimeMillis) );
+					instance.setRealFinishTimeMillis( Long.valueOf( finishTimeMillis ) );
 					
-					Sagitarii.getInstance().finishInstance( pipe );
+					Sagitarii.getInstance().finishInstance( instance );
 					
 					InstanceDeliveryControl.getInstance().removeUnit( instanceSerial );
 				} else {
-					debug("instance " + instanceSerial + " (" + actvt.getTag() + ") have " + pipe.getQtdActivations() + " tasks running");
+					debug("instance " + instanceSerial + " (" + actvt.getTag() + ") have " + instance.getQtdActivations() + " tasks running");
 				}
 				break;
 			}

@@ -7,7 +7,7 @@
   <classpathentry kind="var" path="M2_REPO/javax/activation/activation/1.1/activation-1.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/javax/servlet/jstl/1.2/jstl-1.2.jar"/>
-  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
   <classpathentry kind="var" path="M2_REPO/com/hierynomus/sshj/0.12.0/sshj-0.12.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/bouncycastle/bcpkix-jdk15on/1.51/bcpkix-jdk15on-1.51.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/bouncycastle/bcprov-jdk15on/1.51/bcprov-jdk15on-1.51.jar"/>
@@ -56,4 +56,4 @@
   <classpathentry kind="var" path="M2_REPO/com/mchange/mchange-commons-java/0.2.3.4/mchange-commons-java-0.2.3.4.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/commons/commons-collections4/4.0/commons-collections4-4.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/postgresql/postgresql/9.4-1201-jdbc41/postgresql-9.4-1201-jdbc41.jar"/>
-</classpath> 
+</classpath>
