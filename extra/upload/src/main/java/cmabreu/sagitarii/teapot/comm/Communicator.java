@@ -1,4 +1,4 @@
-package cmabreu.sagitarii.teapot.comm;
+package br.cefetrj.sagitarii.teapot.comm;
 /**
  * Copyright 2015 Carlos Magno Abreu
  * magno.mabreu@gmail.com 
@@ -20,8 +20,8 @@ package cmabreu.sagitarii.teapot.comm;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import cmabreu.sagitarii.teapot.Configurator;
-import cmabreu.sagitarii.teapot.SystemProperties;
+import br.cefetrj.sagitarii.teapot.Configurator;
+import br.cefetrj.sagitarii.teapot.SystemProperties;
 
 public class Communicator  {
 	private WebClient webClient;

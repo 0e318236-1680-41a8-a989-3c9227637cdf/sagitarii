@@ -1,6 +1,6 @@
 package br.cefetrj.sagitarii.wrappers;
 
-import cmabreu.sagitarii.sdk.Wrapper;
+import br.cefetrj.sagitarii.sdk.Wrapper;
 
 
 public class Benchmark {

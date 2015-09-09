@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+	Arquivo de configuração do Sagitarii Teapot v1.0
+	Por: Carlos Magno Abreu em 18/07/2014
+	
+	Changes:
+		08/09/2015 : activationsMaxLimit removed. Now starts 1.
+	
+ -->
+
+<!DOCTYPE configuration [
+	<!ELEMENT configuration (cluster,proxy) >
+	<!ELEMENT cluster (hostURL,poolIntervalMilliSeconds,rPath,activationShowConsole,clearDataAfterFinish,
+		CSVDelimiter,storageHost,storagePort,fileSenderDelay, useSpeedEqualizer, enforceTaskLimitToCores,
+		DLBFrequency,maximunRamToUse,maximunCPULimit,minimunCPULimit)>
+	<!ELEMENT proxy (useProxy,proxy-host,proxy-port,proxy-password,proxy-user)>
+]>
+
+<configuration>
+	
+	<cluster>
+		<hostURL>http://localhost:8580/sagitarii/</hostURL>
+		<poolIntervalMilliSeconds>1000</poolIntervalMilliSeconds>
+		<rPath>C:/rJava/jri</rPath>
+		<activationShowConsole>false</activationShowConsole>
+		<clearDataAfterFinish>false</clearDataAfterFinish>
+		<CSVDelimiter>,</CSVDelimiter>
+		<storageHost>localhost</storageHost>
+		<storagePort>3333</storagePort>
+		<fileSenderDelay>200</fileSenderDelay>
+		<useSpeedEqualizer>true</useSpeedEqualizer>
+		<enforceTaskLimitToCores>false</enforceTaskLimitToCores>
+		<DLBFrequency>7</DLBFrequency>
+		<maximunRamToUse>90</maximunRamToUse>
+		<maximunCPULimit>95</maximunCPULimit>
+		<minimunCPULimit>90</minimunCPULimit>
+	</cluster>
+
+	<proxy>
+		<useProxy>0</useProxy>
+		<proxy-host>proxy_host</proxy-host>
+		<proxy-port>8080</proxy-port>
+		<proxy-password>password</proxy-password>
+		<proxy-user>user</proxy-user> 
+	</proxy>	
+	
+</configuration>

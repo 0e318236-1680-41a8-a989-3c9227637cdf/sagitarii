@@ -1,4 +1,4 @@
-package cmabreu.sagitarii.teapot;
+package br.cefetrj.sagitarii.teapot;
 
 /**
  * Copyright 2015 Carlos Magno Abreu

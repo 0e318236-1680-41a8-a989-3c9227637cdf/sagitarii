@@ -1,4 +1,4 @@
-package cmabreu.sagitarii.teapot;
+package br.cefetrj.sagitarii.teapot;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -19,7 +19,7 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.text.MaskFormatter;
 
-import cmabreu.sagitarii.teapot.comm.Uploader;
+import br.cefetrj.sagitarii.teapot.comm.Uploader;
  
 /**
  * A Swing application that uploads files to a HTTP server.

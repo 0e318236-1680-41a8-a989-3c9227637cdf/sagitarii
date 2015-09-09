@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="OFF">
+	<appenders>
+		
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{dd/MM/YYYY HH:mm:ss} %-5level %logger{36} - %msg%n" />
+		</Console>
+		
+		<RandomAccessFile name="File" fileName="logs/teapot.log" append="false">
+			<PatternLayout pattern="%d{dd/MM/YYYY HH:mm:ss} %-5level %logger{36} - %msg%n" />
+		</RandomAccessFile>		
+		
+	</appenders>
+	
+	<loggers>
+	
+		<Logger name="br.cefetrj.sagitarii.teapot.DynamicLoadBalancer" level="error" additivity="false"> 
+			<appender-ref ref="Console"/> 
+		</Logger>
+
+		<Logger name="br.cefetrj.sagitarii.teapot.StorageLocker" level="error" additivity="false"> 
+			<appender-ref ref="Console"/> 
+		</Logger>
+
+		<Logger name="br.cefetrj.sagitarii.teapot.LocalStorage" level="error" additivity="false"> 
+			<appender-ref ref="Console"/> 
+		</Logger>
+
+
+		<Logger name="br.cefetrj.sagitarii.executors.RExecutor" level="error" additivity="false"> 
+			<appender-ref ref="Console"/> 
+		</Logger>
+
+		<Logger name="br.cefetrj.sagitarii.executors.BashExecutor" level="error" additivity="false"> 
+			<appender-ref ref="Console"/> 
+		</Logger>
+
+		<Logger name="br.cefetrj.sagitarii.teapot.comm.Client" level="error" additivity="false"> 
+			<appender-ref ref="Console"/> 
+		</Logger>
+
+		<Logger name="br.cefetrj.sagitarii.teapot.SpeedEqualizer" level="error" additivity="false"> 
+			<appender-ref ref="Console"/> 
+		</Logger>
+
+		<Logger name="br.cefetrj.sagitarii.teapot.TaskRunner" level="error" additivity="false"> 
+			<appender-ref ref="Console"/> 
+		</Logger>
+		
+		<Logger name="br.cefetrj.sagitarii.teapot.RepositoryManager" level="error" additivity="false"> 
+			<appender-ref ref="Console"/> 
+		</Logger>
+
+		<Logger name="br.cefetrj.sagitarii.teapot.Configurator" level="error" additivity="false"> 
+			<appender-ref ref="Console"/> 
+		</Logger>
+		
+		<Logger name="br.cefetrj.sagitarii.teapot.XMLParser" level="error" additivity="false"> 
+			<appender-ref ref="Console"/> 
+		</Logger>
+
+		<Logger name="br.cefetrj.sagitarii.teapot.comm.Downloader" level="error" additivity="false"> 
+			<appender-ref ref="Console"/> 
+		</Logger>
+
+		<Logger name="br.cefetrj.sagitarii.teapot.comm.Uploader" level="error" additivity="false"> 
+			<appender-ref ref="Console"/> 
+		</Logger>
+		
+		<Logger name="br.cefetrj.sagitarii.teapot.Task" level="error" additivity="false"> 
+			<appender-ref ref="Console"/> 
+		</Logger>
+
+		<Logger name="br.cefetrj.sagitarii.teapot.TaskManager" level="error" additivity="false"> 
+			<appender-ref ref="Console"/> 
+		</Logger>
+
+		<Logger name="br.cefetrj.sagitarii.teapot.Main" level="error" additivity="false"> 
+			<appender-ref ref="Console"/> 
+		</Logger>
+
+		<root level="error">
+			<appender-ref ref="Console" />
+		</root>
+		
+	</loggers>
+	
+	
+</configuration>

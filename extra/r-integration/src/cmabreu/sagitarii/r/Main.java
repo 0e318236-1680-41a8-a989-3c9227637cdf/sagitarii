@@ -1,4 +1,4 @@
-package cmabreu.sagitarii.r;
+package br.cefetrj.sagitarii.r;
 
 import org.rosuda.JRI.REXP;
 import org.rosuda.JRI.Rengine;

@@ -1,4 +1,4 @@
-package cmabreu.sagitarii.teapot;
+package br.cefetrj.sagitarii.teapot;
 
 /**
  * Copyright 2015 Carlos Magno Abreu
@@ -27,11 +27,11 @@ import java.io.File;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import cmabreu.sagitarii.teapot.comm.Uploader;
+import br.cefetrj.sagitarii.teapot.comm.Uploader;
 
 
 public class Main {
-	private static Logger logger = LogManager.getLogger( "cmabreu.sagitarii.teapot.Main" ); 
+	private static Logger logger = LogManager.getLogger( "br.cefetrj.sagitarii.teapot.Main" ); 
 	private static Configurator configurator;
 	
 

@@ -1,4 +1,4 @@
-package cmabreu.sagitarii.r;
+package br.cefetrj.sagitarii.r;
 
 import org.rosuda.JRI.RMainLoopCallbacks;
 import org.rosuda.JRI.Rengine;

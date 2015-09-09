@@ -1,4 +1,4 @@
-package cmabreu.sagitarii.teapot.comm;
+package br.cefetrj.sagitarii.teapot.comm;
 /**
  * Copyright 2015 Carlos Magno Abreu
  * magno.mabreu@gmail.com 
@@ -38,7 +38,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.CoreProtocolPNames;
 
-import cmabreu.sagitarii.teapot.Configurator;
+import br.cefetrj.sagitarii.teapot.Configurator;
 
 public class WebClient {
 	private Configurator gf;

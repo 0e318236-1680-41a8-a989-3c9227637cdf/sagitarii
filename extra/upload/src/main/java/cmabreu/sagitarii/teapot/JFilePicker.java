@@ -1,4 +1,4 @@
-package cmabreu.sagitarii.teapot;
+package br.cefetrj.sagitarii.teapot;
 
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;

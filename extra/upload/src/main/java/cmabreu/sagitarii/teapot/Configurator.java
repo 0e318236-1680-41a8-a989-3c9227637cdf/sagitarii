@@ -1,4 +1,4 @@
-package cmabreu.sagitarii.teapot;
+package br.cefetrj.sagitarii.teapot;
 
 /**
  * Copyright 2015 Carlos Magno Abreu
@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import cmabreu.sagitarii.teapot.comm.ProxyInfo;
+import br.cefetrj.sagitarii.teapot.comm.ProxyInfo;
 
 public class Configurator {
 

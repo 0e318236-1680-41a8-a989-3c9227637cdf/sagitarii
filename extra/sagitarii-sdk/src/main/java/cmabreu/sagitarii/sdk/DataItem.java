@@ -1,4 +1,4 @@
-package cmabreu.sagitarii.sdk;
+package br.cefetrj.sagitarii.sdk;
 
 /**
  *	This class will hold the column name, data value and index number of

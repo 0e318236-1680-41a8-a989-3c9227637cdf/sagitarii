@@ -1,4 +1,4 @@
-package cmabreu.sagitarii.teapot.comm;
+package br.cefetrj.sagitarii.teapot.comm;
 /**
  * Copyright 2015 Carlos Magno Abreu
  * magno.mabreu@gmail.com 

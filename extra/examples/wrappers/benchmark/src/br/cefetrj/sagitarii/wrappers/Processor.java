@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import cmabreu.sagitarii.sdk.IWrapperProcessor;
-import cmabreu.sagitarii.sdk.LineData;
-import cmabreu.sagitarii.sdk.WrapperHelper;
+import br.cefetrj.sagitarii.sdk.IWrapperProcessor;
+import br.cefetrj.sagitarii.sdk.LineData;
+import br.cefetrj.sagitarii.sdk.WrapperHelper;
 
 public class Processor implements IWrapperProcessor {
 	private List<String> outputData;
