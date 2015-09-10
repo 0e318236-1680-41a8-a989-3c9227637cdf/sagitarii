@@ -22,7 +22,7 @@ public class StressMaker {
 	
 	public void doStress() {
 		System.out.println("start stress");
-		for ( long x=0; x<400000; x++  ) {
+		for ( long x=0; x<100000; x++  ) {
 			String uuid = UUID.randomUUID().toString();
 			list1.add(uuid);
 		}
