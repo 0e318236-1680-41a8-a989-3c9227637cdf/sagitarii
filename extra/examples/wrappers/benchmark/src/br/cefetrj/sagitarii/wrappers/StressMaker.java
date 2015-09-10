@@ -19,7 +19,7 @@ public class StressMaker {
 		list3 = new ArrayList<String>();
 	}
 	
-	
+
 	public void doStress() {
 		System.out.println("start stress");
 		for ( long x=0; x<100000; x++  ) {
