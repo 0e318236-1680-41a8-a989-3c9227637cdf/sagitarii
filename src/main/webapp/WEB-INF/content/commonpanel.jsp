@@ -29,6 +29,12 @@
 			<tr>
 				<td>Total VM Memory</td><td>${totalMemory}Mb</td>
 			</tr>		
+			<tr>
+				<td>System Speedup</td><td>${systemSpeedUp}</td>
+			</tr>		
+			<tr>
+				<td>System Efficiency</td><td>${systemEfficiency}</td>
+			</tr>		
 		</table>
 	</div>
 </div>

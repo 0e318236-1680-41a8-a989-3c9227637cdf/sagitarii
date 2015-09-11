@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,11 +24,10 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Type;
 
-import br.cefetrj.sagitarii.core.UserTableEntity;
+import br.cefetrj.sagitarii.core.ClustersManager;
 import br.cefetrj.sagitarii.core.types.ExperimentStatus;
-import br.cefetrj.sagitarii.misc.DateLibrary;
+import br.cefetrj.sagitarii.metrics.ExperimentPerformance;
 import br.cefetrj.sagitarii.misc.ZipUtil;
-import br.cefetrj.sagitarii.persistence.services.RelationService;
 
 @Entity
 @Table(name="experiments", indexes = {
@@ -84,6 +81,12 @@ public class Experiment {
 	@Column(length=15, name="serial_time")
 	private String serialTime;
 	
+	@Column(length=15, name="lazy_time")
+	private String lazyTime;
+
+	@Column(length=15, name="real_time")
+	private String realTime;
+
 	@Column
 	@Type(type="timestamp")
 	private Date finishDateTime;
@@ -102,7 +105,7 @@ public class Experiment {
 	private Double parallelEfficiency = 0.0;
 
 	@Column
-	private int coresWorking;
+	private int coresWorking = 0;
 	
     public Experiment() {
         UUID uuid = UUID.randomUUID();
@@ -242,131 +245,8 @@ public class Experiment {
 
 	public void setFinishDateTime(Date finishDateTime) {
 		this.finishDateTime = finishDateTime;
-		elapsedTime = getStringVersionOfTime( getElapsedMillis() );
 	}
 
-	
-	public long getElapsedMillis() {
-		DateLibrary dl = DateLibrary.getInstance();
-		dl.setTo( lastExecutionDate );
-		Calendar cl = Calendar.getInstance();
-		
-		if ( finishDateTime != null ) {
-			cl.setTime( finishDateTime );
-		} else {
-			cl.setTime( Calendar.getInstance().getTime() );
-		}
-		
-		long millis = dl.getDiffMillisTo( cl ) ;
-
-		if ( status == ExperimentStatus.STOPPED ) {
-			millis = 0;
-		}
-		return millis;
-	}
-	
-	private String getStringVersionOfTime( long millis ) {
-		String time = String.format("%03d %02d:%02d:%02d", 
-				TimeUnit.MILLISECONDS.toDays( millis ),
-				TimeUnit.MILLISECONDS.toHours(millis),
-				TimeUnit.MILLISECONDS.toMinutes(millis) -  
-				TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)), 
-				TimeUnit.MILLISECONDS.toSeconds(millis) - 
-				TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
-		
-		return time;
-	}
-	
-	public String getElapsedTime() {
-		elapsedTime = getStringVersionOfTime( getElapsedMillis() );
-		return elapsedTime;
-	}
-	
-	public void updateMetrics() {
-		getSerialTime();
-		getParallelEfficiency();
-	}
-	
-	public String getSerialTime() {
-		serialTime = getStringVersionOfTime( getSerialTimeMillis() ); 
-		return serialTime;
-	}
-
-	public String getRealTime() {
-		serialTime = getStringVersionOfTime( getRealTimeMillis() ); 
-		return serialTime;
-	}
-	
-	public String getLazyTime() {
-		serialTime = getStringVersionOfTime( getElapsedMillis() - getRealTimeMillis() ); 
-		return serialTime;
-	}
-
-	public double getParallelEfficiency() {
-		if ( coresWorking == 0 ) return 0.0;
-		getSpeedUp();
-		if ( speedUp == 0.0 ) {
-			parallelEfficiency = speedUp;
-		} else {
-			try {
-				parallelEfficiency = speedUp / coresWorking;
-			} catch ( Exception e ) { e.printStackTrace(); }
-		}
-		if ( parallelEfficiency.isNaN() ) parallelEfficiency = 0.0;
-		return parallelEfficiency;
-	}
-	
-	public double getSpeedUp() {
-		speedUp = 0.0;
-		try {
-			long parallelTime = getElapsedMillis();
-			long sequencialTime = getSerialTimeMillis();
-			speedUp = (double)sequencialTime / (double)parallelTime;
-		} catch ( Exception  e) {	}
-		if ( speedUp.isNaN() ) speedUp = 0.0;
-		return speedUp;
-	}
-	
-	private long getSerialTimeMillis() {
-		int qtd = 0;
-		try {
-			RelationService rs = new RelationService();
-			Set<UserTableEntity> result = rs.genericFetchList("select sum(elapsed_millis) as sum from "
-					+ "instances where id_fragment in ( select id_fragment from fragments where id_experiment = "+idExperiment+" )");
-			
-			List<UserTableEntity> res = new ArrayList<UserTableEntity> ( result );
-			if ( res.size() > 0 ) {
-				UserTableEntity ute = res.get(0);
-				String sQtd = ute.getData("sum");
-				qtd = Integer.valueOf( sQtd );
-			}
-		} catch ( Exception e ) {
-			//
-		}
-		return qtd;
-	}
-	
-
-	private long getRealTimeMillis() {
-		int qtd = 0;
-		try {
-			RelationService rs = new RelationService();
-			Set<UserTableEntity> result = rs.genericFetchList("select sum( real_finish_time_millis - real_start_time_millis ) as sum from "
-					+ "instances where id_fragment in ( select id_fragment from fragments where id_experiment = "+idExperiment+" )");
-			
-			List<UserTableEntity> res = new ArrayList<UserTableEntity> ( result );
-			if ( res.size() > 0 ) {
-				UserTableEntity ute = res.get(0);
-				String sQtd = ute.getData("sum");
-				qtd = Integer.valueOf( sQtd );
-			}
-		} catch ( Exception e ) {
-			//
-		}
-		return qtd;
-	}
-	
-	
 	public void setCoresWorking(int coresWorking) {
 		this.coresWorking = coresWorking;
 	}
@@ -381,6 +261,67 @@ public class Experiment {
 	
 	public String getDescription() {
 		return description;
+	}
+	
+	public void updateMetrics() {
+		if ( coresWorking == 0 ) {
+			coresWorking = ClustersManager.getInstance().getCores();
+		}
+		ExperimentPerformance ep = new ExperimentPerformance( this );
+		speedUp = ep.getSpeedUp();
+		parallelEfficiency = ep.getParallelEfficiency();
+		serialTime = ep.getSerialTime();
+		elapsedTime = ep.getElapsedTime();
+		lazyTime = ep.getLazyTime();
+		realTime = ep.getRealTime();
+	}
+	
+	public String getElapsedTime() {
+		return elapsedTime;
+	}
+	
+	public void setElapsedTime(String elapsedTime) {
+		this.elapsedTime = elapsedTime;
+	}
+	
+	public String getLazyTime() {
+		return lazyTime;
+	}
+	
+	public void setLazyTime(String lazyTime) {
+		this.lazyTime = lazyTime;
+	}
+	
+	public String getSerialTime() {
+		return serialTime;
+	}
+	
+	public void setSerialTime(String serialTime) {
+		this.serialTime = serialTime;
+	}
+	
+	public String getRealTime() {
+		return realTime;
+	}
+	
+	public void setRealTime(String realTime) {
+		this.realTime = realTime;
+	}
+	
+	public Double getSpeedUp() {
+		return speedUp;
+	}
+	
+	public void setSpeedUp(Double speedUp) {
+		this.speedUp = speedUp;
+	}
+	
+	public Double getParallelEfficiency() {
+		return parallelEfficiency;
+	}
+	
+	public void setParallelEfficiency(Double parallelEfficiency) {
+		this.parallelEfficiency = parallelEfficiency;
 	}
 	
 }

@@ -181,6 +181,7 @@ public class ExternalApi {
 			for ( Experiment experiment : experiments ) {
 				String startDate = DateLibrary.getInstance().getDateHourTextHuman( experiment.getLastExecutionDate() ); 
 				data.append(dataPrefix + "{");
+				experiment.updateMetrics();
 				data.append( generateJsonPair( "tagExec", experiment.getTagExec() ) + "," );
 				data.append( generateJsonPair( "startDate", startDate ) + "," );
 				data.append( generateJsonPair( "status", experiment.getStatus().toString() )  + ","  );

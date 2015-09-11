@@ -43,6 +43,40 @@ public class RelationService {
 		this.rep = new RelationRepository();
 	}
 	
+	public double getSystemSpeedUp() {
+		logger.debug("get system speedUp");
+		double ret = 0;
+		try {
+			List<UserTableEntity> res = new ArrayList<UserTableEntity> ( 
+					genericFetchList("select avg(speedup) as speedup from experiments where status = 'FINISHED'") );
+			if ( res.size() > 0 ) {
+				UserTableEntity ute = res.get(0);
+				String sQtd = ute.getData("speedup").substring(0, 8);
+				ret = Double.valueOf( sQtd );
+			}
+		} catch ( Exception e ) {
+			logger.error( e.getMessage() );
+		}
+		return ret;
+	}
+	
+	public double getSystemEfficiency() {
+		logger.debug("get system Efficiency");
+		double ret = 0;
+		try {
+			List<UserTableEntity> res = new ArrayList<UserTableEntity> ( 
+					genericFetchList("select avg(parallelefficiency) as efficiency from experiments where status = 'FINISHED'") );
+			if ( res.size() > 0 ) {
+				UserTableEntity ute = res.get(0);
+				String sQtd = ute.getData("efficiency").substring(0, 8);
+				ret = Double.valueOf( sQtd );
+			}
+		} catch ( Exception e ) {
+			logger.error( e.getMessage() );
+		}
+		return ret;
+	}
+
 	public void copy( String table, int sourceExperiment, int targetExperiment ) throws Exception {
 		logger.debug("copy table from experiment " + sourceExperiment + " to " + targetExperiment );
 		Set<UserTableEntity> structure = getTableStructure( table );

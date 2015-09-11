@@ -113,19 +113,25 @@
 				<c:if test="${not fn:contains(cluster.type, 'MAIN')}">
 					<table	style="margin-bottom: 5px; width: 98%; margin-left: 10px; margin-top: 5px">
 						<tr>
-							<th colspan="3" style="text-align:center">
-								CPU load (%) - RAM Usage (%) and Running Tasks (Un)
+							<th style="text-align:center">
+								CPU load - Free RAM and Running Tasks
 							</th>
-							<th colspan="3" style="text-align:center">
+							<th style="text-align:center">
+								Finished Tasks
+							</th>
+							<th style="text-align:center">
 								VM Current Allocated Memory (Mb)
 							</th>
 						</tr>
 						<tr>
-							<td colspan="3">
-								<img class="dicas" title="CPU load (%) - RAM Usage (%) and Running Tasks (Un)" style="margin:0 auto;width:320px;height:85px" src="metrics/${cluster.macAddress}_load.png"> 
+							<td >
+								<img class="dicas" title="CPU load (%) - Free VM RAM (%) and Running Tasks (Un)" style="display: block;margin:0 auto;width:98%;height:85px" src="metrics/${cluster.macAddress}_load.png"> 
 							</td>
-							<td colspan="3">
-								<img class="dicas" title="VM Current Allocated Memory (Mb)" style="margin:0 auto;width:320px;height:85px" src="metrics/${cluster.macAddress}_ram.png"> 
+							<td >
+								<img class="dicas" title="Finished Tasks" style="display: block;margin:0 auto;width:98%;height:85px" src="metrics/${cluster.machineName}.png"> 
+							</td>
+							<td >
+								<img class="dicas" title="VM Current Allocated Memory (Mb)" style="display: block;margin:0 auto;width:98%;height:85px" src="metrics/${cluster.macAddress}_ram.png"> 
 							</td>
 						</tr>
 					</table>

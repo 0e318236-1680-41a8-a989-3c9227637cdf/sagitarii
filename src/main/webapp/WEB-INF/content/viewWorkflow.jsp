@@ -17,7 +17,7 @@
 						<div class="menuBarMain" style="position:relative">
 							<img alt="" onclick="viewList()" title="Back to Workflow List" class="button dicas" src="img/back.png" />
 							<c:if test="${fn:length(workflow.activitiesSpecs) != '' }">
-								<img alt="" onclick="newExperiment('${workflow.idWorkflow}')" title="Create new Experiment" class="button dicas" src="img/experiment.png" />
+								<img alt="" onclick="newExperiment('${workflow.idWorkflow}')" title="Create new Experiment" class="button dicas" src="img/add.png" />
 							</c:if>
 						</div>
 
@@ -66,9 +66,9 @@
 							<table class="tableForm"  id="example">
 								<thead>
 								<tr>
+									<th>Description</th>
 									<th>Experiment</th>
 									<th>Created</th>
-									<th>Description</th>
 									<th>Owner</th>
 									<th>Elapsed Time</th>
 									<th>Status</th>
@@ -79,12 +79,12 @@
 								<tbody>
 								<c:forEach var="experiment" items="${workflow.experiments}">
 									<tr>
-										<td class="tableCellFormRight">${experiment.tagExec}&nbsp;</td>
+										<td class="tableCellFormLeft">
+											${experiment.description}
+										</td>
+										<td class="tableCellFormLeft" style="font-weight:normal">${experiment.tagExec}</td>
 										<td class="tableCellFormRight">
 											<fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" type="both" timeStyle="short" value="${experiment.creationDate}"/>&nbsp;
-										</td>
-										<td class="tableCellFormRight">
-											${experiment.description}
 										</td>
 										<td class="tableCellFormRight">
 											${experiment.owner.loginName}
@@ -100,7 +100,9 @@
 												<img class="miniButton dicas" title="Delete Experiment" onclick="deleteExperiment('${experiment.idExperiment}','${workflow.idWorkflow}')" src="img/delete.png">
 											</c:if>
 											<c:if test="${experiment.status == 'STOPPED'}">
+											<!--
 												<img class="miniButton dicas" onclick="clone('${experiment.idExperiment}')" title="Clone experiment and data" src="img/clone.png">
+											-->
 											</c:if>
 											<img class="miniButton dicas" title="More Details" onclick="viewExperiment('${experiment.idExperiment}')" src="img/search.png">
 											<img class="miniButton dicas" title="Manage Activities" onclick="activity('${experiment.idExperiment}')" src="img/family3.png">
@@ -160,9 +162,9 @@
 			"bAutoWidth": false,
 			"sPaginationType": "full_numbers",
 			"aoColumns": [ 
+						  { "sWidth": "25%" },
 						  { "sWidth": "10%" },
 						  { "sWidth": "15%" },
-						  { "sWidth": "25%" },
 						  { "sWidth": "5%" },
 						  { "sWidth": "10%" },
 						  { "sWidth": "5%" },

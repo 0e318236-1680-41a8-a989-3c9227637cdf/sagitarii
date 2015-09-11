@@ -22,7 +22,7 @@ public class StressMaker {
 
 	public void doStress() {
 		System.out.println("start stress");
-		for ( long x=0; x<100000; x++  ) {
+		for ( long x=0; x < 50000; x++  ) {
 			String uuid = UUID.randomUUID().toString();
 			list1.add(uuid);
 		}
@@ -40,8 +40,12 @@ public class StressMaker {
 			indexX++;
 			indexY = indexX + 2;
 			if ( list1.contains( s ) ) {
-				double xx = Math.PI * Math.abs( Math.cos(23.6) ) / Math.floorMod(indexX, indexY);
-				list2.add( s + " " + xx );
+				try {
+					double xx = Math.PI * Math.abs( Math.cos(23.6) ) / Math.floorMod(indexX, indexY);
+					list2.add( s + " " + xx );
+				} catch ( Exception e ) {
+					e.printStackTrace();
+				}
 			}
 		}
 		System.out.println("done");

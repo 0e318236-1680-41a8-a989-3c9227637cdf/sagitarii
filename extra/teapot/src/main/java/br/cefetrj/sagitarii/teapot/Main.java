@@ -215,7 +215,7 @@ public class Main {
 									
 									response = communicator.announceAndRequestTask( configurator.getSystemProperties().getCpuLoad(), 
 											configurator.getSystemProperties().getFreeMemory(), configurator.getSystemProperties().getTotalMemory(),
-											packageSize, configurator.getSystemProperties().getMemoryPercent() );
+											packageSize, configurator.getSystemProperties().getMemoryPercent(), configurator.getActivationsMaxLimit() );
 									
 									if ( response.length() > 0 ) {
 										logger.debug("Sagitarii answered " + response.length() + " bytes");

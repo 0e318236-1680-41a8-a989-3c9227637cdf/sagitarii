@@ -33,11 +33,11 @@
 								<tbody>	
 									<c:forEach var="data" items="${log}">
 										<tr>
-											<td class="tableCellFormLeft">
+											<td class="tableCellFormLeft" style="font-weight:normal">
 												<fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" type="both" timeStyle="short" value="${data.time}"/>&nbsp;
 											</td>
-											<td class="tableCellFormLeft">${data.experiment}<br>${data.activity}<br>${data.executorAlias}</td>
-											<td class="tableCellFormLeft">
+											<td class="tableCellFormLeft" style="font-weight:normal">${data.experiment}<br>${data.activity}<br>${data.executorAlias}</td>
+											<td class="tableCellFormLeft" style="font-weight:normal">
 												<c:forEach var="line" items="${data.console}">${line}<br></c:forEach>&nbsp; 
 											</td>
 											<td class="tableCellFormRight">

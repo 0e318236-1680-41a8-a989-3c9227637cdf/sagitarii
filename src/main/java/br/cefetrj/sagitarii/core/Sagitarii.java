@@ -24,6 +24,7 @@ import br.cefetrj.sagitarii.persistence.exceptions.NotFoundException;
 import br.cefetrj.sagitarii.persistence.services.ExperimentService;
 import br.cefetrj.sagitarii.persistence.services.FragmentService;
 import br.cefetrj.sagitarii.persistence.services.InstanceService;
+import br.cefetrj.sagitarii.persistence.services.RelationService;
 
 
 public class Sagitarii {
@@ -32,6 +33,8 @@ public class Sagitarii {
 	private List<Experiment> runningExperiments;
 	private boolean stopped = false;
 	private InstanceBuffer instanceBuffer;
+	private double systemSpeedUp = 0;
+	private double systemEfficiency = 0;
 	
 	public void removeExperiment( Experiment exp ) {
 		for ( Experiment experiment : runningExperiments ) {
@@ -65,6 +68,17 @@ public class Sagitarii {
 			logger.error( e.getMessage() );
 			
 			e.printStackTrace();
+			
+		}
+	}
+	
+	public void updateSystemMetrics() {
+		try {
+			RelationService rs = new RelationService();
+			systemSpeedUp = rs.getSystemSpeedUp();
+			rs.newTransaction();
+			systemEfficiency = rs.getSystemEfficiency();
+		} catch ( Exception e ) {
 			
 		}
 	}
@@ -156,6 +170,7 @@ public class Sagitarii {
 							experimentService.updateExperiment(exp);
 							runningExperiments.remove( exp );
 							logger.debug("experiment " + exp.getTagExec() + " is finished.");
+							
 							
 							MailService ms = new MailService();
 							try {
@@ -393,6 +408,7 @@ public class Sagitarii {
 	private Sagitarii() {
 		instanceBuffer = new InstanceBuffer();
 		runningExperiments = new ArrayList<Experiment>();
+		updateSystemMetrics();
 	}
 	
 	/**
@@ -472,5 +488,13 @@ public class Sagitarii {
 	public Queue<Instance> getInstanceJoinInputBuffer() {
 		return instanceBuffer.getInstanceJoinInputBuffer();
 	}
+
+	public double getSystemEfficiency() {
+		return systemEfficiency;
+	}
 	
+	public double getSystemSpeedUp() {
+		return systemSpeedUp;
+	}
+
 }

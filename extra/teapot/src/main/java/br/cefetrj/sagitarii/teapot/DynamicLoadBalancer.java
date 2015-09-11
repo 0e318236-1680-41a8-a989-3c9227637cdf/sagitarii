@@ -31,6 +31,8 @@ public class DynamicLoadBalancer {
 		
 		double load = configurator.getSystemProperties().getCpuLoad();
 		double ramLoad = 100 - configurator.getSystemProperties().getMemoryPercent();
+		int activationsMaxLimit = configurator.getActivationsMaxLimit();
+		
 		if ( ramLoad < 0 ) {
 			ramLoad = 0;
 		}
@@ -40,8 +42,6 @@ public class DynamicLoadBalancer {
 		MAXIMUN_CPU_LIMIT = configurator.getMaximunCPULimit();
 		MINIMUN_CPU_LIMIT = configurator.getMinimunCPULimit();
 		
-		
-		int activationsMaxLimit = configurator.getActivationsMaxLimit();
 		if ( activationsMaxLimit > maxLimitToGrow ) {
 			activationsMaxLimit = maxLimitToGrow;
 			configurator.setActivationsMaxLimit( activationsMaxLimit );
@@ -66,6 +66,7 @@ public class DynamicLoadBalancer {
 			if ( noTaskCheckCount > DLB_FREQUENCY ) {
 				logger.debug("AML set to default value: " + INITIAL_TASK_LIMIT );
 				activationsMaxLimit = INITIAL_TASK_LIMIT;
+				configurator.setActivationsMaxLimit( activationsMaxLimit );
 				noTaskCheckCount = 0;
 			}
 			return;

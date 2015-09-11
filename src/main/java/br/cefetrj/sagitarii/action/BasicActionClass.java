@@ -16,10 +16,20 @@ public class BasicActionClass {
 	private long freeMemory = 0;
 	private long totalMemory = 0;
 	private double cpuLoad = 0;
+	private double systemSpeedUp = 0;
+	private double systemEfficiency = 0;
 	private String useDLB;
 	
 	public String getUseDLB() {
 		return useDLB;
+	}
+
+	public double getSystemEfficiency() {
+		return systemEfficiency;
+	}
+	
+	public double getSystemSpeedUp() {
+		return systemSpeedUp;
 	}
 	
 	public double getMemoryPercent() {
@@ -68,6 +78,8 @@ public class BasicActionClass {
 				
 		runningExperiments = sagi.getRunningExperiments();
 		maxBufferCapacity = sagi.getMaxInputBufferCapacity();
+		systemSpeedUp = sagi.getSystemSpeedUp();
+		systemEfficiency = sagi.getSystemEfficiency();
 		
 		try {
 			freeMemory = Configurator.getInstance().getFreeMemory();

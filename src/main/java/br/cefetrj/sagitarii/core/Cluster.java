@@ -410,6 +410,10 @@ public class Cluster {
 	}
 
 	public void setMaxAllowedTasks(int maxAllowedTasks) {
+		if ( maxAllowedTasks != this.maxAllowedTasks ) {
+			debug("Max tasks limit changed from " + this.maxAllowedTasks + " to " + maxAllowedTasks + 
+					" [ RAM:" + memoryPercent + "% / CPU: " + cpuLoad + "% ]" );
+		}
 		this.maxAllowedTasks = maxAllowedTasks;
 	}
 

@@ -34,7 +34,6 @@ public class Communicator  {
     private int availableProcessors;
     private String java;
     private String soFamily;
-	private String maxAllowedTasks;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 
 	public Communicator( Configurator gf ) throws Exception {
@@ -48,7 +47,6 @@ public class Communicator  {
 			this.availableProcessors = tm.getAvailableProcessors();
 			this.java = URLEncoder.encode(tm.getJavaVersion(), "UTF-8");
 			this.soFamily = URLEncoder.encode(tm.getOsType().toString(), "UTF-8");
-			this.maxAllowedTasks = URLEncoder.encode( String.valueOf( gf.getActivationsMaxLimit() ) , "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			throw e;
 		}
@@ -87,7 +85,8 @@ public class Communicator  {
 	* Sagitarii can send a special command instead (quit, restart, reload wrappers, etc...)
 	*/
 	public synchronized String announceAndRequestTask( Double cpuLoad, Long freeMemory, Long totalMemory, 
-			int packageSize, double memoryPercent ) {
+			int packageSize, double memoryPercent, int maxAllowedTasks ) {
+		
 		String parameters = "soName=" + soName + "&localIpAddress=" + localIpAddress + 
 				"&machineName=" + machineName + "&macAddress=" + macAddress + "&cpuLoad=" + cpuLoad +
 				"&availableProcessors=" + availableProcessors + "&soFamily=" + soFamily +

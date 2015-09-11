@@ -43,16 +43,13 @@
 						</div>
 						
 						<div id="pannel" style="width:95%; margin:0 auto;margin-top:10px;margin-bottom:60px;">
-							<div style="height:180px;">
+							<div style="height:70px;">
 								<table style="width:100%">
 									<tr>
 										<td class="tableCellFormLeft">Label</td>
 										<td class="tableCellFormRight"> 
 											${experiment.tagExec} 
 										</td>
-									</tr>
-	
-									<tr>
 										<td class="tableCellFormLeft">Workflow</td>
 										<td class="tableCellFormRight"> 
 											${experiment.workflow.tag} - ${experiment.workflow.description} 
@@ -64,9 +61,6 @@
 										<td class="tableCellFormRight"> 
 											${experiment.description} 
 										</td>
-									</tr>
-								
-									<tr>
 										<td class="tableCellFormLeft">Status</td>
 										<td style="color:#F90101" class="tableCellFormRight"> 
 											${experiment.status} 
@@ -78,8 +72,6 @@
 										<td class="tableCellFormRight">
 											<fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" type="both" timeStyle="short" value="${experiment.lastExecutionDate}" />&nbsp;
 										</td>
-									</tr>
-									<tr>
 										<td class="tableCellFormLeft">Finish Date/Time</td>
 										<td class="tableCellFormRight">
 											<fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" type="both" timeStyle="short" value="${experiment.finishDateTime}" />&nbsp;
@@ -88,19 +80,13 @@
 									<tr>
 										<td class="tableCellFormLeft">Elapsed Time</td>
 										<td class="tableCellFormRight">${experiment.elapsedTime}</td>
-									</tr>
-
-									<tr>
-										<td class="tableCellFormLeft">Serial Time</td>
+										<td class="tableCellFormLeft">Sequential Time</td>
 										<td class="tableCellFormRight">${experiment.serialTime}</td>
 									</tr>
 
 									<tr>
-										<td class="tableCellFormLeft">Real Time</td>
+										<td class="tableCellFormLeft">Real Sequential Time</td>
 										<td class="tableCellFormRight">${experiment.realTime}</td>
-									</tr>
-
-									<tr>
 										<td class="tableCellFormLeft">Lazy Time</td>
 										<td class="tableCellFormRight">${experiment.lazyTime}</td>
 									</tr>
@@ -108,9 +94,6 @@
 									<tr>
 										<td class="tableCellFormLeft">Speedup Ratio</td>
 										<td class="tableCellFormRight">${experiment.speedUp}</td>
-									</tr>
-									
-									<tr>
 										<td class="tableCellFormLeft">Parallel Efficiency</td>
 										<td class="tableCellFormRight">${experiment.parallelEfficiency}</td>
 									</tr>
@@ -120,9 +103,6 @@
 										<td class="tableCellFormRight"> 
 											${fn:length(experiment.fragments)}
 										</td>
-									</tr>
-									
-									<tr>
 										<td class="tableCellFormLeft">Activities</td>
 										<td class="tableCellFormRight"> 
 											${fn:length(activities)}

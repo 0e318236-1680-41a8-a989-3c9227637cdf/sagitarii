@@ -120,8 +120,8 @@ public class ClustersManager {
 				cluster.setFreeDiskSpace( tasks.getFreeDiskSpace() );
 				cluster.setTotalDiskSpace( tasks.getTotalDiskSpace() );
 				cluster.setTasks( tasks.getData() );
-				cluster.setMaxAllowedTasks( tasks.getMaximunLimit() );
 				cluster.setMemoryPercent( tasks.getMemoryPercent() );
+				cluster.setMaxAllowedTasks( tasks.getMaximunLimit() );
 				cluster.updateStatus();
 			}
 			
@@ -371,10 +371,10 @@ public class ClustersManager {
 			clu.setSoName( soName );
 			clu.setLastAnnounce( Calendar.getInstance().getTime() );
 			clu.setCpuLoad( cpuLoad );
-			clu.setMaxAllowedTasks( maxAllowedTasks );
 			clu.setTotalMemory(totalMemory);
 			clu.setFreeMemory(freeMemory);
 			clu.setMemoryPercent( memoryPercent );
+			clu.setMaxAllowedTasks( maxAllowedTasks );
 			clu.updateStatus();
 			retorno = clu;
 		} else {

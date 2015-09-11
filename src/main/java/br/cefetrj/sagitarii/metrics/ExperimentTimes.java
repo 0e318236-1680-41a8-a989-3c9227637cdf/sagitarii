@@ -34,10 +34,13 @@ public class ExperimentTimes {
 	public JFreeChart getImage( Workflow workflow ) {
 
 		DefaultCategoryDataset ds = new DefaultCategoryDataset();
-
+		ExperimentPerformance ep = new ExperimentPerformance();
+		
         for ( Experiment ex : workflow.getExperiments() ) {
         	if ( ex.getStatus() != ExperimentStatus.STOPPED ) {
-        		ds.addValue( ex.getElapsedMillis(), ex.getElapsedTime(), ex.getTagExec() );
+        		ep.setExperiment(ex);
+        		ex.updateMetrics();
+        		ds.addValue( ep.getElapsedMillis(), ep.getElapsedTime(), ex.getTagExec() );
         	}
         }
         

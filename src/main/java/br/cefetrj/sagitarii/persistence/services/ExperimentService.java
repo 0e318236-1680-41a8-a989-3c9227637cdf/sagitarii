@@ -180,6 +180,11 @@ public class ExperimentService {
 		
 		rep.newTransaction();
 		rep.updateExperiment(oldExperiment);
+		
+		if( experiment.getStatus() == ExperimentStatus.FINISHED ) {
+			Sagitarii.getInstance().updateSystemMetrics();
+		}
+		
 	}	
 	
 	
@@ -259,15 +264,11 @@ public class ExperimentService {
 		Sagitarii.getInstance().stopProcessing();
 		
 		try {
-
 			Experiment experiment = fillExperiment ( rep.getExperiment(idExperiment) );
-
-			
 			if ( experiment.getStatus() == ExperimentStatus.RUNNING ) {
 				logger.error( "deletion of running experiment " + idExperiment + " not allowed." );
 				throw new DeleteException("You cannot delete a running experiment.");
 			}
-
 
 			RelationService rs = new RelationService();
 			List<Relation> tables = rs.getList();
@@ -307,8 +308,6 @@ public class ExperimentService {
 				logger.error("cannot remove files: " + e.getMessage() );
 			}
 			
-			
-			
 			logger.debug("removing fragments and activities...");
 			
 			for ( Fragment frag : experiment.getFragments() ) {
@@ -347,6 +346,12 @@ public class ExperimentService {
 			rep.deleteExperiment(experiment);
 			Sagitarii.getInstance().removeExperiment( experiment );
 			Sagitarii.getInstance().resumeProcessing();
+			
+			if( experiment.getStatus() == ExperimentStatus.FINISHED ) {
+				Sagitarii.getInstance().updateSystemMetrics();
+			}
+			
+			
 		} catch ( Exception e ) {
 			e.printStackTrace();
 			logger.error( e.getMessage() );
