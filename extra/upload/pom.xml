@@ -32,7 +32,7 @@
 					 <transformers>
 						<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 							<manifestEntries>
-								<Main-Class>cmabreu.sagitarii.teapot.Main</Main-Class>
+								<Main-Class>br.cefetrj.sagitarii.teapot.Main</Main-Class>
 								<Class-Path>.</Class-Path>
 							</manifestEntries>
 
