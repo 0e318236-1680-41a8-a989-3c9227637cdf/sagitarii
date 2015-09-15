@@ -53,8 +53,9 @@
 						<div style="margin : 0 auto; width : 95%; margin-bottom:30px; margin-top:10px;"  >
 							<table>
 								<tr>
+									<th style="width:1%">&nbsp;</th>
 									<th style="width:10%">Instance ID</th>
-									<th style="width:10%">Delivered to</th>
+									<th style="width:15%">Delivered to</th>
 									<th style="width:10%">Instance Type</th>
 									<th style="width:10%">Running Time</th>
 									<th style="width:5%">Delayed</th>
@@ -67,6 +68,9 @@
 									<c:if test="${unit.delayed == 'false'}">
 										<tr>
 									</c:if>
+										<td>
+											<img onclick="reloadInstance('${unit.instance.serial}');" alt="" title="Ask now for this Instance" class="minibutton dicas" src="img/turn.png">
+										</td>
 										<td class="tableCellFormRight">${unit.instance.serial}</td>
 										<td class="tableCellFormRight">${unit.macAddress}</td>
 										<td class="tableCellFormRight">${unit.instance.type}</td>
@@ -122,6 +126,9 @@
 		window.location.href="reloadBuffers";
 	}
 	
+	function reloadInstance(serial) {
+		window.location.href="reloadBuffers?instance=" + serial;
+	}
 
 </script>					
 <%@ include file="../../footer.jsp" %>

@@ -115,7 +115,7 @@ public class Task {
 		Process process = null;
 		status = TaskStatus.RUNNING;
 		try {
-
+			/*	
 			if ( activation.getExecutorType().equals("BASH") ) {
 				debug("running Bash Script " + activation.getCommand() );
 				BashExecutor ex = new BashExecutor();
@@ -127,6 +127,8 @@ public class Task {
 				exitCode = py.execute( activation );
 				console = py.getConsole();
 			} else {
+			*/
+				
 				debug("running external wrapper " + activation.getCommand() );
 				process = Runtime.getRuntime().exec( activation.getCommand() );
 				InputStream in = process.getInputStream(); 
@@ -148,7 +150,10 @@ public class Task {
 				br.close();
 				
 				exitCode = process.waitFor();
-			}     
+			/*	
+			} 
+			*/
+				
 		} catch ( Exception ex ){
 			error( ex.getMessage() );
 			for ( StackTraceElement ste : ex.getStackTrace() ) {

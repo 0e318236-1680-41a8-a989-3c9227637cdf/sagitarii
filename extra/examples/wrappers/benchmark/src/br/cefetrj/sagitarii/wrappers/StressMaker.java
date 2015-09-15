@@ -32,6 +32,12 @@ public class StressMaker {
 			list3.add(s);
 		}
 		
+		try {
+			Thread.sleep( 10000 );
+		} catch ( Exception e ) {
+			e.printStackTrace();
+		}
+		
 		Collections.sort( list3 );
 		
 		System.out.println("phase 3");

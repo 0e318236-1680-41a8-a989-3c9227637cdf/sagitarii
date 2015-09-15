@@ -175,9 +175,9 @@ public class TaskManager {
 			command = "java "+classPathParam+" -jar "+ wrapperCommand + " " + scriptFile + " " + workFolder + " " + wrappersFolder;
 			
 		} else if ( activation.getExecutorType().equals("BASH") ) {
-			command = wrappersFolder + activation.getCommand() + " " + workFolder + " " + wrappersFolder;
+			command = "bash "   + wrappersFolder + activation.getCommand() + " " + workFolder + " " + wrappersFolder;
 		} else if ( activation.getExecutorType().equals("PYTHON") ) {
-			command = wrappersFolder + activation.getCommand();
+			command = "python " + wrappersFolder + activation.getCommand() + " " + workFolder + " " + wrappersFolder;
 		} else {
 			command = "java "+classPathParam+" -jar " + wrappersFolder + activation.getCommand() + " " + workFolder + " " + wrappersFolder;
 		}

@@ -309,7 +309,8 @@ public class Cluster {
 					instance.setStatus( InstanceStatus.FINISHED );
 					instance.setFinishDateTime( Calendar.getInstance().getTime() );
 					instance.setExecutedBy(macAddress);
-					instance.setCoresUsed( availableProcessors );
+					
+					instance.setCoresUsed( ClustersManager.getInstance().getCores() );
 					
 					instance.setRealStartTimeMillis( Long.valueOf( startTimeMillis) );
 					instance.setRealFinishTimeMillis( Long.valueOf( finishTimeMillis ) );

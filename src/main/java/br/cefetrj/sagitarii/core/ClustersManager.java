@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 
 import br.cefetrj.sagitarii.core.config.Configurator;
 import br.cefetrj.sagitarii.core.delivery.InstanceDeliveryControl;
+import br.cefetrj.sagitarii.core.types.ClusterStatus;
 import br.cefetrj.sagitarii.core.types.ClusterType;
 import br.cefetrj.sagitarii.core.types.InstanceStatus;
 import br.cefetrj.sagitarii.core.types.LogType;
@@ -51,7 +52,7 @@ public class ClustersManager {
 	public int getCores() {
 		int cores = 0;
 		for ( Cluster clu : getClusterList()  ) {
-			if ( !clu.isMainCluster() ) {
+			if ( ( !clu.isMainCluster() ) && ( clu.getStatus() == ClusterStatus.ACTIVE ) ) {
 				cores = cores + clu.getAvailableProcessors();
 			}
 		}

@@ -17,9 +17,10 @@ import br.cefetrj.sagitarii.persistence.services.RelationService;
 public class ExperimentPerformance {
 	private Experiment experiment;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
+	private double coresWorking;
 	
 	public ExperimentPerformance( Experiment experiment ) {
-		this.experiment = experiment;
+		setExperiment( experiment );
 	}
 	
 	public ExperimentPerformance() {
@@ -28,6 +29,7 @@ public class ExperimentPerformance {
 
 	public void setExperiment(Experiment experiment) {
 		this.experiment = experiment;
+		retrieveCoresWorking();
 	}
 	
 	public double getSpeedUp() {
@@ -55,14 +57,14 @@ public class ExperimentPerformance {
 		int qtd = 0;
 		try {
 			RelationService rs = new RelationService();
-			Set<UserTableEntity> result = rs.genericFetchList("select sum(elapsed_millis) as sum from "
+			Set<UserTableEntity> result = rs.genericFetchList("select sum(elapsed_millis) as soma from "
 					+ "instances where id_fragment in ( select id_fragment from fragments where id_experiment = "+
 					experiment.getIdExperiment()+" )");
 			
 			List<UserTableEntity> res = new ArrayList<UserTableEntity> ( result );
 			if ( res.size() > 0 ) {
 				UserTableEntity ute = res.get(0);
-				String sQtd = ute.getData("sum");
+				String sQtd = ute.getData("soma");
 				qtd = Integer.valueOf( sQtd );
 			}
 		} catch ( Exception e ) {
@@ -80,9 +82,36 @@ public class ExperimentPerformance {
 		return DateLibrary.getInstance().getTimeRepresentation( getElapsedMillis() - getRealTimeMillis() );
 	}
 	
+	public double getCoresWorking() {
+		return coresWorking;
+	}
+	
+	private void retrieveCoresWorking() {
+		logger.debug("get cores used for experiment " + experiment.getTagExec() );
+		coresWorking = 0;
+		try {
+			RelationService rs = new RelationService();
+			Set<UserTableEntity> result = rs.genericFetchList("select avg( cores_used ) as cores from "
+					+ "instances where id_fragment in ( select id_fragment from fragments where id_experiment = "+
+					experiment.getIdExperiment()+" ) and status = 'FINISHED'");
+			
+			List<UserTableEntity> res = new ArrayList<UserTableEntity> ( result );
+			if ( res.size() > 0 ) {
+				UserTableEntity ute = res.get(0);
+				String sQtd = ute.getData("cores");
+				coresWorking = Double.valueOf( sQtd );
+			}
+		} catch ( Exception e ) {
+			logger.error( e.getMessage() );
+		}
+		logger.debug("done: " + coresWorking + " cores");
+	}
+	
 	public double getParallelEfficiency() {
 		logger.debug("get parallel efficiency for experiment " + experiment.getTagExec() );
-		int coresWorking = experiment.getCoresWorking();
+		
+		coresWorking = getCoresWorking(); 
+				
 		Double parallelEfficiency = 0.0;
 		Double speedUp = getSpeedUp();
 		
@@ -114,7 +143,7 @@ public class ExperimentPerformance {
 			RelationService rs = new RelationService();
 			Set<UserTableEntity> result = rs.genericFetchList("select sum( real_finish_time_millis - real_start_time_millis ) as sum from "
 					+ "instances where id_fragment in ( select id_fragment from fragments where id_experiment = "+
-					experiment.getIdExperiment()+" )");
+					experiment.getIdExperiment()+" ) and status = 'FINISHED'");
 			
 			List<UserTableEntity> res = new ArrayList<UserTableEntity> ( result );
 			if ( res.size() > 0 ) {

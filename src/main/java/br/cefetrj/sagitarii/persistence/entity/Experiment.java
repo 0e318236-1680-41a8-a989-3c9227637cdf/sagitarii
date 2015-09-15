@@ -24,7 +24,6 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Type;
 
-import br.cefetrj.sagitarii.core.ClustersManager;
 import br.cefetrj.sagitarii.core.types.ExperimentStatus;
 import br.cefetrj.sagitarii.metrics.ExperimentPerformance;
 import br.cefetrj.sagitarii.misc.ZipUtil;
@@ -105,7 +104,7 @@ public class Experiment {
 	private Double parallelEfficiency = 0.0;
 
 	@Column
-	private int coresWorking = 0;
+	private double coresWorking = 0;
 	
     public Experiment() {
         UUID uuid = UUID.randomUUID();
@@ -247,11 +246,7 @@ public class Experiment {
 		this.finishDateTime = finishDateTime;
 	}
 
-	public void setCoresWorking(int coresWorking) {
-		this.coresWorking = coresWorking;
-	}
-	
-	public int getCoresWorking() {
+	public double getCoresWorking() {
 		return coresWorking;
 	}
 	
@@ -264,9 +259,6 @@ public class Experiment {
 	}
 	
 	public void updateMetrics() {
-		if ( coresWorking == 0 ) {
-			coresWorking = ClustersManager.getInstance().getCores();
-		}
 		ExperimentPerformance ep = new ExperimentPerformance( this );
 		speedUp = ep.getSpeedUp();
 		parallelEfficiency = ep.getParallelEfficiency();
@@ -274,6 +266,7 @@ public class Experiment {
 		elapsedTime = ep.getElapsedTime();
 		lazyTime = ep.getLazyTime();
 		realTime = ep.getRealTime();
+		coresWorking = ep.getCoresWorking();
 	}
 	
 	public String getElapsedTime() {

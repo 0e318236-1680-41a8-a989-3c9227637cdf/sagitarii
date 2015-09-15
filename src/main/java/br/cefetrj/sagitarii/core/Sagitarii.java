@@ -165,12 +165,9 @@ public class Sagitarii {
 						exp.setFinishDateTime( Calendar.getInstance().getTime() );
 						
 							ExperimentService experimentService = new ExperimentService();
-							exp.setCoresWorking( ClustersManager.getInstance().getCores() );
-
 							experimentService.updateExperiment(exp);
 							runningExperiments.remove( exp );
 							logger.debug("experiment " + exp.getTagExec() + " is finished.");
-							
 							
 							MailService ms = new MailService();
 							try {

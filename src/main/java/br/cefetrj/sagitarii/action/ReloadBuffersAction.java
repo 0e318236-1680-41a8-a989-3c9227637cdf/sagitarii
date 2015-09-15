@@ -12,12 +12,19 @@ import br.cefetrj.sagitarii.core.delivery.InstanceDeliveryControl;
 
 @ParentPackage("default")
 public class ReloadBuffersAction extends BasicActionClass {
+	private String instance;
 	
 	public String execute(){
 
 		try {
-			InstanceDeliveryControl.getInstance().forceInformAllDelayed();
-			setMessageText( "Sagitarii is asking nodes for all delayed Instances...");
+			if( instance == null ) {
+				InstanceDeliveryControl.getInstance().forceInformAllDelayed();
+				setMessageText( "Sagitarii is asking nodes for all delayed Instances...");
+			} else {
+				if ( !instance.equals("") ) {
+					InstanceDeliveryControl.getInstance().forceInformDelayed( instance );
+				}
+			}
 		} catch ( Exception e ) {
 			setMessageText( e.getMessage() );
 		} 
@@ -25,5 +32,8 @@ public class ReloadBuffersAction extends BasicActionClass {
 		return "ok";
 	}
 
+	public void setInstance(String instance) {
+		this.instance = instance;
+	}
 
 }

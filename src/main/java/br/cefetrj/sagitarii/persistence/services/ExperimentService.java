@@ -141,7 +141,6 @@ public class ExperimentService {
 	
 			logger.debug("saving experiment");
 			rep.newTransaction();
-			experiment.setCoresWorking( ClustersManager.getInstance().getCores() );
 			rep.updateExperiment(experiment);
 	
 			Sagitarii.getInstance().addRunningExperiment(experiment);
@@ -176,7 +175,6 @@ public class ExperimentService {
 		oldExperiment.setFinishDateTime( experiment.getFinishDateTime() );
 		oldExperiment.setActivitiesSpecs( experiment.getActivitiesSpecs() );
 		oldExperiment.setImagePreviewData( experiment.getImagePreviewData() );
-		oldExperiment.setCoresWorking( ClustersManager.getInstance().getCores() );
 		
 		rep.newTransaction();
 		rep.updateExperiment(oldExperiment);
@@ -195,9 +193,6 @@ public class ExperimentService {
 			FragmentComparator fc = new FragmentComparator();
 			Collections.sort( frags, fc );
 			experiment.setFragments( frags );
-			if ( experiment.getCoresWorking() == 0 ) {
-				experiment.setCoresWorking( ClustersManager.getInstance().getCores() );
-			}
 		} catch ( Exception e ) {
 			//logger.error( e.getMessage() );
 		}

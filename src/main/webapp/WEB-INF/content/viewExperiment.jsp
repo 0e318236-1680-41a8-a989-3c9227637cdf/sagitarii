@@ -46,9 +46,9 @@
 							<div style="height:70px;">
 								<table style="width:100%">
 									<tr>
-										<td class="tableCellFormLeft">Label</td>
+										<td class="tableCellFormLeft">Description</td>
 										<td class="tableCellFormRight"> 
-											${experiment.tagExec} 
+											${experiment.description}
 										</td>
 										<td class="tableCellFormLeft">Workflow</td>
 										<td class="tableCellFormRight"> 
@@ -57,9 +57,9 @@
 									</tr>
 	
 									<tr>
-										<td class="tableCellFormLeft">Description</td>
+										<td class="tableCellFormLeft">Average Cores Used</td>
 										<td class="tableCellFormRight"> 
-											${experiment.description} 
+											${experiment.coresWorking} 
 										</td>
 										<td class="tableCellFormLeft">Status</td>
 										<td style="color:#F90101" class="tableCellFormRight"> 
@@ -87,7 +87,7 @@
 									<tr>
 										<td class="tableCellFormLeft">Real Sequential Time</td>
 										<td class="tableCellFormRight">${experiment.realTime}</td>
-										<td class="tableCellFormLeft">Lazy Time</td>
+										<td class="tableCellFormLeft">Data Transfer Time</td>
 										<td class="tableCellFormRight">${experiment.lazyTime}</td>
 									</tr>
 
