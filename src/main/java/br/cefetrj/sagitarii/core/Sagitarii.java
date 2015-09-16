@@ -46,7 +46,6 @@ public class Sagitarii {
 		}
 	}
 	
-	
 	public boolean experimentIsStillQueued( Experiment exp ) {
 		return instanceBuffer.experimentIsStillQueued(exp);
 	}
@@ -286,11 +285,6 @@ public class Sagitarii {
 	}
 	
 	
-	/**
-	 * Entrega um instance a um cluster
-	 * 
-	 * @return Instance
-	 */
 	public synchronized Instance getNextInstance() {
 		return instanceBuffer.getNextInstance( runningExperiments );
 	}

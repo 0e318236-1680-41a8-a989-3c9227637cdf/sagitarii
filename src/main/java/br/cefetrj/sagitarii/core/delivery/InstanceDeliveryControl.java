@@ -173,6 +173,7 @@ public class InstanceDeliveryControl {
 	public void cancelUnit( String instanceSerial ) {
 		for ( DeliveryUnit du : units ) {
 			if ( du.getInstance().getSerial().equalsIgnoreCase( instanceSerial ) ) {
+				logger.debug("will cancel Instance " + instanceSerial + " from Delivery Control");
 				units.remove( du );
 				break;
 			}
@@ -182,6 +183,7 @@ public class InstanceDeliveryControl {
 	public void removeUnit( String instanceSerial ) {
 		for ( DeliveryUnit du : units ) {
 			if ( du.getInstance().getSerial().equalsIgnoreCase( instanceSerial ) ) {
+				logger.debug("will remove Instance " + instanceSerial + " from Delivery Control and add it to statistics");
 				units.remove( du );
 				du.setReceiveTime( Calendar.getInstance().getTime() );
 				AgeCalculator.getInstance().addToStatistics( du );

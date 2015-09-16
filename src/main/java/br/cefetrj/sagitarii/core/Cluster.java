@@ -119,7 +119,7 @@ public class Cluster {
 			}
 		} catch ( Exception e ) { }
 		if ( total > 0 ) {
-			debug( total + " listeners deleted" );
+			logger.debug( total + " listeners deleted" );
 		}
 	}
 	
@@ -179,27 +179,40 @@ public class Cluster {
 	}
 	
 	public void informReport( String instanceSerial, String status ) {
-		debug( instanceSerial + " status is " + status );
+		logger.debug( instanceSerial + " status is " + status );
 		askingForInstance = false;
 		lostInstance = "";
 		
+		cleanUp();
+		if( !isRunning( instanceSerial ) ) {
+			logger.debug("instance " + instanceSerial + " is not running. done.");
+			return;
+		}
+		
+		
 		if ( status.equals("NOT_FOUND") ) {
-			debug("resubmiting instance " + instanceSerial + " to job queue");
-			cancelAndRemoveInstance( instanceSerial );
+			logger.debug("resubmiting instance " + instanceSerial + " to job queue");
+			resubmitInstanceToBuffer( instanceSerial );
 		} 
 		
 	}
 	
 	public void inform( String instanceSerial ) {
-		logger.warn("asking Teapot for lost instance " + instanceSerial + " working at node " + macAddress );
+		logger.debug("asking Teapot for lost instance " + instanceSerial + " working at node " + macAddress );
+		
+		cleanUp();
+		if( !isRunning( instanceSerial ) ) {
+			logger.debug("instance " + instanceSerial + " is not running. done.");
+			return;
+		}
 		
 		if ( status == ClusterStatus.DEAD ) {
-			logger.warn("this node is DEAD. try to recover lost instance from output buffer");
+			logger.debug("this node is DEAD. try to recover lost instance from output buffer");
 			informReport( instanceSerial, "NOT_FOUND");
 		}
 		
 		if ( amILookingFor(instanceSerial) ) {
-			logger.warn("already waiting for instance " + lostInstance);
+			logger.debug("already waiting for instance " + lostInstance);
 			return;
 		}
 		askingForInstance = true;
@@ -290,6 +303,8 @@ public class Cluster {
 			lostInstance = "";
 		}
 		
+		cleanUp();
+		
 	}
 	
 	
@@ -316,8 +331,8 @@ public class Cluster {
 					instance.setRealFinishTimeMillis( Long.valueOf( finishTimeMillis ) );
 					
 					Sagitarii.getInstance().finishInstance( instance );
-					
 					InstanceDeliveryControl.getInstance().removeUnit( instanceSerial );
+					
 				} else {
 					debug("instance " + instanceSerial + " (" + actvt.getTag() + ") have " + instance.getQtdActivations() + " tasks running");
 				}
@@ -339,19 +354,19 @@ public class Cluster {
 		runningInstances.add( pipe ); 
 	}
 
-	public void cancelAndRemoveInstance( String instanceSerial ) {
-		debug("Cancel and remove Instance " + instanceSerial + "..." );
+	public void resubmitInstanceToBuffer( String instanceSerial ) {
+		logger.debug("Resubmit Instance " + instanceSerial + " to Sagitarii buffer..." );
 		for ( Instance instance : getRunningInstances() ) {
 			if ( instance.getSerial().equalsIgnoreCase( instanceSerial ) ) {
 				instance.setStatus( InstanceStatus.PIPELINED );
 				runningInstances.remove( instance ); 
 				InstanceDeliveryControl.getInstance().cancelUnit( instanceSerial );
 				Sagitarii.getInstance().returnToBuffer(instance);
-				debug("Instance " + instanceSerial + " returned to buffer");
-				break;
+				logger.debug("Instance " + instanceSerial + " found in this node buffer. Returned to Sagitarii output buffer");
+				return;
 			}
 		}
-		debug("Instance " + instanceSerial + " is not in Node process buffer.");
+		logger.debug("Instance " + instanceSerial + " is not in Node buffer.");
 	}
 
 	public Cluster(ClusterType type, String javaVersion, String soFamily, String macAddress, String ipAddress, String machineName, Double cpuLoad, 
@@ -458,18 +473,28 @@ public class Cluster {
 	}
 
 	private synchronized Instance getFinishedTask() {
-		for ( Instance pipe : runningInstances ) {
+		for ( Instance pipe : getRunningInstances() ) {
 			if ( ( pipe.getQtdActivations() == 0 ) || ( pipe.getStatus() == InstanceStatus.FINISHED ) ) {
 				return pipe;
 			}
 		}
 		return null;
 	}
-	
+
+	private synchronized boolean isRunning( String instanceSerial ) {
+		for ( Instance pipe : getRunningInstances() ) {
+			if ( ( pipe.getSerial().equals( instanceSerial ) ) && ( pipe.getStatus() == InstanceStatus.RUNNING ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private void cleanUp() {
 		Instance pipe = getFinishedTask();
 		while ( pipe != null ) {
 			runningInstances.remove( pipe );
+			InstanceDeliveryControl.getInstance().cancelUnit( pipe.getSerial() );
 			pipe = getFinishedTask();
 		}
 		removeListeners();

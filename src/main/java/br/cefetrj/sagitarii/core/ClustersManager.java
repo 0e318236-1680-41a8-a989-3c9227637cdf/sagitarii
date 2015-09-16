@@ -156,7 +156,7 @@ public class ClustersManager {
 		logger.debug( "node " + macAddress + " refused task in instance " + instanceId );
 		Cluster clu = cm.getCluster(macAddress);
 		clu.setMessage(LogType.SYSTEM, "Cannot run task in instance " + instanceId );
-		clu.cancelAndRemoveInstance( instanceId );
+		clu.resubmitInstanceToBuffer( instanceId );
 	}
 
 	
@@ -258,23 +258,26 @@ public class ClustersManager {
 				packageSize = 1;
 			}
 		} catch ( Exception e ) { }
+		
 		List<String> instancePack = new ArrayList<String>();
 		logger.debug( "node " + macAddress + " needs a package size of " + packageSize + " instance(s).");
 		for ( int x=0; x < packageSize; x++) {
 			Instance instance = Sagitarii.getInstance().getNextInstance();
 			if ( instance != null ) {
 				logger.debug( " > sending instance (" + instance.getSerial() + ") "+ instance.getSerial() +" data to node " + macAddress );
+				
 				instance.setStartDateTime( Calendar.getInstance().getTime() );
 				instance.setStatus( InstanceStatus.WAITING );
 				cluster.addInstance(instance);
 				resposta = fillInstanceID ( instance );
 				instance.setContent( resposta );
-				InstanceDeliveryControl.getInstance().addUnit(instance, macAddress);
-				
+
 				byte[] respCompressed = ZipUtil.compress( resposta );
 				String respHex = ZipUtil.toHexString( respCompressed );
 				instancePack.add( respHex );
-				logger.debug(" > compacted: " + respHex );
+				
+				InstanceDeliveryControl.getInstance().addUnit(instance, macAddress);
+
 			} 
 		}
 		if ( instancePack.size() > 0 ) {
@@ -311,6 +314,7 @@ public class ClustersManager {
 					if ( cluster.isRestartSignal() ) {
 						resposta = "COMM_RESTART";
 					}
+					// Clear signal: NExt time will receive tasks
 					cluster.clearSignals();
 				}
 			}
