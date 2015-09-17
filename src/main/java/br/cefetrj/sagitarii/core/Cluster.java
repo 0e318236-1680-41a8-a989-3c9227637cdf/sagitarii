@@ -390,6 +390,11 @@ public class Cluster {
 		this.type = type;
 		metrics = new NodeLoadMonitorEntity( macAddress, MetricType.NODE_LOAD );
 		metricsVmRam = new NodeVMMonitorEntity( macAddress, MetricType.NODE_LOAD );
+		
+		// Just to create a new image.
+		MetricController.getInstance().hit( this.machineName, MetricType.NODE );
+		
+		
 	}
 	
 	private void addMetrics(  double valueCpu, double valueRam, double valueTasks ) {

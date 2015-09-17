@@ -27,7 +27,6 @@ public class TimeControlService {
 		TimeControl oldTimeControl;
 		try {
 			oldTimeControl = rep.getTimeControl( tControl.getIdTimeControl() );
-			oldTimeControl.setAverageAge( tControl.getAverageAge() );
 			oldTimeControl.setAverageMilis( tControl.getAverageMilis() );
 			oldTimeControl.setCalculatedCount( tControl.getCalculatedCount() );
 			oldTimeControl.setTotalAgeMilis( tControl.getTotalAgeMilis() );

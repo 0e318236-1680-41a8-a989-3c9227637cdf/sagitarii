@@ -421,12 +421,13 @@ public class RelationService {
 				for ( String columnName : columns ) {
 					String domainName = tableName + "." + columnName;
 					String data = ute.getData( columnName ); 
-					
-					if ( DomainStorage.getInstance().domainExists(domainName)  ) {
-						fs.newTransaction();
-						FileLight fil = fs.getFileLight( Integer.valueOf( ute.getData(columnName) ) );
-						data = "<a href='getFile?idFile="+data+"'>" + fil.getFileName() + "</a>";
-					}
+					try {
+						if ( DomainStorage.getInstance().domainExists(domainName)  ) {
+							fs.newTransaction();
+							FileLight fil = fs.getFileLight( Integer.valueOf( ute.getData(columnName) ) );
+							data = "<a href='getFile?idFile="+data+"'>" + fil.getFileName() + "</a>";
+						}
+					} catch ( Exception e ) { }
 
 					byte[] encodedBytes = Base64.encodeBase64( data.getBytes() );
 					String newData = new String( encodedBytes );
@@ -505,11 +506,13 @@ public class RelationService {
 					String domainName = tableName + "." + columnName;
 					String data = ute.getData( columnName );
 					
-					if ( DomainStorage.getInstance().domainExists(domainName)  ) {
-						fs.newTransaction();
-						FileLight fil = fs.getFileLight( Integer.valueOf( data ) );
-						data = "<a href='getFile?idFile="+data+"'>" + fil.getFileName() + "</a>";
-					}
+					try {
+						if ( DomainStorage.getInstance().domainExists(domainName)  ) {
+							fs.newTransaction();
+							FileLight fil = fs.getFileLight( Integer.valueOf( data ) );
+							data = "<a href='getFile?idFile="+data+"'>" + fil.getFileName() + "</a>";
+						}
+					} catch ( Exception e ) { }
 
 					if ( columnName.equals("id_instance") ) {
 						String sIdInstance = data; 

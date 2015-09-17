@@ -10,6 +10,9 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.gson.GsonBuilder;
+import com.opensymphony.xwork2.ActionContext;
+
 import br.cefetrj.sagitarii.core.DataReceiver;
 import br.cefetrj.sagitarii.core.TableAttribute;
 import br.cefetrj.sagitarii.misc.DateLibrary;
@@ -23,9 +26,6 @@ import br.cefetrj.sagitarii.persistence.services.FileService;
 import br.cefetrj.sagitarii.persistence.services.RelationService;
 import br.cefetrj.sagitarii.persistence.services.UserService;
 import br.cefetrj.sagitarii.persistence.services.WorkflowService;
-
-import com.google.gson.GsonBuilder;
-import com.opensymphony.xwork2.ActionContext;
 
 public class ExternalApi {
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
@@ -69,7 +69,11 @@ public class ExternalApi {
 					if ( command.equals("apiGetExperiments") ) {
 						return getExperiments( map, user );
 					}
-					
+
+					if ( command.equals("apiGetWorkflows") ) {
+						return getWorkflows( map, user );
+					}
+
 					if ( command.equals("apiStartExperiment") ) {
 						return startExperiment( map );
 					}
@@ -181,11 +185,44 @@ public class ExternalApi {
 			for ( Experiment experiment : experiments ) {
 				String startDate = DateLibrary.getInstance().getDateHourTextHuman( experiment.getLastExecutionDate() ); 
 				data.append(dataPrefix + "{");
-				experiment.updateMetrics();
 				data.append( generateJsonPair( "tagExec", experiment.getTagExec() ) + "," );
 				data.append( generateJsonPair( "startDate", startDate ) + "," );
 				data.append( generateJsonPair( "status", experiment.getStatus().toString() )  + ","  );
+				data.append( generateJsonPair( "workflow", experiment.getWorkflow().getTag() )  + ","  );
 				data.append( generateJsonPair( "elapsedTime", experiment.getElapsedTime() ) );
+				dataPrefix = ",";
+				data.append("}");
+			}
+			data.append("]");
+			
+			StringBuilder sb = new StringBuilder();
+			sb.append("{");
+			sb.append( addArray("data", data.toString() ) );
+			sb.append("}");
+			
+			return formatMessage( sb.toString() );
+			
+		} catch ( Exception e ) {
+			logger.error( e.getMessage() );
+			return formatMessage( e.getMessage() );
+		}
+		
+	}
+
+	private String getWorkflows( Map<String, Object> map, User user ) {
+		List<Workflow> workflows = new ArrayList<Workflow>();
+		try {
+			WorkflowService ws = new WorkflowService();
+			workflows = ws.getList();
+			
+			StringBuilder data = new StringBuilder();
+			String dataPrefix = "";
+			data.append("[");
+			for ( Workflow workflow : workflows ) {
+				data.append(dataPrefix + "{");
+				data.append( generateJsonPair( "alias", workflow.getTag() ) + "," );
+				data.append( generateJsonPair( "owner", workflow.getOwner().getFullName() ) + "," );
+				data.append( generateJsonPair( "ownerMail", workflow.getOwner().getUserMail() )  );
 				dataPrefix = ",";
 				data.append("}");
 			}

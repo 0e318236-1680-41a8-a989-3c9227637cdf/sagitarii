@@ -40,7 +40,7 @@ public class Instance implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="id_instance")
-	private int idInstance;
+	private Integer idInstance;
 	
 	@Column(name="start_date_time")
 	@Type(type="timestamp")
@@ -51,16 +51,16 @@ public class Instance implements Serializable {
 	private Date finishDateTime;
 
 	@Column(name="id_fragment")
-	private int idFragment;
+	private Integer idFragment;
 
 	@Column( name = "cores_used")
-	private int coresUsed;
+	private Integer coresUsed = 0;
 
 	@Column( name = "real_start_time_millis")
-	private long realStartTimeMillis = 0;
+	private Long realStartTimeMillis = Long.valueOf(0);
 	
 	@Column( name = "real_finish_time_millis")
-	private long realFinishTimeMillis = 0;
+	private Long realFinishTimeMillis = Long.valueOf(0);
 
 	@Column(length=50, name="executed_by")
 	private String executedBy;	
@@ -77,7 +77,7 @@ public class Instance implements Serializable {
 	private String content;
 	
 	@Column(name="qtd_activations")
-	private int qtdActivations;
+	private Integer qtdActivations;
 
 	@Column(length=50)
 	@Enumerated(EnumType.STRING)
@@ -94,7 +94,7 @@ public class Instance implements Serializable {
 	private String elapsedTime = "000 00:00:00";
 
 	@Column(name="elapsed_millis")
-	private long elapsedMillis = 0;
+	private Long elapsedMillis = Long.valueOf(0);
 	
 	public void decreaseQtdActivations() {
 		if ( qtdActivations > 0 ) {
@@ -116,27 +116,27 @@ public class Instance implements Serializable {
 		consumptions.add( consumption );
 	}
 	
-	public void setQtdActivations(int qtdActivations) {
+	public void setQtdActivations(Integer qtdActivations) {
 		this.qtdActivations = qtdActivations;
 	}
 	
-	public int getQtdActivations() {
+	public Integer getQtdActivations() {
 		return qtdActivations;
 	}
 
-	public int getIdInstance() {
+	public Integer getIdInstance() {
 		return idInstance;
 	}
 
-	public void setIdInstance(int idInstance) {
+	public void setIdInstance(Integer idInstance) {
 		this.idInstance = idInstance;
 	}
 
-	public int getIdFragment() {
+	public Integer getIdFragment() {
 		return idFragment;
 	}
 
-	public void setIdFragment(int idFragment) {
+	public void setIdFragment(Integer idFragment) {
 		this.idFragment = idFragment;
 	}
 
@@ -212,7 +212,7 @@ public class Instance implements Serializable {
 		elapsedTime = millisToHumanTime( getElapsedMillis() );
 	}
 	
-	private String millisToHumanTime( long millis ) {
+	private String millisToHumanTime( Long millis ) {
 		String time = String.format("%03d %02d:%02d:%02d", 
 				TimeUnit.MILLISECONDS.toDays( millis ),
 				TimeUnit.MILLISECONDS.toHours(millis),
@@ -225,9 +225,9 @@ public class Instance implements Serializable {
 	}
 	
 	
-	public long getElapsedMillis() {
+	public Long getElapsedMillis() {
 		if ( status == InstanceStatus.PIPELINED ) {
-			elapsedMillis = 0;
+			elapsedMillis = Long.valueOf(0);
 		} else {
 		
 			DateLibrary dl = DateLibrary.getInstance();
@@ -246,7 +246,7 @@ public class Instance implements Serializable {
 	}	
 	
 	public String getRealElapsedTime() {
-		long realElapsedTime = realFinishTimeMillis - realStartTimeMillis;
+		Long realElapsedTime = realFinishTimeMillis - realStartTimeMillis;
 		return millisToHumanTime( realElapsedTime );
 	}
 	
@@ -263,27 +263,27 @@ public class Instance implements Serializable {
 		this.executedBy = executedBy;
 	}
 	
-	public int getCoresUsed() {
+	public Integer getCoresUsed() {
 		return coresUsed;
 	}
 	
-	public void setCoresUsed(int coresUsed) {
+	public void setCoresUsed(Integer coresUsed) {
 		this.coresUsed = coresUsed;
 	}
 	
-	public void setRealFinishTimeMillis(long realFinishTimeMillis) {
+	public void setRealFinishTimeMillis(Long realFinishTimeMillis) {
 		this.realFinishTimeMillis = realFinishTimeMillis;
 	}
 	
-	public long getRealFinishTimeMillis() {
+	public Long getRealFinishTimeMillis() {
 		return realFinishTimeMillis;
 	}
 	
-	public void setRealStartTimeMillis(long realStartTimeMillis) {
+	public void setRealStartTimeMillis(Long realStartTimeMillis) {
 		this.realStartTimeMillis = realStartTimeMillis;
 	}
 	
-	public long getRealStartTimeMillis() {
+	public Long getRealStartTimeMillis() {
 		return realStartTimeMillis;
 	}
 	

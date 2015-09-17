@@ -195,10 +195,13 @@
 										<td>${table.description}&nbsp;</td>
 										<td>
 											<a href="getTableFull?tableName=${table.name}&idExperiment=${experiment.idExperiment}">
-												<img title="Get full table CSV data" class="miniButton dicas" src="img/download.png")">
+												<img title="Get full table CSV data" class="miniButton dicas" src="img/download.png" >
 											</a>
 											<a href="getTableSample?tableName=${table.name}">
-												<img title="Get table sample CSV data" class="miniButton dicas" src="img/csv.png")">
+												<img title="Get table sample CSV data" class="miniButton dicas" src="img/csv.png">
+											</a>
+											<a href="viewTableData?idExperiment=${experiment.idExperiment}&tableName=${table.name}">
+												<img title="View data for this Experiment" class="miniButton dicas" src="img/search.png" >
 											</a>
 										</td>
 									</tr>

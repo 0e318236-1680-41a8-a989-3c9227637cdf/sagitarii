@@ -14,6 +14,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
+import com.google.gson.Gson;
+
 /**
  * Interface to Sagitarii API
  * 
@@ -30,6 +32,16 @@ public class SagitariiInterface {
 		this.sagitariiHostURL = sagitariiHostURL;
 		client = new DefaultHttpClient();
 		securityToken = getSecurityToken( user, password );
+	}
+	
+	public String createNewExperiment( String workflowAlias ) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{");
+		sb.append( generateJsonPair("SagitariiApiFunction", "apiCreateExperiment") + "," ); 
+		sb.append( generateJsonPair("workflowTag", workflowAlias) + "," );
+		sb.append( generateJsonPair("securityToken", securityToken) ); 
+		sb.append("}");
+		return execute( sb.toString() );
 	}
 	
 	private String getSecurityToken( String user, String password ) {
@@ -53,7 +65,37 @@ public class SagitariiInterface {
 		return execute( sb.toString() );
 	}
 	
-	
+	public List<Experiment> getMyExperiments() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{");
+		sb.append( generateJsonPair("SagitariiApiFunction", "apiGetExperiments") + "," ); 
+		sb.append( generateJsonPair("securityToken", securityToken) ); 
+		sb.append("}");
+		
+		String result = execute( sb.toString() );
+
+		Gson gson = new Gson();
+		ExperimentData data = gson.fromJson( result, ExperimentData.class );
+		List<Experiment> experiments = data.getData();
+		
+		return experiments;
+	}	
+
+	public List<Workflow> getWorkflows() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{");
+		sb.append( generateJsonPair("SagitariiApiFunction", "apiGetWorkflows") + "," ); 
+		sb.append( generateJsonPair("securityToken", securityToken) ); 
+		sb.append("}");
+		
+		String result = execute( sb.toString() );
+
+		Gson gson = new Gson();
+		WorkflowData data = gson.fromJson( result, WorkflowData.class );
+		List<Workflow> workflows = data.getData();
+		
+		return workflows;
+	}	
 	
 	/** =======================================================================================
 	 * 

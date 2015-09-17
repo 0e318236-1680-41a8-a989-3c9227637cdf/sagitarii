@@ -37,9 +37,7 @@
 									<tr>
 										<td class="tableCellFormRight">${age.idTimeControl}</td>
 										<td class="tableCellFormRight">${age.content}</td>
-										<td class="tableCellFormRight">
-											<fmt:formatDate pattern="HH:mm:ss" type="time" value="${age.averageAge}" />
-										</td>
+										<td class="tableCellFormRight">${age.averageAgeAsText}</td>
 										<td class="tableCellFormRight">${age.calculatedCount}</td>
 									</tr>
 								</c:forEach>

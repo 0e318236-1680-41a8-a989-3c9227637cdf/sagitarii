@@ -1,28 +1,6 @@
 package br.cefetrj.sagitarii.teapot;
 
-/**
- * Copyright 2015 Carlos Magno Abreu
- * magno.mabreu@gmail.com 
- *
- * Licensed under the Apache  License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required  by  applicable law or agreed to in  writing,  software
- * distributed   under the  License is  distributed  on  an  "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the  specific language  governing  permissions  and
- * limitations under the License.
- * 
- */
-
- /*
-	http://www.codejava.net/coding/swing-application-to-upload-files-to-http-server-with-progress-bar
- */
- 
-import java.io.File;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -49,10 +27,44 @@ public class Main {
 					new SwingFileUploadHTTP( configurator ).runUi();
 				} else showGreetings(); 
 			} else 
-			
+
+			if ( args.length == 3 ) {
+				if ( args[0].toLowerCase().equals("-experiments") ) {
+					String userName = args[1];
+					String password = args[2];
+					
+					System.out.println("Listing experiments for user " + userName + "...");
+					SagitariiInterface si = new SagitariiInterface(configurator.getHostURL(), userName, password);
+					List<Experiment> exps = si.getMyExperiments();
+					for ( Experiment exp : exps ) {
+						System.out.println( " > " + exp.getTagExec() + " " + exp.getWorkflow() + " " + exp.getElapsedTime() + " " + exp.getStatus() );
+					}
+				} else
+				if ( args[0].toLowerCase().equals("-workflows") ) {
+					String userName = args[1];
+					String password = args[2];
+					
+					System.out.println("Listing all Workflows");
+					SagitariiInterface si = new SagitariiInterface(configurator.getHostURL(), userName, password);
+					List<Workflow> wfls = si.getWorkflows();
+					for ( Workflow wfl : wfls ) {
+						System.out.println( " > " + wfl.getAlias() + " " + wfl.getOwner() + " " + wfl.getOwnerMail() );
+					}
+				} else showGreetings();
+			} else
+				
 			if ( args.length == 4 ) {
-				boolean start = ( args[0].toLowerCase().equals("-start") );
-				if ( start ) {
+				if ( args[0].toLowerCase().equals("-create") ) {
+					String workflowAlias = args[1];
+					String userName = args[2];
+					String password = args[3];
+					
+					System.out.println("Creating new experiment for Workflow " + workflowAlias + "...");
+					SagitariiInterface si = new SagitariiInterface(configurator.getHostURL(), userName, password);
+					String ret = si.createNewExperiment(workflowAlias);
+					System.out.println( "Server response: " + ret );
+				} else
+				if ( args[0].toLowerCase().equals("-start") ) {
 					String experimentSerial = args[1];
 					String userName = args[2];
 					String password = args[3];
@@ -72,9 +84,11 @@ public class Main {
 					System.out.println("Done.");
 					System.exit(0);
 				} 
+			} else {
+				showGreetings();
 			}
 		} catch (Exception e) {
-			showGreetings();
+			System.out.println( e.getMessage() );
 		}
 
 	}
@@ -87,6 +101,9 @@ public class Main {
 		System.out.println("");
 		System.out.println("Use upload <file.csv> <target_table> <experiment_tag> <work_folder> ");
 		System.out.println("          | -start <experiment_tag> <username> <password>");
+		System.out.println("          | -create <workflow_alias> <username> <password>");
+		System.out.println("          | -experiments <username> <password>");
+		System.out.println("          | -workflows <username> <password>");
 		System.out.println("          | -gui");
 		System.out.println("");
 		System.out.println("     file.csv       : Your data file (just the file name).");			
@@ -103,6 +120,16 @@ public class Main {
 		System.out.println("     -start         : Will start Experiment 'experiment_tag' under");
 		System.out.println("                      'username' credentials. This user must");			
 		System.out.println("                      be a valid user in Sagitarii.");			
+		System.out.println("");
+		System.out.println("     -create        : Will create a new Experiment for workflow");
+		System.out.println("                      'workflow_alias'. This Workflow must exists.");			
+		System.out.println("                      This user must be a valid user in Sagitarii.");			
+		System.out.println("");
+		System.out.println("     -experiments   : List all Experiments for user 'username'.");
+		System.out.println("                      This user must be a valid user in Sagitarii.");			
+		System.out.println("");
+		System.out.println("     -workflows     : List all Workflows.");
+		System.out.println("                      This user must be a valid user in Sagitarii.");			
 		System.out.println("");
 		System.out.println("     -gui           : Will start the Graphical User Interface");
 		System.out.println("                      When using the GUI you can leave 'Work Folder' blank.");			

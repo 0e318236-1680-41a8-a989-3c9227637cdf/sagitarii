@@ -47,6 +47,11 @@ public class ExperimentRepository extends BasicRepository {
 		}
 		closeSession();
 		logger.debug("done: " + experiments.size() + " experiments.");
+		
+		for ( Experiment experiment : experiments ) {
+			experiment.updateMetrics();
+		}
+		
 		return experiments;
 	}
 
@@ -64,6 +69,10 @@ public class ExperimentRepository extends BasicRepository {
 		} 
 		closeSession();		
 		logger.debug("done");
+		for ( Experiment experiment : running ) {
+			experiment.updateMetrics();
+		}
+		
 		return running;
 	}
 	
@@ -90,7 +99,6 @@ public class ExperimentRepository extends BasicRepository {
 		logger.debug("insert");
 		DaoFactory<Experiment> df = new DaoFactory<Experiment>();
 		IDao<Experiment> fm = df.getDao(this.session, Experiment.class);
-		
 		try {
 			fm.insertDO(experiment);
 			commit();
@@ -119,6 +127,9 @@ public class ExperimentRepository extends BasicRepository {
 		} 
 		logger.debug("done");
 		closeSession();
+
+		experiment.updateMetrics();
+		
 		return experiment;
 	}
 	
@@ -135,6 +146,7 @@ public class ExperimentRepository extends BasicRepository {
 			throw e;
 		} 
 		closeSession();		
+		experiment.updateMetrics();
 		logger.debug("done: " + experiment.getTagExec() );
 		return experiment;
 	}

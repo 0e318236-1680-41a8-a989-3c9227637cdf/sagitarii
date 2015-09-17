@@ -6,14 +6,9 @@
 			<PatternLayout pattern="%d{dd/MM/YYYY HH:mm:ss} %-5level %logger{36} - %msg%n" />
 		</Console>
 		
-        <RollingFile name="File" fileName="${sys:rootPath}logs/sagitarii.log" filePattern="${sys:rootPath}logs/sagitarii-%i.log">
-            <PatternLayout pattern="%d %p %c: %m%n"/>
-            <Policies>
-                
-                <SizeBasedTriggeringPolicy size="0.001 MB"/>
-            </Policies>
-            <DefaultRolloverStrategy max="10"/>
-        </RollingFile>
+		<RandomAccessFile name="File" FileName="${sys:rootPath}logs/sagitarii.log" append="false">
+			<PatternLayout pattern="%d{dd/MM/YYYY HH:mm:ss} %-5level %logger{36} - %msg%n" />
+		</RandomAccessFile>		
 		
 	</appenders>
 	
@@ -23,7 +18,7 @@
 			<appender-ref ref="File"/> 
 		</Logger>
 
-		<Logger name="br.cefetrj.sagitarii.core.InstanceBuffer" level="error" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.core.InstanceBuffer" level="debug" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 
@@ -43,7 +38,7 @@
 			<appender-ref ref="File"/> 
 		</Logger>
 
-		<Logger name="br.cefetrj.sagitarii.core.delivery.InstanceDeliveryControl" level="debug" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.core.delivery.InstanceDeliveryControl" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 
@@ -51,7 +46,7 @@
 			<appender-ref ref="File"/> 
 		</Logger>
 		
-		<Logger name="br.cefetrj.sagitarii.core.sockets.FileImporter" level="error" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.core.sockets.FileImporter" level="debug" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 		
@@ -99,7 +94,7 @@
 			<appender-ref ref="File"/> 
 		</Logger>
 
-		<Logger name="br.cefetrj.sagitarii.persistence.services.RelationService" level="error" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.persistence.services.RelationService" level="debug" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 
@@ -117,7 +112,7 @@
 		</Logger>
 
 
-		<Logger name="br.cefetrj.sagitarii.persistence.infra.HibernateDAO" level="debug" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.persistence.infra.HibernateDAO" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 
@@ -151,7 +146,7 @@
 			<appender-ref ref="File"/> 
 		</Logger>
 
-		<Logger name="br.cefetrj.sagitarii.persistence.repository.ExecutorService" level="debug" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.persistence.repository.ExecutorService" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 

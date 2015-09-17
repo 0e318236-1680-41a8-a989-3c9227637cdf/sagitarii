@@ -9,7 +9,6 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import br.cefetrj.sagitarii.core.ClustersManager;
 import br.cefetrj.sagitarii.core.FragmentInstancer;
 import br.cefetrj.sagitarii.core.Genesis;
 import br.cefetrj.sagitarii.core.Sagitarii;
@@ -76,6 +75,7 @@ public class ExperimentService {
 		} else {
 			return new Genesis().checkTables( exp );
 		}
+
 		
 	}
 
@@ -197,18 +197,6 @@ public class ExperimentService {
 			//logger.error( e.getMessage() );
 		}
 		return experiment;
-	}
-	
-	
-	public Experiment getExperiment(String tag) throws NotFoundException{
-		logger.debug("get " + tag);
-		return fillExperiment( rep.getExperiment(tag) );
-		
-	}
-
-	public Experiment getExperiment(int idExperiment) throws NotFoundException{
-		logger.debug("get " + idExperiment);
-		return fillExperiment( rep.getExperiment(idExperiment) );
 	}
 	
 	public void newTransaction() {
@@ -368,7 +356,20 @@ public class ExperimentService {
 			throw new NotFoundException( e.getMessage() );
 		}
 		logger.debug("done");
+		
 		return running;
+	}
+
+	public Experiment getExperiment(String tag) throws NotFoundException{
+		logger.debug("get " + tag);
+		Experiment exp = rep.getExperiment( tag );
+		return fillExperiment( exp );
+	}
+
+	public Experiment getExperiment(int idExperiment) throws NotFoundException{
+		logger.debug("get " + idExperiment);
+		Experiment exp = rep.getExperiment(idExperiment);
+		return fillExperiment( exp );
 	}
 	
 	public Set<Experiment> getList() throws NotFoundException {

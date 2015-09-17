@@ -39,7 +39,6 @@ public class ExperimentTimes {
         for ( Experiment ex : workflow.getExperiments() ) {
         	if ( ex.getStatus() != ExperimentStatus.STOPPED ) {
         		ep.setExperiment(ex);
-        		ex.updateMetrics();
         		ds.addValue( ep.getElapsedMillis(), ep.getElapsedTime(), ex.getTagExec() );
         	}
         }

@@ -3,7 +3,6 @@ package br.cefetrj.sagitarii.core.delivery;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,19 +29,12 @@ public class InstanceDeliveryControl {
 	public String getFirstDelayLimitSeconds() {
 		try {
 			long millis = Configurator.getInstance().getFirstDelayLimitSeconds() * 1000;
-			String retorno = String.format("%02d:%02d:%02d", 
-					TimeUnit.MILLISECONDS.toHours(millis),
-					TimeUnit.MILLISECONDS.toMinutes(millis) -  
-					TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)), 
-					TimeUnit.MILLISECONDS.toSeconds(millis) - 
-					TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
-			return retorno;
+			return DateLibrary.getInstance().getTimeRepresentation(millis);
 		} catch ( Exception e ) {
 			return "CONFIG_ERROR";
 		}
 	}
 
-	
 	/**
 	 * Check if Sagitarii must ask the node for an instance that is take much more time
 	 * than the average
@@ -55,8 +47,8 @@ public class InstanceDeliveryControl {
 		}
 		
 		long m1 = unity.getAgeMillis();
-		long m2 = ac.getAverageMilis();
-		long mt = ac.getTotalAgeMilis();
+		long m2 = ac.getAverageMillis();
+		long mt = ac.getTotalAgeMillis();
 		
 		long secs = ( (m1 - m2) / 1000 ) + 1 ;
 		long secsLimit = ( m2  / 1000 );
@@ -81,7 +73,7 @@ public class InstanceDeliveryControl {
 	 */
 	private boolean isDelayed( Accumulator ac, DeliveryUnit unity ) {
 		long m1 = unity.getAgeMillis();
-		long m2 = ac.getAverageMilis();
+		long m2 = ac.getAverageMillis();
 		long secs = ( (m1 - m2) / 1000 ) + 1 ;
 		
 		if ( secs > 0 ) { // Is taking more than the average time for this kind of instance

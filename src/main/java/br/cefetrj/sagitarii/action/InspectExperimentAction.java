@@ -36,7 +36,6 @@ public class InspectExperimentAction extends BasicActionClass {
 		try {
 			experiment = new ExperimentService().getExperiment( idExperiment );
 			customTables =  experiment.getUsedTables(); 
-			experiment.updateMetrics();
 			try {
 				CustomQueryService cqs = new CustomQueryService();
 				queries = cqs.getList( idExperiment );

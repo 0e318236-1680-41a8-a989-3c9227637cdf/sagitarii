@@ -2,6 +2,7 @@ package br.cefetrj.sagitarii.persistence.repository;
 
 import java.util.List;
 
+import br.cefetrj.sagitarii.persistence.entity.Experiment;
 import br.cefetrj.sagitarii.persistence.entity.Workflow;
 import br.cefetrj.sagitarii.persistence.exceptions.DatabaseConnectException;
 import br.cefetrj.sagitarii.persistence.exceptions.DeleteException;
@@ -31,6 +32,11 @@ public class WorkflowRepository extends BasicRepository {
 		}
 		closeSession();
 		logger.debug("Concluido: " + workflows.size() + " workflows.");
+		for ( Workflow workflow : workflows ) {
+			for ( Experiment exp : workflow.getExperiments() ) {
+				exp.updateMetrics();
+			}
+		}
 		return workflows;
 	}
 
@@ -49,6 +55,11 @@ public class WorkflowRepository extends BasicRepository {
 		}
 		closeSession();
 		logger.debug("done: " + workflow.getTag() );
+
+		for ( Experiment exp : workflow.getExperiments() ) {
+			exp.updateMetrics();
+		}
+		
 		return workflow;
 	}
 	
@@ -106,6 +117,11 @@ public class WorkflowRepository extends BasicRepository {
 		}
 		closeSession();
 		logger.debug("done.");
+
+		for ( Experiment exp : workflow.getExperiments() ) {
+			exp.updateMetrics();
+		}
+		
 		return workflow;
 	}
 	
@@ -123,6 +139,11 @@ public class WorkflowRepository extends BasicRepository {
 		}
 		closeSession();
 		logger.debug("done: " + workflow.getTag() );
+		
+		for ( Experiment exp : workflow.getExperiments() ) {
+			exp.updateMetrics();
+		}
+		
 		return workflow;
 	}
 	

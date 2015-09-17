@@ -40,8 +40,7 @@ public class ViewExperimentAction extends BasicActionClass {
 		
 		try {
 			experiment = new ExperimentService().previewExperiment( idExperiment );
-			experiment.updateMetrics();
-			
+
 			for ( Fragment frag : experiment.getFragments()  ) {
 				activities.addAll( frag.getActivities() );
 			}
@@ -52,7 +51,6 @@ public class ViewExperimentAction extends BasicActionClass {
 			} catch ( NotFoundException ignored ) {
 				//
 			} 
-			
 			
 		} catch (DatabaseConnectException e) {
 			return "erro";

@@ -1,7 +1,5 @@
 package br.cefetrj.sagitarii.persistence.entity;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,8 +7,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name="timecontrol", indexes = {
@@ -23,10 +19,6 @@ public class TimeControl {
 	@Column(name="id_tc")
 	private int idTimeControl;
 
-	@Column
-	@Type(type="timestamp")
-	private Date averageAge;
-	
 	@Column(name="average")
 	private long averageMilis = 0;
 	
@@ -46,9 +38,8 @@ public class TimeControl {
 		
 	}
 	
-	public TimeControl(int idTimeControl, Date averageAge, long averageMilis, int calculatedCount,	String hash, long totalAgeMilis, String content) {
+	public TimeControl(int idTimeControl, long averageMilis, int calculatedCount,	String hash, long totalAgeMilis, String content) {
 		this.idTimeControl = idTimeControl;
-		this.averageAge = averageAge;
 		this.averageMilis = averageMilis;
 		this.calculatedCount = calculatedCount;
 		this.hash = hash;
@@ -72,14 +63,6 @@ public class TimeControl {
 		this.idTimeControl = idTimeControl;
 	}
 
-	public Date getAverageAge() {
-		return averageAge;
-	}
-	
-	public void setAverageAge(Date averageAge) {
-		this.averageAge = averageAge;
-	}
-	
 	public long getAverageMilis() {
 		return averageMilis;
 	}

@@ -74,7 +74,7 @@ public class Experiment {
 	@Type(type="timestamp")
 	private Date lastExecutionDate;
 
-	@Column(length=15, name="elapsed_time")
+	@Transient
 	private String elapsedTime;
 
 	@Column(length=15, name="serial_time")
@@ -273,9 +273,6 @@ public class Experiment {
 		return elapsedTime;
 	}
 	
-	public void setElapsedTime(String elapsedTime) {
-		this.elapsedTime = elapsedTime;
-	}
 	
 	public String getLazyTime() {
 		return lazyTime;

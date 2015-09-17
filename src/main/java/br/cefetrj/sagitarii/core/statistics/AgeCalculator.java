@@ -15,8 +15,8 @@ public class AgeCalculator {
 	public void storeList() {
 		try {
 			for ( Accumulator ac : lista ) {
-				TimeControl tc = new TimeControl(ac.getIdTimeControl(), ac.getAverageAge(), ac.getAverageMilis(), ac.getCalculatedCount(),	
-						ac.getHash(), ac.getTotalAgeMilis(), ac.getContent() );
+				TimeControl tc = new TimeControl(ac.getIdTimeControl(), ac.getAverageMillis(), ac.getCalculatedCount(),	
+						ac.getHash(), ac.getTotalAgeMillis(), ac.getContent() );
 				
 				TimeControlService tcs = new TimeControlService();
 				if ( ac.getIdTimeControl() == -1 ) {
