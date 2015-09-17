@@ -111,10 +111,12 @@ public class ExecutorService {
 	}
 	
 	public ActivationExecutor insertExecutor(ActivationExecutor executor) throws InsertException {
+		logger.debug("inserting executor " + executor.getExecutorAlias() );
 		String hash = UUID.randomUUID().toString().replace("-", "").substring(0, 10);
 		executor.setHash(hash);
 		ActivationExecutor expRet = rep.insereActivationExecutor( executor );
 		ClustersManager.getInstance().reloadWrappers();
+		logger.debug("done");
 		return expRet;
 	}	
 	

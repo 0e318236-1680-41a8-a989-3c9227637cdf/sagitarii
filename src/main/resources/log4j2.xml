@@ -151,7 +151,7 @@
 			<appender-ref ref="File"/> 
 		</Logger>
 
-		<Logger name="br.cefetrj.sagitarii.persistence.repository.ExecutorService" level="error" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.persistence.repository.ExecutorService" level="debug" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 

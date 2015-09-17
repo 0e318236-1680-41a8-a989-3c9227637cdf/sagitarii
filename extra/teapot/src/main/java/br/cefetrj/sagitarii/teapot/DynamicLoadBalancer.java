@@ -9,11 +9,11 @@ public class DynamicLoadBalancer {
 	private static int defaultMaxLimit = 0;
 	private static int testCount = 0;
 	private static int noTaskCheckCount = 0;
-	private static int MAXIMUN_RAM_TO_USE = 90;
+	private static int MAXIMUN_RAM_TO_USE = 80;
 	
 	public static boolean tooHigh( double load, double ramLoad ) {
-		boolean ramBelowLimit = ( ramLoad < MAXIMUN_RAM_TO_USE );
-		return ( load >= MAXIMUN_CPU_LIMIT ) || ( !ramBelowLimit );
+		boolean ramAboveLimit = ( ramLoad >= MAXIMUN_RAM_TO_USE );
+		return ( load >= MAXIMUN_CPU_LIMIT ) || ( ramAboveLimit );
 	}
 
 	public static boolean tooLow( double load, double ramLoad ) {

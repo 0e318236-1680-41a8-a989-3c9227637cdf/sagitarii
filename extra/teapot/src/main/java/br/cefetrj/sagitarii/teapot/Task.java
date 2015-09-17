@@ -25,9 +25,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import br.cefetrj.sagitarii.executors.BashExecutor;
-import br.cefetrj.sagitarii.executors.PythonExecutor;
-
 public class Task {
 	private List<String> sourceData;
 	private List<String> console;
