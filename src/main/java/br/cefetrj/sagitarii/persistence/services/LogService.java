@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import br.cefetrj.sagitarii.core.types.LogType;
 import br.cefetrj.sagitarii.persistence.entity.LogEntry;
 import br.cefetrj.sagitarii.persistence.exceptions.DatabaseConnectException;
 import br.cefetrj.sagitarii.persistence.exceptions.InsertException;
@@ -46,5 +47,13 @@ public class LogService {
 		logger.debug( "done." );  
 		return preList;	
 	}
+
+	public List<LogEntry> getList( LogType type ) throws NotFoundException {
+		logger.debug( "retrieving log list..." );  
+		List<LogEntry> preList = rep.getList( type );
+		logger.debug( "done." );  
+		return preList;	
+	}
+	
 	
 }

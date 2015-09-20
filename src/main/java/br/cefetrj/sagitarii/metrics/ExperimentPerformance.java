@@ -79,7 +79,7 @@ public class ExperimentPerformance {
 	}
 	
 	public String getLazyTime() {
-		return DateLibrary.getInstance().getTimeRepresentation( getElapsedMillis() - getRealTimeMillis() );
+		return DateLibrary.getInstance().getTimeRepresentation( getSerialTimeMillis() - getRealTimeMillis() );
 	}
 	
 	public double getCoresWorking() {

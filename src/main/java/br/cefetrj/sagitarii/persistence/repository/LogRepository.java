@@ -2,6 +2,7 @@ package br.cefetrj.sagitarii.persistence.repository;
 
 import java.util.List;
 
+import br.cefetrj.sagitarii.core.types.LogType;
 import br.cefetrj.sagitarii.persistence.entity.LogEntry;
 import br.cefetrj.sagitarii.persistence.exceptions.DatabaseConnectException;
 import br.cefetrj.sagitarii.persistence.exceptions.InsertException;
@@ -17,19 +18,35 @@ public class LogRepository extends BasicRepository {
 	}
 
 	public List<LogEntry> getList() throws NotFoundException {
-		logger.debug("Recuperando lista de logEntrys..." );
+		logger.debug("Recuperando lista de logs..." );
 		DaoFactory<LogEntry> df = new DaoFactory<LogEntry>();
 		IDao<LogEntry> fm = df.getDao(this.session, LogEntry.class);
-		List<LogEntry> logEntrys = null;
+		List<LogEntry> logs = null;
 		try {
-			logEntrys = fm.getList("select * from logEntrys");
+			logs = fm.getList("select * from logs");
 		} catch ( Exception e ) {
 			closeSession();
 			throw e;
 		}
 		closeSession();
-		logger.debug("Concluido: " + logEntrys.size() + " logEntrys.");
-		return logEntrys;
+		logger.debug("Concluido: " + logs.size() + " logs.");
+		return logs;
+	}
+	
+	public List<LogEntry> getList( LogType type) throws NotFoundException {
+		logger.debug("Recuperando lista de logs..." );
+		DaoFactory<LogEntry> df = new DaoFactory<LogEntry>();
+		IDao<LogEntry> fm = df.getDao(this.session, LogEntry.class);
+		List<LogEntry> logs = null;
+		try {
+			logs = fm.getList("select * from logs where type = '"+ type +"'");
+		} catch ( Exception e ) {
+			closeSession();
+			throw e;
+		}
+		closeSession();
+		logger.debug("Concluido: " + logs.size() + " logs.");
+		return logs;
 	}
 
 	public LogEntry insertLogEntry(LogEntry logEntry) throws InsertException {

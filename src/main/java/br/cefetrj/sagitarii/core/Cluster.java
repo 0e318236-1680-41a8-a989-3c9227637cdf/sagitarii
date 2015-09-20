@@ -461,9 +461,17 @@ public class Cluster {
 				this.status = ClusterStatus.ACTIVE;
 			}
 		}
+		
 		if ( oldStatus != this.status ) {
-			debug("Node is " + this.status );
+			if ( this.status == ClusterStatus.DEAD ) {
+				setMessage( LogType.NODE_STATUS, "Node " + macAddress + " is now OFFLINE." );
+			}
+			if ( oldStatus == ClusterStatus.DEAD ) {
+				setMessage( LogType.NODE_STATUS, "Node " + macAddress + " was offline and is now as " + this.status );
+			}
 		}
+
+		
 		try {
 			addMetrics( cpuLoad, memoryPercent, tasks.size());
 		} catch ( Exception e ) {
