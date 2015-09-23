@@ -47,6 +47,9 @@ public class UpdateExecutorAction extends BasicActionClass {
 			setMessageText( "Executor updated.");	
 			
 		} catch ( Exception e ) {
+			
+			e.printStackTrace();
+			
 			setMessageText( "Error: " + e.getMessage() );
 		}
 		

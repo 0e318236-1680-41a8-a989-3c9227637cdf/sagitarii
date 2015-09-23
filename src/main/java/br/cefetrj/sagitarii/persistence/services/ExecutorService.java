@@ -58,17 +58,22 @@ public class ExecutorService {
 		try {
 			oldExecutor = rep.getActivationExecutor( executor.getIdActivationExecutor() );
 		} catch (NotFoundException e) {
+			
+			e.printStackTrace();
+			
 			throw new UpdateException( e.getMessage() );
 		}
 		
 		// If the file name is different, delete the older file.
-		if ( !oldExecutor.getActivationWrapper().equals( executor.getActivationWrapper() )  ) {
+		if ( ( oldExecutor.getActivationWrapper() != null ) && 
+				!oldExecutor.getActivationWrapper().equals( executor.getActivationWrapper() ) ) {
 			try {
 				String filePath = PathFinder.getInstance().getPath() + "/repository";
 				File fil = new File( filePath + "/" + oldExecutor.getActivationWrapper() );
 				fil.delete();
 				logger.debug("wrapper " + oldExecutor.getExecutorAlias() + " changed from " + oldExecutor.getActivationWrapper() + "to " + executor.getActivationWrapper() );
 			} catch ( Exception e ) {
+				e.printStackTrace();
 				logger.error("cannot remove old executor file: " + oldExecutor.getActivationWrapper() );
 			}
 		}
