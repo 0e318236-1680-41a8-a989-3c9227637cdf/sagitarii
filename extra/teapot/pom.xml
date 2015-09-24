@@ -80,12 +80,6 @@
 	<dependencies>
 	
 		<dependency>
-			<groupId>org.python</groupId>
-			<artifactId>jython-standalone</artifactId>
-			<version>2.7.0</version>
-		</dependency>
-
-		<dependency>
 			<groupId>org.nuiton.thirdparty</groupId>
 			<artifactId>JRI</artifactId>
 			<version>0.9-6</version>
