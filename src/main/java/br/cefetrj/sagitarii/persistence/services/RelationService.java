@@ -65,7 +65,7 @@ public class RelationService {
 		double ret = 0;
 		try {
 			List<UserTableEntity> res = new ArrayList<UserTableEntity> ( 
-					genericFetchList("select avg(parallelefficiency) as efficiency from experiments where status = 'FINISHED'") );
+					genericFetchList("select avg(parallelefficiency) as efficiency from experiments where status = 'FINISHED' limit 30") );
 			if ( res.size() > 0 ) {
 				UserTableEntity ute = res.get(0);
 				String sQtd = ute.getData("efficiency").substring(0, 8);
