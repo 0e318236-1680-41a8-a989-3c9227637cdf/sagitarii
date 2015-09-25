@@ -2,7 +2,6 @@ package br.cefetrj.sagitarii.persistence.repository;
 
 import java.util.List;
 
-import br.cefetrj.sagitarii.core.types.LogType;
 import br.cefetrj.sagitarii.persistence.entity.LogEntry;
 import br.cefetrj.sagitarii.persistence.exceptions.DatabaseConnectException;
 import br.cefetrj.sagitarii.persistence.exceptions.InsertException;
@@ -33,13 +32,13 @@ public class LogRepository extends BasicRepository {
 		return logs;
 	}
 	
-	public List<LogEntry> getList( LogType type) throws NotFoundException {
+	public List<LogEntry> getList( String type) throws NotFoundException {
 		logger.debug("Recuperando lista de logs..." );
 		DaoFactory<LogEntry> df = new DaoFactory<LogEntry>();
 		IDao<LogEntry> fm = df.getDao(this.session, LogEntry.class);
 		List<LogEntry> logs = null;
 		try {
-			logs = fm.getList("select * from logs where type = '"+ type +"'");
+			logs = fm.getList("select * from logs where type = '"+ type +"' order by date_time asc limit 500");
 		} catch ( Exception e ) {
 			closeSession();
 			throw e;

@@ -7,7 +7,6 @@ import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 
-import br.cefetrj.sagitarii.core.types.LogType;
 import br.cefetrj.sagitarii.persistence.entity.LogEntry;
 import br.cefetrj.sagitarii.persistence.services.LogService;
 
@@ -19,12 +18,13 @@ import br.cefetrj.sagitarii.persistence.services.LogService;
 @ParentPackage("default")
 public class ShowSystemLogAction extends BasicActionClass {
 	private List<LogEntry> log;
+	private String type;
 	
 	public String execute(){
 		
 		try {
 			LogService ls = new LogService();
-			log = ls.getList( LogType.NODE_STATUS );
+			log = ls.getList( type );
 		} catch ( Exception e ) {
 			
 		}
@@ -36,4 +36,7 @@ public class ShowSystemLogAction extends BasicActionClass {
 		return log;
 	}
 
+	public void setType(String type) {
+		this.type = type;
+	}
 }

@@ -1,7 +1,7 @@
 #
 # FUNÇÕES DA CLASSIFICAÇÃO DE ESTRELAS E GALÁXIAS
 #
-#
+# Versão 11/09/2015
 # REMOCAO DE OUTLIERS
 #
 remove_outliers <- function(x.train)
@@ -213,23 +213,26 @@ svm2 <- function(x.train, x.test, alvo, kn, c, tp)
 #
 # SVM COM TIPO DETERMINADO
 #
-svm4 <- function(x.train, x.test, alvo, kn, c, tp)
+svm4 <- function(x.train, x.test, alvo, kn, c, par)
 {
   require(kernlab)
   
+  if (c==1) { ct=1 }
+  if (c==2) { ct=2/(ncol(x.train)-1) }
+  if (c==3) { ct=1/(ncol(x.train)-1) }
+  
   data.test <- x.test[,1:ncol(x.test)-1]
-  #rbfdot <- rbfdot(sigma=0.1)
-  if (tp=="C-svc")
+  if (kn=="rbfdot")
   {
-    tsvm <- ksvm(alvo, data=x.train, kernel=kn, C=c, type="C-svc", prob.model=TRUE)
+    tsvm <- ksvm(alvo, data=x.train, kernel=kn, C=ct, type="C-svc", kpar=list(sigma=par), prob.model=TRUE)
   }
-  if (tp=="nu-svc")
+  if (kn=="polydot")
   {
-    tsvm <- ksvm(alvo, data=x.train, kernel=kn, C=c, type="nu-svc", nu=0.2, prob.model=TRUE)
+    tsvm <- ksvm(alvo, data=x.train, kernel=kn, C=ct, type="C-svc", kpar=list(degree=par), prob.model=TRUE)
   }
-  if (tp=="C-bsvc")
+  if (kn=="tanhdot")
   {
-    tsvm <- ksvm(alvo, data=x.train, kernel=kn, C=c, type="C-bsvc", prob.model=TRUE)
+    tsvm <- ksvm(alvo, data=x.train, kernel=kn, C=ct, type="C-svc", kpar=list(scale=par), prob.model=TRUE)
   }
   psvm <- predict(tsvm, data.test, type="probabilities")
   return (psvm)

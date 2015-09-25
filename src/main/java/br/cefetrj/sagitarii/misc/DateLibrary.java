@@ -9,7 +9,6 @@ import java.util.concurrent.TimeUnit;
 public class DateLibrary {
 	private Calendar calendar;
 	private SimpleDateFormat ft;
-	private SimpleDateFormat fc;
 	private SimpleDateFormat ftm;
 	private SimpleDateFormat fm;
 	private SimpleDateFormat sq;
@@ -25,8 +24,7 @@ public class DateLibrary {
 	private DateLibrary() {
 		Date dNow = new Date( );
 		ft = new SimpleDateFormat ("dd/MM/yyyy");
-		fc = new SimpleDateFormat ("dd 'de' MMMM 'de' yyyy");
-		ftm = new SimpleDateFormat ("dd/MM/yyyy HH:mm:ss");
+		ftm = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 		fm = new SimpleDateFormat ("HH:mm:ss");
 		sq = new SimpleDateFormat ("yyyy-MM-dd");
 		calendar = Calendar.getInstance();
@@ -151,16 +149,6 @@ public class DateLibrary {
 		return ftm.format( calendar.getTime() );
 	}
 
-	public String getCompleteDateTextHuman( Date setToThis ) {
-		setTo( setToThis );
-		return fc.format( calendar.getTime() );
-	}
-
-	
-	public String getCompleteDateTextHuman() {
-		return fc.format( calendar.getTime() );
-	}
-	
 	public void setDateTextHuman(String data) {
 		try {
 		    setTo( ft.parse(data) );

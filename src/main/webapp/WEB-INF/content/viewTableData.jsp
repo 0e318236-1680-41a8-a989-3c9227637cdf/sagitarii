@@ -185,7 +185,7 @@
 	}
 	
 	function back() {
-		window.location.href="inspectExperiment?idExperiment=${experiment.idExperiment}";
+		window.location.href="viewExperiment?idExperiment=${experiment.idExperiment}";
 	}	
 	
 </script>				

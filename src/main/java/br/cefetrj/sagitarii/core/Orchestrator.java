@@ -1,5 +1,8 @@
 package br.cefetrj.sagitarii.core;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -21,9 +24,8 @@ import br.cefetrj.sagitarii.misc.json.GSONThreadLocalImmolater;
 import br.cefetrj.sagitarii.persistence.entity.Domain;
 import br.cefetrj.sagitarii.persistence.entity.Experiment;
 import br.cefetrj.sagitarii.persistence.entity.User;
-import br.cefetrj.sagitarii.persistence.exceptions.DatabaseConnectException;
-import br.cefetrj.sagitarii.persistence.exceptions.InsertException;
 import br.cefetrj.sagitarii.persistence.exceptions.NotFoundException;
+import br.cefetrj.sagitarii.persistence.infra.ConnFactory;
 import br.cefetrj.sagitarii.persistence.repository.RelationRepository;
 import br.cefetrj.sagitarii.persistence.services.ExperimentService;
 import br.cefetrj.sagitarii.persistence.services.UserService;
@@ -46,19 +48,30 @@ public class Orchestrator implements ServletContextListener {
     	
     	ServletContext context = event.getServletContext();
     	System.setProperty("rootPath", context.getRealPath("/") );
-    	
-    	try {
-    		AgeCalculator.getInstance().retrieveList();
-    	} catch ( NotFoundException e ) {
-    		//
-    	} catch ( Exception e ) {
-    		loggerError("Error retrieving Time Calculator list: " + e.getMessage() );
-    	}
-    	
+
     	UserService us;
     	try {
+    		String configFile = "/etc/sagitarii/config.txt";
+    		
+    		File fil = new File( configFile );
+    		if ( fil.exists() ) {
+    			BufferedReader br = new BufferedReader(new FileReader(fil) );
+    			String user = br.readLine();
+    			String passwd = br.readLine();
+    			String database = br.readLine();
+    			br.close();
+    			ConnFactory.setCredentials(user, passwd, database);
+    		}
+
+    		try {
+        		AgeCalculator.getInstance().retrieveList();
+        	} catch ( NotFoundException e ) {
+        		//
+        	} catch ( Exception e ) {
+        		loggerError("Error retrieving Time Calculator list: " + e.getMessage() );
+        	}
+    		
 			us = new UserService();
-			
 			try {
 				us.getList().size();
 			} catch (NotFoundException ignored ) {
@@ -74,34 +87,27 @@ public class Orchestrator implements ServletContextListener {
 				loggerDebug("System Administrator created");
 			}
 			
-		} catch (DatabaseConnectException | InsertException e) {
-			loggerError("init error : " + e.getMessage() );
-			e.printStackTrace();
-		}
 			
-		loggerDebug("check for interrupted work");	
-		try {
-			ExperimentService ws = new ExperimentService();
-			List<Experiment> running = ws.getRunning();
-			Sagitarii.getInstance().setRunningExperiments( running );
-			Sagitarii.getInstance().reloadAfterCrash();
-			loggerDebug("found " + Sagitarii.getInstance().getRunningExperiments().size() + " running experiments");	
-		} catch ( NotFoundException e ) {
-			loggerDebug("no running experiments found");	
-		} catch (Exception e) {
-			e.printStackTrace();
-		} 
-		loggerDebug("done.");
-		
-        int interval = 5;
-        int pseudoInterval = 5;
-        int pseudoMaxTasks = 4;
-        int mainNodesQuant = 1;
-        int maxInputBufferCapacity = 500;
-        int fileReceiverPort = 3333;
-        int chunkBuffer = 100;
-        
-        try {
+			loggerDebug("check for interrupted work");	
+			try {
+				ExperimentService ws = new ExperimentService();
+				List<Experiment> running = ws.getRunning();
+				Sagitarii.getInstance().setRunningExperiments( running );
+				Sagitarii.getInstance().reloadAfterCrash();
+				loggerDebug("found " + Sagitarii.getInstance().getRunningExperiments().size() + " running experiments");	
+			} catch ( NotFoundException e ) {
+				loggerDebug("no running experiments found");	
+			} 
+			loggerDebug("done.");
+			
+	        int interval = 5;
+	        int pseudoInterval = 5;
+	        int pseudoMaxTasks = 4;
+	        int mainNodesQuant = 1;
+	        int maxInputBufferCapacity = 500;
+	        int fileReceiverPort = 3333;
+	        int chunkBuffer = 100;
+	        
 			Configurator config = Configurator.getInstance("config.xml");
 			
 			interval = config.getPoolIntervalSeconds();
@@ -150,10 +156,10 @@ public class Orchestrator implements ServletContextListener {
 	        	scheduler.scheduleAtFixedRate( new MainCluster( pseudoMaxTasks, "S0-A0-G0-I0-T0-A0-RI-0" + x ), 0, pseudoInterval , TimeUnit.SECONDS);
 	        }
 			
-			
 		} catch (Exception e) { 
+			System.out.println( e.getMessage() );
 			loggerError( e.getMessage() );
-			e.printStackTrace(); 
+			//e.printStackTrace(); 
 		}
         
         

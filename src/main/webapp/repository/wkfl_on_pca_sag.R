@@ -2,7 +2,7 @@
 #---- Deixar trecho abaixo comentado no Sagitarii
 #sagitariiWorkFolder <- "/Users/eogasawara/Dropbox/Eduardo/R/Star-Galaxy"
 
-# versao de 25/08/2015
+# Vers??o 11/09/2015
 
 # ----------- SAGITARII REQUIREMENTS ---------------------------------------
 inputFileFolder <- paste( sagitariiWorkFolder, "inbox", sep = "/")
@@ -29,11 +29,11 @@ load(testFile)
 
 source("classifica.R")
 
-x.train <- remove_outliers(x.train)
+#x.train <- remove_outliers(x.train)
 
-x.train.raw <- x.train
-x.train <- normalize_minmax(x.train.raw)
-x.test <- normalize_minmax(x.train.raw,x.test)
+# x.train.raw <- x.train
+# x.train <- normalize_minmax(x.train.raw)
+# x.test <- normalize_minmax(x.train.raw,x.test)
 
 if (FALSE) { # uso de lasso
   print("lasso")
@@ -62,11 +62,11 @@ if (FALSE) { # uso de pca
     k=0.69
   }
   
-  x.list <- pca(x.train.raw, varacum=0.9)
+  x.list <- pca(x.train.raw, varacum=k)
   x.train <-x.list[[1]]
   x.train.transf <- x.list[[2]]
   
-  x.list <- pca(x.train.raw, test=x.test, transf = x.train.transf, varacum=0.9)
+  x.list <- pca(x.train.raw, test=x.test, transf = x.train.transf, varacum=k)
   x.test <- x.list[[1]]
   
   x.train.pca.raw <- x.train
@@ -80,54 +80,142 @@ tab$resultadov <- 0
   if (metodo=="rn")
   {
     set.seed(1)
-    x.rn2 <- rn2(x.train, x.test, tamanho, par_r, par_i)
-    aa <- croc(x.rn2[,2], x.test$alvo)
-    aa <- unlist(slot(aa, "y.values"))
+    cosmos_results <- lapply(cosmos.folds, function(x) 
+    {
+      cosmos.train <- x.train[-x, ]
+      cosmos.test <- x.train[x, ]
+      cosmos.train <- remove_outliers(cosmos.train)
+      x.train.raw <- cosmos.train
+      cosmos.train <- normalize_minmax(x.train.raw)
+      cosmos.test <- normalize_minmax(x.train.raw,cosmos.test)
+      x.rn2 <- rn2(cosmos.train, cosmos.test, tamanho, par_r, par_i)
+      aa <- croc(x.rn2[,2], cosmos.test$alvo)
+      aa <- unlist(slot(aa, "y.values"))
+    })
+    med <- mean(unlist(cosmos_results))
+    vrc <- var(unlist(cosmos_results))
+    aa <- med - vrc
     tab$resultadov[1] <- aa
-    write.table(x.rn2, file=outpuClassifica, row.names=FALSE, quote = FALSE)
-  } else if (metodo=="rbfdot_C-svc")
+    #write.table(x.rn2, file=outpuClassifica, row.names=FALSE, quote = FALSE)
+  } else if (metodo=="rbfdot")
   {
-    x.svm4 <- svm4(x.train, x.test, x.train$alvo~., "rbfdot", tamanho, "C-svc")
-    aa <- croc(x.svm4[,2], x.test$alvo)
-    aa <- unlist(slot(aa, "y.values"))
+    set.seed(1)
+    cosmos_results <- lapply(cosmos.folds, function(x) 
+    {
+      cosmos.train <- x.train[-x, ]
+      cosmos.test <- x.train[x, ]
+      cosmos.train <- remove_outliers(cosmos.train)
+      x.train.raw <- cosmos.train
+      cosmos.train <- normalize_minmax(x.train.raw)
+      cosmos.test <- normalize_minmax(x.train.raw,cosmos.test)
+      x.svm4 <- svm4(cosmos.train, cosmos.test, cosmos.train$alvo~., "rbfdot", tamanho, par_r)
+      aa <- croc(x.svm4[,2], cosmos.test$alvo)
+      aa <- unlist(slot(aa, "y.values"))
+    })
+    med <- mean(unlist(cosmos_results))
+    vrc <- var(unlist(cosmos_results))
+    aa <- med - vrc
     tab$resultadov[1] <- aa
-    write.table(x.svm4, file=outpuClassifica, row.names=FALSE, quote = FALSE)
-# }
-#   else if (metodo=="rbfdot_nu-svc")
-#   {
-#     x.svm4 <- svm4(x.train, x.test, x.train$alvo~., "rbfdot", tamanho, "nu-svc")
-#     aa <- croc(x.svm4[,2], x.test$alvo)
-#     aa <- unlist(slot(aa, "y.values"))
-#     tab$resultadov[1] <- aa
-#     write.table(x.svm4, file=outpuClassifica, row.names=FALSE, quote = FALSE)
-#   }
-  } else if (metodo=="rbfdot_C-bsvc")
+    #write.table(x.svm4, file=outpuClassifica, row.names=FALSE, quote = FALSE)
+  } else if (metodo=="polydot")
   {
-    x.svm4 <- svm4(x.train, x.test, x.train$alvo~., "rbfdot", tamanho, "C-bsvc")
-    aa <- croc(x.svm4[,2], x.test$alvo)
-    aa <- unlist(slot(aa, "y.values"))
+    set.seed(1)
+    cosmos_results <- lapply(cosmos.folds, function(x) 
+    {
+      cosmos.train <- x.train[-x, ]
+      cosmos.test <- x.train[x, ]
+      cosmos.train <- remove_outliers(cosmos.train)
+      x.train.raw <- cosmos.train
+      cosmos.train <- normalize_minmax(x.train.raw)
+      cosmos.test <- normalize_minmax(x.train.raw,cosmos.test)
+      x.svm4 <- svm4(cosmos.train, cosmos.test, cosmos.train$alvo~., "polydot", tamanho, par_r)
+      aa <- croc(x.svm4[,2], cosmos.test$alvo)
+      aa <- unlist(slot(aa, "y.values"))
+    })
+    med <- mean(unlist(cosmos_results))
+    vrc <- var(unlist(cosmos_results))
+    aa <- med - vrc
     tab$resultadov[1] <- aa
-    write.table(x.svm4, file=outpuClassifica, row.names=FALSE, quote = FALSE)
+    #write.table(x.svm4, file=outpuClassifica, row.names=FALSE, quote = FALSE)
+  } else if (metodo=="tanhdot")
+  {
+    set.seed(1)
+    cosmos_results <- lapply(cosmos.folds, function(x) 
+    {
+      cosmos.train <- x.train[-x, ]
+      cosmos.test <- x.train[x, ]
+      cosmos.train <- remove_outliers(cosmos.train)
+      x.train.raw <- cosmos.train
+      cosmos.train <- normalize_minmax(x.train.raw)
+      cosmos.test <- normalize_minmax(x.train.raw,cosmos.test)
+      x.svm4 <- svm4(cosmos.train, cosmos.test, cosmos.train$alvo~., "tanhdot", tamanho, par_r)
+      aa <- croc(x.svm4[,2], cosmos.test$alvo)
+      aa <- unlist(slot(aa, "y.values"))
+    })
+    med <- mean(unlist(cosmos_results))
+    vrc <- var(unlist(cosmos_results))
+    aa <- med - vrc
+    tab$resultadov[1] <- aa
+    #write.table(x.svm4, file=outpuClassifica, row.names=FALSE, quote = FALSE)
   } else if (metodo=="knn")
   {
-    x.knn <- knear(x.train, x.test, tamanho)
-    aa <- croc(x.knn[,2], x.test$alvo)
-    aa <- unlist(slot(aa, "y.values"))
+    set.seed(1)
+    cosmos_results <- lapply(cosmos.folds, function(x) 
+    {
+      cosmos.train <- x.train[-x, ]
+      cosmos.test <- x.train[x, ]
+      cosmos.train <- remove_outliers(cosmos.train)
+      x.train.raw <- cosmos.train
+      cosmos.train <- normalize_minmax(x.train.raw)
+      cosmos.test <- normalize_minmax(x.train.raw,cosmos.test)
+      x.knn <- knear(cosmos.train, cosmos.test, tamanho)
+      aa <- croc(x.knn[,2], cosmos.test$alvo)
+      aa <- unlist(slot(aa, "y.values"))
+    })
+    med <- mean(unlist(cosmos_results))
+    vrc <- var(unlist(cosmos_results))
+    aa <- med - vrc
     tab$resultadov[1] <- aa
-    write.table(x.knn, file=outpuClassifica, row.names=FALSE, quote = FALSE)
+    #write.table(x.knn, file=outpuClassifica, row.names=FALSE, quote = FALSE)
   } else if (metodo=="rf")
   {
-    x.rf <- rf(x.train, x.test, tamanho)
-    aa <- croc(x.rf[,2], x.test$alvo)
-    aa <- unlist(slot(aa, "y.values"))
+    set.seed(1)
+    cosmos_results <- lapply(cosmos.folds, function(x) 
+    {
+      cosmos.train <- x.train[-x, ]
+      cosmos.test <- x.train[x, ]
+      cosmos.train <- remove_outliers(cosmos.train)
+      x.train.raw <- cosmos.train
+      cosmos.train <- normalize_minmax(x.train.raw)
+      cosmos.test <- normalize_minmax(x.train.raw,cosmos.test)
+      x.rf <- rf(cosmos.train, cosmos.test, tamanho)
+      aa <- croc(x.rf[,2], cosmos.test$alvo)
+      aa <- unlist(slot(aa, "y.values"))
+    })
+    med <- mean(unlist(cosmos_results))
+    vrc <- var(unlist(cosmos_results))
+    aa <- med - vrc
     tab$resultadov[1] <- aa
-    write.table(x.rf, file=outpuClassifica, row.names=FALSE, quote = FALSE)
+    #write.table(x.rf, file=outpuClassifica, row.names=FALSE, quote = FALSE)
   } else if (metodo=="nb")
   {
-    x.nb <- nb(x.train, x.test)
-    aa <- croc(x.nb[,2], x.test$alvo)
-    aa <- unlist(slot(aa, "y.values"))
+    set.seed(1)
+    cosmos_results <- lapply(cosmos.folds, function(x) 
+    {
+      cosmos.train <- x.train[-x, ]
+      cosmos.test <- x.train[x, ]
+      cosmos.train <- remove_outliers(cosmos.train)
+      x.train.raw <- cosmos.train
+      cosmos.train <- normalize_minmax(x.train.raw)
+      cosmos.test <- normalize_minmax(x.train.raw,cosmos.test)
+      x.nb <- nb(cosmos.train, cosmos.test)
+      aa <- croc(x.nb[,2], cosmos.test$alvo)
+      aa <- unlist(slot(aa, "y.values"))
+    })
+    med <- mean(unlist(cosmos_results))
+    vrc <- var(unlist(cosmos_results))
+    aa <- med - vrc
     tab$resultadov[1] <- aa
-    write.table(x.nb, file=outpuClassifica, row.names = FALSE, quote = FALSE, sep = ",", col.names=TRUE)
+    #write.table(x.nb, file=outpuClassifica, row.names=FALSE, quote = FALSE)
   }
   write.table(tab, file=outputFile, row.names = FALSE, quote = FALSE, sep = ",", col.names=TRUE)

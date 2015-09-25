@@ -63,6 +63,7 @@ public class Cluster {
 	private NodeLoadMonitorEntity metrics;
 	private NodeVMMonitorEntity metricsVmRam;
 	private double memoryPercent;
+	private String timeWhenGoesDead = "";
 	
 	public void setMemoryPercent(double memoryPercent) {
 		this.memoryPercent = memoryPercent;
@@ -465,9 +466,12 @@ public class Cluster {
 		if ( oldStatus != this.status ) {
 			if ( this.status == ClusterStatus.DEAD ) {
 				setMessage( LogType.NODE_STATUS, "Node " + macAddress + " is now OFFLINE." );
+				timeWhenGoesDead = DateLibrary.getInstance().getDateHourTextHuman();
 			}
 			if ( oldStatus == ClusterStatus.DEAD ) {
-				setMessage( LogType.NODE_STATUS, "Node " + macAddress + " was offline and is now as " + this.status );
+				setMessage( LogType.NODE_STATUS, "Node " + macAddress + " was offline since " + timeWhenGoesDead + 
+						" and is now as " + this.status );
+				timeWhenGoesDead = "";
 			}
 		}
 
@@ -587,10 +591,10 @@ public class Cluster {
 		logEntries.add( le );
 		
 		counter++;
-		if ( counter == 100 ) {
+		if ( (counter == 100) || (type == LogType.NODE_STATUS) ) {
 			flushLog();
 			counter = 0;
-		}
+		} 
 		
 		this.lastError = logItem;
 		if ( log.size() > 40 ) {
@@ -617,6 +621,10 @@ public class Cluster {
 	
 	public void clearTasks() {
 		tasks.clear();
+	}
+	
+	public String getTimeWhenGoesDead() {
+		return timeWhenGoesDead;
 	}
 	
 }

@@ -79,8 +79,8 @@
 			"aoColumns": [ 
 						  { "sWidth": "10%" },
 						  { "sWidth": "10%" },
-						  { "sWidth": "40%" },					
-						  { "sWidth": "40%" }]						
+						  { "sWidth": "15%" },					
+						  { "sWidth": "65%" }]						
 		} ).fnSort( [[0,'desc']] );
 		
 		window.setInterval(reloadPage, 4000);

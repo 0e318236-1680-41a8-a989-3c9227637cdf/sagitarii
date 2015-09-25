@@ -86,17 +86,22 @@
 						<th>Max Allowed Tasks</th>
 						<th>Cores</th>
 						<th>Status</th>
+						<th>&nbsp;</th>
 						<th>Signaled</th>
 						<th>Age</th>
-						<th colspan="4">Message</th>
+						<th colspan="3">Message</th>
 					</tr>
 					<tr>
 						<td>${cluster.lastAnnounce}</td>
 						<td>${cluster.maxAllowedTasks}</td>
 						<td>${cluster.availableProcessors}</td>
 						<td style="color: #F90101">${cluster.status}</td>
-						<td style="color: #F90101"><c:if
-								test="${cluster.restartSignal == 'TRUE' }">
+						<td style="color: #F90101">
+							<c:if test="${cluster.timeWhenGoesDead != '' }">
+								${cluster.timeWhenGoesDead}
+							</c:if>
+						</td>
+						<td style="color: #F90101"><c:if test="${cluster.restartSignal == 'TRUE' }">
 													RESTART
 												</c:if> <c:if test="${cluster.quitSignal == 'TRUE' }">
 													QUIT
