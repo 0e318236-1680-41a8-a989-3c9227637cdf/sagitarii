@@ -21,6 +21,7 @@ package br.cefetrj.sagitarii.teapot;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,6 +36,11 @@ public class Task {
 	private Date realStartTime;
 	private Date realFinishTime;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() ); 
+	private int PID;
+	
+	public int getPID() {
+		return PID;
+	}
 
 	public Date getRealFinishTime() {
 		return realFinishTime;
@@ -112,25 +118,25 @@ public class Task {
 		Process process = null;
 		status = TaskStatus.RUNNING;
 		try {
-			/*	
-			if ( activation.getExecutorType().equals("BASH") ) {
-				debug("running Bash Script " + activation.getCommand() );
-				BashExecutor ex = new BashExecutor();
-				exitCode = ex.execute( activation );
-				console = ex.getConsole();
-			} else if ( activation.getExecutorType().equals("PYTHON") ) { 
-				debug("running Python Script " + activation.getCommand() );
-				PythonExecutor py = new PythonExecutor();
-				exitCode = py.execute( activation );
-				console = py.getConsole();
-			} else {
-			*/
-				
 				debug("running external wrapper " + activation.getCommand() );
 				process = Runtime.getRuntime().exec( activation.getCommand() );
 				InputStream in = process.getInputStream(); 
 				BufferedReader br = new BufferedReader( new InputStreamReader(in) );
 				String line = null;
+				
+				// TEST : Get PID
+				PID = 0;
+				if( process.getClass().getName().equals("java.lang.UNIXProcess") ) {
+		            try {
+		                Field f = process.getClass().getDeclaredField("pid");
+		                f.setAccessible(true);
+		                PID = f.getInt( process );
+	                } catch (Throwable e) {
+		            	
+		            }
+				}
+				console.add( "Task PID : " + PID );
+				// ========================
 
 				InputStream es = process.getErrorStream();
 				BufferedReader errorReader = new BufferedReader(  new InputStreamReader(es) );

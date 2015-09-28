@@ -1,4 +1,4 @@
-package br.cefetrj.sagitarii.sdk;
+package cmabreu.sagitarii.sdk;
 
 import java.io.BufferedReader;
 import java.io.File;

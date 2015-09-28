@@ -21,6 +21,7 @@ import br.cefetrj.sagitarii.core.TableAttribute;
 import br.cefetrj.sagitarii.core.UserTableEntity;
 import br.cefetrj.sagitarii.core.config.Configurator;
 import br.cefetrj.sagitarii.core.filetransfer.FileImporter;
+import br.cefetrj.sagitarii.core.processor.XMLParser;
 import br.cefetrj.sagitarii.misc.DatabaseConnectionItem;
 import br.cefetrj.sagitarii.misc.DatabaseInfo;
 import br.cefetrj.sagitarii.misc.json.JsonUserTableConversor;
@@ -119,7 +120,53 @@ public class RelationService {
 			throw e;
 		}
 	}
+	
+	public String importTableXml( String xmlFile ) throws Exception {
+		try {
+		List<TableAttribute> attributes = new XMLParser().parseTableSchema( xmlFile );
+		if ( attributes.size() > 0 ) {
+			Relation table = new Relation();
+			table.setName( attributes.get(0).getTableName() );
+			table.setDescription("Imported by Sagitarii");
+			RelationService ts = new RelationService();
+			ts.insertTable(table, attributes);
+			return table.getName();
+		} else {
+			throw new Exception("Cannot import file " + xmlFile );
+		}
+		} catch ( Exception e ) {
+			e.printStackTrace();
+		}
+		return "";
+	}
 
+	public ByteArrayInputStream getTableSchemaXML( String tableName ) throws Exception {
+		Set<UserTableEntity> utes = getTableStructure(tableName);
+		StringBuilder xmlData = new StringBuilder();
+		xmlData.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+		xmlData.append("<table name=\""+tableName+"\">");
+		for ( UserTableEntity ute : utes ) {
+			String columnName = ute.getData("column_name");
+			
+			if ( columnName.equals("index_id") 
+					|| columnName.equals("id_experiment") 
+					|| columnName.equals("id_activity")
+					|| columnName.equals("id_instance") ) continue;
+			
+			String fieldType = ute.getData("data_type");
+			if ( fieldType.contains("character varying")  ) { fieldType="STRING"; }			
+			if ( fieldType.contains("numeric")  ) { fieldType="FLOAT"; }			
+			
+			String domainName = tableName + "." + columnName;
+			if ( DomainStorage.getInstance().domainExists(domainName)  ) {
+				fieldType = "FILE";
+			}
+			xmlData.append("<field name=\""+columnName+"\" type=\""+fieldType.toUpperCase()+"\" />");
+		}
+		xmlData.append("</table>");
+        return new ByteArrayInputStream( xmlData.toString().getBytes("UTF-8") );
+	}	
+	
 	// Get the first 40 lines and export as CSV to the user.
 	public ByteArrayInputStream getTableSample( String tableName ) throws Exception {
 		Set<UserTableEntity> utes = genericFetchList( "select * from " + tableName + " offset 0 limit 40" );

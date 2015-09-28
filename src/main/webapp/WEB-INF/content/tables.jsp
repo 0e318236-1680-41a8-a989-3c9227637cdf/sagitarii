@@ -18,6 +18,7 @@
 						<div class="menuBarMain">
 							<img alt="" onclick="back();" title="Back" class="button dicas" src="img/back.png" />
 							<img onclick="showNewPannel();" title="New Relation" class="button dicas" src="img/add.png">
+							<img alt="" onclick="importTable();" title="Import From XML File" class="button dicas" src="img/xml.png" />
 						</div>
 
 
@@ -80,6 +81,7 @@
 											<td>${table.description}</td>
 											<td>&nbsp;<c:forEach var="domain" items="${table.domains}">${domain.domainName}<br></c:forEach></td>
 											<td>
+												<img class="miniButton dicas" title="Export Schema to XML" onclick="exportTable('${table.name}')" src="img/xml.png">
 												<img class="miniButton dicas" title="Delete" onclick="deleteTable('${table.idTable}','${table.name}')" src="img/delete.png">
 												<img class="miniButton dicas" title="View Data and Schema" onclick="showTable('${table.name}')" src="img/search.png">
 											</td>
@@ -137,13 +139,21 @@
 		$("#newPannel").css("display","none");
 	}
 	
+	function importTable() {
+		window.location.href="importTableXML";
+	}
 	
+
 	function activity(idWf) {
 		window.location.href="actManager?idWorkflow=" + idWf;
 	}
 	
 	function showNewPannel() {
 		$("#newPannel").css("display","table");
+	}
+
+	function exportTable( tblName ) {
+		window.open("getTableSchemaXML?tableName=" + tblName);
 	}
 
 	function deleteTable(idTable, tableName) {

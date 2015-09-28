@@ -1,5 +1,10 @@
 package br.cefetrj.sagitarii.core.processor;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,6 +18,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+
+import br.cefetrj.sagitarii.core.TableAttribute;
+import br.cefetrj.sagitarii.core.TableAttribute.AttributeType;
 
 
 public class XMLParser {
@@ -47,6 +55,44 @@ public class XMLParser {
 		}
 		return inputData;
 	}
+
+	public List<TableAttribute> parseTableSchema( String xmlFile ) throws Exception {
+		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+		
+		File file = new File( xmlFile );
+		InputStream inputStream= new FileInputStream(file);
+		Reader reader = new InputStreamReader(inputStream,"UTF-8");		
+		InputSource is = new InputSource( reader );
+
+		doc = dBuilder.parse( is );
+		doc.getDocumentElement().normalize();
+		
+		NodeList tableNodeList = doc.getElementsByTagName("table");
+		Node pipeConf = tableNodeList.item( 0 );
+		Element tableElement = (Element) pipeConf;
+		String tableName = tableElement.getAttribute("name");
+		
+		List<TableAttribute> result = new ArrayList<TableAttribute>();
+		NodeList fieldList = doc.getElementsByTagName("field");
+		for ( int x = 0; x < fieldList.getLength(); x++ ) {
+			Node fieldNode = fieldList.item(x);
+			Element fieldElement = (Element) fieldNode;
+			String fieldName = fieldElement.getAttribute("name");
+			String fieldType = fieldElement.getAttribute("type");
+			
+			TableAttribute ta = new TableAttribute();
+			ta.setName( fieldName );
+			ta.setType( AttributeType.valueOf( fieldType ) );
+			ta.setTableName(tableName);
+			result.add( ta );
+		}
+		
+		reader.close();
+		file.delete();
+		return result;
+	}
+	
 	
 	public List<Activation> parseActivations( String xml ) throws Exception {
 

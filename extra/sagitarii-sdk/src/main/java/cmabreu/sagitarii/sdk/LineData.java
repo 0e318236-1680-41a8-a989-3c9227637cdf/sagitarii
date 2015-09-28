@@ -1,4 +1,4 @@
-package br.cefetrj.sagitarii.sdk;
+package cmabreu.sagitarii.sdk;
 
 import java.util.ArrayList;
 import java.util.List;

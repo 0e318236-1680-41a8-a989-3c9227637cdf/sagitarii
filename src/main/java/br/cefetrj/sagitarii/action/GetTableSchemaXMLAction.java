@@ -8,18 +8,18 @@ import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 
 import br.cefetrj.sagitarii.persistence.services.RelationService;
-@Action(value="getTableSample", results= {  
+
+@Action(value="getTableSchemaXML", results= {  
 	    @Result(name="ok", type="stream", params = {
-                "contentType", "application/octet-stream",
+                "contentType", "text/xml",
                 "inputName", "fileInputStream",
-                "contentDisposition", "filename=\"${fileName}\"",
+                "contentDisposition", "attachment;filename=\"${fileName}\"",
                 "bufferSize", "1024"
         }) }
-)   
-  
+) 
 
 @ParentPackage("default")
-public class GetTableSampleAction extends BasicActionClass {
+public class GetTableSchemaXMLAction extends BasicActionClass {
 	private String fileName;
 	private ByteArrayInputStream fileInputStream;
 	private String tableName;
@@ -28,8 +28,8 @@ public class GetTableSampleAction extends BasicActionClass {
 		
 		try {
 			RelationService rs = new RelationService();
-			fileInputStream = rs.getTableSample( tableName );
-	        fileName = tableName + ".csv";
+			fileInputStream = rs.getTableSchemaXML( tableName );
+	        fileName = tableName + ".xml";
 		} catch ( Exception e ) {
             //
 		}

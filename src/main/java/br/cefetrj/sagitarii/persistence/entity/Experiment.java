@@ -104,7 +104,7 @@ public class Experiment {
 	private Double parallelEfficiency = 0.0;
 
 	@Column
-	private double coresWorking = 0;
+	private Double coresWorking = 0.0;
 	
     public Experiment() {
         UUID uuid = UUID.randomUUID();
@@ -246,7 +246,7 @@ public class Experiment {
 		this.finishDateTime = finishDateTime;
 	}
 
-	public double getCoresWorking() {
+	public Double getCoresWorking() {
 		return coresWorking;
 	}
 	
