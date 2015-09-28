@@ -16,21 +16,12 @@
 						
 						<div class="menuBarMain" style="position:relative">
 							<img alt="" onclick="back();" title="Back" class="button dicas" src="img/back.png" />
-							
-							<c:if test="${fn:length(instanceTempOutputBuffer) == 0 }">
-								<img alt="" onclick="saveToMemory();" title="Save Output buffer to memory and clear (will pause Instance serving)" class="button dicas" src="img/backup.png" />
-							</c:if>
-							
-							<c:if test="${fn:length(instanceTempOutputBuffer) > 0 }">
-								<img alt="" onclick="restoreFromMemory();" title="Restore output buffer from memory (will restart Instance serving)" class="button dicas" src="img/restore.png" />
-							</c:if>
 						</div>
 												
 						<div style="margin : 0 auto; width : 95%; margin-top:10px;margin-bottom:50px;" >
 							<table>
 								<tr>
 									<th>Instances in output buffer</th>
-									<th style="color:#F90101">Instances saved</th>
 									<th>SELECT type Instances in output buffer</th>
 									<th>Instances with nodes</th>
 									<th>Buffers capacity</th>
@@ -38,7 +29,6 @@
 								</tr>
 								<tr>
 									<td>${fn:length(instanceInputBuffer)}</td>
-									<td style="color:#F90101">${fn:length(instanceTempOutputBuffer)}</td>
 									<td>${fn:length(instanceJoinInputBuffer)}</td>
 									<td>${fn:length(instanceOutputBuffer)}</td>
 									<td>${maxBufferCapacity}</td>

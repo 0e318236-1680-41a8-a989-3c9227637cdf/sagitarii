@@ -28,7 +28,6 @@ public class ViewRunningAction extends BasicActionClass {
 		instanceInputBuffer = sagi.getInstanceInputBuffer();
 		instanceJoinInputBuffer = sagi.getInstanceJoinInputBuffer();
 		instanceOutputBuffer = sagi.getInstanceOutputBuffer();
-		instanceTempOutputBuffer = sagi.getInstanceTempOutputBuffer();
 		return "ok";
 	}
 	

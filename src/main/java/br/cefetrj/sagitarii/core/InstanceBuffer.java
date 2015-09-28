@@ -22,33 +22,12 @@ public class InstanceBuffer {
 	private Queue<Instance> instanceInputBuffer;
 	private Queue<Instance> instanceJoinInputBuffer;
 	private Queue<Instance> instanceOutputBuffer;
-	private Queue<Instance> instanceTempOutputBuffer;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 	private List<Experiment> runningExperiments;
 	private InstanceListContainer listContainer;
-
-	private boolean canServe() {
-		boolean result = ( instanceTempOutputBuffer == null ) || 
-				( ( instanceTempOutputBuffer != null ) && ( instanceTempOutputBuffer.size() == 0 ) );
-		return result;
-	}
 	
 	public boolean isEmpty() {
 		return ( getInstanceJoinInputBufferSize() == 0 ) && ( getInstanceInputBufferSize() == 0 ); 
-	}
-	
-	public synchronized void transferOutputBufferToMemory() {
-		logger.debug("saving output buffer to memory: " + instanceInputBuffer.size() + " instances.");
-		instanceTempOutputBuffer = new LinkedList<Instance>( instanceInputBuffer );
-		instanceInputBuffer.clear();
-	}
-	
-	public synchronized void restoreOutputBufferFromMemory() {
-		logger.debug("restoring output buffer from memory: " + instanceTempOutputBuffer.size() + " instances.");
-		for ( Instance instance : instanceTempOutputBuffer ) {
-			instanceInputBuffer.add( instance );
-		}
-		instanceTempOutputBuffer.clear();
 	}
 	
 	private void processAndInclude( List<Instance> preBuffer ) {
@@ -108,10 +87,6 @@ public class InstanceBuffer {
 		return instanceJoinInputBuffer.size();
 	}
 	
-	public int getInstanceTempOutputBufferSize() {
-		return instanceTempOutputBuffer.size();
-	}
-
 	/**
 	 * Remove all null elements of buffer
 	 * Note: The buffer cannot have null elements, so
@@ -136,8 +111,6 @@ public class InstanceBuffer {
 	}
 	
 	public synchronized Instance getNextInstance( List<Experiment> runningExperiments ) {
-		
-		if ( !canServe() ) return null;
 		
 		this.runningExperiments = runningExperiments;
 		Instance next = instanceInputBuffer.poll();
@@ -266,10 +239,6 @@ public class InstanceBuffer {
 
 	public Queue<Instance> getInstanceOutputBuffer() {
 		return new LinkedList<Instance>( instanceOutputBuffer );
-	}
-
-	public Queue<Instance> getInstanceTempOutputBuffer() {
-		return instanceTempOutputBuffer;
 	}
 
 	public Queue<Instance> getInstanceJoinInputBuffer() {

@@ -459,14 +459,6 @@ public class Sagitarii {
 			updateFragments();
 		}
 	}
-
-	public void transferOutputBufferToMemory() {
-		instanceBuffer.transferOutputBufferToMemory();
-	}
-	
-	public void restoreOutputBufferFromMemory() {
-		instanceBuffer.restoreOutputBufferFromMemory();
-	}
 	
 	public Queue<Instance> getInstanceInputBuffer() {
 		return instanceBuffer.getInstanceInputBuffer();
@@ -474,10 +466,6 @@ public class Sagitarii {
 
 	public Queue<Instance> getInstanceOutputBuffer() {
 		return instanceBuffer.getInstanceOutputBuffer();
-	}
-
-	public Queue<Instance> getInstanceTempOutputBuffer() {
-		return instanceBuffer.getInstanceTempOutputBuffer();
 	}
 
 	public void setMaxInputBufferCapacity(int maxInputBufferCapacity) {
