@@ -293,8 +293,12 @@ public class Cluster {
 
 		logger.debug("finishing instance " + instanceSerial );
 		
+		// Do not pass rd to the log. Will avoid GC to clean it until Log flush this entry.
+		List<String> console = new ArrayList<String>( rd.getCsvDataFile().getConsole() );
+		List<String> execLog = new ArrayList<String>( rd.getCsvDataFile().getExecLog() );
+		
 		MainLog.getInstance().storeLog( activity, experiment, rd.getCsvDataFile().getTaskId(), rd.getActivity().getExecutorAlias(), rd.getCsvDataFile().getExitCode(),
-				rd.getMacAddress(), rd.getCsvDataFile().getConsole(), rd.getCsvDataFile().getExecLog() );
+				rd.getMacAddress(), console, execLog );
 		
 		setInstanceAsDone( instanceSerial, actvt, startTimeMillis, finishTimeMillis);
 		
@@ -451,7 +455,7 @@ public class Cluster {
 		cleanUp();
 		ClusterStatus oldStatus = this.status;
 		this.age++;
-		if ( age > 5 ) {
+		if ( age > 15 ) {
 			this.status = ClusterStatus.DEAD;
 			clearSignals();
 		} else { 

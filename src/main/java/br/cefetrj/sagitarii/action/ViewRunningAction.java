@@ -21,15 +21,14 @@ public class ViewRunningAction extends BasicActionClass {
 	private Queue<Instance> instanceInputBuffer;
 	private Queue<Instance> instanceJoinInputBuffer;
 	private Queue<Instance> instanceOutputBuffer;	
-	
+	private Queue<Instance> instanceTempOutputBuffer;	
 	
 	public String execute () {
 		Sagitarii sagi = Sagitarii.getInstance();
 		instanceInputBuffer = sagi.getInstanceInputBuffer();
 		instanceJoinInputBuffer = sagi.getInstanceJoinInputBuffer();
 		instanceOutputBuffer = sagi.getInstanceOutputBuffer();
-
-		
+		instanceTempOutputBuffer = sagi.getInstanceTempOutputBuffer();
 		return "ok";
 	}
 	
@@ -44,6 +43,10 @@ public class ViewRunningAction extends BasicActionClass {
 
 	public Queue<Instance> getInstanceOutputBuffer() {
 		return instanceOutputBuffer;
+	}
+	
+	public Queue<Instance> getInstanceTempOutputBuffer() {
+		return instanceTempOutputBuffer;
 	}
 	
 }

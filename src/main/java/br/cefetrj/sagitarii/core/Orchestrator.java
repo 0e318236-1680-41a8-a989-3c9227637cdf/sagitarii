@@ -51,17 +51,30 @@ public class Orchestrator implements ServletContextListener {
 
     	UserService us;
     	try {
-    		String configFile = "/etc/sagitarii/config.txt";
+
+	        int interval = 5;
+	        int pseudoInterval = 5;
+	        int pseudoMaxTasks = 4;
+	        int mainNodesQuant = 1;
+	        int maxInputBufferCapacity = 500;
+	        int fileReceiverPort = 3333;
+	        int chunkBuffer = 100;
+	        
+			Configurator config = Configurator.getInstance("config.xml");
+			
+			interval = config.getPoolIntervalSeconds();
+			pseudoInterval = config.getPseudoClusterIntervalSeconds();
+			pseudoMaxTasks = config.getPseudoMaxTasks();
+			pseudoMaxTasks = config.getPseudoMaxTasks();
+			maxInputBufferCapacity = config.getMaxInputBufferCapacity();
+			mainNodesQuant = config.getMainNodesQuant();
+			fileReceiverPort = config.getFileReceiverPort();
+			chunkBuffer = config.getFileReceiverChunkBufferSize();
+			String user = config.getUserName();
+			String passwd = config.getPassword();
+			String database = config.getDatabaseName();
     		
-    		File fil = new File( configFile );
-    		if ( fil.exists() ) {
-    			BufferedReader br = new BufferedReader(new FileReader(fil) );
-    			String user = br.readLine();
-    			String passwd = br.readLine();
-    			String database = br.readLine();
-    			br.close();
-    			ConnFactory.setCredentials(user, passwd, database);
-    		}
+    		ConnFactory.setCredentials(user, passwd, database);
 
     		try {
         		AgeCalculator.getInstance().retrieveList();
@@ -99,25 +112,6 @@ public class Orchestrator implements ServletContextListener {
 				loggerDebug("no running experiments found");	
 			} 
 			loggerDebug("done.");
-			
-	        int interval = 5;
-	        int pseudoInterval = 5;
-	        int pseudoMaxTasks = 4;
-	        int mainNodesQuant = 1;
-	        int maxInputBufferCapacity = 500;
-	        int fileReceiverPort = 3333;
-	        int chunkBuffer = 100;
-	        
-			Configurator config = Configurator.getInstance("config.xml");
-			
-			interval = config.getPoolIntervalSeconds();
-			pseudoInterval = config.getPseudoClusterIntervalSeconds();
-			pseudoMaxTasks = config.getPseudoMaxTasks();
-			pseudoMaxTasks = config.getPseudoMaxTasks();
-			maxInputBufferCapacity = config.getMaxInputBufferCapacity();
-			mainNodesQuant = config.getMainNodesQuant();
-			fileReceiverPort = config.getFileReceiverPort();
-			chunkBuffer = config.getFileReceiverChunkBufferSize();
 			
 			if ( mainNodesQuant < 1 ) {
 				mainNodesQuant = 1;

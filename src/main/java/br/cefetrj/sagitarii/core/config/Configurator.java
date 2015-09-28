@@ -32,6 +32,21 @@ public class Configurator {
 	private char CSVDelimiter;
 	private long firstDelayLimitSeconds;
 	private boolean useDynamicLoadBalancer;
+	private String userName;
+	private String password;
+	private String databaseName;
+	
+	public String getUserName() {
+		return userName;
+	}
+	
+	public String getDatabaseName() {
+		return databaseName;
+	}
+	
+	public String getPassword() {
+		return password;
+	}
 	
 	public boolean useDynamicLoadBalancer() {
 		return this.useDynamicLoadBalancer;
@@ -160,6 +175,10 @@ public class Configurator {
 			fileReceiverPort = Integer.valueOf( getTagValue("fileReceiverPort", mpElement) );
 			fileReceiverChunkBufferSize = Integer.valueOf( getTagValue("fileReceiverChunkBufferSize", mpElement) );
 			firstDelayLimitSeconds = Long.valueOf( getTagValue("firstDelayLimitSeconds", mpElement) );
+			
+			userName = getTagValue("userName", mpElement);
+			password = getTagValue("password", mpElement);
+			databaseName = getTagValue("databaseName", mpElement);
 			
 			useDynamicLoadBalancer = Boolean.valueOf( getTagValue("useDynamicLoadBalancer", mpElement).toLowerCase() );
 			

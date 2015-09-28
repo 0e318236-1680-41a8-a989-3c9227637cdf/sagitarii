@@ -10,7 +10,7 @@
 	<!ELEMENT configuration (sagitarii) >
 	<!ELEMENT sagitarii (poolIntervalSeconds,pseudoClusterIntervalSeconds,pseudoMaxTasks, 
 		maxInputBufferCapacity,mainNodesQuant,fileReceiverPort,fileReceiverChunkBufferSize,
-		firstDelayLimitSeconds,CSVDelimiter,useDynamicLoadBalancer)>
+		firstDelayLimitSeconds,CSVDelimiter,useDynamicLoadBalancer,databaseName,userName,password)>
 ]>
 
 <configuration>
@@ -26,6 +26,9 @@
 		<firstDelayLimitSeconds>60</firstDelayLimitSeconds>
 		<CSVDelimiter>,</CSVDelimiter>
 		<useDynamicLoadBalancer>true</useDynamicLoadBalancer>
+		<databaseName>sagitarii</databaseName>
+		<userName>sagitarii</userName>
+		<password>Chiron2014!</password>
 	</sagitarii>
 	
 </configuration>

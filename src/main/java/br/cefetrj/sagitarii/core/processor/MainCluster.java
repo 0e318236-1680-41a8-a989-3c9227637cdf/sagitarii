@@ -25,15 +25,11 @@ public class MainCluster implements Runnable {
 	private int currentTaskCount = 0;
 	private XMLParser parser;
 	private String macAddress;
-	private	List<String> console;
-	private	List<String> execLog;
 
 	public MainCluster( int maxAllowedTasks, String macAddress ) {
 		this.maxAllowedTasks = maxAllowedTasks;
 		this.parser = new XMLParser();
 		this.macAddress = macAddress;
-		this.console = new ArrayList<String>();
-		this.execLog = new ArrayList<String>();
 	}
 	
 	
@@ -84,32 +80,37 @@ public class MainCluster implements Runnable {
 							
 							cluster.setMessage(LogType.MAIN_CLUSTER, "running query for executor " + act.getExecutor() );
 
+							List<String> console = new ArrayList<String>();
+							List<String> execLog = new ArrayList<String>();
+							console.add( act.getCommand() );
+
+							// Run query
 							MainClusterQueryWrapper mcqw = new MainClusterQueryWrapper();
 							try {
 								mcqw.executeQuery( act );
+								execLog.add("SQL executed.");
+								cluster.setMessage( LogType.MAIN_CLUSTER, "done query for executor " + act.getExecutor() );
 							} catch ( Exception e ) {
 								cluster.setMessage( LogType.MAIN_CLUSTER,"error " + e.getMessage() +  " when running query for executor " + act.getExecutor() );
+								String errorString = "cannot finish instance " + pipe.getSerial() + ". Activity " + act.getActivitySerial() + " not found.";
+								logger.error( errorString );
+								for ( StackTraceElement ste : e.getStackTrace() ) {
+									execLog.add( ste.getClassName() );
+								}
 							}
-
-							cluster.setMessage( LogType.MAIN_CLUSTER, "done query for executor " + act.getExecutor() );
 							
-							console.clear();
-							console.add( act.getCommand() );
-							
-							execLog.clear();
-							
+							// Done. Finish it !
 							String activityName = act.getActivitySerial();
-							
 							ActivityService as = new ActivityService();
 							try {
 								Activity activity = as.getActivity( act.getActivitySerial() );
 								activityName = activity.getTag();
-								cluster.setMessage( LogType.MAIN_CLUSTER,"finishing activity " + activity.getTag() + " (" + act.getExecutor() + ")" );
 								cluster.setInstanceAsDone( pipe.getSerial(), activity, String.valueOf( mcqw.getStartTime() ),
 										String.valueOf( mcqw.getFinishTime() ) );
+								execLog.add("Instance finished.");
 							} catch ( NotFoundException nf ) {
 								String errorString = "cannot finish instance " + pipe.getSerial() + ". Activity " + act.getActivitySerial() + " not found.";
-								console.add( errorString );
+								execLog.add( errorString );
 								logger.error( errorString );
 								cluster.setMessage(LogType.MAIN_CLUSTER, errorString );
 							}

@@ -28,7 +28,8 @@
 
 
 			<div class="footerDivCenter" >
-				Icons from <a target="_BLANK" href="http://www.flaticon.com/">flaticon.com</a>.
+				Icons from <a target="_BLANK" href="http://www.flaticon.com/">flaticon.com</a>  
+				( designed by FreePik )
 			</div> 
 		</div>
 		
