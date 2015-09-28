@@ -11,6 +11,7 @@ import br.cefetrj.sagitarii.core.ClustersManager;
 import br.cefetrj.sagitarii.core.MainLog;
 import br.cefetrj.sagitarii.core.Sagitarii;
 import br.cefetrj.sagitarii.core.config.Configurator;
+import br.cefetrj.sagitarii.core.delivery.InstanceDeliveryControl;
 import br.cefetrj.sagitarii.core.types.ClusterType;
 import br.cefetrj.sagitarii.core.types.LogType;
 import br.cefetrj.sagitarii.persistence.entity.Activity;
@@ -112,6 +113,8 @@ public class MainCluster implements Runnable {
 								logger.error( errorString );
 								cluster.setMessage(LogType.MAIN_CLUSTER, errorString );
 							}
+							
+							InstanceDeliveryControl.getInstance().addUnit(pipe, macAddress);
 							
 							MainLog.getInstance().storeLog( activityName , act.getExperiment(), 
 									act.getActivitySerial(), act.getExecutor(), "0", macAddress, console, execLog);
