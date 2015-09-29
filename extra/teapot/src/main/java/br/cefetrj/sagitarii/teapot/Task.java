@@ -37,7 +37,7 @@ public class Task {
 	private Date realFinishTime;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() ); 
 	private int PID;
-	
+
 	public int getPID() {
 		return PID;
 	}
@@ -45,33 +45,33 @@ public class Task {
 	public Date getRealFinishTime() {
 		return realFinishTime;
 	}
-	
+
 	public Date getRealStartTime() {
 		return realStartTime;
 	}
-	
+
 	public void setRealFinishTime(Date realFinishTime) {
 		this.realFinishTime = realFinishTime;
 	}
-	
+
 	public void setRealStartTime(Date realStartTime) {
 		this.realStartTime = realStartTime;
 	}
-	
+
 	private void error( String s ) {
 		execLog.add( s );
 		logger.error( s );
 	}
-	
+
 	private void debug( String s ) {
 		execLog.add( s );
 		logger.debug( s );
 	}
-	
+
 	public Activation getActivation() {
 		return activation;
 	}
-	
+
 	public List<String> getSourceData() {
 		return sourceData;
 	}
@@ -79,7 +79,7 @@ public class Task {
 	public List<String> getConsole() {
 		return console;
 	}
-	
+
 	public List<String> getExecLog() {
 		return execLog;
 	}
@@ -100,6 +100,20 @@ public class Task {
 		return this.activation.getTaskId();
 	}	
 
+	private String getProcessCPU( int pid )throws Exception {
+		Runtime runtime = Runtime.getRuntime();
+		Process process = runtime.exec("top -b -n1 | grep " + pid);
+		InputStream is = process.getInputStream();
+		InputStreamReader isr = new InputStreamReader(is);
+		BufferedReader br = new BufferedReader(isr);
+		String line;
+		String result = "";
+		while ( (line = br.readLine()) != null) {
+			result = line;
+		}	
+		return result;
+	}
+
 	public Task( Activation activation, List<String> execLog ) {
 		this.activation = activation;
 		status = TaskStatus.STOPPED;
@@ -107,7 +121,7 @@ public class Task {
 		this.console = new ArrayList<String>();
 		this.execLog = execLog;
 	}
-	
+
 	/**
 	 * BLOCKING
 	 * Will execute a external program (wrapper)
@@ -118,45 +132,46 @@ public class Task {
 		Process process = null;
 		status = TaskStatus.RUNNING;
 		try {
-				debug("running external wrapper " + activation.getCommand() );
-				process = Runtime.getRuntime().exec( activation.getCommand() );
-				InputStream in = process.getInputStream(); 
-				BufferedReader br = new BufferedReader( new InputStreamReader(in) );
-				String line = null;
-				
-				// TEST : Get PID
-				PID = 0;
-				if( process.getClass().getName().equals("java.lang.UNIXProcess") ) {
-		            try {
-		                Field f = process.getClass().getDeclaredField("pid");
-		                f.setAccessible(true);
-		                PID = f.getInt( process );
-	                } catch (Throwable e) {
-		            	
-		            }
-				}
-				console.add( "Task PID : " + PID );
-				// ========================
+			debug("running external wrapper " + activation.getCommand() );
+			process = Runtime.getRuntime().exec( activation.getCommand() );
+			InputStream in = process.getInputStream(); 
+			BufferedReader br = new BufferedReader( new InputStreamReader(in) );
+			String line = null;
 
-				InputStream es = process.getErrorStream();
-				BufferedReader errorReader = new BufferedReader(  new InputStreamReader(es) );
-				while ( (line = errorReader.readLine() ) != null) {
-					console.add( line );
-					logger.error( line );
-				}	
-				errorReader.close();
-				
-				while( ( line=br.readLine() )!=null ) {
-					console.add( line );
-					logger.debug( "[" + activation.getActivitySerial() + "] " + activation.getExecutor() + " > " + line );
-				}  
-				br.close();
-				
-				exitCode = process.waitFor();
+			// TEST : Get PID
+			PID = 0;
+			if( process.getClass().getName().equals("java.lang.UNIXProcess") ) {
+				try {
+					Field f = process.getClass().getDeclaredField("pid");
+					f.setAccessible(true);
+					PID = f.getInt( process );
+				} catch (Throwable e) {
+
+				}
+			}
+			console.add( "Task PID : " + PID );
+			console.add( getProcessCPU(PID) );
+			// ========================
+
+			InputStream es = process.getErrorStream();
+			BufferedReader errorReader = new BufferedReader(  new InputStreamReader(es) );
+			while ( (line = errorReader.readLine() ) != null) {
+				console.add( line );
+				logger.error( line );
+			}	
+			errorReader.close();
+
+			while( ( line=br.readLine() )!=null ) {
+				console.add( line );
+				logger.debug( "[" + activation.getActivitySerial() + "] " + activation.getExecutor() + " > " + line );
+			}  
+			br.close();
+
+			exitCode = process.waitFor();
 			/*	
 			} 
-			*/
-				
+			 */
+
 		} catch ( Exception ex ){
 			error( ex.getMessage() );
 			for ( StackTraceElement ste : ex.getStackTrace() ) {
