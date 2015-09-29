@@ -133,7 +133,10 @@ public class RelationRepository extends BasicRepository {
 		logger.debug("insert domain " + domain.getDomainName() );
 		DaoFactory<Domain> factory = new DaoFactory<Domain>();
 		IDao<Domain> domainDao = factory.getDao(this.session, Domain.class);
-		return domainDao.insertDO( domain );
+		int ret =  domainDao.insertDO( domain );
+		commit();
+		DomainStorage.getInstance().addDomain( domain );
+		return ret;
 	}
 	
 

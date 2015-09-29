@@ -21,20 +21,42 @@ import org.w3c.dom.NodeList;
 public class Configurator {
 
 	private int poolIntervalSeconds;
+	private int fileReceiverPort;
+	private int fileReceiverChunkBufferSize;
 	private int pseudoClusterIntervalSeconds;
 	private Document doc;
 	private int pseudoMaxTasks;
 	private int maxInputBufferCapacity;
 	private int mainNodesQuant;
 	private static Configurator instance;
-	private int fileReceiverPort;
-	private int fileReceiverChunkBufferSize;
 	private char CSVDelimiter;
 	private long firstDelayLimitSeconds;
 	private boolean useDynamicLoadBalancer;
 	private String userName;
 	private String password;
 	private String databaseName;
+	
+	
+	public String toXml() {
+		StringBuilder xmlData = new StringBuilder();
+		xmlData.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+		xmlData.append("<configuration><sagitarii>");
+		xmlData.append("<poolIntervalSeconds>"+poolIntervalSeconds+"</poolIntervalSeconds>");
+		xmlData.append("<pseudoClusterIntervalSeconds>"+pseudoClusterIntervalSeconds+"</pseudoClusterIntervalSeconds>");
+		xmlData.append("<pseudoMaxTasks>"+pseudoMaxTasks+"</pseudoMaxTasks>");
+		xmlData.append("<maxInputBufferCapacity>"+maxInputBufferCapacity+"</maxInputBufferCapacity>");
+		xmlData.append("<mainNodesQuant>"+mainNodesQuant+"</mainNodesQuant>");
+		xmlData.append("<fileReceiverPort>"+fileReceiverPort+"</fileReceiverPort>");
+		xmlData.append("<fileReceiverChunkBufferSize>"+fileReceiverChunkBufferSize+"</fileReceiverChunkBufferSize>");
+		xmlData.append("<firstDelayLimitSeconds>"+firstDelayLimitSeconds+"</firstDelayLimitSeconds>");
+		xmlData.append("<CSVDelimiter>"+CSVDelimiter+"</CSVDelimiter>");
+		xmlData.append("<useDynamicLoadBalancer>"+useDynamicLoadBalancer+"</useDynamicLoadBalancer>");
+		xmlData.append("<databaseName>"+databaseName+"</databaseName>");
+		xmlData.append("<userName>"+userName+"</userName>");
+		xmlData.append("<password>"+password+"</password>");
+		xmlData.append("</sagitarii></configuration>");		
+		return xmlData.toString();
+	}
 	
 	public String getUserName() {
 		return userName;
@@ -187,5 +209,61 @@ public class Configurator {
 			System.out.println( e.getMessage() );
 		}
 	}
+
+	public void setPoolIntervalSeconds(int poolIntervalSeconds) {
+		this.poolIntervalSeconds = poolIntervalSeconds;
+	}
+
+	public void setPseudoClusterIntervalSeconds(int pseudoClusterIntervalSeconds) {
+		this.pseudoClusterIntervalSeconds = pseudoClusterIntervalSeconds;
+	}
+
+	public void setPseudoMaxTasks(int pseudoMaxTasks) {
+		this.pseudoMaxTasks = pseudoMaxTasks;
+	}
+
+	public void setMaxInputBufferCapacity(int maxInputBufferCapacity) {
+		this.maxInputBufferCapacity = maxInputBufferCapacity;
+	}
+
+	public void setMainNodesQuant(int mainNodesQuant) {
+		this.mainNodesQuant = mainNodesQuant;
+	}
+
+	public static void setInstance(Configurator instance) {
+		Configurator.instance = instance;
+	}
+
+	public void setFileReceiverPort(int fileReceiverPort) {
+		this.fileReceiverPort = fileReceiverPort;
+	}
+
+	public void setFileReceiverChunkBufferSize(int fileReceiverChunkBufferSize) {
+		this.fileReceiverChunkBufferSize = fileReceiverChunkBufferSize;
+	}
+
+	public void setCSVDelimiter(char cSVDelimiter) {
+		CSVDelimiter = cSVDelimiter;
+	}
+
+	public void setFirstDelayLimitSeconds(long firstDelayLimitSeconds) {
+		this.firstDelayLimitSeconds = firstDelayLimitSeconds;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public void setDatabaseName(String databaseName) {
+		this.databaseName = databaseName;
+	}
+	
+	
+	
+	
 	
 }

@@ -20,7 +20,11 @@ public class BasicRepository {
 		logger = LogManager.getLogger( this.getClass().getName() );
 		try {
 			session = ConnFactory.getSession();
-			tx = session.beginTransaction();
+			if ( session != null ) {
+				tx = session.beginTransaction();
+			} else {
+				throw new DatabaseConnectException( "Cannot open Database Session" );
+			}
 		} catch (Exception e ) {
 			e.printStackTrace();
 			logger.error( e.getMessage() );
@@ -36,7 +40,11 @@ public class BasicRepository {
 		if ( !session.isOpen() ) {
 			logger.debug("new transaction for session " + sessionId );
 			session = ConnFactory.getSession();
-			tx = session.beginTransaction();
+			if ( session != null ) {
+				tx = session.beginTransaction();
+			} else {
+				logger.debug( "Cannot open Database Session" );
+			}
 		} else {
 			logger.debug("will not open a new transaction. session "+sessionId+" is already open");
 		}

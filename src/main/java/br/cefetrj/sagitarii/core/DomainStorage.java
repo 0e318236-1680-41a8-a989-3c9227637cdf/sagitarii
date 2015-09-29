@@ -18,6 +18,10 @@ public class DomainStorage {
 		return instance;
 	}
 	
+	public void addDomain( Domain domain ) {
+		domains.add( domain );
+	}
+	
 	private DomainStorage() {
 		domains = new ArrayList<Domain>();
 	}

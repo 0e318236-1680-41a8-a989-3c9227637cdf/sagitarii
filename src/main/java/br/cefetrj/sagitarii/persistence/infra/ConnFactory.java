@@ -12,13 +12,11 @@ public class ConnFactory {
 	private static String userName;
 	private static String password;
 	private static String databaseName;	
-	private static boolean useConfigFile = false;
 	
 	public static void setCredentials( String user, String passwd, String database ) {
 		userName = user;
 		password = passwd;
 		databaseName = database;
-		useConfigFile = true;
 	}
 	
 	private static void doLog( String s ) {
@@ -33,21 +31,20 @@ public class ConnFactory {
 				
 				Configuration cfg1 = new Configuration();
 				cfg1.configure("hibernate.cfg.xml");
-				if ( useConfigFile ) {
-					doLog("Using external config file");
-					String url = "jdbc:postgresql://localhost/" + databaseName + "?ApplicationName=Sagitarii";
-					cfg1.setProperty("hibernate.connection.username", userName);
-					cfg1.setProperty("hibernate.connection.url", url);
-				 	cfg1.setProperty("hibernate.connection.password", password);
-				}
+				String url = "jdbc:postgresql://localhost/" + databaseName + "?ApplicationName=Sagitarii";
+				cfg1.setProperty("hibernate.connection.username", userName);
+				cfg1.setProperty("hibernate.connection.url", url);
+			 	cfg1.setProperty("hibernate.connection.password", password);
 				
 				StandardServiceRegistryBuilder serviceRegistryBuilder1 = new StandardServiceRegistryBuilder();
 				serviceRegistryBuilder1.applySettings( cfg1.getProperties() );
-				ServiceRegistry serviceRegistry1 = serviceRegistryBuilder1.build();				
+				ServiceRegistry serviceRegistry1 = serviceRegistryBuilder1.build();	
+				
 				factory = cfg1.buildSessionFactory(serviceRegistry1);			
 				
 			} catch (Throwable ex) { 
 				doLog("fail: " + ex.getMessage() );  
+				return null;
 			}
 		} 
 		

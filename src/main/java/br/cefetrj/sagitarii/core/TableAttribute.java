@@ -9,6 +9,16 @@ public class TableAttribute {
 		INTEGER, STRING, FLOAT, DATE, TIME, FILE, TEXT
 	}
 	
+	public static String convert( String sqlColumnType ) {
+		if ( sqlColumnType.toLowerCase().contains("character varying") ) {
+			return "STRING";
+		} else
+		if ( sqlColumnType.toLowerCase().contains("numeric") ) {
+			return "FLOAT";
+		}
+		return sqlColumnType.toUpperCase();
+	}
+	
 	public String getTableName() {
 		return tableName;
 	}

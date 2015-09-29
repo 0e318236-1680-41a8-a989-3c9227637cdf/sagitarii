@@ -6,13 +6,6 @@
 	Por		: Carlos Magno Abreu em 29/05/2015
  -->
 
-<!DOCTYPE configuration [
-	<!ELEMENT configuration (sagitarii) >
-	<!ELEMENT sagitarii (poolIntervalSeconds,pseudoClusterIntervalSeconds,pseudoMaxTasks, 
-		maxInputBufferCapacity,mainNodesQuant,fileReceiverPort,fileReceiverChunkBufferSize,
-		firstDelayLimitSeconds,CSVDelimiter,useDynamicLoadBalancer,databaseName,userName,password)>
-]>
-
 <configuration>
 	
 	<sagitarii>
@@ -27,8 +20,8 @@
 		<CSVDelimiter>,</CSVDelimiter>
 		<useDynamicLoadBalancer>true</useDynamicLoadBalancer>
 		<databaseName>sagitarii</databaseName>
-		<userName>sagitarii</userName>
-		<password>Chiron2014!</password>
+		<userName>postgres</userName>
+		<password>admin</password>
 	</sagitarii>
 	
 </configuration>

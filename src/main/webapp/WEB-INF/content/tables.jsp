@@ -84,6 +84,7 @@
 												<img class="miniButton dicas" title="Export Schema to XML" onclick="exportTable('${table.name}')" src="img/xml.png">
 												<img class="miniButton dicas" title="Delete" onclick="deleteTable('${table.idTable}','${table.name}')" src="img/delete.png">
 												<img class="miniButton dicas" title="View Data and Schema" onclick="showTable('${table.name}')" src="img/search.png">
+												<img class="miniButton dicas" title="Edit Schema" onclick="editTable('${table.name}')" src="img/edit.png">
 											</td>
 										</tr>
 									</c:forEach>
@@ -154,6 +155,10 @@
 
 	function exportTable( tblName ) {
 		window.open("getTableSchemaXML?tableName=" + tblName);
+	}
+
+	function editTable( tblName ) {
+		window.location.href="editTable?tableName=" + tblName;
 	}
 
 	function deleteTable(idTable, tableName) {

@@ -18,6 +18,7 @@ import br.cefetrj.sagitarii.core.ReceivedData;
 import br.cefetrj.sagitarii.core.Sagitarii;
 import br.cefetrj.sagitarii.core.SchemaGenerator;
 import br.cefetrj.sagitarii.core.TableAttribute;
+import br.cefetrj.sagitarii.core.TableAttribute.AttributeType;
 import br.cefetrj.sagitarii.core.UserTableEntity;
 import br.cefetrj.sagitarii.core.config.Configurator;
 import br.cefetrj.sagitarii.core.filetransfer.FileImporter;
@@ -27,6 +28,7 @@ import br.cefetrj.sagitarii.misc.DatabaseInfo;
 import br.cefetrj.sagitarii.misc.json.JsonUserTableConversor;
 import br.cefetrj.sagitarii.persistence.entity.Consumption;
 import br.cefetrj.sagitarii.persistence.entity.CustomQuery;
+import br.cefetrj.sagitarii.persistence.entity.Domain;
 import br.cefetrj.sagitarii.persistence.entity.Experiment;
 import br.cefetrj.sagitarii.persistence.entity.FileLight;
 import br.cefetrj.sagitarii.persistence.entity.Relation;
@@ -121,6 +123,85 @@ public class RelationService {
 		}
 	}
 	
+	public void dropColumn( String tableName, String columnName ) throws Exception {
+		
+		if ( columnName.equals("index_id") 
+				|| columnName.equals("id_experiment") 
+				|| columnName.equals("id_activity")
+				|| columnName.equals("id_instance") ) {
+			throw new Exception("You cannot remove system attributes.");
+		}
+		
+		String sql = "alter table " + tableName + " drop column " + columnName;
+		logger.debug( sql );
+		executeQuery(sql);
+	}
+
+	public void addColumn( String tableName, String columnName, String columnType ) throws Exception {
+		if ( Character.isDigit( columnName.charAt(0) )  ) {
+			throw new Exception("Attribute name cannot start with numbers ("+columnName+").");
+		}
+		AttributeType attrTp = AttributeType.valueOf( columnType );
+		String sqlColumnType = "";
+		String foreignKeyFiles = "";
+		switch ( attrTp ) {
+			case FILE : 
+				sqlColumnType = "integer"; 
+				foreignKeyFiles = "CONSTRAINT " + columnName +  "_fkfile REFERENCES files (id_file)";
+				break;
+			case INTEGER : sqlColumnType = "integer"; break;
+			case STRING : sqlColumnType = "character varying(250)"; break;
+			case FLOAT : sqlColumnType = "numeric"; break;
+			case TEXT : sqlColumnType = " text"; break;
+			case DATE : sqlColumnType = " date"; break;
+			case TIME : sqlColumnType = " time"; break;
+		}
+		
+		String sql = "alter table " + tableName + " add column " + columnName + " " + 
+				sqlColumnType + " " + foreignKeyFiles;
+		logger.debug( sql );
+		
+		executeQueryAndKeepOpen( sql );
+
+		try {
+			if ( attrTp == AttributeType.FILE ) {
+				logger.debug("file type attribute " + columnName + " detected. creating domain...");
+				Domain dom = new Domain();
+				dom.setDomainName( tableName + "." + columnName );
+				Relation table = getTable( tableName );
+				dom.setTable( table );
+				newTransaction();
+				rep.insertDomain( dom );
+				logger.debug("done creating domain for " + columnName );
+			}
+		} catch ( Exception e ) {
+			e.printStackTrace();
+		}
+		
+	}
+
+	
+	public List<TableAttribute> getAttributes( String tableName ) throws Exception  {
+		Set<UserTableEntity> structure = getTableStructure( tableName );
+		List<TableAttribute> attributes = new ArrayList<TableAttribute>();
+		for ( UserTableEntity inEnt : structure ) {
+			String name = inEnt.getData("column_name");
+			String type = inEnt.getData("data_type");
+			
+			String domainName = tableName + "." + name;
+			if ( DomainStorage.getInstance().domainExists(domainName)  ) {
+				type = "FILE";
+			}					
+			
+			TableAttribute attr = new TableAttribute();
+			attr.setName(name);
+			attr.setType( AttributeType.valueOf( TableAttribute.convert(type) ) );
+			attr.setTableName(tableName);
+			attributes.add( attr );
+		}
+		return attributes;
+	}
+	
 	public String importTableXml( String xmlFile ) throws Exception {
 		try {
 		List<TableAttribute> attributes = new XMLParser().parseTableSchema( xmlFile );
@@ -153,9 +234,7 @@ public class RelationService {
 					|| columnName.equals("id_activity")
 					|| columnName.equals("id_instance") ) continue;
 			
-			String fieldType = ute.getData("data_type");
-			if ( fieldType.contains("character varying")  ) { fieldType="STRING"; }			
-			if ( fieldType.contains("numeric")  ) { fieldType="FLOAT"; }			
+			String fieldType = TableAttribute.convert( ute.getData("data_type") );
 			
 			String domainName = tableName + "." + columnName;
 			if ( DomainStorage.getInstance().domainExists(domainName)  ) {

@@ -1,8 +1,5 @@
 package br.cefetrj.sagitarii.core;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -81,7 +78,8 @@ public class Orchestrator implements ServletContextListener {
         	} catch ( NotFoundException e ) {
         		//
         	} catch ( Exception e ) {
-        		loggerError("Error retrieving Time Calculator list: " + e.getMessage() );
+        		loggerError("Critical database initialization error: " + e.getMessage() );
+        		return;
         	}
     		
 			us = new UserService();
