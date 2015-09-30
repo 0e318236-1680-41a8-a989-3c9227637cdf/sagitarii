@@ -197,27 +197,16 @@ public class Main {
 										packageSize = 1;
 									}
 									
-									response = communicator.announceAndRequestTask( configurator.getSystemProperties().getCpuLoad(), 
-											configurator.getSystemProperties().getFreeMemory(), configurator.getSystemProperties().getTotalMemory(),
-											packageSize, configurator.getSystemProperties().getMemoryPercent(), configurator.getActivationsMaxLimit() );
+									response = getTasksFromSagitarii(packageSize);
 									
 									if ( response.length() > 0 ) {
-										logger.debug("Sagitarii answered " + response.length() + " bytes");
-										
 										if ( response.equals("COMM_ERROR") ) {
 											logger.error("Sagitarii is offline");
 										} else {
 											if ( !specialCommand( response ) ) {
 												List<String> responses = decodeResponse( response );
 												for ( String decodedResponse : responses ) {
-													logger.debug("starting new task");
-													notifySagitarii("starting new task...");
-													TaskRunner tr = new TaskRunner( decodedResponse, communicator, configurator);
-													runners.add(tr);
-													tr.start();
-													totalInstancesProcessed++;
-													logger.debug("new task started");
-													notifySagitarii("new task started. Total: " + runners.size() );
+													startTask( decodedResponse);
 												}
 											}
 										}
@@ -228,6 +217,11 @@ public class Main {
 								} else {
 									logger.debug("cannot request new tasks: flushing buffers...");
 								}
+								
+								// If this number is > 0 then atfer I started new tasks, 
+								// some of old ones have finished, so I'm a bit slow 
+								logger.debug("Lazy Rate: " + (configurator.getActivationsMaxLimit() - runners.size() ) );
+								
 							} else {
 								//
 							}
@@ -259,7 +253,25 @@ public class Main {
 		}
 
 	}
+
+	private static String getTasksFromSagitarii(int packageSize) {
+		String response;
+		response = communicator.announceAndRequestTask( configurator.getSystemProperties().getCpuLoad(), 
+				configurator.getSystemProperties().getFreeMemory(), configurator.getSystemProperties().getTotalMemory(),
+				packageSize, configurator.getSystemProperties().getMemoryPercent(), configurator.getActivationsMaxLimit() );
+		return response;
+	}
 	
+	private static void startTask( String decodedResponse ) {
+		logger.debug("starting new task");
+		notifySagitarii("starting new task...");
+		TaskRunner tr = new TaskRunner( decodedResponse, communicator, configurator);
+		runners.add(tr);
+		tr.start();
+		totalInstancesProcessed++;
+		logger.debug("new task started");
+		notifySagitarii("new task started. Total: " + runners.size() );
+	}
 
 	private static String generateJsonPair(String paramName, String paramValue) {
 		return "\"" + paramName + "\":\"" + paramValue + "\""; 
