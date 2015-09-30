@@ -141,6 +141,7 @@ public class InstanceDeliveryControl {
 	public void forceInformDelayed( String instance ) {
 		for ( DeliveryUnit unity : getUnits() ) {
 			if ( instance.equals( unity.getInstance().getSerial() ) ) {
+				logger.debug("force asking for Instance " + instance );
 				ClustersManager.getInstance().inform( unity.getMacAddress(), unity.getInstance().getSerial() );
 			}
 		}

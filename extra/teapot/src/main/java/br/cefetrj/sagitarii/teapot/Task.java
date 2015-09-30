@@ -100,20 +100,6 @@ public class Task {
 		return this.activation.getTaskId();
 	}	
 
-	private String getProcessCPU( int pid )throws Exception {
-		Runtime runtime = Runtime.getRuntime();
-		Process process = runtime.exec("top -b -n1 | grep " + pid);
-		InputStream is = process.getInputStream();
-		InputStreamReader isr = new InputStreamReader(is);
-		BufferedReader br = new BufferedReader(isr);
-		String line;
-		String result = "";
-		while ( (line = br.readLine()) != null) {
-			result = line;
-		}	
-		return result;
-	}
-
 	public Task( Activation activation, List<String> execLog ) {
 		this.activation = activation;
 		status = TaskStatus.STOPPED;
@@ -138,7 +124,6 @@ public class Task {
 			BufferedReader br = new BufferedReader( new InputStreamReader(in) );
 			String line = null;
 
-			// TEST : Get PID
 			PID = 0;
 			if( process.getClass().getName().equals("java.lang.UNIXProcess") ) {
 				try {
@@ -149,9 +134,6 @@ public class Task {
 
 				}
 			}
-			console.add( "Task PID : " + PID );
-			console.add( getProcessCPU(PID) );
-			// ========================
 
 			InputStream es = process.getErrorStream();
 			BufferedReader errorReader = new BufferedReader(  new InputStreamReader(es) );
@@ -168,9 +150,7 @@ public class Task {
 			br.close();
 
 			exitCode = process.waitFor();
-			/*	
-			} 
-			 */
+
 
 		} catch ( Exception ex ){
 			error( ex.getMessage() );

@@ -27,6 +27,7 @@ public class Main {
 	private static boolean cleaning = false;
 	private static Communicator communicator;
 	private static Configurator configurator;
+	private static Watchdog watchdog;
 	
 	public static void pause() {
 		paused = true;
@@ -111,27 +112,6 @@ public class Main {
 			configurator.loadMainConfig();
 			RepositoryManager rm = new RepositoryManager( configurator );
 
-			logger.debug("Loading Task Manager ...");
-			
-			logger.debug("Cores     : " + configurator.getSystemProperties().getAvailableProcessors() + " cores." );
-			logger.debug("SO Name   : " + configurator.getSystemProperties().getSoName() );
-			logger.debug("Machine   : " + configurator.getSystemProperties().getMachineName() );
-
-			logger.debug("Free Space: " + configurator.getSystemProperties().getFreeDiskSpace() );
-
-			
-			logger.debug("SO family : " + configurator.getSystemProperties().getOsType() );
-			logger.debug("IP/MAC    : " +  configurator.getSystemProperties().getLocalIpAddress() + " / " + configurator.getSystemProperties().getMacAddress() );
-			logger.debug("Java      : " + configurator.getSystemProperties().getJavaVersion() );
-			logger.debug("Announce  : " + configurator.getPoolIntervalMilliSeconds() +"ms." );
-			logger.debug("Sagitarii : " + configurator.getHostURL() );
-			logger.debug("Classpath : " + configurator.getSystemProperties().getClassPath() );
-			logger.debug("R Home    : " + configurator.getSystemProperties().getrHome() );
-			logger.debug("JRI       : " + configurator.getSystemProperties().getJriPath() );
-			logger.debug("Path      : " + configurator.getSystemProperties().getPath() );
-			logger.debug("Task Limit: " + configurator.getActivationsMaxLimit() + " threads." );
- 
-
 			logger.debug("cleaning workspace...");
 			cleanUp();
 			
@@ -157,6 +137,7 @@ public class Main {
 				logger.debug("TaskManager started.");
 			}
 			
+			watchdog = new Watchdog(communicator, configurator);
 			
 			// =============================================================
 			// =============================================================
@@ -201,6 +182,9 @@ public class Main {
 					}
 				} else {
 					if ( !paused ) {
+						
+						watchdog.protect( getRunners(), configurator.getSystemProperties().getCpuLoad() );
+						
 						String response = "NO_DATA";
 						try {
 							if ( runners.size() < configurator.getActivationsMaxLimit() ) {

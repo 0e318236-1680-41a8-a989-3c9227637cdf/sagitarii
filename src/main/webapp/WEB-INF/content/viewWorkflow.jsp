@@ -22,17 +22,14 @@
 						</div>
 
 
-						<div id="pannel" style="width:95%; margin:0 auto;margin-top:10px;margin-bottom:60px;">
-							<div style="height:60px;">
+						<div id="pannel" style="width:95%; margin:0 auto;margin-top:10px;margin-bottom:5px;">
+							<div style="height:60px;display:table;width:100%">
 								<table style="width:100%"> 
 									<tr>
 										<td class="tableCellFormLeft">Description</td>
 										<td class="tableCellFormRight"> 
 											${workflow.description} 
 										</td>
-									</tr>
-								
-									<tr>
 										<td class="tableCellFormLeft">Label</td>
 										<td class="tableCellFormRight"> 
 											${workflow.tag} 
@@ -44,14 +41,17 @@
 										<td class="tableCellFormRight"> 
 											${workflow.owner.fullName} 
 										</td>
-									</tr>
-									
-									<tr>
 										<td class="tableCellFormLeft">Experiments</td>
 										<td class="tableCellFormRight"> 
 											${fn:length(workflow.experiments)}
 										</td>
 									</tr>
+									
+									<tr style="display:none">
+										<td colspan="2" ><textarea style="display:table;width:100%;height:100px">${workflow.activitiesSpecs}</textarea></td>
+									</tr>
+									
+									
 								</table>
 							</div>
 

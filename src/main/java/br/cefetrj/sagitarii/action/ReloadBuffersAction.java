@@ -7,7 +7,7 @@ import org.apache.struts2.convention.annotation.Result;
 
 import br.cefetrj.sagitarii.core.delivery.InstanceDeliveryControl;
 
-@Action (value = "reloadBuffers", results = { @Result (type="redirect", location = "viewRunning", name = "ok") 
+@Action (value = "reloadBuffers", results = { @Result (type="redirect", location = "viewDeliveryControl", name = "ok") 
 }, interceptorRefs= { @InterceptorRef("seguranca")	 } ) 
 
 @ParentPackage("default")
