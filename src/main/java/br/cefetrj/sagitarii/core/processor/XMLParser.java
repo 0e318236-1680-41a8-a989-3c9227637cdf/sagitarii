@@ -21,6 +21,7 @@ import org.xml.sax.InputSource;
 
 import br.cefetrj.sagitarii.core.TableAttribute;
 import br.cefetrj.sagitarii.core.TableAttribute.AttributeType;
+import br.cefetrj.sagitarii.persistence.entity.Workflow;
 
 
 public class XMLParser {
@@ -56,6 +57,34 @@ public class XMLParser {
 		return inputData;
 	}
 
+	public Workflow parseWorkflow( String xmlFile ) throws Exception {
+		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+		
+		File file = new File( xmlFile );
+		InputStream inputStream= new FileInputStream(file);
+		Reader reader = new InputStreamReader(inputStream,"UTF-8");		
+		InputSource is = new InputSource( reader );
+
+		doc = dBuilder.parse( is );
+		doc.getDocumentElement().normalize();
+		
+		NodeList tableNodeList = doc.getElementsByTagName("workflow");
+		Node pipeConf = tableNodeList.item( 0 );
+		Element wfElement = (Element) pipeConf;
+		String tag = wfElement.getAttribute("tag");
+		String description = wfElement.getAttribute("description");
+		String activitiesSpecs = getTagValue("spec", wfElement);
+		
+		Workflow wf = new Workflow();
+		wf.setTag( tag );
+		wf.setDescription( description );
+		wf.setActivitiesSpecs( activitiesSpecs );
+		
+		return wf;
+	}
+	
+	
 	public List<TableAttribute> parseTableSchema( String xmlFile ) throws Exception {
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();

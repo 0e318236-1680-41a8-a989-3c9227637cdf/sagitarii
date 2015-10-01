@@ -18,6 +18,7 @@
 						
 						<div class="menuBarMain">
 							<img onclick="showNewPannel();" title="New Workflow" class="button dicas" src="img/add.png">
+							<img onclick="importWf();" title="Import Workflow from XML" class="button dicas" src="img/xml.png">
 						</div>
 
 
@@ -89,6 +90,8 @@
 											<td>${workflow.owner.loginName}</td>
 											<td>${fn:length(workflow.experiments)}</td>
 											<td>
+												<img class="miniButton dicas" title="Export to XML" onclick="exportWf('${workflow.tag}')" src="img/xml.png">
+
 												<c:if test="${loggedUser.type == 'ADMIN'}">
 													<img class="miniButton dicas" title="Delete" onclick="deleteWf('${workflow.idWorkflow}','${workflow.tag}')" src="img/delete.png">
 													<img class="miniButton dicas" title="Edit" onclick="edit('${workflow.idWorkflow}','${workflow.tag}','${workflow.description}');" src="img/edit.png">
@@ -177,7 +180,7 @@
 	}
 	
 	function exportWf(idWf) {
-		window.location.href ="getXMLWorkflow?idWorkflow=" + idWf;
+		window.location.href="getWorkflowXML?workflowAlias=" + idWf;
 	}
 	
 	function newExperiment(idWf) {
@@ -188,6 +191,10 @@
 		window.location.href="actManager?idWorkflow=" + idWf;
 	}
 	
+	function importWf(idWf) {
+		window.location.href="importWorkflowXML";
+	}
+
 	function showNewPannel() {
 		$("#newPannel").css("display","block");
 	}

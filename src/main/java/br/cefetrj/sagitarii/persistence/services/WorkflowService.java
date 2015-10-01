@@ -1,14 +1,18 @@
 package br.cefetrj.sagitarii.persistence.services;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import br.cefetrj.sagitarii.core.processor.XMLParser;
 import br.cefetrj.sagitarii.persistence.entity.Activity;
 import br.cefetrj.sagitarii.persistence.entity.Experiment;
 import br.cefetrj.sagitarii.persistence.entity.Fragment;
 import br.cefetrj.sagitarii.persistence.entity.Relation;
+import br.cefetrj.sagitarii.persistence.entity.User;
 import br.cefetrj.sagitarii.persistence.entity.Workflow;
 import br.cefetrj.sagitarii.persistence.exceptions.DatabaseConnectException;
 import br.cefetrj.sagitarii.persistence.exceptions.DeleteException;
@@ -25,7 +29,32 @@ public class WorkflowService {
 		this.rep = new WorkflowRepository();
 	}
 	
+	public String importWorkflowXml( String xmlFile, User owner ) {
+		try {
+			Workflow wf = new XMLParser().parseWorkflow( xmlFile );
+			wf.setOwner( owner );
+			insertWorkflow( wf );
+			new File(xmlFile).delete();
+			return wf.getTag();
+		} catch ( Exception e ) {
+			
+		}
+		return null;
+	}
+	
+	public ByteArrayInputStream getWorkflowXML( String workflowAlias ) throws Exception {
+		Workflow wf = getWorkflow( workflowAlias );
+		
+		StringBuilder xmlData = new StringBuilder();
+		xmlData.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+		xmlData.append("<workflow description=\"" + wf.getDescription() + "\" tag=\""+workflowAlias+"\">");
+		
+		xmlData.append("<spec><![CDATA[" + wf.getActivitiesSpecs() + "]]></spec>");
 
+		xmlData.append("</workflow>");
+        return new ByteArrayInputStream( xmlData.toString().getBytes("UTF-8") );
+	}	
+	
 	public void newTransaction() {
 		rep.newTransaction();
 	}

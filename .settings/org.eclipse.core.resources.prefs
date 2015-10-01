@@ -2,6 +2,7 @@ eclipse.preferences.version=1
 encoding//src/main/java/br/cefetrj/sagitarii/action/ActivitiesManagerAction.java=UTF-8
 encoding//src/main/java/br/cefetrj/sagitarii/action/DeleteWorkflowAction.java=UTF-8
 encoding//src/main/java/br/cefetrj/sagitarii/action/DoImportTableXMLAction.java=UTF-8
+encoding//src/main/java/br/cefetrj/sagitarii/action/DoImportWorkflowXMLAction.java=UTF-8
 encoding//src/main/java/br/cefetrj/sagitarii/action/DoNewTableAction.java=UTF-8
 encoding//src/main/java/br/cefetrj/sagitarii/action/EditExperimentAction.java=UTF-8
 encoding//src/main/java/br/cefetrj/sagitarii/action/ExplainQueryAction.java=UTF-8
