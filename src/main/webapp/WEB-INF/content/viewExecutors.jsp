@@ -45,11 +45,18 @@
 											<td>${executor.activationWrapper}&nbsp;</td>
 											<td>${executor.selectStatement}&nbsp;</td>
 											<td>&nbsp;
-												<c:if test="${executor.type == 'PYTHON' || executor.type == 'BASH' || executor.type == 'RSCRIPT' || executor.type == 'LIBRARY'}">
+												<c:if test="${executor.type == 'PYTHON' || executor.type == 'BASH' || executor.type == 'RSCRIPT'}">
 													<a href="viewText?idExecutor=${executor.idActivationExecutor}&edit=yes&fileName=repository/${executor.activationWrapper}">
 														<img class="miniButton dicas" title="View" src="img/search.png">
 													</a>
 												</c:if>
+
+												<c:if test="${executor.type != 'PYTHON' && executor.type != 'BASH' && executor.type != 'RSCRIPT' && executor.type != 'SELECT' || executor.type == 'LIBRARY'}">
+													<a target="_BLANK" href="repository/${executor.activationWrapper}">
+														<img class="miniButton dicas" title="Download Wrapper" src="img/download.png">
+													</a>
+												</c:if>
+
 												<img class="miniButton dicas" title="Edit" onclick="edit('${executor.idActivationExecutor}');" src="img/edit.png">
 												<img class="miniButton dicas" title="Delete" onclick="deleteExecutor('${executor.idActivationExecutor}','${executor.executorAlias}')" src="img/delete.png">
 											</td>
@@ -63,21 +70,7 @@
 					
 				</div>
 				<div id="rightBox"> 
-
 					<%@ include file="commonpanel.jsp" %>
-					
-					<div id="tblIds" class="userBoard" style="padding-bottom:5px;">
-						<div class="userBoardT1" style="text-align:center;width:95%">System ID Tags</div>
-						<div class="userBoardT2" style="text-align:center;width:95%">
-							<table>
-								<tr><td>Workflow ID</td><td>%ID_WFL%</td></tr>
-								<tr><td>Experiment ID</td><td>%ID_EXP%</td></tr>
-								<tr><td>Activity ID</td><td>%ID_ACT%</td></tr>
-								<tr><td>instance ID</td><td>%ID_PIP%</td></tr>
-							</table>
-						</div>
-					</div>					
-					
 				</div>
 				
 				
