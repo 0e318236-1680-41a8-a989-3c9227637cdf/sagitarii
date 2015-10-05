@@ -4,6 +4,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import br.cefetrj.sagitarii.core.filetransfer.ReceivedFile;
 import br.cefetrj.sagitarii.persistence.entity.Activity;
 import br.cefetrj.sagitarii.persistence.entity.Instance;
@@ -18,6 +21,7 @@ public class ReceivedData {
 	private Relation table;
 	private ReceivedFile csvDataFile;
 	private Date time;
+	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 	
 	public Date getTime() {
 		return time;
@@ -45,6 +49,13 @@ public class ReceivedData {
 		this.csvDataFile = csvDataFile;
 		this.table = table;
 		this.time = Calendar.getInstance().getTime();
+		
+		logger.debug("create new data package from node " + macAddress + " instance " + instance.getSerial() + " activity " + activity.getSerial() +
+				" to target table " + table.getName() + ": " );
+		
+		for ( String s : contentLines ) {
+			logger.debug(" > " + s );
+		}
 		
 	}
 	

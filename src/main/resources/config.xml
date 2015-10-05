@@ -9,7 +9,7 @@
 <configuration>
 	
 	<sagitarii>
-		<poolIntervalSeconds>4</poolIntervalSeconds>
+		<poolIntervalSeconds>10</poolIntervalSeconds>
 		<pseudoClusterIntervalSeconds>5</pseudoClusterIntervalSeconds>
 		<pseudoMaxTasks>5</pseudoMaxTasks>
 		<maxInputBufferCapacity>300</maxInputBufferCapacity>
@@ -20,8 +20,8 @@
 		<CSVDelimiter>,</CSVDelimiter>
 		<useDynamicLoadBalancer>true</useDynamicLoadBalancer>
 		<databaseName>sagitarii</databaseName>
-		<userName>postgres</userName>
-		<password>admin</password>
+		<userName>sagitarii</userName>
+		<password>Chiron2014!</password>
 	</sagitarii>
 	
 </configuration>

@@ -339,11 +339,11 @@ public class FileImporter extends Thread {
 					}
 				} else {
 					// This data value is not correspondent to any file we have.
-					// But is the column a file domain ?
+					// But is the column a file domain for this table ?
 					String columnName = headerLine.get(x);
-					if ( DomainStorage.getInstance().isColumnADomain(columnName) ) {
+					if ( DomainStorage.getInstance().domainExists(relationName + "." + columnName) ) {
 						// Yes... set it as null
-						logger.warn("the domain column " + columnName + " have no file");
+						logger.warn("the domain column " + columnName + " in table " + relationName + " have no file");
 						valVal = "null";
 					}
 					

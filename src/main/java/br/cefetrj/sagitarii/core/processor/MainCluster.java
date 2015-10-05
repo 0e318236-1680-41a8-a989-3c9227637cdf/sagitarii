@@ -63,6 +63,7 @@ public class MainCluster implements Runnable {
 			if ( cluster != null ) {
 				cluster.setAsMainCluster();
 				if ( currentTaskCount < maxAllowedTasks ) {
+					logger.debug("get new Instance from buffer");
 					Instance pipe = Sagitarii.getInstance().getNextJoinInstance();
 					if ( pipe != null ) {
 
