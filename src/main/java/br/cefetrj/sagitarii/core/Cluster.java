@@ -270,7 +270,7 @@ public class Cluster {
 			debug( "[" + this.macAddress +  "] data received from instance " + rd.getInstance().getSerial() + " (" + rd.getActivity().getTag() + ") is done");
 		} else {
 			logger.error( "[" + this.macAddress +  "] no data produced by instance " + rd.getInstance().getSerial() + " (" + rd.getActivity().getTag() + ")" );
-			setMessage(LogType.SYSTEM, "No data produced by instance " + rd.getInstance().getSerial() + " (" + rd.getActivity().getTag() + ")" );
+			setMessage(LogType.ACTIVITY_ERROR, "No data produced by instance " + rd.getInstance().getSerial() + " (" + rd.getActivity().getTag() + ")", rd.getActivity().getTag() );
 		}
 		
 		MetricController.getInstance().hit( this.machineName, MetricType.NODE );
@@ -299,6 +299,19 @@ public class Cluster {
 		
 		MainLog.getInstance().storeLog( activity, experiment, rd.getCsvDataFile().getTaskId(), rd.getActivity().getExecutorAlias(), rd.getCsvDataFile().getExitCode(),
 				rd.getMacAddress(), console, execLog );
+		
+		if ( !rd.getCsvDataFile().getExitCode().equals("0") ) {
+			StringBuilder consoleS = new StringBuilder();
+			StringBuilder execLogS = new StringBuilder();
+			for ( String s : console ) {
+				consoleS.append( s + "\n");
+			}
+			for ( String s : execLog ) {
+				execLogS.append( s + "\n");
+			}
+			setMessage( LogType.ACTIVITY_ERROR, "NO CSV DATA: Experiment: " + experiment + " Activity: " + activity + " Node: " + rd.getMacAddress() +
+					consoleS.toString() + "\n\n" + execLogS.toString(), activity );
+		}
 		
 		setInstanceAsDone( instanceSerial, actvt, startTimeMillis, finishTimeMillis);
 		
@@ -580,8 +593,12 @@ public class Cluster {
 		}
 		logEntries.clear();
 	}
-	
+
 	public void setMessage(LogType type, String logItem) {
+		setMessage( type, logItem, "");
+	}
+	
+	public void setMessage(LogType type, String logItem, String activitySerial) {
 		
 		DateLibrary dl = DateLibrary.getInstance();
 		dl.setTo( new Date() );
@@ -592,6 +609,7 @@ public class Cluster {
 		le.setLog( logItem );
 		le.setType( type );
 		le.setNode( macAddress );
+		le.setActivitySerial( activitySerial);
 		logEntries.add( le );
 		
 		counter++;

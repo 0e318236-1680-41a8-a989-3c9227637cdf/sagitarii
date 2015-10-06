@@ -166,5 +166,8 @@ public class Task {
 		return this.exitCode;
 	}
 
+	public void setExitCode(int exitCode) {
+		this.exitCode = exitCode;
+	}
 
 }

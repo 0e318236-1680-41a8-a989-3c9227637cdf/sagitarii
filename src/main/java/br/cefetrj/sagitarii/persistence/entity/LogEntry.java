@@ -30,6 +30,9 @@ public class LogEntry {
 	@Column(length=20, name="node_mac")
 	private String node;
 
+	@Column(length=8, name="activity_serial")
+	private String activitySerial;
+	
 	@Column(name="date_time")
 	@Type(type="timestamp")
 	private Date dateTime;	
@@ -81,4 +84,12 @@ public class LogEntry {
 		this.type = type;
 	}
 
+	public void setActivitySerial(String activitySerial) {
+		this.activitySerial = activitySerial;
+	}
+	
+	public String getActivitySerial() {
+		return activitySerial;
+	}
+	
 }

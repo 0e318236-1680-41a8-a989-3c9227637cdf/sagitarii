@@ -272,6 +272,7 @@ public class TaskManager {
 			// Check output file
 			if ( !validateProduct( act ) ) {
 				error(currentTask.getActivation().getExecutor() + ": NO OUTPUT CSV DATA FOUND");
+				task.setExitCode(1);
 			} else {
 				debug("product is valid.");
 			}
