@@ -60,7 +60,8 @@ public class Watchdog {
 	}
 
 	private void kill( int pid ) throws Exception {
-		Runtime.getRuntime().exec("kill -9 " + pid);
+		// Don't do this for now. Will improve later...
+		// Runtime.getRuntime().exec("kill -9 " + pid);
 	}
 	
 	
@@ -87,7 +88,7 @@ public class Watchdog {
 						if ( cpu >= 99 ) {
 							logger.debug(" > You bastard! I'll kill you...");
 							kill( task.getPID() );
-							notifySagitarii("the task " + task.getActivation().getExecutor() + " was overloading the CPU and was killed.");
+							notifySagitarii("the task " + task.getActivation().getExecutor() + " is overloading the CPU.");
 						}
 					}
 				}
