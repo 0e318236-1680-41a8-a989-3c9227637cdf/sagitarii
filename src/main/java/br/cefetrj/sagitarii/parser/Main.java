@@ -1,10 +1,10 @@
-package br.cefetrj.parser;
+package br.cefetrj.sagitarii.parser;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
-import br.cefetrj.parser.SagitariiParser.ActivitySentenceContext;
+import br.cefetrj.sagitarii.parser.SagitariiParser.ActivitySentenceContext;
 
 // http://www.theendian.com/blog/antlr-4-lexer-parser-and-listener-with-example-grammar/
 

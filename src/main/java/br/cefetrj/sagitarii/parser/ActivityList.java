@@ -1,4 +1,4 @@
-package br.cefetrj.parser;
+package br.cefetrj.sagitarii.parser;
 
 import java.util.HashMap;
 import java.util.Map;

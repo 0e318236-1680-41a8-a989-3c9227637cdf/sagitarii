@@ -1,9 +1,9 @@
-package br.cefetrj.parser;
+package br.cefetrj.sagitarii.parser;
 
 import java.util.Map;
 
-import br.cefetrj.parser.SagitariiParser.ActivitySentenceContext;
-import br.cefetrj.parser.SagitariiParser.InputSentenceContext;
+import br.cefetrj.sagitarii.parser.SagitariiParser.ActivitySentenceContext;
+import br.cefetrj.sagitarii.parser.SagitariiParser.InputSentenceContext;
 
 public class SagitariiParserListener extends SagitariiBaseListener {
 	private ActivityList list = new ActivityList();

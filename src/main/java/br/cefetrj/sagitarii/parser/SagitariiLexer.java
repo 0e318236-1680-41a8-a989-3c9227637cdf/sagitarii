@@ -1,4 +1,4 @@
-package br.cefetrj.parser;
+package br.cefetrj.sagitarii.parser;
 
 // Generated from d:\parser\src\main\antl4\Sagitarii.g by ANTLR 4.5.1
 import org.antlr.v4.runtime.Lexer;
