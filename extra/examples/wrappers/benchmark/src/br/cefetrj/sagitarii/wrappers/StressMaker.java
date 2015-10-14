@@ -47,7 +47,7 @@ public class StressMaker {
 			indexY = indexX + 2;
 			if ( list1.contains( s ) ) {
 				try {
-					double xx = Math.PI * Math.abs( Math.cos(23.6) ) / Math.floorMod(indexX, indexY);
+					double xx = Math.PI * Math.abs( Math.cos(23.6) ) ;
 					list2.add( s + " " + xx );
 				} catch ( Exception e ) {
 					e.printStackTrace();

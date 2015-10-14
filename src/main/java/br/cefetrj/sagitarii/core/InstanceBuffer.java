@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 
 import br.cefetrj.sagitarii.core.instances.InstanceList;
 import br.cefetrj.sagitarii.core.instances.InstanceListContainer;
+import br.cefetrj.sagitarii.core.types.ExperimentStatus;
 import br.cefetrj.sagitarii.core.types.FragmentStatus;
 import br.cefetrj.sagitarii.persistence.entity.Experiment;
 import br.cefetrj.sagitarii.persistence.entity.Fragment;
@@ -50,9 +51,14 @@ public class InstanceBuffer {
 			logger.debug("loading COMMON buffer...");
 			sliceSize = ( bufferSize - getInstanceInputBufferSize() ) / runningExperimentCount + 1;
 			for ( Experiment experiment : runningExperiments ) {
-				List<Instance> common = loadCommonBuffer( sliceSize, experiment );
-				if ( common != null ) {
-					listContainer.addList( new InstanceList(common, experiment.getTagExec()) );
+				if ( experiment.getStatus() != ExperimentStatus.PAUSED ) {
+					logger.debug("loading Common Instances for experiment " + experiment.getTagExec() );
+					List<Instance> common = loadCommonBuffer( sliceSize, experiment );
+					if ( common != null ) {
+						listContainer.addList( new InstanceList(common, experiment.getTagExec()) );
+					}
+				} else {
+					logger.debug("experiment " + experiment.getTagExec() + " is paused. will ignore..." );
 				}
 			}
 			if ( listContainer.size() > 0 ) {
@@ -66,9 +72,14 @@ public class InstanceBuffer {
 			logger.debug("loading SELECT buffer...");
 			sliceSize = ( bufferSize - getInstanceJoinInputBufferSize() ) / runningExperimentCount + 1;
 			for ( Experiment experiment : runningExperiments ) {
-				List<Instance> select = loadJoinBuffer( sliceSize, experiment);
-				if ( select != null ) {
-					listContainer.addList( new InstanceList(select, experiment.getTagExec()) );
+				if ( experiment.getStatus() != ExperimentStatus.PAUSED ) {
+					logger.debug("loading SELECT Instances for experiment " + experiment.getTagExec() );
+					List<Instance> select = loadJoinBuffer( sliceSize, experiment);
+					if ( select != null ) {
+						listContainer.addList( new InstanceList(select, experiment.getTagExec()) );
+					} else {
+						logger.debug("experiment " + experiment.getTagExec() + " is paused. will ignore..." );
+					}
 				}
 			}
 			if ( listContainer.size() > 0 ) {

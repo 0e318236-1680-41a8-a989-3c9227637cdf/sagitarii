@@ -53,8 +53,12 @@ public class ReceivedData {
 		logger.debug("create new data package from node " + macAddress + " instance " + instance.getSerial() + " activity " + activity.getSerial() +
 				" to target table " + table.getName() + ": " );
 		
-		for ( String s : contentLines ) {
-			logger.debug(" > " + s );
+		if ( contentLines != null ) {
+			for ( String s : contentLines ) {
+				logger.debug(" > " + s );
+			}
+		} else {
+			logger.debug(" > Warning : Empty content!");
 		}
 		
 	}

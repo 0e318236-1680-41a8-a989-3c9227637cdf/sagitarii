@@ -14,7 +14,7 @@ public class Benchmark {
 			wrapper.save();
 
 			// Do some stress...
-			new StressMaker().doStress();
+			//new StressMaker().doStress();
 			
 			
 		} catch ( Exception e ) {

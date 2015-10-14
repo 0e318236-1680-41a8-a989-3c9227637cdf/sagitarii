@@ -33,11 +33,11 @@ public class Processor implements IWrapperProcessor {
 		String attr02 = ld.getData("attr02");
 		String attr03 = ld.getData("attr03");
 		
-		// How to access the wrappers library folder
+		// How to access the wrappers library folder and read a config file
 		// List<String> configFile = helper.readFromLibraryFolder( "myapp.config" );
 		
-		// How to run external applications
-		// helper.runExternal("/my/path/myapplication.jar");
+		// How to run external applications 
+		//helper.runExternal("/my/path/myapplication.jar");
 		
 		// How to copy files
 		Random generator = new Random();

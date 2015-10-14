@@ -96,6 +96,10 @@ public class WrapperHelper {
         } catch ( Exception e ) {
     		System.out.println( "[" + wrapperAlias + "] Error runnig external application at " );
     		System.out.println( application );
+    		System.out.println( e.getCause() );
+    		for ( StackTraceElement ste : e.getStackTrace() ) {
+    			System.out.println( ste.getClassName() );
+    		}
 			throw e;
         }
     }
