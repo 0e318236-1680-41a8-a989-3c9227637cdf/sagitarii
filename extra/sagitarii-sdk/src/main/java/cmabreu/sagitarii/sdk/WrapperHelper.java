@@ -83,9 +83,16 @@ public class WrapperHelper {
 	 */
 	public void runExternal( String application ) throws Exception {
 		Process process = null;
-		System.out.println( "[" + wrapperAlias + "] Start " + application );
+		System.out.println( "[" + wrapperAlias + "] start external application" );
         try {
-        	process = Runtime.getRuntime().exec( application );
+        	//process = Runtime.getRuntime().exec( application );
+        	List<String> args = new ArrayList<String>();
+        	args.add("/bin/sh");
+        	args.add("-c");
+        	args.add( application );
+        	
+        	process = new ProcessBuilder( args ).start();
+        	
         	BufferedReader reader = new BufferedReader( new InputStreamReader(process.getInputStream() ) );
             String line="";
             while ((line = reader.readLine()) != null) {

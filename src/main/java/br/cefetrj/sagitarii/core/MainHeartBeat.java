@@ -13,11 +13,15 @@ public class MainHeartBeat implements Runnable {
 	
     @Override
     public void run() {
-    	ClustersManager.getInstance().updateClustersStatus();
-    	Sagitarii.getInstance().loadInputBuffer();
-   		InstanceDeliveryControl.getInstance().checkLostPackets();
-   		ClustersManager.getInstance().saveMetrics();
-   		MetricController.getInstance().saveMetrics();
+    	try {
+	    	ClustersManager.getInstance().updateClustersStatus();
+	    	Sagitarii.getInstance().loadInputBuffer();
+	   		InstanceDeliveryControl.getInstance().checkLostPackets();
+	   		ClustersManager.getInstance().saveMetrics();
+	   		MetricController.getInstance().saveMetrics();
+    	} catch ( Exception e ) {
+    		// I'll NEVER stop !
+    	}
     }
 	
 

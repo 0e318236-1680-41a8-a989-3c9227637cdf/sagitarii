@@ -124,22 +124,33 @@ public class Wrapper {
 	 *	This data must be provided by the Wrapper processor.  
 	 */
 	public void save() throws Exception {
-		System.out.println( "[" + wrapperAlias + "] Save output data");
+		System.out.println( "[" + wrapperAlias + "] Saving output data...");
 		
 		List<String> outputData = processor.onNeedOutputData(); 
 		
 		if ( (outputData == null) || (outputData.size() == 0) ) {
-			System.out.println( "[" + wrapperAlias + "] Empty output data");
+			System.out.println( "[" + wrapperAlias + "] Empty output data (sagi_output.txt).");
 			throw new Exception("no output data to save");
 		}
 		
-	    PrintWriter pw = new PrintWriter( new FileOutputStream( workFolder + "/sagi_output.txt"  ) );
-	    for ( String line : outputData ) {
-	    	if ( ( line != null ) && ( !line.equals("") ) ) {
-	    		pw.println( line );
-	    	}
-	    }
-	    pw.close();
+		System.out.println( "[" + wrapperAlias + "] Will save sagi_output.txt to");
+		System.out.println( "[" + wrapperAlias + "] " + workFolder );
+
+		try {
+			PrintWriter pw = new PrintWriter( new FileOutputStream( workFolder + "/sagi_output.txt"  ) );
+		    for ( String line : outputData ) {
+		    	if ( ( line != null ) && ( !line.equals("") ) ) {
+		    		pw.println( line );
+		    	}
+		    }
+		    pw.close();
+		} catch ( Exception e ) {   
+			System.out.println( "[" + wrapperAlias + "] Error when saving sagi_output.txt:" );
+			System.out.println( "[" + wrapperAlias + "] Cause: " + e.getCause() );
+			for ( StackTraceElement ste : e.getStackTrace() ) {
+				System.out.println( "[" + wrapperAlias + "]    " + ste.getClassName() );
+			}
+		}
 	    
 		System.out.println( "[" + wrapperAlias + "] Saved " + outputData.size() + " lines of output data");
 	}

@@ -119,7 +119,14 @@ public class Task {
 		status = TaskStatus.RUNNING;
 		try {
 			debug("running external wrapper " + activation.getCommand() );
-			process = Runtime.getRuntime().exec( activation.getCommand() );
+			//process = Runtime.getRuntime().exec( activation.getCommand() );
+			
+        	List<String> args = new ArrayList<String>();
+        	args.add("/bin/sh");
+        	args.add("-c");
+        	args.add( activation.getCommand() );			
+        	process = new ProcessBuilder( args ).start();
+        	
 			InputStream in = process.getInputStream(); 
 			BufferedReader br = new BufferedReader( new InputStreamReader(in) );
 			String line = null;

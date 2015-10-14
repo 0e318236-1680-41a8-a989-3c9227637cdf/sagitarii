@@ -20,8 +20,8 @@
 		<CSVDelimiter>,</CSVDelimiter>
 		<useDynamicLoadBalancer>true</useDynamicLoadBalancer>
 		<databaseName>sagitarii</databaseName>
-		<userName>postgres</userName>
-		<password>admin</password>
+		<userName>sagitarii</userName>
+		<password>Chiron2014!</password>
 	</sagitarii>
 	
 </configuration>
