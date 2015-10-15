@@ -64,9 +64,11 @@ public class MainCluster implements Runnable {
 				cluster.setAsMainCluster();
 				if ( currentTaskCount < maxAllowedTasks ) {
 					logger.debug("get new Instance from buffer");
-					Instance pipe = Sagitarii.getInstance().getNextJoinInstance();
+					Instance pipe = Sagitarii.getInstance().getNextJoinInstance( macAddress );
 					if ( pipe != null ) {
 
+						InstanceDeliveryControl.getInstance().addUnit(pipe, macAddress);
+						
 						String content = pipe.getContent().replace("##TAG_ID_INSTANCE##", String.valueOf( pipe.getIdInstance() ) );
 						content = content.replace("%ID_PIP%", String.valueOf( pipe.getIdInstance() ) ); 
 						pipe.setContent( content );
@@ -76,6 +78,7 @@ public class MainCluster implements Runnable {
 						cluster.addInstance(pipe);
 						List<Activation> acts = parser.parseActivations( pipe.getContent() );
 						if ( acts.size() > 0 ) {
+							logger.debug("instance " + pipe.getSerial() + " contains " + acts.size() + " activities.");
 							Activation act = acts.get(0);
 							ClustersManager.getInstance().acceptTask( pipe.getSerial(), macAddress);
 							
@@ -91,6 +94,7 @@ public class MainCluster implements Runnable {
 								mcqw.executeQuery( act );
 								execLog.add("SQL executed.");
 								cluster.setMessage( LogType.MAIN_CLUSTER, "done query for executor " + act.getExecutor() );
+								logger.debug("done query for executor " + act.getExecutor());
 							} catch ( Exception e ) {
 								cluster.setMessage( LogType.MAIN_CLUSTER,"error " + e.getMessage() +  " when running query for executor " + act.getExecutor() );
 								String errorString = "cannot finish instance " + pipe.getSerial() + ". Activity " + act.getActivitySerial() + " not found.";
@@ -121,8 +125,12 @@ public class MainCluster implements Runnable {
 							MainLog.getInstance().storeLog( activityName , act.getExperiment(), 
 									act.getActivitySerial(), act.getExecutor(), "0", macAddress, console, execLog);
 							
+						} else {
+							logger.error("empty Instance " + pipe.getSerial() );
 						}
-
+						logger.debug("instance " + pipe.getSerial() + " processed.");
+					} else {
+						logger.debug("SELECT Instances not found in output buffer");
 					}
 				}
 			}

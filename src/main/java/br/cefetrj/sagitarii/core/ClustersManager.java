@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 
 import br.cefetrj.sagitarii.core.config.Configurator;
 import br.cefetrj.sagitarii.core.delivery.InstanceDeliveryControl;
+import br.cefetrj.sagitarii.core.types.ActivityType;
 import br.cefetrj.sagitarii.core.types.ClusterStatus;
 import br.cefetrj.sagitarii.core.types.ClusterType;
 import br.cefetrj.sagitarii.core.types.InstanceStatus;
@@ -262,22 +263,25 @@ public class ClustersManager {
 		List<String> instancePack = new ArrayList<String>();
 		logger.debug( "node " + macAddress + " needs a package size of " + packageSize + " instance(s).");
 		for ( int x=0; x < packageSize; x++) {
-			Instance instance = Sagitarii.getInstance().getNextInstance();
+			Instance instance = Sagitarii.getInstance().getNextInstance( macAddress );
 			if ( instance != null ) {
-				logger.debug( " > sending instance (" + instance.getSerial() + ") "+ instance.getSerial() +" data to node " + macAddress );
-				
-				instance.setStartDateTime( Calendar.getInstance().getTime() );
-				instance.setStatus( InstanceStatus.WAITING );
-				cluster.addInstance(instance);
-				resposta = fillInstanceID ( instance );
-				instance.setContent( resposta );
-
-				byte[] respCompressed = ZipUtil.compress( resposta );
-				String respHex = ZipUtil.toHexString( respCompressed );
-				instancePack.add( respHex );
-				
-				InstanceDeliveryControl.getInstance().addUnit(instance, macAddress);
-
+				if ( instance.getType() != ActivityType.SELECT ) {
+					logger.debug( " > sending instance "+ instance.getSerial() + " data to node " + macAddress );
+					
+					instance.setStartDateTime( Calendar.getInstance().getTime() );
+					instance.setStatus( InstanceStatus.WAITING );
+					cluster.addInstance(instance);
+					resposta = fillInstanceID ( instance );
+					instance.setContent( resposta );
+	
+					byte[] respCompressed = ZipUtil.compress( resposta );
+					String respHex = ZipUtil.toHexString( respCompressed );
+					instancePack.add( respHex );
+					
+					InstanceDeliveryControl.getInstance().addUnit(instance, macAddress);
+				} else {
+					logger.error("Wrong Instance type (SELECT) refused ("+instance.getSerial()+")."); 
+				}
 			} 
 		}
 		if ( instancePack.size() > 0 ) {

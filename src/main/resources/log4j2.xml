@@ -116,15 +116,15 @@
 			<appender-ref ref="File"/> 
 		</Logger>
 
-		<Logger name="br.cefetrj.sagitarii.core.Sagitarii" level="debug" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.core.Sagitarii" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 
-		<Logger name="br.cefetrj.sagitarii.core.ClustersManager" level="error" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.core.ClustersManager" level="debug" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 		
-		<Logger name="br.cefetrj.sagitarii.core.Cluster" level="error" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.core.Cluster" level="debug" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 
@@ -173,11 +173,11 @@
 			<appender-ref ref="File"/> 
 		</Logger>
 		
-		<Logger name="br.cefetrj.sagitarii.core.processor.MainClusterQueryWrapper" level="error" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.core.processor.MainClusterQueryWrapper" level="debug" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 
-		<Logger name="br.cefetrj.sagitarii.core.processor.MainCluster" level="error" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.core.processor.MainCluster" level="debug" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 		

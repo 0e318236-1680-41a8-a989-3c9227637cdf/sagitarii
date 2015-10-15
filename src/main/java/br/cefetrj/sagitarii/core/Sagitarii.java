@@ -285,8 +285,8 @@ public class Sagitarii {
 	}
 	
 	
-	public synchronized Instance getNextInstance() {
-		return instanceBuffer.getNextInstance( runningExperiments );
+	public synchronized Instance getNextInstance(String macAddress) {
+		return instanceBuffer.getNextInstance( runningExperiments, macAddress );
 	}
 
 	
@@ -295,8 +295,8 @@ public class Sagitarii {
 	}
 	
 	
-	public synchronized Instance getNextJoinInstance() {
-		return instanceBuffer.getNextJoinInstance();
+	public synchronized Instance getNextJoinInstance( String macAddress) {
+		return instanceBuffer.getNextJoinInstance( macAddress);
 	}
 
 

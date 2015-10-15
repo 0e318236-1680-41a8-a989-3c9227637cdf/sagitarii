@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 
 import br.cefetrj.sagitarii.core.instances.InstanceList;
 import br.cefetrj.sagitarii.core.instances.InstanceListContainer;
+import br.cefetrj.sagitarii.core.types.ActivityType;
 import br.cefetrj.sagitarii.core.types.ExperimentStatus;
 import br.cefetrj.sagitarii.core.types.FragmentStatus;
 import br.cefetrj.sagitarii.persistence.entity.Experiment;
@@ -25,32 +26,36 @@ public class InstanceBuffer {
 	private Queue<Instance> instanceOutputBuffer;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 	private List<Experiment> runningExperiments;
-	private InstanceListContainer listContainer;
 	
 	public boolean isEmpty() {
 		return ( getInstanceJoinInputBufferSize() == 0 ) && ( getInstanceInputBufferSize() == 0 ); 
 	}
 	
 	private void processAndInclude( List<Instance> preBuffer ) {
+		logger.debug("collecting instances from database to buffers...");
 		for( Instance instance : preBuffer ) {
 			if( instance.getType().isJoin() ) {
+				logger.debug("JB > " + instance.getSerial() + " " + instance.getType() );
 				instanceJoinInputBuffer.add(instance);
 			} else {
+				logger.debug("CB > " + instance.getSerial() + " " + instance.getType() );
 				instanceInputBuffer.add(instance);
 			}
 		}
+		logger.debug("done.");
 	}
 	
 	public void loadBuffers() throws Exception {
 		int runningExperimentCount = runningExperiments.size(); 
 		if ( runningExperimentCount == 0 ) return;
 		int sliceSize;
-		listContainer.clear();
 
 		if ( getInstanceInputBufferSize() < ( bufferSize / 3 ) ) {
-			logger.debug("loading COMMON buffer...");
+			InstanceListContainer listContainer = new InstanceListContainer();
+			logger.debug("check COMMON buffer...");
 			sliceSize = ( bufferSize - getInstanceInputBufferSize() ) / runningExperimentCount + 1;
 			for ( Experiment experiment : runningExperiments ) {
+				logger.debug(" > " + experiment.getTagExec() + " " + experiment.getStatus() );
 				if ( experiment.getStatus() != ExperimentStatus.PAUSED ) {
 					logger.debug("loading Common Instances for experiment " + experiment.getTagExec() );
 					List<Instance> common = loadCommonBuffer( sliceSize, experiment );
@@ -63,28 +68,30 @@ public class InstanceBuffer {
 			}
 			if ( listContainer.size() > 0 ) {
 				instanceInputBuffer.addAll( listContainer.merge() );
-			} 
+			}
+			logger.debug("common buffer size: " + instanceInputBuffer.size() );
 		}
 	
-		listContainer.clear();
-		
 		if ( getInstanceJoinInputBufferSize() < ( bufferSize / 5 ) ) {
-			logger.debug("loading SELECT buffer...");
+			InstanceListContainer listContainerS = new InstanceListContainer();
+			logger.debug("check SELECT buffer...");
 			sliceSize = ( bufferSize - getInstanceJoinInputBufferSize() ) / runningExperimentCount + 1;
 			for ( Experiment experiment : runningExperiments ) {
+				logger.debug(" > " + experiment.getTagExec() + " " + experiment.getStatus() );
 				if ( experiment.getStatus() != ExperimentStatus.PAUSED ) {
 					logger.debug("loading SELECT Instances for experiment " + experiment.getTagExec() );
-					List<Instance> select = loadJoinBuffer( sliceSize, experiment);
+					List<Instance> select = loadJoinBuffer( sliceSize, experiment); 
 					if ( select != null ) {
-						listContainer.addList( new InstanceList(select, experiment.getTagExec()) );
-					} else {
-						logger.debug("experiment " + experiment.getTagExec() + " is paused. will ignore..." );
-					}
+						listContainerS.addList( new InstanceList(select, experiment.getTagExec()) );
+					} 
+				} else {
+					logger.debug("experiment " + experiment.getTagExec() + " is paused. will ignore..." );
 				}
 			}
-			if ( listContainer.size() > 0 ) {
-				instanceInputBuffer.addAll( listContainer.merge() );
+			if ( listContainerS.size() > 0 ) {
+				instanceJoinInputBuffer.addAll( listContainerS.merge() );
 			}
+			logger.debug("SELECT buffer size: " + instanceJoinInputBuffer.size() );
 		}
 		
 	}
@@ -117,19 +124,29 @@ public class InstanceBuffer {
 		logger.warn(total + " null instances removed from buffer. This is not a normal behaviour.");
 	}
 	
-	private Instance getNextInstance() {
-		return getNextInstance( this.runningExperiments );
+	private Instance getNextInstance( String macAddress) {
+		Instance instance = getNextInstance( this.runningExperiments, macAddress );
+		if ( instance != null ) {
+			logger.debug("serving instance " + instance.getSerial() + " to " + macAddress );
+		} else {
+			logger.debug("null instance");
+		}
+		return instance;
 	}
 	
-	public synchronized Instance getNextInstance( List<Experiment> runningExperiments ) {
+	public synchronized Instance getNextInstance( List<Experiment> runningExperiments, String macAddress ) {
 		
 		this.runningExperiments = runningExperiments;
 		Instance next = instanceInputBuffer.poll();
 		if ( next != null ) {
-			if ( hasOwner(next) ) {
-				instanceOutputBuffer.add( next );
+			if ( next.getType() == ActivityType.SELECT ) {
+				logger.error("WARNING! SELECT type Instance in common buffer!");
 			} else {
-				return getNextInstance();
+				if ( hasOwner(next) ) {
+					instanceOutputBuffer.add( next );
+				} else {
+					return getNextInstance( macAddress );
+				}
 			}
 		} else {
 			if ( instanceInputBuffer.size() > 0 ) {
@@ -153,7 +170,6 @@ public class InstanceBuffer {
 		this.instanceJoinInputBuffer = new LinkedList<Instance>();
 		this.instanceOutputBuffer = new LinkedList<Instance>();
 		this.bufferSize = 1000;
-		this.listContainer = new InstanceListContainer();
 	}
 	
 	public void removeFromOutputBuffer( Instance instance ) {
@@ -206,10 +222,10 @@ public class InstanceBuffer {
 		logger.debug("after crash reload done.");
 	}
 	
-	public Instance getNextJoinInstance() {
+	public Instance getNextJoinInstance( String macAddress ) {
 		Instance next = instanceJoinInputBuffer.poll();
 		if ( next != null ) {
-			logger.debug("serving join instance " + next.getSerial() );
+			logger.debug("serving SELECT instance " + next.getSerial() + " to " + macAddress );
 			instanceOutputBuffer.add(next);
 		}
 		return next;
@@ -267,25 +283,27 @@ public class InstanceBuffer {
 	
 	private List<Instance> loadJoinBuffer( int count, Experiment experiment ) {
 		List<Instance> preBuffer = null;
-		logger.debug("loading SELEC buffer");
+		logger.debug("loading SELECT buffer. current size: " + instanceJoinInputBuffer.size());
 		try {
 			Fragment running = getRunningFragment( experiment );
 			if ( running == null ) {
 				logger.debug("no SELECT fragments running");
 			} else {
 				logger.debug("running SELECT fragment found: " + running.getSerial() );
-				InstanceService ps = new InstanceService();
-				preBuffer = ps.getHeadJoin( count, running.getIdFragment() );
+				try {
+					InstanceService ps = new InstanceService();
+					preBuffer = ps.getHeadJoin( count, running.getIdFragment() );
+					logger.debug("found " + preBuffer.size() + " Instances for experiment " + experiment.getTagExec() + " Fragment " +
+					 running.getSerial() );
+				} catch (NotFoundException e) {
+					logger.debug("no more SELECT instances found in database for experiment " + experiment.getTagExec() +
+							" Fragment " + running.getSerial() );
+				}
 			}
-		} catch (NotFoundException e) {
-			logger.debug("no running SELECT instances found for experiment " + experiment.getTagExec() );
 		} catch (Exception e) {
 			logger.error( e.getMessage() );
 		}
-		
-		logger.debug("SELECT buffer size: " + instanceJoinInputBuffer.size() );
 		return preBuffer;
-		
 	}
 
 	private List<Instance> loadCommonBuffer( int count, Experiment experiment ) {
@@ -305,8 +323,6 @@ public class InstanceBuffer {
 		} catch ( Exception e) {
 			logger.error( e.getMessage() );
 		} 
-
-		logger.debug("common buffer size: " + instanceInputBuffer.size() );
 		return preBuffer;
 	}
 	

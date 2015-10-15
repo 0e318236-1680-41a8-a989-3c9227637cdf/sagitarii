@@ -51,7 +51,7 @@ public class WrapperHelper {
 	 *	Returns the complete path to the wrappers folder used by Teapot.  
 	 */
 	public String getWrapperFolder() {
-		return wrapperFolder + "/";
+		return wrapperFolder;
 	}
 	
 	/**
