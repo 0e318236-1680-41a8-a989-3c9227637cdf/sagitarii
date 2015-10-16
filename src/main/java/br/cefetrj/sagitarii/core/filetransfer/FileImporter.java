@@ -31,6 +31,7 @@ import br.cefetrj.sagitarii.core.types.InstanceStatus;
 import br.cefetrj.sagitarii.misc.PathFinder;
 import br.cefetrj.sagitarii.persistence.entity.Activity;
 import br.cefetrj.sagitarii.persistence.entity.Experiment;
+import br.cefetrj.sagitarii.persistence.entity.FileLight;
 import br.cefetrj.sagitarii.persistence.entity.Instance;
 import br.cefetrj.sagitarii.persistence.entity.Relation;
 import br.cefetrj.sagitarii.persistence.exceptions.NotFoundException;
@@ -169,6 +170,7 @@ public class FileImporter extends Thread {
 	
 	private int importFile( String experimentSerial, String fileName, Activity activity, Instance instance ) {
 		log = "Storing file " + fileName + " to database";
+		logger.debug( log + " : Experiment " + experimentSerial + " Activity " + activity.getSerial() + " Instance " + instance.getSerial()  );
 		int response = -1;
 		try {
 
@@ -197,7 +199,19 @@ public class FileImporter extends Thread {
 			fs.insertFile(file);
 			
 			response = file.getIdFile();
-
+			
+			logger.debug( "ID " + response + " assigned to File "+fileName+" : Experiment " + experimentSerial + " Activity " + activity.getSerial() + " Instance " + instance.getSerial()  );
+			
+			
+			logger.error("WILL CHECK THE NEW FILE OWNERSHIP NOW");
+			logger.error("ITS COSTLY : REMOVE THIS CHECK AS SOON AS POSSIBLE");
+			fs.newTransaction();
+			FileLight fileL = fs.getFileLight( response );
+			logger.error("DONE CHECKING NEW FILE " + response + " IMPORT: OWNER: " + fileL.getExperiment().getIdExperiment() );
+			if ( !experimentSerial.equals( fileL.getExperiment().getTagExec() ) ) {
+				logger.error(" *** WRONG OWNERSHIP ***");
+			}
+			
 		} catch ( Exception e ) {
 			logger.error( e.getMessage() );
 		}

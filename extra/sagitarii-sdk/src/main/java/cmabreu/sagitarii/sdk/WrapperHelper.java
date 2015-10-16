@@ -8,13 +8,6 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * This class will helps you with some useful tools.  
- * Will be passed to the processor {@link IWrapperProcessor#processLine( LineData lineData, WrapperHelper helper )} 
- * when processing each CSV line
- *  
- * @author Carlos Magno O. Abreu : magno.mabreu@gmail.com
- */
 public class WrapperHelper {
 	private String wrapperAlias;
 	private String wrapperFolder;
@@ -26,37 +19,22 @@ public class WrapperHelper {
 		this.workFolder = workFolder;
 	}
 
-	/**
-	 *	Returns the complete path to the activity instance inbox under exclusive work folder used by Teapot.  
-	 */
 	public String getInboxFolder() {
 		return workFolder + "/inbox/";
 	}
 
-	/**
-	 *	Returns the complete path to the activity instance outbox under exclusive work folder used by Teapot.  
-	 */
 	public String getOutboxFolder() {
 		return workFolder + "/outbox/";
 	}
 
-	/**
-	 *	Returns the complete path to the activity instance exclusive work folder used by Teapot.  
-	 */
 	public String getWorkFolder() {
 		return workFolder + "/";
 	}
 	
-	/**
-	 *	Returns the complete path to the wrappers folder used by Teapot.  
-	 */
 	public String getWrapperFolder() {
 		return wrapperFolder;
 	}
 	
-	/**
-	 *	Read a text file from wrappers folder.  
-	 */
 	public List<String> readFromLibraryFolder( String file ) throws Exception {
 		System.out.println( "[" + wrapperAlias + "] Read library: " + file );
 		ArrayList<String> list = new ArrayList<String>();
@@ -78,9 +56,7 @@ public class WrapperHelper {
 		return list;
 	}
 	
-	/**
-	 *	Execute an external application  
-	 */
+
 	public void runExternal( String application ) throws Exception {
 		Process process = null;
 		System.out.println( "[" + wrapperAlias + "] start external application" );
@@ -94,10 +70,17 @@ public class WrapperHelper {
         	process = new ProcessBuilder( args ).start();
         	
         	BufferedReader reader = new BufferedReader( new InputStreamReader(process.getInputStream() ) );
+        	BufferedReader readerErr = new BufferedReader( new InputStreamReader(process.getErrorStream() ) );
             String line="";
             while ((line = reader.readLine()) != null) {
         		System.out.println( "[" + wrapperAlias + ":EXTERNAL] : " + line );
             }
+            
+        	line="";
+            while ((line = readerErr.readLine()) != null) {
+        		System.out.println( "[" + wrapperAlias + ":EXTERNAL] : " + line );
+            }
+           
             process.waitFor();
     		System.out.println( "[" + wrapperAlias + "] Done " );
         } catch ( Exception e ) {
@@ -111,9 +94,6 @@ public class WrapperHelper {
         }
     }
 	
-	/**
-	 * If you need to move files
-	 */
 	public void moveFile(String source, String dest) throws Exception {
 		System.out.println( "[" + wrapperAlias + "] Move file " );
 		System.out.println( "[" + wrapperAlias + "]  > from " + source);
@@ -134,9 +114,6 @@ public class WrapperHelper {
 		}
 	}
 	
-	/**
-	 * If you need to copy files
-	 */
 	public void copyFile(String source, String dest) throws Exception {
 		System.out.println( "[" + wrapperAlias + "] Copy file " );
 		System.out.println( "[" + wrapperAlias + "]  > from " + source);

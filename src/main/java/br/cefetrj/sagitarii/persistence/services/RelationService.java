@@ -173,21 +173,28 @@ public class RelationService {
 				newTransaction();
 				rep.insertDomain( dom );
 				logger.debug("done creating domain for " + columnName );
+			} else {
+				rep.commit();
 			}
 		} catch ( Exception e ) {
 			e.printStackTrace();
 		}
 		
+		try {
+			rep.closeSession();
+		} catch ( Exception e ) {
+			
+		}
 	}
 
 	
 	public List<TableAttribute> getAttributes( String tableName ) throws Exception  {
 		Set<UserTableEntity> structure = getTableStructure( tableName );
 		List<TableAttribute> attributes = new ArrayList<TableAttribute>();
+		
 		for ( UserTableEntity inEnt : structure ) {
 			String name = inEnt.getData("column_name");
 			String type = inEnt.getData("data_type");
-			
 			String domainName = tableName + "." + name;
 			if ( DomainStorage.getInstance().domainExists(domainName)  ) {
 				type = "FILE";
@@ -199,6 +206,7 @@ public class RelationService {
 			attr.setTableName(tableName);
 			attributes.add( attr );
 		}
+		
 		return attributes;
 	}
 	

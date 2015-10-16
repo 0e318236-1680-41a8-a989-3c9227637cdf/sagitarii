@@ -12,7 +12,7 @@ import br.cefetrj.sagitarii.persistence.services.RelationService;
 
 @Action (value = "editTable", 
 results = { 
-	@Result ( location = "${dest}", name = "ok")
+	@Result ( location = "editTable.jsp", name = "ok")
 } , interceptorRefs= { @InterceptorRef("seguranca")	 }) 
 
 @ParentPackage("default")
@@ -22,11 +22,8 @@ public class EditTableAction extends BasicActionClass {
 	private String columnName;
 	private String columnType;
 	private String op;
-	private String dest; 
 	
 	public String execute(){
-		dest = "editTable?tableName=" + tableName;
-		
 		try {
 			
 			if ( op != null ) {
@@ -56,7 +53,6 @@ public class EditTableAction extends BasicActionClass {
 		} catch ( Exception e ) {
 			setMessageText( e.getMessage() );
 		}
-		
 		return "ok";
 	}
 
@@ -85,7 +81,4 @@ public class EditTableAction extends BasicActionClass {
 		this.columnType = columnType;
 	}
 	
-	public String getDest() {
-		return dest;
-	}
 }

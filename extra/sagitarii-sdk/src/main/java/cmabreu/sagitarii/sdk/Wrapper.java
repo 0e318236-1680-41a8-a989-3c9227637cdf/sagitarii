@@ -11,13 +11,6 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
-/**
- * This class is the Wrapper engine.
- * The Wrapper engine encapsulates all complex Sagitarii-related stuffs
- * so you can concentrate in you own job.
- * 
- * @author Carlos Magno O. Abreu : magno.mabreu@gmail.com
- */
 public class Wrapper {
 	private String workFolder; 
 	private String wrapperFolder; 
@@ -25,14 +18,6 @@ public class Wrapper {
 	private String wrapperAlias;
 	private WrapperHelper helper;
 	
-	/**
-	 * Constructor.
-	 * You must pass an alias short name ( 15 characters length ) to this wrapper.
-	 * The workFolder and wrapperFolder are the same passed at args[0] and args[1] from Teapot to your wrapper class.
-	 * Processor is your own implementation of {@link IWrapperProcessor}.
-	 * processLine() will be called line by line when you call process() 
-	 *  
-	 */
 	public Wrapper( String wrapperAlias, String workFolder, String wrapperFolder, IWrapperProcessor processor ) throws Exception {
 		if ( wrapperAlias == null ) {
 			wrapperAlias = "NULL_NAME";
@@ -52,26 +37,10 @@ public class Wrapper {
 		this.helper = new WrapperHelper( wrapperAlias, wrapperFolder, workFolder);
 	}
 
-	/**
-	 * The wrapper folder
-	 * 
-	 */
 	public String getWrapperFolder() {
 		return wrapperFolder;
 	}
 	
-	/**
-	 *	Execute the {@link IWrapperProcessor} implementation and pass the input CSV line by line (with header) to it.
-	 *	To get some data, use:
-	 *
-	 *  String myData = record.get("your_column_name");
-	 *  
-	 *  Don't forget to save your output data to the output List.
-	 *  Your processor MUST implement a List<String> to hold the output data.
-	 *  When you call save(), this class will call getOutputData() from your
-	 *  processor to get the data to send to Sagitarii.
-	 *  
-	 */
 	public void process() throws Exception {
 		System.out.println( "[" + wrapperAlias + "] Loading input ");
 		try {
@@ -119,10 +88,6 @@ public class Wrapper {
 		System.out.println( "[" + wrapperAlias + "] All done.");
 	}
 	
-	/**
-	 *	Save the output data.
-	 *	This data must be provided by the Wrapper processor.  
-	 */
 	public void save() throws Exception {
 		System.out.println( "[" + wrapperAlias + "] Saving output data...");
 		

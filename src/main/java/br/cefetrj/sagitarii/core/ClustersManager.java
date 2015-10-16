@@ -365,11 +365,17 @@ public class ClustersManager {
 		}
 	}
 
-	
+    private double getMemoryPercent( long freeMemory, long totalMemory) {
+    	try {
+    		return Math.round( (freeMemory * 100 ) / totalMemory );    	
+    	} catch ( Exception e ) {
+    		return 0;
+    	}
+    }
+    
 	public Cluster addOrUpdateCluster(ClusterType type, String javaVersion, String soFamily, String macAddress, 
 			String ipAddress, String machineName, Double cpuLoad, String soName, 
-			int availableProcessors, int maxAllowedTasks, long freeMemory, long totalMemory,
-			double memoryPercent) {
+			int availableProcessors, int maxAllowedTasks, long freeMemory, long totalMemory) {
 		Cluster retorno = null;
 		
 		Cluster clu = cm.getCluster(macAddress);
@@ -382,7 +388,7 @@ public class ClustersManager {
 			clu.setCpuLoad( cpuLoad );
 			clu.setTotalMemory(totalMemory);
 			clu.setFreeMemory(freeMemory);
-			clu.setMemoryPercent( memoryPercent );
+			clu.setMemoryPercent( getMemoryPercent( freeMemory, totalMemory ) );
 			clu.setMaxAllowedTasks( maxAllowedTasks );
 			clu.updateStatus();
 			retorno = clu;

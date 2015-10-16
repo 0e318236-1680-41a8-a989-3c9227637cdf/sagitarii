@@ -15,6 +15,10 @@ import getopt
 import csv
 import mathchem
 
+import sys
+import os
+sys.path.append(os.getcwd()) 
+
 from sage.graphs.graph_coloring import chromatic_number
 
 def geni(outputdir, arquivo, args):
@@ -24,8 +28,8 @@ def geni(outputdir, arquivo, args):
 	l = mols[0].adjacency_matrix()
 	l = Matrix(l)
 	G = Graph(l)
-	G.show()
-	##f.close()
+	## G.show()
+	## f.close()
 	args = args.split()
 	optlist, args = getopt.getopt(args, 'abcde:g')
 	ChromaticNumberNeeded = False
@@ -102,5 +106,3 @@ def geni(outputdir, arquivo, args):
 	z.writerow(["ChromaticNumber","ChromaticNumberComplement","LargestCliqueSize","LargestCliqueSizeComplement","kLargestDegree","NumberofEdges"])
 	z.writerow(lista)
 	f.close()
-
-

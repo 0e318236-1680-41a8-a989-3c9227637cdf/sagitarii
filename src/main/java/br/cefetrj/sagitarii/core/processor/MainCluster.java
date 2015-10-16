@@ -43,7 +43,6 @@ public class MainCluster implements Runnable {
     	return result;
     }   	
     
-
 	@Override
 	public void run() {
 		long freeMemory = 0;
@@ -53,17 +52,19 @@ public class MainCluster implements Runnable {
 			totalMemory = Configurator.getInstance().getTotalMemory();
 		} catch ( Exception e ) {  }
 			
-		Cluster cluster = ClustersManager.getInstance()
-				.addOrUpdateCluster(ClusterType.MAIN, "0.0", "Local System", macAddress, 
-						"Local Machine", "Sagitarii Server", getProcessCpuLoad(), 
-						"Main Cluster", 8, maxAllowedTasks, 
-						freeMemory, totalMemory, Math.round( (freeMemory * 100 ) / totalMemory ) );
-    	
     	try {
-			if ( cluster != null ) {
+
+    		Cluster cluster = ClustersManager.getInstance()
+    				.addOrUpdateCluster(ClusterType.MAIN, "0.0", "Local System", macAddress, 
+    						"Local Machine", "Sagitarii Server", getProcessCpuLoad(), 
+    						"Main Cluster", 8, maxAllowedTasks, 
+    						freeMemory, totalMemory );
+    		
+    		if ( cluster != null ) {
 				cluster.setAsMainCluster();
 				if ( currentTaskCount < maxAllowedTasks ) {
 					logger.debug("get new Instance from buffer");
+					
 					Instance pipe = Sagitarii.getInstance().getNextJoinInstance( macAddress );
 					if ( pipe != null ) {
 
@@ -133,10 +134,12 @@ public class MainCluster implements Runnable {
 						logger.debug("SELECT Instances not found in output buffer");
 					}
 				}
+			} else {
+				logger.debug("Main Cluster not found");
 			}
 
 		} catch ( Exception e ) {
-			cluster.setMessage(LogType.MAIN_CLUSTER, "critical error running Main Cluster: " + e.getMessage() );
+			 logger.error( "critical error running Main Cluster: " + e.getMessage() );
 		}
 		
 	}
