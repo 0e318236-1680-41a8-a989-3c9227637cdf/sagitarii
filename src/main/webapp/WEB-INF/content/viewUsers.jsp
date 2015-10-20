@@ -105,16 +105,6 @@
 				
 				<div id="rightBox"> 
 					<%@ include file="commonpanel.jsp" %>
-					
-					<div id="tblIds" class="userBoard" style="padding-bottom:5px;">
-						<div class="userBoardT1" style="text-align:center;width: 225px;">History : Click to repeat</div>
-						<div class="userBoardT2" style="text-align:center;width: 225px;overflow: hidden;">
-							<table>
-								<tr style="cursor:pointer"><td>fdsfdsfdsf sdfdsfdsfdsfdsfffsdfsfsdfdfgfdgdfgdfgfdgfdgfdgdfgdfgfdgfdgfdgdfgdfgfdgfdsdfsdfsdfsdfsfsdfsdfds</td></tr>
-							</table>
-						</div>
-					</div>						
-					
 				</div>
 				
 				
