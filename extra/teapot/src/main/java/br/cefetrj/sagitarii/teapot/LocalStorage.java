@@ -126,7 +126,10 @@ public class LocalStorage {
 				return false;
 			}
 		} catch ( Exception e ) {
-			error( "critical error when copying file " + file.getName() + ": " + e.getMessage() );
+			error( "critical error when copying file " + file.getName() + ": " );
+			for ( StackTraceElement ste : e.getStackTrace() ) {
+				error( "  " + ste.getClassName() );
+			}
 			return false;
 		}
 	}

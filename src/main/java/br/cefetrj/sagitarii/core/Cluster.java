@@ -589,7 +589,7 @@ public class Cluster {
 			LogService ls = new LogService();
 			ls.insetLogEntryList( logEntries );
 		} catch ( Exception e ) {
-			setMessage(LogType.SYSTEM, "cannot save log activity: " + e.getMessage() );
+			setMessage(LogType.SYSTEM, "cannot save log activity: " + e.getCause() + " " + e.getMessage() );
 		}
 		logEntries.clear();
 	}

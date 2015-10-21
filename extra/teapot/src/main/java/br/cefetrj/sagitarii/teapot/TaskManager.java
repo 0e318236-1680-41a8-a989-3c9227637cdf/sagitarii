@@ -469,8 +469,6 @@ public class TaskManager {
 				error("no activities found in instance ");
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			
 			error( "error starting process: " + e.getMessage() );
 			comm.send("activityManagerReceiver", "instanceId=" + instanceSerial + "&response=CANNOT_EXEC&node=" + tm.getMacAddress() );
 		}
