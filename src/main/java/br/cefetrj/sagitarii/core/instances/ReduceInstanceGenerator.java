@@ -105,6 +105,8 @@ public class ReduceInstanceGenerator implements IInstanceGenerator {
 						
 						pipe.setConsumptions(consumptions);
 						
+						logger.debug(" > Instance serial : " + pipe.getSerial() );
+						
 						pipes.add(pipe);
 					} 
 					

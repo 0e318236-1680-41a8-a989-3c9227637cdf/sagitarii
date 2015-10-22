@@ -154,7 +154,7 @@ public class FragmentInstancer {
 					logger.debug("will create instances for fragment " + frag.getSerial() );
 					Activity act = getEntrancePoint( frag );
 					if ( act != null ) {
-						logger.debug("entrance point: activity " + act.getTag() );
+						logger.debug("entrance point: activity " + act.getTag() + " (" + act.getExecutorAlias() + ")" );
 						// Check if any of source tables have any data...
 						if ( checkSourceDataAvailability( act ) ) {
 							instances = InstanceGeneratorFactory.getGenerator( act.getType() ).generateInstances(act, frag);
