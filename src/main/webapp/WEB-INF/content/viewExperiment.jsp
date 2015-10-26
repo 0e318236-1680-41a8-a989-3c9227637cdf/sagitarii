@@ -133,8 +133,8 @@
 								<tbody>
 									<c:forEach var="activity" items="${activities}">
 										<tr id="${activity.serial}">
-											<td class="tableCellFormRight">${activity.serial}&nbsp;</td>
-											<td class="tableCellFormRight">${activity.tag}&nbsp;</td>
+											<td class="tableCellFormRight"><a href="showSystemLog?activitySerial=${activity.serial}" target="__BLANK">${activity.serial}</a>&nbsp;</td>
+											<td class="tableCellFormRight"><a href="showSystemLog?activitySerial=${activity.serial}" target="__BLANK">${activity.tag}</a>&nbsp;</td>
 											<td class="tableCellFormRight">${activity.type}&nbsp;</td>
 											<td class="tableCellFormRight">${activity.executorAlias}&nbsp;</td>
 											<td class="tableCellFormRight">

@@ -4,7 +4,7 @@
 <img onclick="askLogout()" title="Logout" class="menuButton dicas" src="img/shutdown.png">
 <c:if test="${loggedUser.type == 'ADMIN'}">
 	<a href="viewText?fileName=logs/sagitarii.log"><img title="View Server Log" class="menuButton dicas" src="img/log.png"></a>
-	<a href="showSystemLog?type=NODE_STATUS"><img title="View System Log" class="menuButton dicas" src="img/log.png"></a>
+	<a href="showSystemLog?type=NODE_STATUS"><img title="View Node Status Log" class="menuButton dicas" src="img/log.png"></a>
 	<a href="viewRunning"><img title="Running Experiments" class="menuButton dicas" src="img/running.png"></a>
 	<a href="viewDeliveryControl"><img title="View Instance Delivery Control" class="menuButton dicas" src="img/fragment.png"></a>
 	<a href="viewExecutors"><img title="View Executors" class="menuButton dicas" src="img/gears.png"></a>

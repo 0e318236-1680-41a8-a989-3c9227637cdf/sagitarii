@@ -62,16 +62,6 @@ public class TaskRunner extends Thread {
 	}
 	
 	
-	public void notifySagitarii( String message ) {
-		message = "[TASKRUNNER] " + message; 
-		try {
-			String parameters = "macAddress=" + configurator.getSystemProperties().getMacAddress() + "&errorLog=" + URLEncoder.encode( message, "UTF-8");
-			communicator.send("receiveErrorLog", parameters);
-		} catch ( Exception e ) {
-			logger.error("cannot notify Sagitarii: " + e.getMessage() );
-		}
-	}	
-	
 	public TaskRunner( String response, Communicator communicator, Configurator configurator ) {
 		this.communicator = communicator;
 		this.configurator = configurator;
@@ -106,12 +96,10 @@ public class TaskRunner extends Thread {
 		startTimeMillis = Calendar.getInstance().getTimeInMillis();
 		try {
 			logger.debug("[" + serial + "] runner thread start");
-			notifySagitarii("thread " + serial + " started");
 
 			// Blocking call 
 			teapot.process( response );
 			
-			notifySagitarii("thread " + serial + " finished");
 			logger.debug("[" + serial + "] runner thread end");
 		} catch ( Exception e ) {
 			e.printStackTrace();

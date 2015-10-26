@@ -54,5 +54,11 @@ public class LogService {
 		return preList;	
 	}
 	
+	public List<LogEntry> getListByActivity( String activitySerial ) throws NotFoundException {
+		logger.debug( "retrieving log list..." );  
+		List<LogEntry> preList = rep.getListByActivity( activitySerial );
+		logger.debug( "done." );  
+		return preList;	
+	}
 	
 }

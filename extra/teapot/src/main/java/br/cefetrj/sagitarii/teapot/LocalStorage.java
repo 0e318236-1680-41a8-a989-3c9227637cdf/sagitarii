@@ -1,7 +1,6 @@
 package br.cefetrj.sagitarii.teapot;
 
 import java.io.File;
-import java.net.URLEncoder;
 import java.nio.file.Files;
 
 import br.cefetrj.sagitarii.teapot.comm.Communicator;
@@ -39,6 +38,9 @@ public class LocalStorage {
 	}
 	
 	public void notifySagitarii( String message ) {
+
+		Notifier.getInstance(comm, configurator).notifySagitarii(message, act);
+		/*
 		String executor = "STARTING";
 		executor = act.getExecutor();
 		message = "[" + executor + "] " + message;
@@ -48,7 +50,9 @@ public class LocalStorage {
 		} catch ( Exception e ) {
 			e.printStackTrace();
 		}
+		*/
 	}
+	
 	public synchronized boolean downloadAndCopy( FileUnity file, String dest, Downloader dl )  {
 		String url = configurator.getHostURL() + "/getFile?idFile="+ file.getId()+"&macAddress=" + configurator.getSystemProperties().getMacAddress();
 		String targetPath = getLocation() + "/" + file.getId() + "/";

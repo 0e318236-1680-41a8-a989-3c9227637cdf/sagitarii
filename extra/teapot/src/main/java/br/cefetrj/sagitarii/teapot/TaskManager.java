@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -145,10 +144,8 @@ public class TaskManager {
 	
 	
 	public void notifySagitarii( String message ) {
-		String executor = "STARTING";
-		if ( currentActivation != null ) {
-			executor = currentActivation.getExecutor();
-		}
+		Notifier.getInstance(comm, configurator).notifySagitarii( message, currentActivation);
+		/*
 		message = "[" + executor + "] " + message;
 		try {
 			String parameters = "macAddress=" + tm.getMacAddress() + "&errorLog=" + URLEncoder.encode( message, "UTF-8");
@@ -156,6 +153,7 @@ public class TaskManager {
 		} catch ( Exception e ) {
 			e.printStackTrace();
 		}
+		*/
 	}
 	
 	/**

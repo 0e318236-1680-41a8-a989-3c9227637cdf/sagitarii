@@ -83,7 +83,7 @@ public class MainCluster implements Runnable {
 						Activation act = acts.get(0);
 						ClustersManager.getInstance().acceptTask( pipe.getSerial(), macAddress);
 						
-						cluster.setMessage(LogType.MAIN_CLUSTER, "running query for executor " + act.getExecutor() );
+						cluster.setMessage(LogType.MAIN_CLUSTER, "running query for executor " + act.getExecutor(), act.getActivitySerial() );
 
 						List<String> console = new ArrayList<String>();
 						List<String> execLog = new ArrayList<String>();
@@ -94,10 +94,10 @@ public class MainCluster implements Runnable {
 						try {
 							mcqw.executeQuery( act );
 							execLog.add("SQL executed.");
-							cluster.setMessage( LogType.MAIN_CLUSTER, "done query for executor " + act.getExecutor() );
+							cluster.setMessage( LogType.MAIN_CLUSTER, "done query for executor " + act.getExecutor(), act.getActivitySerial() );
 							logger.debug("done query for executor " + act.getExecutor());
 						} catch ( Exception e ) {
-							cluster.setMessage( LogType.MAIN_CLUSTER,"error " + e.getMessage() +  " when running query for executor " + act.getExecutor() );
+							cluster.setMessage( LogType.MAIN_CLUSTER,"error " + e.getMessage() +  " when running query for executor " + act.getExecutor(), act.getActivitySerial() );
 							String errorString = "cannot finish instance " + pipe.getSerial() + ". Activity " + act.getActivitySerial() + " not found.";
 							logger.error( errorString );
 							for ( StackTraceElement ste : e.getStackTrace() ) {
@@ -118,7 +118,7 @@ public class MainCluster implements Runnable {
 							String errorString = "cannot finish instance " + pipe.getSerial() + ". Activity " + act.getActivitySerial() + " not found.";
 							execLog.add( errorString );
 							logger.error( errorString );
-							cluster.setMessage(LogType.MAIN_CLUSTER, errorString );
+							cluster.setMessage(LogType.MAIN_CLUSTER, errorString, act.getActivitySerial() );
 						}
 						
 						InstanceDeliveryControl.getInstance().addUnit(pipe, macAddress);

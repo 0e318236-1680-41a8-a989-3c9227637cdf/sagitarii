@@ -85,7 +85,7 @@
 											</tr>
 											<c:forEach var="fragActivity" items="${fragment.activities}">
 												<tr>
-													<td >${fragActivity.serial}</td>
+													<td ><a href="showSystemLog?activitySerial=${fragActivity.serial}" target="__BLANK">${fragActivity.serial}</a></td>
 													<td >${fragActivity.tag}</td>
 												</tr>
 											</c:forEach>

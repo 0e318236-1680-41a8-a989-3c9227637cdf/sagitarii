@@ -20,17 +20,6 @@ public class Watchdog {
 		this.configurator = configurator;
 	}
 	
-	public void notifySagitarii( String message ) {
-		logger.debug( "notify Sagitarii: " + message );
-		message = "[WATCHDOG] " + message; 
-		try {
-			String parameters = "macAddress=" + configurator.getSystemProperties().getMacAddress() + "&errorLog=" + URLEncoder.encode( message, "UTF-8");
-			communicator.send("receiveErrorLog", parameters);
-		} catch ( Exception e ) {
-			logger.error("cannot notify Sagitarii: " + e.getMessage() );
-		}
-	}	
-	
 	private Double getCpuFromProcess( String process ) {
 		//PID USER PR NI VIRT RES SHR S %CPU %MEM TIME+ COMMAND
 		Double result = 0.0;
@@ -88,7 +77,6 @@ public class Watchdog {
 						if ( cpu >= 99 ) {
 							logger.debug(" > You bastard! I'll kill you...");
 							kill( task.getPID() );
-							notifySagitarii("the task " + task.getActivation().getExecutor() + " is overloading the CPU.");
 						}
 					}
 				}

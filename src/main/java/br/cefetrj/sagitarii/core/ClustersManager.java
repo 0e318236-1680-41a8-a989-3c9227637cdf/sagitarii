@@ -132,10 +132,10 @@ public class ClustersManager {
 		}
 	}
 
-	public void receiveNodeLog( String message, String macAddress) {
-		logger.debug( "node " + macAddress + " report: " + message );
+	public void receiveNodeLog( String activitySerial, String message, String macAddress) {
+		logger.debug( "node " + macAddress + " report (" + activitySerial + "): " + message );
 		Cluster clu = getCluster(macAddress);
-		clu.setMessage( LogType.NODE, message );
+		clu.setMessage( LogType.NODE, message, activitySerial );
 	}
 
 	
@@ -156,7 +156,7 @@ public class ClustersManager {
 	public void refuseTask( String instanceId, String macAddress ) {
 		logger.debug( "node " + macAddress + " refused task in instance " + instanceId );
 		Cluster clu = cm.getCluster(macAddress);
-		clu.setMessage(LogType.SYSTEM, "Cannot run task in instance " + instanceId );
+		clu.setMessage(LogType.SYSTEM, "Cannot run task in instance " + instanceId, "" );
 		clu.resubmitInstanceToBuffer( instanceId );
 	}
 
@@ -169,7 +169,7 @@ public class ClustersManager {
 				cluster.confirmReceiveData( rd );
 			} catch ( Exception e ) {
 				logger.error("activity " + rd.getInstance().getSerial() + ": " + e.getMessage() );
-				cluster.setMessage( LogType.SYSTEM, "activity " + rd.getInstance().getSerial() + ": " + e.getMessage()  );
+				cluster.setMessage( LogType.SYSTEM, e.getMessage(), rd.getInstance().getSerial() );
 				throw e;
 			}
 		}
@@ -183,7 +183,7 @@ public class ClustersManager {
 				cluster.finishInstance( rd );
 			} catch ( Exception e ) {
 				logger.error("activity " + rd.getInstance().getSerial() + ": " + e.getMessage() );
-				cluster.setMessage( LogType.SYSTEM, "activity " + rd.getInstance().getSerial() + ": " + e.getMessage()  );
+				cluster.setMessage( LogType.SYSTEM, e.getMessage(), rd.getInstance().getSerial()  );
 				throw e;
 			}
 		}

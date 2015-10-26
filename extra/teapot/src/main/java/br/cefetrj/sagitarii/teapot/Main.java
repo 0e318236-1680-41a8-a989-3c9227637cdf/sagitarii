@@ -3,7 +3,6 @@ package br.cefetrj.sagitarii.teapot;
 import java.io.File;
 import java.io.IOException;
 import java.net.ConnectException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -460,6 +459,9 @@ public class Main {
 	}
 	
 	public static void notifySagitarii( String message ) {
+		// Will do nothing for now.. too much network noise !
+		// Notifier.getInstance(communicator, configurator).notifySagitarii("MAIN", message, null);
+		/*
 		logger.debug( "notify Sagitarii: " + message );
 		message = "[MAIN] " + message; 
 		try {
@@ -468,6 +470,7 @@ public class Main {
 		} catch ( Exception e ) {
 			logger.error("cannot notify Sagitarii: " + e.getMessage() );
 		}
+		*/
 	}	
 	
 	private static void inform( String instanceSerial ) {

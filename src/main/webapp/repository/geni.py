@@ -16,8 +16,7 @@ import csv
 import mathchem
 
 import sys
-import os
-sys.path.append(os.getcwd()) 
+sys.path.append("/etc/teapot/wrappers") 
 
 from sage.graphs.graph_coloring import chromatic_number
 
@@ -86,6 +85,7 @@ def geni(outputdir, arquivo, args):
 	else:
 		lista[3] = -1	
 	if kLargestDegree == True:
+		load("/etc/teapot/wrappers/Degree.py")
 		LD = Degree(G,int(ParamkLargestDegree))
 		lista[4] = LD
 	else:

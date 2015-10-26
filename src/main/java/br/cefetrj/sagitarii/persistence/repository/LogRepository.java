@@ -17,7 +17,7 @@ public class LogRepository extends BasicRepository {
 	}
 
 	public List<LogEntry> getList() throws NotFoundException {
-		logger.debug("Recuperando lista de logs..." );
+		logger.debug("Retrieving log list..." );
 		DaoFactory<LogEntry> df = new DaoFactory<LogEntry>();
 		IDao<LogEntry> fm = df.getDao(this.session, LogEntry.class);
 		List<LogEntry> logs = null;
@@ -28,12 +28,12 @@ public class LogRepository extends BasicRepository {
 			throw e;
 		}
 		closeSession();
-		logger.debug("Concluido: " + logs.size() + " logs.");
+		logger.debug("Done: " + logs.size() + " logs.");
 		return logs;
 	}
 	
 	public List<LogEntry> getList( String type) throws NotFoundException {
-		logger.debug("Recuperando lista de logs..." );
+		logger.debug("Retrieving log list..." );
 		DaoFactory<LogEntry> df = new DaoFactory<LogEntry>();
 		IDao<LogEntry> fm = df.getDao(this.session, LogEntry.class);
 		List<LogEntry> logs = null;
@@ -44,7 +44,23 @@ public class LogRepository extends BasicRepository {
 			throw e;
 		}
 		closeSession();
-		logger.debug("Concluido: " + logs.size() + " logs.");
+		logger.debug("Done: " + logs.size() + " logs.");
+		return logs;
+	}
+
+	public List<LogEntry> getListByActivity( String activitySerial ) throws NotFoundException {
+		logger.debug("Retrieving log list for activity " + activitySerial );
+		DaoFactory<LogEntry> df = new DaoFactory<LogEntry>();
+		IDao<LogEntry> fm = df.getDao(this.session, LogEntry.class);
+		List<LogEntry> logs = null;
+		try {
+			logs = fm.getList("select * from logs where activity_serial = '"+ activitySerial +"' order by date_time asc");
+		} catch ( Exception e ) {
+			closeSession();
+			throw e;
+		}
+		closeSession();
+		logger.debug("Done: " + logs.size() + " logs.");
 		return logs;
 	}
 
