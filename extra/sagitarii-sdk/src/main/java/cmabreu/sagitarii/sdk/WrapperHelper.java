@@ -114,6 +114,19 @@ public class WrapperHelper {
 		}
 	}
 	
+	public List<String> scanFolder( String folder ) {
+		System.out.println( "[" + wrapperAlias + "] Scanning folder " + folder + "..." );
+		List<String> folderContent = new ArrayList<String>();
+		File file = new File( folder );
+	    for ( final File fileEntry : file.listFiles() ) {
+	        if ( !fileEntry.isDirectory()) {
+	            folderContent.add( fileEntry.getName() );
+	        }
+	    }
+		System.out.println( "[" + wrapperAlias + "] Found " + folderContent.size() + " files. ");
+	    return folderContent;
+	}
+	
 	public void copyFile(String source, String dest) throws Exception {
 		System.out.println( "[" + wrapperAlias + "] Copy file " );
 		System.out.println( "[" + wrapperAlias + "]  > from " + source);
