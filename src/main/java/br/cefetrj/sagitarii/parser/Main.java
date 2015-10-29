@@ -13,7 +13,7 @@ public class Main {
 	
 	private static void parseExpression(String drinkSentence) {
 	    // Get our lexer
-	    SagitariiLexer lexer = new SagitariiLexer(new ANTLRInputStream(drinkSentence));
+	    SagitariiLexer lexer = new SagitariiLexer(new ANTLRInputStream(drinkSentence) );
 	 
 	    // Get a list of matched tokens
 	    CommonTokenStream tokens = new CommonTokenStream(lexer);
