@@ -54,7 +54,7 @@ public class ExperimentPerformance {
 	
 	private long getSerialTimeMillis() {
 		logger.debug("get serial time (ms) for experiment " + experiment.getTagExec() );
-		int qtd = 0;
+		long qtd = 0;
 		try {
 			RelationService rs = new RelationService();
 			Set<UserTableEntity> result = rs.genericFetchList("select sum(elapsed_millis) as soma from "
@@ -65,7 +65,7 @@ public class ExperimentPerformance {
 			if ( res.size() > 0 ) {
 				UserTableEntity ute = res.get(0);
 				String sQtd = ute.getData("soma");
-				qtd = Integer.valueOf( sQtd );
+				qtd = Long.valueOf( sQtd );
 			}
 		} catch ( Exception e ) {
 			logger.error( e.getMessage() );
