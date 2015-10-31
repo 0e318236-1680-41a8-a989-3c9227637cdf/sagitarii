@@ -1,7 +1,9 @@
 package br.cefetrj.sagitarii.teapot;
 
 import java.io.File;
+import java.nio.file.CopyOption;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 import br.cefetrj.sagitarii.teapot.comm.Communicator;
 import br.cefetrj.sagitarii.teapot.comm.Downloader;
@@ -12,7 +14,12 @@ public class LocalStorage {
 	private StorageLocker locker;
 	private Activation act;
 	private Communicator comm;
-	private Logger logger = LogManager.getLogger( this.getClass().getName() ); 
+	private Logger logger = LogManager.getLogger( this.getClass().getName() );
+	
+    private CopyOption[] options = new CopyOption[]{
+  	      StandardCopyOption.REPLACE_EXISTING,
+  	      StandardCopyOption.COPY_ATTRIBUTES,
+    }; 				
 
 	public String getLocation() {
 		return configurator.getSystemProperties().getLocalStorage();
@@ -38,19 +45,7 @@ public class LocalStorage {
 	}
 	
 	public void notifySagitarii( String message ) {
-
 		Notifier.getInstance(comm, configurator).notifySagitarii(message, act);
-		/*
-		String executor = "STARTING";
-		executor = act.getExecutor();
-		message = "[" + executor + "] " + message;
-		try {
-			String parameters = "macAddress=" + configurator.getSystemProperties().getMacAddress() + "&errorLog=" + URLEncoder.encode( message, "UTF-8");
-			comm.send("receiveErrorLog", parameters);
-		} catch ( Exception e ) {
-			e.printStackTrace();
-		}
-		*/
 	}
 	
 	public synchronized boolean downloadAndCopy( FileUnity file, String dest, Downloader dl )  {
@@ -112,7 +107,7 @@ public class LocalStorage {
 			File src = new File(source);
 			File trgt = new File(dest);
 			if ( src.exists() ) {
-			    Files.copy( src.toPath(), trgt.toPath() );
+			    Files.copy( src.toPath(), trgt.toPath(), options );
 			    if ( !trgt.exists() ) {
 					error("file " + file.getName() + " NOT FOUND after copy to " + dest );
 					return false;
@@ -131,8 +126,9 @@ public class LocalStorage {
 			}
 		} catch ( Exception e ) {
 			error( "critical error when copying file " + file.getName() + ": " );
+			error( e.getMessage() );
 			for ( StackTraceElement ste : e.getStackTrace() ) {
-				error( "  " + ste.getClassName() );
+				error( "  " + ste.getClassName() + " " + ste.getLineNumber() );
 			}
 			return false;
 		}

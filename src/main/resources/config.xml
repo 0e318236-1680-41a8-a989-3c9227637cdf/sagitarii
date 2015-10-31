@@ -20,7 +20,7 @@
 		<CSVDelimiter>,</CSVDelimiter>
 		<useDynamicLoadBalancer>true</useDynamicLoadBalancer>
 		<databaseName>sagitarii</databaseName>
-		<userName>sagitarii</userName>
+		<userName>admin</userName>
 		<password>Chiron2014!</password>
 	</sagitarii>
 	

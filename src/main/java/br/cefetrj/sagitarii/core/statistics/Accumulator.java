@@ -8,10 +8,10 @@ import br.cefetrj.sagitarii.misc.DateLibrary;
 import br.cefetrj.sagitarii.persistence.entity.TimeControl;
 
 public class Accumulator {
-	private long averageMillis = 0;
+	private Long averageMillis = 0L;
 	private int calculatedCount = 0;
 	private String hash;
-	private long totalAgeMillis = 0;
+	private Long totalAgeMillis = 0L;
 	private int idTimeControl = -1;
 	private String content;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
@@ -28,6 +28,7 @@ public class Accumulator {
 		this.hash = du.getHash();
 		this.content = du.getInstanceActivities();
 		addToStack( du );
+		logger.debug("[AC] new Accumulator for " + content + ": " + averageMillis + " | " + totalAgeMillis + " | " + calculatedCount );
 	}
 
 	public Accumulator( TimeControl tc  ) {
@@ -37,6 +38,7 @@ public class Accumulator {
 		this.idTimeControl = tc.getIdTimeControl();
 		this.totalAgeMillis = tc.getTotalAgeMilis();
 		this.content = tc.getContent();
+		logger.debug("[DB] new Accumulator for " + content + ": " + averageMillis + " | " + totalAgeMillis + " | " + calculatedCount );
 	}
 	
 	public String getContent() {
@@ -48,10 +50,14 @@ public class Accumulator {
 	}
 	
 	public void addToStack( DeliveryUnit du ) {
+		Long duAgeMillis = du.getAgeMillis();;
+		logger.debug("updating average count for " + content + ": " + averageMillis + " | " + totalAgeMillis + " | " + calculatedCount + " | " + duAgeMillis );
 		calculatedCount++;
-		totalAgeMillis = totalAgeMillis + du.getAgeMillis();
-		averageMillis = totalAgeMillis / calculatedCount;
-		logger.debug("updating average count for " + content + ": " + averageMillis + " = " + totalAgeMillis + " / " + calculatedCount + "(" + du.getAgeMillis() + ")");
+		Long newTotalAgeMillis = totalAgeMillis + duAgeMillis;
+		logger.debug(newTotalAgeMillis + " = " + totalAgeMillis + " + " +duAgeMillis);
+		averageMillis = newTotalAgeMillis / calculatedCount;
+		logger.debug("new average count for " + content + ": " + averageMillis + " = " + newTotalAgeMillis + " / " + calculatedCount );
+		totalAgeMillis = newTotalAgeMillis;
 	}
 	
 	public int getCalculatedCount() {
