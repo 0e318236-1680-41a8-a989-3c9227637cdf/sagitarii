@@ -468,7 +468,7 @@ public class Cluster {
 		cleanUp();
 		ClusterStatus oldStatus = this.status;
 		this.age++;
-		if ( age > 15 ) {
+		if ( age > 10 ) {
 			this.status = ClusterStatus.DEAD;
 			clearSignals();
 		} else { 

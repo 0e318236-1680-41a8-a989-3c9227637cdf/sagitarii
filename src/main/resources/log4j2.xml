@@ -14,7 +14,7 @@
 	
 	<loggers>
 
-		<Logger name="br.cefetrj.sagitarii.metrics.ExperimentPerformance" level="error" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.metrics.ExperimentPerformance" level="debug" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 
@@ -78,7 +78,7 @@
 			<appender-ref ref="File"/> 
 		</Logger>
 
-		<Logger name="br.cefetrj.sagitarii.core.instances.ReduceInstanceGenerator" level="debug" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.core.instances.ReduceInstanceGenerator" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 
