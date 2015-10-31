@@ -58,7 +58,7 @@ public class ExperimentPerformance {
 		try {
 			RelationService rs = new RelationService();
 			Set<UserTableEntity> result = rs.genericFetchList("select sum(elapsed_millis) as soma from "
-					+ "instances where id_fragment in ( select id_fragment from fragments where id_experiment = "+
+					+ "instances where cores_used > 0 and id_fragment in ( select id_fragment from fragments where id_experiment = "+
 					experiment.getIdExperiment()+" )");
 			
 			List<UserTableEntity> res = new ArrayList<UserTableEntity> ( result );
@@ -92,7 +92,7 @@ public class ExperimentPerformance {
 		try {
 			RelationService rs = new RelationService();
 			Set<UserTableEntity> result = rs.genericFetchList("select avg( cores_used ) as cores from "
-					+ "instances where id_fragment in ( select id_fragment from fragments where id_experiment = "+
+					+ "instances where cores_used > 0 and id_fragment in ( select id_fragment from fragments where id_experiment = "+
 					experiment.getIdExperiment()+" ) and status = 'FINISHED'");
 			
 			List<UserTableEntity> res = new ArrayList<UserTableEntity> ( result );
@@ -142,7 +142,7 @@ public class ExperimentPerformance {
 		try {
 			RelationService rs = new RelationService();
 			Set<UserTableEntity> result = rs.genericFetchList("select sum( real_finish_time_millis - real_start_time_millis ) as sum from "
-					+ "instances where id_fragment in ( select id_fragment from fragments where id_experiment = "+
+					+ "instances where cores_used > 0 and id_fragment in ( select id_fragment from fragments where id_experiment = "+
 					experiment.getIdExperiment()+" ) and status = 'FINISHED'");
 			
 			List<UserTableEntity> res = new ArrayList<UserTableEntity> ( result );

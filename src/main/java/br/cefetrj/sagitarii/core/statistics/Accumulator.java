@@ -1,5 +1,8 @@
 package br.cefetrj.sagitarii.core.statistics;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import br.cefetrj.sagitarii.core.delivery.DeliveryUnit;
 import br.cefetrj.sagitarii.misc.DateLibrary;
 import br.cefetrj.sagitarii.persistence.entity.TimeControl;
@@ -11,6 +14,7 @@ public class Accumulator {
 	private long totalAgeMillis = 0;
 	private int idTimeControl = -1;
 	private String content;
+	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 	
 	public int getIdTimeControl() {
 		return idTimeControl;
@@ -47,6 +51,7 @@ public class Accumulator {
 		calculatedCount++;
 		totalAgeMillis = totalAgeMillis + du.getAgeMillis();
 		averageMillis = totalAgeMillis / calculatedCount;
+		logger.debug("updating average count for " + content + ": " + averageMillis + " = " + totalAgeMillis + " / " + calculatedCount + "(" + du.getAgeMillis() + ")");
 	}
 	
 	public int getCalculatedCount() {

@@ -14,7 +14,11 @@
 	
 	<loggers>
 
-		<Logger name="br.cefetrj.sagitarii.metrics.ExperimentPerformance" level="debug" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.core.statistics.Accumulator" level="debug" additivity="false"> 
+			<appender-ref ref="File"/> 
+		</Logger>
+
+		<Logger name="br.cefetrj.sagitarii.metrics.ExperimentPerformance" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 
