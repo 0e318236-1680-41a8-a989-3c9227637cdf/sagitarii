@@ -147,6 +147,16 @@ public class InstanceDeliveryControl {
 		}
 	}
 	
+	public void claimInstance( String macAddress ) {
+		ddd
+		for ( DeliveryUnit unity : getUnits() ) {
+			if ( macAddress.equals( unity.getMacAddress() ) ) {
+				logger.debug("force asking for Instance " + instance );
+				ClustersManager.getInstance().inform( macAddress, unity.getInstance().getSerial() );
+			}
+		}
+	}
+
 	public synchronized List<DeliveryUnit> getUnits() {
 		return new ArrayList<DeliveryUnit>( units );
 	}

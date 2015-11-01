@@ -36,6 +36,13 @@ public class ClustersManager {
 		return cm;
 	}
 	
+	private void checkLazy() {
+		for ( Cluster cluster : getClusterList() ) {
+			if ( cluster.getStatus() != ClusterStatus.IDLE ) continue;
+			cluster.claimInstances();
+		}
+	}
+	
 	public void saveMetrics() {
 		try {
 			String path = PathFinder.getInstance().getPath() + "/metrics/";
