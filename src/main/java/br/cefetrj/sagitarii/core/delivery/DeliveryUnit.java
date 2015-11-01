@@ -89,11 +89,16 @@ public class DeliveryUnit {
 			if( receiveTime != null ) {
 				endTime = receiveTime;
 			} 
-			DateLibrary.getInstance().setTo( deliverTime );
-			Calendar data = Calendar.getInstance();
-			data.setTime(endTime);
-			long millis = DateLibrary.getInstance().getDiffMillisTo( data );
-			return millis;
+			
+			Long endMillis = endTime.getTime();
+			Long deliverMillis = deliverTime.getTime(); 
+			
+			//DateLibrary.getInstance().setTo( deliverTime );
+			//Calendar data = Calendar.getInstance();
+			//data.setTime(endTime);
+			//long millis = DateLibrary.getInstance().getDiffMillisTo( data );
+			//return millis;
+			return endMillis - deliverMillis;
 		} catch ( Exception e ) {
 			return 0;
 		}

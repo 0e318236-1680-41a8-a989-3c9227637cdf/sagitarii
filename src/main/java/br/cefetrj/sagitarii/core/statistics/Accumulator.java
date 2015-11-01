@@ -50,7 +50,7 @@ public class Accumulator {
 	}
 	
 	public void addToStack( DeliveryUnit du ) {
-		Long duAgeMillis = du.getAgeMillis();;
+		Long duAgeMillis = du.getAgeMillis();
 		logger.debug("updating average count for " + content + ": " + averageMillis + " | " + totalAgeMillis + " | " + calculatedCount + " | " + duAgeMillis );
 		calculatedCount++;
 		Long newTotalAgeMillis = totalAgeMillis + duAgeMillis;
