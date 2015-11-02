@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import br.cefetrj.sagitarii.core.Cluster;
 import br.cefetrj.sagitarii.core.ClustersManager;
 import br.cefetrj.sagitarii.core.config.Configurator;
 import br.cefetrj.sagitarii.core.statistics.Accumulator;
@@ -147,12 +148,12 @@ public class InstanceDeliveryControl {
 		}
 	}
 	
-	public void claimInstance( String macAddress ) {
-		ddd
+	public void claimInstance( Cluster cluster ) {
+		logger.debug("node " + cluster.getmacAddress() + " is idle. check IDC for lost instances...");
 		for ( DeliveryUnit unity : getUnits() ) {
-			if ( macAddress.equals( unity.getMacAddress() ) ) {
-				logger.debug("force asking for Instance " + instance );
-				ClustersManager.getInstance().inform( macAddress, unity.getInstance().getSerial() );
+			if ( cluster.getmacAddress().equals( unity.getMacAddress() ) ) {
+				logger.debug(" > " + unity.getInstance().getSerial() );
+				cluster.resubmitInstanceToBuffer( unity.getInstance().getSerial() );
 			}
 		}
 	}

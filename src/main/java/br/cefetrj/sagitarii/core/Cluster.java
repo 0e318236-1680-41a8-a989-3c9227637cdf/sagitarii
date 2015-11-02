@@ -64,6 +64,7 @@ public class Cluster {
 	private NodeVMMonitorEntity metricsVmRam;
 	private double memoryPercent;
 	private String timeWhenGoesDead = "";
+	private int informRepeatCount = 0;
 	
 	public void setMemoryPercent(double memoryPercent) {
 		this.memoryPercent = memoryPercent;
@@ -199,6 +200,10 @@ public class Cluster {
 	}
 	
 	public void inform( String instanceSerial ) {
+		informRepeatCount++;
+		if ( informRepeatCount < 20 ) return;
+		informRepeatCount = 0;
+		
 		logger.debug("asking Teapot for lost instance " + instanceSerial + " working at node " + macAddress );
 		
 		cleanUp();
@@ -214,10 +219,10 @@ public class Cluster {
 		
 		if ( amILookingFor(instanceSerial) ) {
 			logger.debug("already waiting for instance " + lostInstance);
-			return;
+		} else {
+			askingForInstance = true;
+			lostInstance = instanceSerial;
 		}
-		askingForInstance = true;
-		lostInstance = instanceSerial;
 	}
 	
 	public void restart() {

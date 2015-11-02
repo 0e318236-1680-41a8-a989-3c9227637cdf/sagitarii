@@ -14,6 +14,10 @@
 	
 	<loggers>
 
+		<Logger name="br.cefetrj.sagitarii.core.delivery.DeliveryUnit" level="debug" additivity="false"> 
+			<appender-ref ref="File"/> 
+		</Logger>
+
 		<Logger name="br.cefetrj.sagitarii.core.statistics.Accumulator" level="debug" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
@@ -124,7 +128,7 @@
 			<appender-ref ref="File"/> 
 		</Logger>
 
-		<Logger name="br.cefetrj.sagitarii.core.ClustersManager" level="error" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.core.ClustersManager" level="debug" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 		

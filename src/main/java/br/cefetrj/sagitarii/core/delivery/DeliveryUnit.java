@@ -6,9 +6,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import br.cefetrj.sagitarii.core.processor.Activation;
 import br.cefetrj.sagitarii.core.processor.XMLParser;
-import br.cefetrj.sagitarii.misc.DateLibrary;
 import br.cefetrj.sagitarii.persistence.entity.Instance;
 
 public class DeliveryUnit {
@@ -19,6 +21,7 @@ public class DeliveryUnit {
 	private Date receiveTime;
 	private String hash;
 	private boolean delayed = false;
+	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 	
 	public String getInstanceActivities() {
 		String prefix = "";
@@ -92,6 +95,8 @@ public class DeliveryUnit {
 			
 			Long endMillis = endTime.getTime();
 			Long deliverMillis = deliverTime.getTime(); 
+			
+			logger.debug("calculating age : start=" + deliverMillis + " end="+endMillis + " age=" + (endMillis - deliverMillis));
 			
 			//DateLibrary.getInstance().setTo( deliverTime );
 			//Calendar data = Calendar.getInstance();

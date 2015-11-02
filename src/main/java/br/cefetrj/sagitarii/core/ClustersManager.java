@@ -39,7 +39,7 @@ public class ClustersManager {
 	private void checkLazy() {
 		for ( Cluster cluster : getClusterList() ) {
 			if ( cluster.getStatus() != ClusterStatus.IDLE ) continue;
-			cluster.claimInstances();
+			InstanceDeliveryControl.getInstance().claimInstance( cluster );
 		}
 	}
 	
@@ -370,6 +370,7 @@ public class ClustersManager {
 		for ( Cluster clu : clusterList  ) {
 			clu.updateStatus();
 		}
+		checkLazy();
 	}
 
     private double getMemoryPercent( long freeMemory, long totalMemory) {
