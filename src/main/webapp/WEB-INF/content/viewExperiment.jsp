@@ -15,6 +15,7 @@
 						</div>
 						
 						<div class="menuBarMain" style="position:relative">
+							
 							<img alt="" onclick="back();" title="Back" class="button dicas" src="img/back.png" />
 							<img alt="" onclick="viewWf('${experiment.workflow.idWorkflow}')" title="Workflow" class="button dicas" src="img/workflow.png" />
 							<img alt="" onclick="queries('${experiment.idExperiment}')" title="Custom Queries" class="button dicas" src="img/sql.png" />
@@ -277,7 +278,9 @@
 									
 				</div>
 				
-				
+<script type="text/javascript" src='jspdf/libs/require/require.js'></script>
+<script type="text/javascript" src="jspdf/dist/jspdf.debug.js"></script>
+					
 <script>
 
 	function viewImageCanvas() {
@@ -340,6 +343,36 @@
 		window.history.back();
 	}	
 
+	
+	function print() {
+		
+		var width = $("#basicCentralPanel").width();
+		
+		$("#basicCentralPanel").width("600px");
+		$("#basicCentralPanel").children().css( "font-family", "Arial,Helvetica,sans-serif" );
+		$("#basicCentralPanel").children().css( "font-size", "9px" );
+		
+	    require_baseUrl_override = 'jspdf';
+	    require(['jspdf/libs/require/config'], function(){
+		    require(['html2pdf'], function(){
+		    
+		       var pdf = new jsPDF('p', 'pt', 'a4');
+		       var canvas = pdf.canvas;
+		       canvas.height = 72 * 11.7;
+		       canvas.width = 72 * 8.3;
+		             
+		       html2pdf( $("#basicCentralPanel"), pdf, function(pdf) {      
+						pdf.save('Test.pdf');
+	           });
+		        
+		    }); 
+		}); 
+
+		$("#pannel").width( width );
+
+	}
+	
+	
 </script>				
 				
 <%@ include file="../../footer.jsp" %>
