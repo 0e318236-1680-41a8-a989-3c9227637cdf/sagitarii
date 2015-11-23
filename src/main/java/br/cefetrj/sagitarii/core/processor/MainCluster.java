@@ -52,6 +52,7 @@ public class MainCluster implements Runnable {
 			totalMemory = Configurator.getInstance().getTotalMemory();
 		} catch ( Exception e ) {  }
 
+		String content = "";
     	try {
 
     		Cluster cluster = ClustersManager.getInstance()
@@ -70,7 +71,7 @@ public class MainCluster implements Runnable {
 
 					InstanceDeliveryControl.getInstance().addUnit(pipe, macAddress);
 					
-					String content = pipe.getContent().replace("##TAG_ID_INSTANCE##", String.valueOf( pipe.getIdInstance() ) );
+					content = pipe.getContent().replace("##TAG_ID_INSTANCE##", String.valueOf( pipe.getIdInstance() ) );
 					content = content.replace("%ID_PIP%", String.valueOf( pipe.getIdInstance() ) ); 
 					pipe.setContent( content );
 					
@@ -139,6 +140,10 @@ public class MainCluster implements Runnable {
 
 		} catch ( Exception e ) {
 			 logger.error( "critical error running Main Cluster: " + e.getMessage() );
+			 for ( StackTraceElement ste : e.getStackTrace()  ) {
+				 logger.error( " " + ste.getClassName() + " " + ste.getLineNumber() );
+			 }
+			 logger.error("offending content: " + content);
 		}
 		
 	}

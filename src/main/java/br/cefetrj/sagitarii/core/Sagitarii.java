@@ -353,13 +353,19 @@ public class Sagitarii {
 			try {
 				instanceBuffer.loadBuffers();
 			} catch ( Exception e ) {
-				logger.error( "load buffers error: " + e.getMessage() );
+				logger.error( "load buffers error: ");
+				for ( StackTraceElement ste : e.getStackTrace()  ) {
+					logger.error( " " + ste.getClassName() + " " + ste.getLineNumber() );
+				}
 			}
 			
 			try {
 				updateFragments();
 			} catch (Exception e) {
-				logger.error( "update fragments error: " + e.getMessage() );
+				logger.error( "update fragments error: " );
+				for ( StackTraceElement ste : e.getStackTrace()  ) {
+					logger.error( " " + ste.getClassName() + " " + ste.getLineNumber() );
+				}
 			}
 		
 			checkFinished();
