@@ -1,6 +1,7 @@
 package br.cefetrj.sagitarii.core.delivery;
 
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -38,7 +39,7 @@ public class DeliveryUnit {
 	}
 	
 	public List<Activation> getActivations() {
-		return activations;
+		return new ArrayList<Activation>( activations );
 	}
 	
 	public String getHash() {

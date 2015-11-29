@@ -288,9 +288,10 @@ public class InstanceCreator {
 		sbu.append( "</targetTable>" );
 
 		
-		sbu.append( "<command>" );
+		sbu.append( "<command><![CDATA[" );
 		sbu.append( command );
-		sbu.append( "</command>" );
+		sbu.append( "]]>"
+				+ "</command>" );
 		
 		sbu.append( "</activity>" );
 		order++;

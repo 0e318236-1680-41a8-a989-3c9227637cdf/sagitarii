@@ -40,7 +40,7 @@ public class GetFileAction extends BasicActionClass {
 				fileInputStream = file.getDownloadStream( macAddress );
 			}
 		} catch ( Exception e ) {
-            //
+            e.printStackTrace();
 		}
 		
 		return "ok";

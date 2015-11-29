@@ -31,9 +31,9 @@ public class ConnFactory {
 				
 				Configuration cfg1 = new Configuration();
 				cfg1.configure("hibernate.cfg.xml");
-				String url = "jdbc:postgresql://localhost/" + databaseName + "?ApplicationName=Sagitarii";
+				//String url = "jdbc:postgresql://localhost/" + databaseName + "?ApplicationName=Sagitarii";
 				cfg1.setProperty("hibernate.connection.username", userName);
-				cfg1.setProperty("hibernate.connection.url", url);
+				//cfg1.setProperty("hibernate.connection.url", url);
 			 	cfg1.setProperty("hibernate.connection.password", password);
 				
 				StandardServiceRegistryBuilder serviceRegistryBuilder1 = new StandardServiceRegistryBuilder();
