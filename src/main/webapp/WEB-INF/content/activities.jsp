@@ -362,8 +362,11 @@
             ]);
 		}
 		
+		
+		
 		// ============ EXIBIR AS TABELAS DE ENTRADA / SAIDA ================
 		// Entrada
+		/*
 		$("#relInput option:selected").each(function() {
 			var inputTable = this.text;
 			var idTag = inputTable;
@@ -371,16 +374,18 @@
               { group: "nodes", classes: "table", data: { inputJoinId : -1, inputJoin : '', outputId : "", inputId : "", output : "" , input : "", description: inputTable, activation: "", id: idTag , name: "SRCTABLE", weight: 450, textColor : textColorBlock, faveColor: inputTableColor, faveShape: 'ellipse' }, position: { x: 10, y: 10 } },
               { group: "edges", classes: "table", data: { source: idTag, target: tag, faveColor: '#666666', strength: 1 } }
             ]);
-		});		
+		});
+		*/
 
 		
 		// Saida
-		//var idTag = tag + "." + relOutput;
+		/*
 		var idTag = relOutput;
 		var eles = cy.add([
           { group: "nodes", classes: "table", data: { inputJoinId : -1, inputJoin : '', outputId : "", inputId : "", output : "" , input : "", description: relOutput, activation: "", id: idTag , name: "TRGTABLE", weight: 450, textColor : textColorBlock, faveColor: outputTableColor, faveShape: 'ellipse' }, position: { x: 10, y: 10 } },
           { group: "edges", classes: "table", data: { source: tag, target: idTag, faveColor: '#666666', strength: 1 } }
         ]);
+		*/
 		// ===================== FIM ============================
 		
 		isFirstNode = false;
