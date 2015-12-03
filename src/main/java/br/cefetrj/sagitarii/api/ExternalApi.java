@@ -10,14 +10,14 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.google.gson.GsonBuilder;
-import com.opensymphony.xwork2.ActionContext;
-
 import br.cefetrj.sagitarii.core.DataReceiver;
+import br.cefetrj.sagitarii.core.Sagitarii;
 import br.cefetrj.sagitarii.core.TableAttribute;
 import br.cefetrj.sagitarii.misc.DateLibrary;
+import br.cefetrj.sagitarii.persistence.entity.Activity;
 import br.cefetrj.sagitarii.persistence.entity.Experiment;
 import br.cefetrj.sagitarii.persistence.entity.FileLight;
+import br.cefetrj.sagitarii.persistence.entity.Fragment;
 import br.cefetrj.sagitarii.persistence.entity.Relation;
 import br.cefetrj.sagitarii.persistence.entity.User;
 import br.cefetrj.sagitarii.persistence.entity.Workflow;
@@ -26,6 +26,9 @@ import br.cefetrj.sagitarii.persistence.services.FileService;
 import br.cefetrj.sagitarii.persistence.services.RelationService;
 import br.cefetrj.sagitarii.persistence.services.UserService;
 import br.cefetrj.sagitarii.persistence.services.WorkflowService;
+
+import com.google.gson.GsonBuilder;
+import com.opensymphony.xwork2.ActionContext;
 
 public class ExternalApi {
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
@@ -54,6 +57,10 @@ public class ExternalApi {
 				
 					logger.debug( user.getFullName() + " : command " + command );
 					
+					if ( command.equals("apiGetRunning") ) {
+						return getRunning( map );
+					}
+
 					if ( command.equals("apiReceiveData") ) {
 						return receiveData( map );
 					}
@@ -327,6 +334,60 @@ public class ExternalApi {
 		return "\"" + paramName + "\":" + arrayValue ; 
 	}
 
+	private String getRunning( Map<String, Object> map ) {
+		try {
+			Sagitarii sagi = Sagitarii.getInstance();
+			List<Experiment> runningExperiments = sagi.getRunningExperiments();
+			
+			StringBuilder data = new StringBuilder();
+			String dataPrefix = "";
+			data.append("[");
+			for ( Experiment experiment : runningExperiments ) {
+				
+				
+				StringBuilder fragment = new StringBuilder();
+				String fragmentPrefix = "";
+				fragment.append("[");
+				for ( Fragment frag : experiment.getFragments() ) {
+					fragment.append( fragmentPrefix + "{");
+					fragment.append( generateJsonPair( "serial" , frag.getSerial() ) + "," ); 
+					fragment.append( generateJsonPair( "status" , frag.getStatus().toString() ) + "," );
+					fragment.append( generateJsonPair( "totalInstances" , String.valueOf( frag.getTotalInstances() ) ) + "," );
+					fragment.append( generateJsonPair( "remainingInstances" , String.valueOf( frag.getRemainingInstances() ) ) + "," );
+					String activities = "";
+					for ( Activity act : frag.getActivities() ) {
+						activities = activities + act.getTag() + " ";
+					}
+					fragment.append( generateJsonPair( "activities", activities.trim() ) ); 
+					fragmentPrefix = ",";
+					fragment.append("}");
+				}
+				fragment.append("]");				
+				
+				
+				data.append( dataPrefix + "{");
+				data.append( generateJsonPair( "tagExec" , experiment.getTagExec() ) + "," ); 
+				data.append( addArray( "fragments" , fragment.toString() ) + "," );
+				data.append( generateJsonPair( "owner", experiment.getOwner().getLoginName() ) ); 
+				dataPrefix = ",";
+				data.append("}");
+			}
+			data.append("]");
+			
+			StringBuilder sb = new StringBuilder();
+			sb.append("{");
+			sb.append( addArray("data", data.toString() ) ); 
+			sb.append("}");	
+			
+			return sb.toString();
+		} catch ( Exception e ) {
+			e.printStackTrace();
+			logger.error( e.getMessage() );
+			return formatMessage( e.getMessage() );
+		}		
+	}
+
+	
 	private String receiveData( Map<String, Object> map ) {
 		String messageResult = "";
 		List<String> contentLines = new ArrayList<String>();
