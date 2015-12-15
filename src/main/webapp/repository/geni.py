@@ -11,12 +11,10 @@
 ##        -e k : k-ésimo maior grau do grafo ( d_{k} )
 ##        -g   : number of edges ( m )
 ##
+
 import getopt
 import csv
 import mathchem
-
-import sys
-sys.path.append("/etc/teapot/wrappers") 
 
 from sage.graphs.graph_coloring import chromatic_number
 
@@ -61,11 +59,12 @@ def geni(outputdir, arquivo, args):
 	## lc = G.complement().adjacency_matrix()
 	## lista de saída dos parâmetros
 	## lista.array('i',[0,0,0,0,0,0])
-	lista = vector([0,0,0,0,0,0])
+	##lista = vector([0,0,0,0,'',0])
 	## print lista[0]
+	lista = {}
 	if ChromaticNumberNeeded == True:
 		CN = G.chromatic_number()
-		lista[0]=CN
+		lista[0] = CN
 	else:
 		lista[0] = -1
 	if ChromaticNumberComplementNeeded == True:
@@ -85,9 +84,11 @@ def geni(outputdir, arquivo, args):
 	else:
 		lista[3] = -1	
 	if kLargestDegree == True:
-		load("/etc/teapot/wrappers/Degree.py")
-		LD = Degree(G,int(ParamkLargestDegree))
-		lista[4] = LD
+		load("DegreeModificado.py")
+		#load("DegreeModificado.py")
+		#LD = Degree(G,int(ParamkLargestDegree))
+		SequenceDegree, SequenceDegreeInString = DegreeModificado(G)
+		lista[4] = SequenceDegreeInString
 	else:
 		lista[4] = -1
 	if NumberofEdges == True:
@@ -99,10 +100,21 @@ def geni(outputdir, arquivo, args):
 		lista[5] = NE
 	else:	
 		lista[5] = -1
+	
+	#tam = len(lista)-1
+	#for i in range(len(lista)):
+	#	if i != 4:
+	#		StrSaida = StrSaida + str(lista[i])
+	#	else:
+	#		StrSaida = StrSaida + lista[i]
+	#	
+	#print(StrSaida)
+	
 	### abertura do arquivo de saída	
 	
 	f = open(outputdir + '/saida.csv','wb')
 	z = csv.writer(f)
-	z.writerow(["ChromaticNumber","ChromaticNumberComplement","LargestCliqueSize","LargestCliqueSizeComplement","kLargestDegree","NumberofEdges"])
-	z.writerow(lista)
+	z.writerow(["ChromaticNumber","ChromaticNumberComplement","LargestCliqueSize","LargestCliqueSizeComplement","NumberofEdges","SequenceDegree"])
+	z.writerow([lista[0],lista[1],lista[2],lista[3],lista[5],lista[4]])
 	f.close()
+	return lista
