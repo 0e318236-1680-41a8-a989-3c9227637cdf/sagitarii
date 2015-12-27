@@ -121,3 +121,4 @@ def geni(outputdir, arquivo, args):
 	z.writerow([lista[0],lista[1],lista[2],lista[3],lista[5],lista[4]])
 	f.close()
 	return lista
+

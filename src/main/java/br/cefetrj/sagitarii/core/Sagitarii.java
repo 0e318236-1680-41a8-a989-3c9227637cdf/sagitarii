@@ -12,9 +12,7 @@ import br.cefetrj.sagitarii.core.delivery.DeliveryUnit;
 import br.cefetrj.sagitarii.core.delivery.InstanceDeliveryControl;
 import br.cefetrj.sagitarii.core.filetransfer.FileImporter;
 import br.cefetrj.sagitarii.core.filetransfer.FileReceiverManager;
-import br.cefetrj.sagitarii.core.filetransfer.ReceivedFile;
 import br.cefetrj.sagitarii.core.mail.MailService;
-import br.cefetrj.sagitarii.core.processor.Activation;
 import br.cefetrj.sagitarii.core.types.ExperimentStatus;
 import br.cefetrj.sagitarii.core.types.FragmentStatus;
 import br.cefetrj.sagitarii.persistence.entity.Experiment;
@@ -236,34 +234,43 @@ public class Sagitarii {
 					
 					frag.setRemainingInstances( count );
 					if ( count == 0 ) {	
-						logger.debug(" > no instances found: can I set fragment status to finished?");
-
+						logger.debug(" > no instances found: can I set fragment " + frag.getSerial() + " (" + 
+								frag.getIdFragment()+ ") status to finished?");
+						boolean canFinish = true;
 						// TODO: Check this BEFORE hit database... In memory check is less costly...
-						logger.debug("Instances in Delivery Control:");
+						logger.debug("Checking Instances in Delivery Control:");
 						for( DeliveryUnit du : InstanceDeliveryControl.getInstance().getUnits()  ) {
 							logger.debug( " > Instance: " + du.getInstance().getSerial() + " FragID: " + du.getInstance().getIdFragment() );
-							logger.debug(" > Tasks: ");
-							for( Activation act : du.getActivations() ) {
-								logger.debug("    > " + act.getActivitySerial()	);
+							
+							if ( frag.getIdExperiment() == du.getInstance().getIdFragment() ) {
+								logger.debug(" > Found Fragment Instance in Delivery Control.");
+								canFinish = false;
 							}
+							
 						}
 
-						logger.debug("current importers");
+						logger.debug("Checking importers: (" + FileReceiverManager.getInstance().getImporters().size() + " working)");
 						for( FileImporter importer :  FileReceiverManager.getInstance().getImporters() ) {
 							try {
-								logger.debug(" > " + importer.getName() );
-								for( ReceivedFile file : importer.getReceivedFiles() ) {
-									logger.debug("     > " + file.getActivity() + " " + file.getFileName() );
+								logger.debug(" > " + importer.getName() + ": " + importer.getFragment() );
+								if ( importer.getFragment().equals( frag.getSerial() )) {
+									logger.debug("Found importer for this Fragment.");
+									canFinish = false;
 								}
 							} catch ( Exception e ) {}
 						}
 						
-						
-						if ( experimentIsStillQueued( frag.getExperiment() )  ) {
-							logger.debug(" > WAIT! this fragment still have instances queued!");
+						if ( !canFinish ) {
+							logger.debug(" > Cannot finish yet.");
 						} else {
-							logger.debug(" > Yeap! setting fragment " + frag.getSerial() + " to finished.");
-							frag.setStatus( FragmentStatus.FINISHED );
+						
+							if ( experimentIsStillQueued( frag.getExperiment() )  ) {
+								logger.debug(" > WAIT! this fragment still have instances queued!");
+							} else {
+								logger.debug(" > Yeap! setting fragment " + frag.getSerial() + " to finished.");
+								frag.setStatus( FragmentStatus.FINISHED );
+							}
+							
 						}
 						// ===============================================================================
 					}

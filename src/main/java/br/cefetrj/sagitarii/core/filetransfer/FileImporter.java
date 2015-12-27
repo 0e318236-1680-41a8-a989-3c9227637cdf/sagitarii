@@ -31,7 +31,6 @@ import br.cefetrj.sagitarii.core.types.InstanceStatus;
 import br.cefetrj.sagitarii.misc.PathFinder;
 import br.cefetrj.sagitarii.persistence.entity.Activity;
 import br.cefetrj.sagitarii.persistence.entity.Experiment;
-import br.cefetrj.sagitarii.persistence.entity.FileLight;
 import br.cefetrj.sagitarii.persistence.entity.Instance;
 import br.cefetrj.sagitarii.persistence.entity.Relation;
 import br.cefetrj.sagitarii.persistence.exceptions.NotFoundException;
@@ -59,6 +58,21 @@ public class FileImporter extends Thread {
 	private boolean forceStop = false;
 	private long totalFiles;
 	private boolean initialLoad = false;
+	private String instance;
+	private String activity;
+	private String fragment;
+	
+	public String getInstance() {
+		return instance;
+	}
+	
+	public String getActivity() {
+		return activity;
+	}
+	
+	public String getFragment() {
+		return fragment;
+	}
 	 
 	public void stopProcess() {
 		forceStop = true;
@@ -154,7 +168,7 @@ public class FileImporter extends Thread {
 		boolean result = false;
 		for( ReceivedFile receivedFile : receivedFiles ) {
 			String fileName = receivedFile.getFileName().replace(".gz", "");
-			logger.debug("is file " + fileName + " -> " + value);
+			//logger.debug("is file " + fileName + " -> " + value);
 			if ( fileName.equals(value) ) {
 				logger.debug(" > " + value + " is a file.");
 				result = true;
@@ -421,6 +435,13 @@ public class FileImporter extends Thread {
 		FileXMLParser parser = new FileXMLParser();
 		receivedFiles = parser.parseDescriptor( newDescriptor );
 		ReceivedFile csvDataFile = null;
+		
+		if ( receivedFiles.size() > 0) {
+			ReceivedFile any = receivedFiles.get(0);
+			this.fragment = any.getFragment();
+			this.instance = any.getInstance();
+			this.activity = any.getActivity();
+		}
 		
 		// Find the main CSV data file (sagi_output.txt for Teapot or any other if user manual load)
 		logger.debug("files received on session " + sessionSerial );
