@@ -492,7 +492,7 @@ public class FileImporter extends Thread {
 	private boolean isActive() {
 		logger.debug("checking session " + sessionSerial + "...");
 		for ( FileSaver saver : server.getSavers() ) {
-			logger.debug(" > " + saver.getFileName() + ": " + saver.getStatus() + " " + saver.getPercent() + "%");
+			//logger.debug(" > " + saver.getFileName() + ": " + saver.getStatus() + " " + saver.getPercent() + "%");
 			try {
 				if ( ( saver.getSessionSerial().equals(sessionSerial) ) && ( saver.getStatus() == SaverStatus.TRANSFERRING ) ) {
 					logger.debug("active saver found.");
