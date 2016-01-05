@@ -32,6 +32,7 @@ public class Server extends Thread {
 	}
 
 	public List<FileImporter> getImporters() {
+		//clean();
 		return new ArrayList<FileImporter>( importers );
 	}
 	
@@ -118,11 +119,12 @@ public class Server extends Thread {
 		
 		logger.debug("clean up");
 		
-		logger.debug("checking savers...");
+		logger.debug("checking savers to remove...");
 		for ( FileSaver saver : savers ) {
 			try {
 				if ( (saver.getStatus() != SaverStatus.TRANSFERRING) && ( saver.getStatus() != SaverStatus.WAITCOMMIT )
 						&& ( saver.getStatus() != SaverStatus.COMMITING ) ) {
+					logger.debug(" > will remove " + saver.getName()  );
 					toRemove.add( saver ); 
 				}
 			} catch ( Exception e ) {
@@ -132,10 +134,10 @@ public class Server extends Thread {
 		logger.debug("will clean " + toRemove.size() + " savers");
 		savers.removeAll( toRemove );
 		
-		logger.debug("checking importers...");
+		logger.debug("checking importers to remove...");
 		for ( FileImporter importer : getImporters() ) {
-			logger.debug(" > " + importer.getName() + " " + importer.getStatus() );
 			if ( importer.getStatus().equals("DONE") ) {
+				logger.debug(" > will remove " + importer.getName() );
 				importersToRemove.add( importer );
 			}
 		}

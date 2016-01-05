@@ -249,16 +249,24 @@ public class Sagitarii {
 							
 						}
 
+						
 						logger.debug("Checking importers: (" + FileReceiverManager.getInstance().getImporters().size() + " working)");
 						for( FileImporter importer :  FileReceiverManager.getInstance().getImporters() ) {
 							try {
-								logger.debug(" > " + importer.getName() + ": " + importer.getFragment() );
 								if ( importer.getFragment().equals( frag.getSerial() )) {
-									logger.debug("Found importer for this Fragment.");
-									canFinish = false;
+									logger.debug("Found importer for this Fragment: ");
+									logger.debug(" > " + importer.getName() + ": " + importer.getFragment() );
+									//canFinish = false;
+									
+									// TODO: REMOVE THIS
+									logger.debug("I told you to NOT finish this Fragment !!");
+									// ------------------------------------------------
+									
 								}
 							} catch ( Exception e ) {}
 						}
+						
+						
 						
 						if ( !canFinish ) {
 							logger.debug(" > Cannot finish yet.");
