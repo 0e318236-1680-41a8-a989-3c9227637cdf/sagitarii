@@ -23,7 +23,7 @@ public class FileReceiverManager {
 		List<TransferSession> sessions = new ArrayList<TransferSession>();
 		for ( String sessionSerial : getSessions()  ) {
 			TransferSession session = new TransferSession( sessionSerial );
-			session.setSavers( getSaversInTransfer( sessionSerial ) );
+			session.setSavers( getSaversBySession( sessionSerial ) );
 			session.setImporters( getImportersBySession( sessionSerial ) );
 			sessions.add( session );
 		}

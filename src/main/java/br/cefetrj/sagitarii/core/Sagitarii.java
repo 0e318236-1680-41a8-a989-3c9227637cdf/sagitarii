@@ -255,11 +255,11 @@ public class Sagitarii {
 							try {
 								if ( importer.getFragment().equals( frag.getSerial() )) {
 									logger.debug("Found importer for this Fragment: ");
-									logger.debug(" > " + importer.getName() + ": " + importer.getFragment() );
-									//canFinish = false;
+									logger.debug(" > " + importer.getName() + ": " + importer.getFragment() + " " + importer.getStatus() );
+									canFinish = false;
 									
 									// TODO: REMOVE THIS
-									logger.debug("I told you to NOT finish this Fragment !!");
+									//logger.debug("I told you to NOT finish this Fragment !!");
 									// ------------------------------------------------
 									
 								}

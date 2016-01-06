@@ -64,7 +64,7 @@
 										<th>Inserted Lines</th>
 										<th>% Inserted</th>
 										<th>Target Table</th>
-										<th>Owner Activity</th>
+										<th>Activity / Instance</th>
 										<th>Start Time</th>
 										<th style="width:15%">Log</th>
 									</tr>
@@ -83,7 +83,7 @@
 												</div> 
 											</td>
 											<td class="tableCellFormRight">${importer.mainCsvFile.targetTable}&nbsp;</td>
-											<td class="tableCellFormRight">${importer.mainCsvFile.activity}&nbsp;</td>
+											<td class="tableCellFormRight">${importer.activity} / ${importer.instance}&nbsp;</td>
 											<td class="tableCellFormRight">
 											<fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" type="both" timeStyle="short" value="${importer.startTime}"/></td>
 											<td class="tableCellFormRight">${importer.log}</td>

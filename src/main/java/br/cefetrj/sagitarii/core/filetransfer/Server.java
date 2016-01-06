@@ -32,7 +32,6 @@ public class Server extends Thread {
 	}
 
 	public List<FileImporter> getImporters() {
-		//clean();
 		return new ArrayList<FileImporter>( importers );
 	}
 	
@@ -87,28 +86,21 @@ public class Server extends Thread {
 		logger.debug("start");
 		
 		try {
+			serverSocket = new ServerSocket(serverPort);
+			while ( !canStop ) {
+				Socket s = serverSocket.accept();
+				logger.debug("starting new saver thread");
+				FileSaver saver = new FileSaver( s, chunkBuffer, this );
 
-			try {
-				serverSocket = new ServerSocket(serverPort);
-				while ( !canStop ) {
-					Socket s = serverSocket.accept();
-					logger.debug("starting new saver thread");
-					FileSaver saver = new FileSaver( s, chunkBuffer, this );
-
-					MetricController.getInstance().hit( "Files Received", MetricType.FILE );
-					
-					savers.add( saver );
-					saver.setName("Sagitarii file receiver");
-					saver.start();
-				}
+				MetricController.getInstance().hit( "Files Received", MetricType.FILE );
 				
-			} catch (Exception e) {
-				//
+				savers.add( saver );
+				saver.setName("Sagitarii file receiver");
+				saver.start();
 			}
-
-
-		} catch ( Exception e ) {
-
+			
+		} catch (Exception e) {
+			//
 		}
 
 	}

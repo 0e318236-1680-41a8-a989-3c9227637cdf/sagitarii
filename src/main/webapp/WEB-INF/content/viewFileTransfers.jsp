@@ -30,22 +30,14 @@
 								<tbody>
 									<c:forEach var="session" items="${sessions}">
 										<tr>
-											<td class="tableCellFormRight">
-												<a href="viewFileTransfersSession?sessionSerial=${session.sessionSerial}">${session.sessionSerial}</a>
-											</td>
 											
 											<td>
+												<a href="viewFileTransfersSession?sessionSerial=${session.sessionSerial}">${session.sessionSerial}</a>
+												<br>
 												<table class="tableForm"  id="tblSavers" style="margin:0px; border:0px; width: 100%;">
-													<c:forEach var="saver" items="${session.savers}">
-														<tr class="saverControl">
-															<td style="border:0px;" class="tableCellFormRight">${saver.status}</td>
-															<td style="border:0px;" class="tableCellFormRight">${saver.fileName}</td>
-															<td style="border:0px;" class="tableCellFormRight"><fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" type="both" timeStyle="short" value="${saver.startDateTime}"/></td>
-															<td style="border:0px;" class="tableCellFormRight">${saver.experimentSerial}</td>
-															<td style="border:0px;" class="tableCellFormRight">${saver.bytes}</td>
-															<td style="border:0px;" class="tableCellFormRight">${saver.totalBytes}</td>
-														</tr>
-													</c:forEach>
+													<tr class="saverControl">
+														<td style="border:0px;" class="tableCellFormRight">Savers: ${fn:length(session.savers)}</td>
+													</tr>
 												</table>						
 											
 												<table class="tableForm"  id="tblImporters" style="margin:0px; border:0px; width: 100%;">
@@ -53,11 +45,11 @@
 														<tr class="importerControl" >
 															<td style="border:0px;" class="tableCellFormRight">${importer.mainCsvFile.macAddress}&nbsp;</td>
 															<td style="border:0px;" class="tableCellFormRight">${importer.mainCsvFile.fileName}&nbsp;</td>
-															<td style="border:0px;" class="tableCellFormRight">${importer.totalFiles}</td>
+															<td style="border:0px;" class="tableCellFormRight">${importer.importedFiles} / ${importer.totalFiles}</td>
 															<td style="border:0px;" class="tableCellFormRight">${importer.importedLines}</td>
 															<td style="border:0px;" class="tableCellFormRight">${importer.insertedLines}</td>											
 															<td style="border:0px;" class="tableCellFormRight">${importer.mainCsvFile.targetTable}&nbsp;</td>
-															<td style="border:0px;" class="tableCellFormRight">${importer.mainCsvFile.activity}&nbsp;</td>
+															<td style="border:0px;" class="tableCellFormRight">${importer.activity} / ${importer.instance} &nbsp;</td>
 															<td style="border:0px;" class="tableCellFormRight">
 															<fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" type="both" timeStyle="short" value="${importer.startTime}"/></td>
 															<td style="border:0px;" class="tableCellFormRight">${importer.log}</td>

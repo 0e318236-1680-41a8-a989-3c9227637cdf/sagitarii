@@ -61,6 +61,11 @@ public class FileImporter extends Thread {
 	private String instance;
 	private String activity;
 	private String fragment;
+	private int importedFiles = 0;
+	
+	public int getImportedFiles() {
+		return importedFiles;
+	}
 	
 	public String getInstance() {
 		return instance;
@@ -213,6 +218,8 @@ public class FileImporter extends Thread {
 			fs.insertFile(file);
 			
 			response = file.getIdFile();
+			
+			importedFiles++;
 			
 			logger.debug( "ID " + response + " assigned to File "+fileName+" : Experiment " + experimentSerial + " Activity " + activity.getSerial() + " Instance " + instance.getSerial()  );
 			
