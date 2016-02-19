@@ -20,9 +20,11 @@ import ntpath
 def Eigenvalue(outputdir,inputfile, args):
 	mols = mathchem.read_from_g6(inputfile)
 	arquivo = path_leaf(inputfile)
+	digitos = 4 ### arredondar os autovalores com 4 digitos
 	l = mols[0].adjacency_matrix()
 	l = Matrix(l)
 	G = Graph(l)
+	drive, arquivo = os.path.split(arquivo)
 	args = args.split()
 	optlist, args = getopt.getopt(args, 'alqxyz')
 	AdjacencyMatrixNeeded = False
@@ -56,6 +58,7 @@ def Eigenvalue(outputdir,inputfile, args):
 		EigAdjacency.sort()
 		foutAdj = open(outputdir+arquivo+'.adj','w')
 		for k in EigAdjacency:
+			k = round(k,digitos)
 			foutAdj.write(str(k)+'\n')
 		foutAdj.close()	
 		
@@ -64,6 +67,7 @@ def Eigenvalue(outputdir,inputfile, args):
 		EigAdjacencyBar.sort()
 		foutAdjBar = open(outputdir+arquivo+'.adjb','w')
 		for k in EigAdjacencyBar:
+			k = round(k,digitos)
 			foutAdjBar.write(str(k)+'\n')
 		foutAdjBar.close()	
 	
@@ -73,6 +77,7 @@ def Eigenvalue(outputdir,inputfile, args):
 		EigLaplacian.sort()
 		foutLap = open(outputdir+arquivo+'.lap','w')
 		for k in EigLaplacian:
+			k = round(k,digitos)
 			foutLap.write(str(k)+'\n')	
 		foutLap.close()
 	
@@ -82,6 +87,7 @@ def Eigenvalue(outputdir,inputfile, args):
 		EigLaplacianBar.sort()	
 		foutLapBar = open(outputdir+arquivo+'.lapb','w')
 		for k in EigLaplacianBar:
+			k = round(k,digitos)
 			foutLapBar.write(str(k)+'\n')
 		foutLapBar.close()	
 		
@@ -91,6 +97,7 @@ def Eigenvalue(outputdir,inputfile, args):
 		EigSignless.sort()
 		foutSignLap = open(outputdir+arquivo+'.sgnlap','w')
 		for k in EigSignless:
+			k = round(k,digitos)
 			foutSignLap.write(str(k)+'\n')
 		foutSignLap.close()
 		
@@ -98,12 +105,13 @@ def Eigenvalue(outputdir,inputfile, args):
 		SignlessLaplacianMatrixBar = 2*GC.adjacency_matrix() + GC.laplacian_matrix()
 		EigSignlessBar = SignlessLaplacianMatrixBar.eigenvalues()
 		EigSignlessBar.sort()
-		foutSignLapBar = open(outputdir+arquivo+'.sgnlapb','w') 
+		foutSignLapBar = open(outputdir+arquivo+'.sgnlapb','w')
 		for k in EigSignlessBar:
+			k = round(k,digitos)
 			foutSignLapBar.write(str(k)+'\n')
 		foutSignLapBar.close()	
 		
-
 def path_leaf(path):
     head, tail = ntpath.split(path)
     return tail or ntpath.basename(head)
+	
