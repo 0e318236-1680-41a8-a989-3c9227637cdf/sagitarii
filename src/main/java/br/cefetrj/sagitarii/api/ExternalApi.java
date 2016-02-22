@@ -13,6 +13,8 @@ import org.apache.logging.log4j.Logger;
 import br.cefetrj.sagitarii.core.DataReceiver;
 import br.cefetrj.sagitarii.core.Sagitarii;
 import br.cefetrj.sagitarii.core.TableAttribute;
+import br.cefetrj.sagitarii.core.filetransfer.FileImporter;
+import br.cefetrj.sagitarii.core.filetransfer.FileReceiverManager;
 import br.cefetrj.sagitarii.misc.DateLibrary;
 import br.cefetrj.sagitarii.persistence.entity.Activity;
 import br.cefetrj.sagitarii.persistence.entity.Experiment;
@@ -192,8 +194,19 @@ public class ExternalApi {
 			for ( Experiment experiment : experiments ) {
 				String startDate = DateLibrary.getInstance().getDateHourTextHuman( experiment.getLastExecutionDate() ); 
 				data.append(dataPrefix + "{");
+
+				int importers = FileReceiverManager.getInstance().getImportersByExperiment( experiment.getTagExec() ).size();
+				int savers = FileReceiverManager.getInstance().getSaversByExperiment( experiment.getTagExec() ).size();
+
+				String importerLog = "";
+				if( importers > 0 ) {
+					importerLog = FileReceiverManager.getInstance().getImportersByExperiment( experiment.getTagExec() ).get(0).getLog();
+				}
+				
 				data.append( generateJsonPair( "tagExec", experiment.getTagExec() ) + "," );
 				data.append( generateJsonPair( "startDate", startDate ) + "," );
+				data.append( generateJsonPair( "importer", importerLog ) + "," );
+				data.append( generateJsonPair( "savers", String.valueOf(savers) ) + "," );
 				data.append( generateJsonPair( "status", experiment.getStatus().toString() )  + ","  );
 				data.append( generateJsonPair( "workflow", experiment.getWorkflow().getTag() )  + ","  );
 				data.append( generateJsonPair( "elapsedTime", experiment.getElapsedTime() ) );
@@ -364,9 +377,23 @@ public class ExternalApi {
 				}
 				fragment.append("]");				
 				
+				int importers = FileReceiverManager.getInstance().getImportersByExperiment( experiment.getTagExec() ).size();
+				int savers = FileReceiverManager.getInstance().getSaversByExperiment( experiment.getTagExec() ).size();
+				
+				String importerLog = "";
+				String importerStatus = "";
+				if( importers > 0 ) {
+					List<FileImporter> fil = FileReceiverManager.getInstance().getImportersByExperiment( experiment.getTagExec() ); 
+					FileImporter fi = fil.get(0); 
+					importerLog = fi.getLog();
+					importerStatus = fi.getImportedFiles() + " of " + fi.getTotalFiles();
+				}
 				
 				data.append( dataPrefix + "{");
 				data.append( generateJsonPair( "tagExec" , experiment.getTagExec() ) + "," ); 
+				data.append( generateJsonPair( "importer" , importerLog ) + "," ); 
+				data.append( generateJsonPair( "importerStatus" , importerStatus ) + "," ); 
+				data.append( generateJsonPair( "savers" , String.valueOf(savers) ) + "," ); 
 				data.append( addArray( "fragments" , fragment.toString() ) + "," );
 				data.append( generateJsonPair( "owner", experiment.getOwner().getLoginName() ) ); 
 				dataPrefix = ",";

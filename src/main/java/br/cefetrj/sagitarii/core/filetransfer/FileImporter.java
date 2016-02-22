@@ -61,9 +61,9 @@ public class FileImporter extends Thread {
 	private String instance;
 	private String activity;
 	private String fragment;
-	private int importedFiles = 0;
+	private long importedFiles = 0;
 	
-	public int getImportedFiles() {
+	public long getImportedFiles() {
 		return importedFiles;
 	}
 	

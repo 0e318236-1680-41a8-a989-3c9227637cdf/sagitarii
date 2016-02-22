@@ -14,6 +14,10 @@
 	
 	<loggers>
 	
+		<Logger name="br.cefetrj.sagitarii.teapot.comm.FileUploader" level="debug" additivity="false"> 
+			<appender-ref ref="File"/> 
+		</Logger>
+
 		<Logger name="br.cefetrj.sagitarii.teapot.Watchdog" level="error" additivity="false"> 
 			<appender-ref ref="Console"/> 
 		</Logger>
@@ -39,8 +43,8 @@
 			<appender-ref ref="Console"/> 
 		</Logger>
 
-		<Logger name="br.cefetrj.sagitarii.teapot.comm.Client" level="error" additivity="false"> 
-			<appender-ref ref="Console"/> 
+		<Logger name="br.cefetrj.sagitarii.teapot.comm.Client" level="debug" additivity="false"> 
+			<appender-ref ref="File"/> 
 		</Logger>
 
 		<Logger name="br.cefetrj.sagitarii.teapot.SpeedEqualizer" level="error" additivity="false"> 

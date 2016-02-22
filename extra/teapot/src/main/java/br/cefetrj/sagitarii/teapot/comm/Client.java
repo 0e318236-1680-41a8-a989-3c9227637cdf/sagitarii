@@ -19,19 +19,13 @@ package br.cefetrj.sagitarii.teapot.comm;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
-import java.util.zip.GZIPOutputStream;
 
 import br.cefetrj.sagitarii.teapot.Configurator;
 import br.cefetrj.sagitarii.teapot.LogManager;
@@ -45,6 +39,9 @@ public class Client {
 	private String sessionSerial;
 	private String sagiHost;
 	private int fileSenderDelay;
+	private int uploaderThreads = 0;
+	private final int TOTAL_UPLOAD_THREADS = 20;
+	
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 
 	
@@ -87,7 +84,7 @@ public class Client {
 		xml.append("<session macAddress=\""+macAddress+"\" instance=\""+instanceSerial+
 				"\" activity=\""+activity+"\"  taskId=\""+taskId+"\" exitCode=\""+exitCode+"\" fragment=\""+fragment + 
 				"\" startTime=\""+startTimeMillis + "\" finishTime=\""+finishTimeMillis +
-				"\" experiment=\""+experimentSerial + "\" id=\""+sessionSerial+"\" targetTable=\""+targetTable+"\">\n");
+				"\" totalFiles=\"#TOTAL_FILES#\" experiment=\""+experimentSerial + "\" id=\""+sessionSerial+"\" targetTable=\""+targetTable+"\">\n");
 		
 		
 		File fil = new File(folder + "/" + fileName);
@@ -131,52 +128,60 @@ public class Client {
 		filesToSend.add( folder + "/" + "session.xml" );
 		
 		Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(folder + "/" + "session.xml"), "UTF-8"));
-		writer.write( xml.toString() );
+		writer.write( xml.toString().replace("#TOTAL_FILES#", String.valueOf(filesToSend.size()) ) );
 		writer.close();
 
-		long totalBytesSent = 0;
 		if ( filesToSend.size() > 0 ) {
 			logger.debug("need to send " + filesToSend.size() + " files to Sagitarii...");
 			int indexFile = 1;
 			for ( String toSend : filesToSend ) {
 				logger.debug("[" + indexFile + "] will send " + toSend );
 				indexFile++;
-				totalBytesSent = totalBytesSent + uploadFile( toSend, targetTable, experimentSerial, sessionSerial );
+				uploadFile( toSend, targetTable, experimentSerial, sessionSerial );
 			}
-			logger.debug("total bytes sent: " + totalBytesSent );
 		}
+		
+		while ( uploaderThreads > 0 ) {
+			// wait until we still have threads active.
+			logger.debug("Active Uploader Threads: " + uploaderThreads );
+			try {
+				Thread.sleep(1000);
+			} catch ( Exception e ) {
+				//
+			}
+		}
+		
 		commit();
 	}
 	
+	public synchronized void decreaseThreadCount() {
+		uploaderThreads--;
+	}
 	
-	/**
-	 * Compress a file
-	 */
-	public void compress(String source_filepath, String destinaton_zip_filepath) {
-		logger.debug("compressing file ...");
-		byte[] buffer = new byte[1024];
-		try {
-			FileOutputStream fileOutputStream =new FileOutputStream(destinaton_zip_filepath);
-			GZIPOutputStream gzipOuputStream = new GZIPOutputStream(fileOutputStream);
-			FileInputStream fileInput = new FileInputStream(source_filepath);
-			int bytes_read;
-			while ((bytes_read = fileInput.read(buffer)) > 0) {
-				gzipOuputStream.write(buffer, 0, bytes_read);
-			}
-			fileInput.close();
-			gzipOuputStream.finish();
-			gzipOuputStream.close();
-			fileOutputStream.close();
-			
-			logger.debug( "file was compressed successfully" );
+	public synchronized void increaseThreadCount() {
+		uploaderThreads--;
+	}
 
-		} catch (IOException ex) {
-			logger.error("error compressing file: " + ex.getMessage() );
+	private synchronized void uploadFile( String fileName, String targetTable, String experimentSerial, 
+			String sessionSerial ) throws Exception {
+
+		while ( uploaderThreads  >= TOTAL_UPLOAD_THREADS ) {
+			// wait until more threads are available
+			try {
+				logger.debug("Total upload threads slots: " + uploaderThreads);
+				Thread.sleep(1000);
+			} catch ( Exception e ) {
+				//
+			}
 		}
-	}	
-	
-	
-	private synchronized long uploadFile( String fileName, String targetTable, String experimentSerial, String sessionSerial ) throws Exception {
+		
+		FileUploader fu = new FileUploader( this, storageAddress, storagePort, fileSenderDelay,
+			 fileName, targetTable, experimentSerial, sessionSerial );
+		
+		Thread t = new Thread( fu, "File Uploader: " + fileName );
+        t.start();
+		
+		/*
 		String newFileName = fileName + ".gz";
 		
 		compress(fileName, newFileName);
@@ -219,6 +224,7 @@ public class Client {
         logger.debug("done sending " + file.getName() );
         file.delete();
         return size;
+        */
 	}
 
 	private void commit() throws Exception {
