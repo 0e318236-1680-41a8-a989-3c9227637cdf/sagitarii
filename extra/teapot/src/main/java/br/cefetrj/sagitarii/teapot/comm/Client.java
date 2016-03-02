@@ -19,18 +19,27 @@ package br.cefetrj.sagitarii.teapot.comm;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.zip.GZIPOutputStream;
 
 import br.cefetrj.sagitarii.teapot.Configurator;
 import br.cefetrj.sagitarii.teapot.LogManager;
 import br.cefetrj.sagitarii.teapot.Logger;
 import br.cefetrj.sagitarii.teapot.Task;
+import br.cefetrj.sagitarii.teapot.torrent.SynchFolderClient;
+
+import com.turn.ttorrent.common.Torrent;
  
 public class Client {
 	private List<String> filesToSend;
@@ -39,8 +48,7 @@ public class Client {
 	private String sessionSerial;
 	private String sagiHost;
 	private int fileSenderDelay;
-	private int uploaderThreads = 0;
-	private final int TOTAL_UPLOAD_THREADS = 20;
+	private String announceUrl;
 	
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 
@@ -51,12 +59,25 @@ public class Client {
 		this.storagePort = configurator.getStoragePort();
 		this.sagiHost = configurator.getHostURL();
 		this.fileSenderDelay = configurator.getFileSenderDelay();
+		this.announceUrl = configurator.getAnnounceUrl();
 	}
 	
 	
 	public void sendFile( String fileName, String folder, String targetTable, String experimentSerial,  
 			String macAddress, Task task ) throws Exception {
 
+		File f = new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath() );
+		String storageRootFolder =  f.getAbsolutePath();
+		storageRootFolder = storageRootFolder.substring(0, storageRootFolder.lastIndexOf( File.separator ) + 1) + "namespaces/";
+		
+		String folderName = "outbox";
+		String folderPath = folder.replace(storageRootFolder, "").replaceAll("/+", "/");
+		
+		SynchFolderClient sfc = new SynchFolderClient( storageRootFolder , announceUrl );
+		Torrent torrent = sfc.createTorrentFromFolder(folderPath, folderName);
+		
+		String torrentFile = storageRootFolder + "/" + torrent.getHexInfoHash() + ".torrent";
+		
 		String instanceSerial = "";
 		String activity = "";
 		String fragment = "";
@@ -95,6 +116,14 @@ public class Client {
 			logger.error("will not send sagi_output.txt in session.xml file: this activity instance produced no data");
 		}
 		
+		File tor = new File(torrentFile);
+		if ( tor.exists() ) {
+			xml.append("<file name=\""+tor.getName()+"\" type=\"FILE_TYPE_TORRENT\" />\n");
+			filesToSend.add( torrentFile );
+		} else {
+			logger.error("will not send Torrent file.");
+		}
+
 		File filesFolder = new File( folder + "/" + "outbox" );
 	    for (final File fileEntry : filesFolder.listFiles() ) {
 	        if ( !fileEntry.isDirectory() ) {
@@ -131,57 +160,36 @@ public class Client {
 		writer.write( xml.toString().replace("#TOTAL_FILES#", String.valueOf(filesToSend.size()) ) );
 		writer.close();
 
+		long totalBytesSent = 0;
 		if ( filesToSend.size() > 0 ) {
 			logger.debug("need to send " + filesToSend.size() + " files to Sagitarii...");
 			int indexFile = 1;
 			for ( String toSend : filesToSend ) {
 				logger.debug("[" + indexFile + "] will send " + toSend );
 				indexFile++;
-				uploadFile( toSend, targetTable, experimentSerial, sessionSerial );
+				totalBytesSent = totalBytesSent + uploadFile( toSend, targetTable, experimentSerial, sessionSerial );
 			}
-		}
-		
-		while ( uploaderThreads > 0 ) {
-			// wait until we still have threads active.
-			logger.debug("Active Uploader Threads: " + uploaderThreads );
-			try {
-				Thread.sleep(1000);
-			} catch ( Exception e ) {
-				//
-			}
+			logger.debug("total bytes sent: " + totalBytesSent );
 		}
 		
 		commit();
-	}
-	
-	public synchronized void decreaseThreadCount() {
-		uploaderThreads--;
-	}
-	
-	public synchronized void increaseThreadCount() {
-		uploaderThreads--;
-	}
-
-	private synchronized void uploadFile( String fileName, String targetTable, String experimentSerial, 
-			String sessionSerial ) throws Exception {
-
-		while ( uploaderThreads  >= TOTAL_UPLOAD_THREADS ) {
-			// wait until more threads are available
+		
+		logger.debug("Will wait for Sagitarii to download the torrent...");
+		while ( sfc.isSharing( torrent.getHexInfoHash() ) ) {
+			sfc.show();
 			try {
-				logger.debug("Total upload threads slots: " + uploaderThreads);
-				Thread.sleep(1000);
-			} catch ( Exception e ) {
+				Thread.sleep(2000);
+			} catch (Exception e) {
 				//
 			}
 		}
-		
-		FileUploader fu = new FileUploader( this, storageAddress, storagePort, fileSenderDelay,
-			 fileName, targetTable, experimentSerial, sessionSerial );
-		
-		Thread t = new Thread( fu, "File Uploader: " + fileName );
-        t.start();
-		
-		/*
+		logger.debug("Done. Upload task finished.");
+	}
+	
+
+	private synchronized long uploadFile( String fileName, String targetTable, String experimentSerial, 
+			String sessionSerial ) throws Exception {
+
 		String newFileName = fileName + ".gz";
 		
 		compress(fileName, newFileName);
@@ -224,14 +232,15 @@ public class Client {
         logger.debug("done sending " + file.getName() );
         file.delete();
         return size;
-        */
+        
 	}
 
 	private void commit() throws Exception {
+		logger.debug("session "+sessionSerial+" commit.");
 		URL url = new URL( sagiHost + "/sagitarii/transactionManager?command=commit&sessionSerial=" + sessionSerial );
 		Scanner s = new Scanner( url.openStream() );
 		String response = s.nextLine();
-		logger.debug("session "+sessionSerial+" commit: " + response);
+		logger.debug("server commit response: " + response);
 		s.close();
 	}
 	
@@ -243,4 +252,29 @@ public class Client {
 		s.close();
 	}
 	
+	/**
+	 * Compress a file
+	 */
+	public void compress(String source_filepath, String destinaton_zip_filepath) {
+		logger.debug("compressing file ...");
+		byte[] buffer = new byte[1024];
+		try {
+			FileOutputStream fileOutputStream =new FileOutputStream(destinaton_zip_filepath);
+			GZIPOutputStream gzipOuputStream = new GZIPOutputStream(fileOutputStream);
+			FileInputStream fileInput = new FileInputStream(source_filepath);
+			int bytes_read;
+			while ((bytes_read = fileInput.read(buffer)) > 0) {
+				gzipOuputStream.write(buffer, 0, bytes_read);
+			}
+			fileInput.close();
+			gzipOuputStream.finish();
+			gzipOuputStream.close();
+			fileOutputStream.close();
+			
+			logger.debug( "file was compressed successfully" );
+
+		} catch (IOException ex) {
+			logger.error("error compressing file: " + ex.getMessage() );
+		}
+	}	
 }

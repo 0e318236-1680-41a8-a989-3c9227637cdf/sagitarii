@@ -5,6 +5,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -24,6 +27,7 @@ import br.cefetrj.sagitarii.core.ClustersManager;
 import br.cefetrj.sagitarii.core.DataReceiver;
 import br.cefetrj.sagitarii.core.DomainStorage;
 import br.cefetrj.sagitarii.core.ReceivedData;
+import br.cefetrj.sagitarii.core.Sagitarii;
 import br.cefetrj.sagitarii.core.config.Configurator;
 import br.cefetrj.sagitarii.core.types.ActivityStatus;
 import br.cefetrj.sagitarii.core.types.ActivityType;
@@ -453,11 +457,24 @@ public class FileImporter extends Thread {
 		// Find the main CSV data file (sagi_output.txt for Teapot or any other if user manual load)
 		logger.debug("files received on session " + sessionSerial );
 		for( ReceivedFile receivedFile : receivedFiles ) {
-			logger.debug(" > " + receivedFile.getInstance() + "/" + receivedFile.getFragment() + "/" + receivedFile.getActivity() + "/" + receivedFile.getFileName() + " Exit: " + receivedFile.getExitCode() );
+			logger.debug(" > Received file: " + receivedFile.getType() + ": " + receivedFile.getInstance() + "/" + receivedFile.getFragment() + "/" + receivedFile.getActivity() + "/" + receivedFile.getFileName() + " Exit: " + receivedFile.getExitCode() );
 			if ( receivedFile.getType().equals("FILE_TYPE_CSV") ) {
 				logger.debug("will process csv from " + receivedFile.getFileName() );
 				csvDataFile = receivedFile;
 			}
+			
+			
+			if ( receivedFile.getType().equals("FILE_TYPE_TORRENT") ) {
+				logger.debug("will add torrent " + receivedFile.getFileName() + " to tracker." );
+				
+				Path source = new File(sessionContext + "/" + receivedFile.getFileName()).toPath();
+				Path target = new File( Sagitarii.getInstance().getTracker().getStorageFolder()+ "/"+ receivedFile.getFileName() ).toPath();
+				Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
+				
+				Sagitarii.getInstance().getTracker().saveTorrentAndAddTorrentFileToTracker( target.toString() );
+			}
+			
+			
 		}
 		// If found, open it, store files to database and import CSV data
 		if ( csvDataFile != null ) {

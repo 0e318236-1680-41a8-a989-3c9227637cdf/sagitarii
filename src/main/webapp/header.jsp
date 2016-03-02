@@ -38,7 +38,7 @@
 				<div class="userBoard" style="background-color:#FFF; border:0px; height: 30px; margin-top: 0; position: absolute; right: 13px; top: 4px; width: 200px;">
 					<div style="float:left; width:160px">
 						<div class="userBoardT1" style="color:#ADADAD;text-align:right">
-							<a target="__BLANK" href="upload.zip">Data Upload Tool v1.0</a>
+							<a target="__BLANK" title="${announceUrl}" href="upload.zip">Data Upload Tool v1.0</a>
 						</div>
 					</div>							
 				</div>

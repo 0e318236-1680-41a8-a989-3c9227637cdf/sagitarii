@@ -4,37 +4,35 @@
 	Arquivo de configuração do Sagitarii Teapot v1.0
 	Por: Carlos Magno Abreu em 18/07/2014
 	
-	Changes:
-		08/09/2015 : activationsMaxLimit removed. Now starts 1.
-	
  -->
 
 <!DOCTYPE configuration [
 	<!ELEMENT configuration (cluster,proxy) >
 	<!ELEMENT cluster (hostURL,poolIntervalMilliSeconds,rPath,activationShowConsole,clearDataAfterFinish,
 		CSVDelimiter,storageHost,storagePort,fileSenderDelay, useSpeedEqualizer, enforceTaskLimitToCores,
-		DLBFrequency,maximunRamToUse,maximunCPULimit,minimunCPULimit)>
+		DLBFrequency,maximunRamToUse,maximunCPULimit,minimunCPULimit,announceURL)>
 	<!ELEMENT proxy (useProxy,proxy-host,proxy-port,proxy-password,proxy-user)>
 ]>
 
 <configuration>
 	
 	<cluster>
-		<hostURL>http://localhost:8580/sagitarii/</hostURL>
-		<poolIntervalMilliSeconds>1000</poolIntervalMilliSeconds>
-		<rPath>C:/rJava/jri</rPath>
+		<hostURL>http://192.168.1.30:8080/sagitarii/</hostURL>
+		<poolIntervalMilliSeconds>1500</poolIntervalMilliSeconds>
+		<rPath>/usr/local/lib/R/site-library/rJava/jri</rPath>
 		<activationShowConsole>false</activationShowConsole>
 		<clearDataAfterFinish>false</clearDataAfterFinish>
 		<CSVDelimiter>,</CSVDelimiter>
-		<storageHost>localhost</storageHost>
+		<storageHost>192.168.1.30</storageHost>
 		<storagePort>3333</storagePort>
 		<fileSenderDelay>200</fileSenderDelay>
-		<useSpeedEqualizer>true</useSpeedEqualizer>
+		<useSpeedEqualizer>false</useSpeedEqualizer>
 		<enforceTaskLimitToCores>false</enforceTaskLimitToCores>
-		<DLBFrequency>7</DLBFrequency>
-		<maximunRamToUse>90</maximunRamToUse>
-		<maximunCPULimit>95</maximunCPULimit>
-		<minimunCPULimit>90</minimunCPULimit>
+		<DLBFrequency>8</DLBFrequency>
+		<maximunRamToUse>80</maximunRamToUse>
+		<maximunCPULimit>85</maximunCPULimit>
+		<minimunCPULimit>70</minimunCPULimit>
+		<announceURL>http://192.168.1.30:6969/announce</announceURL>
 	</cluster>
 
 	<proxy>

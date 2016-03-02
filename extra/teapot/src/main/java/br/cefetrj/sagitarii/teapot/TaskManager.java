@@ -275,8 +275,8 @@ public class TaskManager {
 				debug("product is valid.");
 			}
 				
-			// Send data and files // Do not be tempted to simplify the "act" parameter. It must be this way
-			// because upload command line passes this parameters too
+			// BLOCKING. Send data and files // Do not be tempted to simplify the "act" parameter. It must be this way
+			// because upload command line passes this parameters too.
 			debug("uploading results to Sagitarii...");
 			new Uploader(configurator).uploadCSV("sagi_output.txt", act.getTargetTable(), act.getExperiment(), 
 					act.getNamespace(), task, tm );

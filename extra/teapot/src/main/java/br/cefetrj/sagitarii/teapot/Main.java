@@ -73,17 +73,7 @@ public class Main {
 		String[] responses = encodedResponse.replace("[", "").replace("]", "").replace(" ", "").split(",");
 		List<String> resp = new ArrayList<String>();
 		logger.debug("response package contains " + resp.size() + " instances" );
-		
-		/*
-		for ( String hexResp : responses ) {
-			byte[] compressedResp = ZipUtil.toByteArray( hexResp );
-			String inflatedResp = ZipUtil.decompress(compressedResp);
-			resp.add( inflatedResp );
-		}
-		*/
-		
 		resp = new ArrayList<String>( Arrays.asList( responses ) ); 
-		
 		logger.debug("done");
 		return resp;
 	}
