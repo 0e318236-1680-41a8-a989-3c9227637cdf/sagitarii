@@ -22,6 +22,7 @@ import br.cefetrj.sagitarii.teapot.ZipUtil;
 import com.turn.ttorrent.client.Client;
 import com.turn.ttorrent.client.Client.ClientState;
 import com.turn.ttorrent.client.SharedTorrent;
+import com.turn.ttorrent.client.peer.SharingPeer;
 import com.turn.ttorrent.common.Torrent;
 
 
@@ -52,7 +53,10 @@ public class SynchFolderClient {
 		for ( Client client : clients ) {
 			ClientState state = client.getState();
 			float completion = client.getTorrent().getCompletion();
-			logger.debug(" > " + client.getTorrent().getName() + " " + state + " " + completion + "% complete");
+			logger.debug(" > " + client.getTorrent().getCreatedBy() + " " + state + " " + completion + "%");
+			for ( SharingPeer sp : client.getPeers() ) {
+				logger.debug("    > " + sp.getIp() );
+			}
 		}
 	}
 	
@@ -131,8 +135,12 @@ public class SynchFolderClient {
 	
 
 	public Torrent createTorrentFromFolder( String folderPath, String folderName ) throws Exception {
+		logger.debug("creating outbox torrent from " + folderPath );
 		if ( !canCreateTorrent ) throw new Exception("Cannot create torrent without Announce URL");
 		String sourceFolder = storageFolder + "/" + folderPath + "/" + folderName;
+
+		logger.debug("full path: " + sourceFolder);
+		
 		Torrent torrent = Torrent.create(
 				new File(sourceFolder), 
 				getFiles( sourceFolder ), 
@@ -143,6 +151,8 @@ public class SynchFolderClient {
 	    torrent.save( fos );		    
 		fos.close();
 		
+		logger.debug("saved to " + torrentFile );
+
 		shareFile( torrentFile );
 		return torrent;
 	}
@@ -204,7 +214,7 @@ public class SynchFolderClient {
 	}
 	
 	public void shareFile( String torrentFile) throws Exception {
-		//log("Sharing... ");
+		logger.debug("sharing " + torrentFile );
 		
 		File tf = new File(torrentFile);
 		Torrent tr = Torrent.load( tf );

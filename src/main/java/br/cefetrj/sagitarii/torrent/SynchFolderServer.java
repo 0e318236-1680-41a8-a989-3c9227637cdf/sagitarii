@@ -115,12 +115,16 @@ public class SynchFolderServer {
 		if ( !file.exists() ) {
 			logger.error("Torrent file not exists.");
 		} else {
-			tracker.announce( TrackedTorrent.load( file ) );
-			logger.error("Torrent file added to tracker.");
-			// Will BLOCK!
-			logger.error("Will wait for download files...");
-			downloadFileAndWaitForFinish( torrentFile );
-			logger.error("Done.");
+			try {
+				tracker.announce( TrackedTorrent.load( file ) );
+				logger.debug("Torrent file added to tracker.");
+				// Will BLOCK!
+				logger.debug("Will wait for download files...");
+				downloadFileAndWaitForFinish( torrentFile );
+				logger.debug("Done.");
+			} catch ( Exception e ) {
+				e.printStackTrace();
+			}
 		}
 	} 
 	
@@ -145,7 +149,7 @@ public class SynchFolderServer {
 		Client seeder = downloadFile(torrentFile);
 		while ( seeder.getState() != ClientState.DONE ) {
 			try {
-				logger.debug(" > " + seeder.getState() + " " + seeder.getTorrent().getDownloaded() + " " + seeder.getTorrent().getCompletion() );
+				logger.debug(" > " + seeder.getTorrent().getCreatedBy() + ": " + seeder.getState() + " " + seeder.getTorrent().getDownloaded() + " " + seeder.getTorrent().getCompletion() + "%" );
 				Thread.sleep(2000);
 			} catch ( Exception e ) { }
 		}

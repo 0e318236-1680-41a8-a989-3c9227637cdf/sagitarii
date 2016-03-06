@@ -426,6 +426,7 @@ public class Sagitarii {
 		updateSystemMetrics();
 		try { 
 			tracker = new SynchFolderServer( PathFinder.getInstance().getPath() + "/storage");
+			tracker.startTracker();
 		} catch ( Exception e ) {
 			logger.error( e.getMessage() );
 		}

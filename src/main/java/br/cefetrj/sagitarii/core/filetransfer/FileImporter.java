@@ -5,9 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -464,14 +461,25 @@ public class FileImporter extends Thread {
 			}
 			
 			
-			if ( receivedFile.getType().equals("FILE_TYPE_TORRENT") ) {
-				logger.debug("will add torrent " + receivedFile.getFileName() + " to tracker." );
-				
-				Path source = new File(sessionContext + "/" + receivedFile.getFileName()).toPath();
-				Path target = new File( Sagitarii.getInstance().getTracker().getStorageFolder()+ "/"+ receivedFile.getFileName() ).toPath();
-				Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
-				
-				Sagitarii.getInstance().getTracker().saveTorrentAndAddTorrentFileToTracker( target.toString() );
+			try {
+				if ( receivedFile.getType().equals("FILE_TYPE_TORRENT") ) {
+					logger.debug("will add torrent " + receivedFile.getFileName() + " to tracker." );
+					
+					String srcName = sessionContext + "/" + receivedFile.getFileName();
+					String trgName = Sagitarii.getInstance().getTracker().getStorageFolder()+ "/"+ receivedFile.getFileName();
+					
+					File src = new File( srcName );
+
+					if ( !src.exists() ) {
+						logger.error("Torret file not found: " + sessionContext + "/" + receivedFile.getFileName() );
+					} else {
+						decompress( srcName, trgName );
+						Sagitarii.getInstance().getTracker().saveTorrentAndAddTorrentFileToTracker( trgName );
+						logger.debug("Torrent file added to Tracker and Downloader.");
+					}
+				}
+			} catch ( Exception e ) {
+				logger.error( e.getMessage() );
 			}
 			
 			

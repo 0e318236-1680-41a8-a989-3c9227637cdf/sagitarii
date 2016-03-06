@@ -278,8 +278,13 @@ public class TaskManager {
 			// BLOCKING. Send data and files // Do not be tempted to simplify the "act" parameter. It must be this way
 			// because upload command line passes this parameters too.
 			debug("uploading results to Sagitarii...");
-			new Uploader(configurator).uploadCSV("sagi_output.txt", act.getTargetTable(), act.getExperiment(), 
-					act.getNamespace(), task, tm );
+			try {
+				new Uploader(configurator).uploadCSV("sagi_output.txt", act.getTargetTable(), act.getExperiment(), 
+						act.getNamespace(), task, tm );
+			} catch ( Exception e) {
+				error("Error sending files to Sagitarii: " + e.getMessage() );
+				e.printStackTrace();
+			}
 
 			debug("uploading to Sagitarii done. Will try to execute next Activity in this Instance");
 			// Run next task in same instance (if exists)

@@ -1,8 +1,9 @@
 package br.cefetrj.sagitarii.wrappers;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
-import java.util.Random;
 
 import cmabreu.sagitarii.sdk.IWrapperProcessor;
 import cmabreu.sagitarii.sdk.LineData;
@@ -39,13 +40,17 @@ public class Processor implements IWrapperProcessor {
 		// How to run external applications 
 		//helper.runExternal("/my/path/myapplication.jar");
 		
-		// How to copy files
-		Random generator = new Random();
-        int number = generator.nextInt(10);
-        // Insert an error to simulate file creation fail (Just testing Sagitarii)
-        if ( number != 5 ) {
-        	helper.copyFile(helper.getWorkFolder() + "sagi_input.txt", helper.getOutboxFolder() + "sourcedata.csv");
-        }
+       	//helper.copyFile(helper.getWorkFolder() + "sagi_input.txt", helper.getOutboxFolder() + "sourcedata.csv");
+		
+		System.out.println("Will write the random data:");
+		PrintWriter writer = new PrintWriter( helper.getOutboxFolder() + "sourcedata.csv" , "UTF-8");
+		for ( int x =0; x <= 350000; x++ ) {
+			writer.println("This is a line of data: How to add a new " +
+								"column to the output CSV ( remember this column must exists in output table ) " + 
+								Calendar.getInstance().getTimeInMillis() );
+		}
+		writer.close();
+		System.out.println("Output file created with random data.");
 		
 		// How to move files
 		// helper.moveFile(source, target);

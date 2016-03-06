@@ -131,7 +131,7 @@
 
 	$(document).ready(function() {
 		reloadDicas();
-		window.setInterval(reloadPage, 5000);
+		//window.setInterval(reloadPage, 10000);
 
 	});
 	

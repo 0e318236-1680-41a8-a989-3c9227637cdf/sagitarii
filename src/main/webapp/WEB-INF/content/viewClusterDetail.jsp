@@ -281,7 +281,7 @@
 	}
 
 	$(document).ready(function() {
-		window.setInterval(reloadPage, 5000);
+		//window.setInterval(reloadPage, 5000);
 	});
 </script>
 
