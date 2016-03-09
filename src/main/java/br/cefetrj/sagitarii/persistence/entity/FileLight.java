@@ -45,6 +45,9 @@ public class FileLight {
 	@Column(length=250)
 	private String fileName;
 
+	@Column(length=250)
+	private String filePath;
+
 	public int getIdFile() {
 		return idFile;
 	}
@@ -85,5 +88,13 @@ public class FileLight {
 		this.instance = instance;
 	}
 
+	public String getFilePath() {
+		return filePath;
+	}
+	
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
+	}
+	
 
 }

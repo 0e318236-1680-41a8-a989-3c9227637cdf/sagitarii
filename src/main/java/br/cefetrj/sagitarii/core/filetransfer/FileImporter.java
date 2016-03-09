@@ -41,6 +41,9 @@ import br.cefetrj.sagitarii.persistence.services.FileService;
 import br.cefetrj.sagitarii.persistence.services.InstanceService;
 import br.cefetrj.sagitarii.persistence.services.RelationService;
 
+import com.turn.ttorrent.client.Client;
+import com.turn.ttorrent.client.Client.ClientState;
+
 public class FileImporter extends Thread {
 	private Server server;
 	private String sessionSerial;
@@ -63,6 +66,7 @@ public class FileImporter extends Thread {
 	private String activity;
 	private String fragment;
 	private long importedFiles = 0;
+	private String targetFilesFolder;
 	
 	public long getImportedFiles() {
 		return importedFiles;
@@ -193,8 +197,11 @@ public class FileImporter extends Thread {
 		logger.debug( log + " : Experiment " + experimentSerial + " Activity " + activity.getSerial() + " Instance " + instance.getSerial()  );
 		int response = -1;
 		try {
-
-			File sourceFile = new File( sessionContext + "/" + fileName );
+			String fullFile = targetFilesFolder + "/outbox/" + fileName;
+			File sourceFile = new File( fullFile );
+			if ( !sourceFile.exists() ) {
+				throw new Exception( "File " + fullFile + " not found." ); 
+			}
 			
 			ExperimentService ex = new ExperimentService();
 			Experiment experiment = ex.getExperiment( experimentSerial );
@@ -205,7 +212,9 @@ public class FileImporter extends Thread {
 			file.setFileName( fileName );
 			file.setActivity( activity );
 			file.setInstance( instance );
+			file.setFilePath( targetFilesFolder + "/outbox/" );
 			
+			/*
 			byte[] bFile = new byte[(int) sourceFile.length()];
 			try {
 				FileInputStream fileInputStream = new FileInputStream( sourceFile );
@@ -214,8 +223,9 @@ public class FileImporter extends Thread {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}				
-
 			file.setFile( bFile );
+			*/
+			
 			fs.insertFile(file);
 			
 			response = file.getIdFile();
@@ -227,7 +237,7 @@ public class FileImporter extends Thread {
 		} catch ( Exception e ) {
 			logger.error( e.getMessage() );
 		}
-
+		log = fileName + " stored.";
 		return response;
 	}
 	
@@ -369,7 +379,7 @@ public class FileImporter extends Thread {
 					String columnName = headerLine.get(x);
 					if ( DomainStorage.getInstance().domainExists(relationName + "." + columnName) ) {
 						// Yes... set it as null
-						logger.warn("the domain column " + columnName + " in table " + relationName + " have no file");
+						logger.warn("the domain column " + columnName + " in table " + relationName + " has received no file");
 						valVal = "null";
 					}
 					
@@ -452,38 +462,53 @@ public class FileImporter extends Thread {
 		}
 		
 		// Find the main CSV data file (sagi_output.txt for Teapot or any other if user manual load)
-		logger.debug("files received on session " + sessionSerial );
+		logger.debug( receivedFiles.size() +  " files received on session " + sessionSerial );
 		for( ReceivedFile receivedFile : receivedFiles ) {
-			logger.debug(" > Received file: " + receivedFile.getType() + ": " + receivedFile.getInstance() + "/" + receivedFile.getFragment() + "/" + receivedFile.getActivity() + "/" + receivedFile.getFileName() + " Exit: " + receivedFile.getExitCode() );
 			if ( receivedFile.getType().equals("FILE_TYPE_CSV") ) {
+				// Take the CSV file
 				logger.debug("will process csv from " + receivedFile.getFileName() );
 				csvDataFile = receivedFile;
 			}
-			
-			
-			try {
-				if ( receivedFile.getType().equals("FILE_TYPE_TORRENT") ) {
-					logger.debug("will add torrent " + receivedFile.getFileName() + " to tracker." );
-					
-					String srcName = sessionContext + "/" + receivedFile.getFileName();
-					String trgName = Sagitarii.getInstance().getTracker().getStorageFolder()+ "/"+ receivedFile.getFileName();
-					
-					File src = new File( srcName );
+						
+			if ( receivedFile.getType().equals("FILE_TYPE_TORRENT") ) {
+				// Take the TORRENT file
+				// Will block here until all files are downloaded.
+				logger.debug("will add torrent " + receivedFile.getFileName() + " to tracker." );
+				
+				String srcName = sessionContext + "/" + receivedFile.getFileName();
+				String trgName = Sagitarii.getInstance().getTracker().getStorageFolder()+ "/"+ receivedFile.getFileName();
+				
+				File src = new File( srcName );
 
-					if ( !src.exists() ) {
-						logger.error("Torret file not found: " + sessionContext + "/" + receivedFile.getFileName() );
-					} else {
-						decompress( srcName, trgName );
-						Sagitarii.getInstance().getTracker().saveTorrentAndAddTorrentFileToTracker( trgName );
-						logger.debug("Torrent file added to Tracker and Downloader.");
+				if ( !src.exists() ) {
+					logger.error("torrent file not found: " + sessionContext + "/" + receivedFile.getFileName() );
+				} else {
+					decompress( srcName, trgName );
+
+					try {
+						logger.debug("Will add torrent to tracker");
+						Client seeder = Sagitarii.getInstance().getTracker().addToTrackerAndDownload( trgName );
+						targetFilesFolder = Sagitarii.getInstance().getTracker().getStorageFolder() + "/" + seeder.getTorrent().getCreatedBy();
+						logger.debug("Will wait for torrent to download to folder");
+						logger.debug( targetFilesFolder );
+						// will block until client is done
+						while ( (seeder != null) && (seeder.getState() != ClientState.DONE) ) {
+							try {
+								logger.debug(" > " + seeder.getTorrent().getCreatedBy() + ": " + seeder.getState() + " " + seeder.getTorrent().getCompletion() + "%" );
+								Thread.sleep(2000);
+							} catch ( Exception e ) { }
+						}
+						logger.debug("Done downloading torrent.");
+					} catch ( Exception e ) {
+						logger.error( e.getMessage() );
 					}
+					
+					logger.debug("Torrent folder synchronized.");
 				}
-			} catch ( Exception e ) {
-				logger.error( e.getMessage() );
 			}
-			
-			
-		}
+		} // End received files loop
+		
+		
 		// If found, open it, store files to database and import CSV data
 		if ( csvDataFile != null ) {
 			importData( csvDataFile );
@@ -557,6 +582,7 @@ public class FileImporter extends Thread {
 	@Override
 	public void run() {
 		tag = UUID.randomUUID().toString().replace("-", "");
+		logger.debug("new importer " + tag );
 		while ( isActive() ) {
 			log = "Waiting to finish all file transfers";
 			status = "WAITING";
@@ -585,6 +611,7 @@ public class FileImporter extends Thread {
 		log = "Finished.";
 		status = "DONE";
 		server.clean();
+		logger.debug("importer " + tag + " finish.");
 	}
 	
 	

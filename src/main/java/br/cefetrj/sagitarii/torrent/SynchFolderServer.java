@@ -15,7 +15,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.turn.ttorrent.client.Client;
-import com.turn.ttorrent.client.Client.ClientState;
 import com.turn.ttorrent.client.SharedTorrent;
 import com.turn.ttorrent.common.Torrent;
 import com.turn.ttorrent.tracker.TrackedTorrent;
@@ -109,22 +108,17 @@ public class SynchFolderServer {
 		logger.debug("Tracker stopped.");
 	}
 
-	public void saveTorrentAndAddTorrentFileToTracker(String torrentFile) throws Exception {
+	public Client addToTrackerAndDownload(String torrentFile) throws Exception {
 		File file = new File(torrentFile);
 		logger.debug("New Torrent file incomming : " + torrentFile );
 		if ( !file.exists() ) {
 			logger.error("Torrent file not exists.");
+			throw new Exception("Torrent file " + torrentFile + " not exists.");
 		} else {
-			try {
-				tracker.announce( TrackedTorrent.load( file ) );
-				logger.debug("Torrent file added to tracker.");
-				// Will BLOCK!
-				logger.debug("Will wait for download files...");
-				downloadFileAndWaitForFinish( torrentFile );
-				logger.debug("Done.");
-			} catch ( Exception e ) {
-				e.printStackTrace();
-			}
+			tracker.announce( TrackedTorrent.load( file ) );
+			logger.debug("Torrent file added to tracker.");
+			Client seeder = downloadFile(torrentFile);
+			return seeder;
 		}
 	} 
 	
@@ -142,18 +136,6 @@ public class SynchFolderServer {
 		Client seeder = new Client( bindAddress, st);
 		
 	    seeder.share(1800); // Will share for 30 min
-	}
-	
-	public void downloadFileAndWaitForFinish( String torrentFile) throws Exception {
-		logger.debug("Will wait for torrent to download");
-		Client seeder = downloadFile(torrentFile);
-		while ( seeder.getState() != ClientState.DONE ) {
-			try {
-				logger.debug(" > " + seeder.getTorrent().getCreatedBy() + ": " + seeder.getState() + " " + seeder.getTorrent().getDownloaded() + " " + seeder.getTorrent().getCompletion() + "%" );
-				Thread.sleep(2000);
-			} catch ( Exception e ) { }
-		}
-		logger.debug("Done downloading torrent.");
 	}
 	
 	public Client downloadFile( String torrentFile) throws Exception {

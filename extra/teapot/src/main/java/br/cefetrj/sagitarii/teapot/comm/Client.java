@@ -128,7 +128,7 @@ public class Client {
 	    for (final File fileEntry : filesFolder.listFiles() ) {
 	        if ( !fileEntry.isDirectory() ) {
 	    		xml.append("<file name=\""+fileEntry.getName()+"\" type=\"FILE_TYPE_FILE\" />\n");
-	    		filesToSend.add( folder + "/" + "outbox" + "/" + fileEntry.getName() );
+	    		//filesToSend.add( folder + "/" + "outbox" + "/" + fileEntry.getName() );
 	        }
 	    }
 		

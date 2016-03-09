@@ -53,6 +53,9 @@ public class File {
 	@Column(length=250)
 	private String fileName;
 
+	@Column(length=250)
+	private String filePath;
+
 	@Lob
 	private byte[] file;
 	
@@ -117,5 +120,12 @@ public class File {
 		this.instance = instance;
 	}
 
+	public String getFilePath() {
+		return filePath;
+	}
+	
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
+	}
 
 }
