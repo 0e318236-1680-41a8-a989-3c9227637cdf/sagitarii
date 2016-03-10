@@ -213,7 +213,7 @@ public class SynchFolderClient {
 
 	}
 	
-	public void shareFile( String torrentFile) throws Exception {
+	public Client shareFile( String torrentFile) throws Exception {
 		logger.debug("sharing " + torrentFile );
 		
 		File tf = new File(torrentFile);
@@ -228,6 +228,7 @@ public class SynchFolderClient {
 		
 	    seeder.share(1800); 
 	    startMonitor( seeder );
+	    return seeder;
 	}
 	
     private InetAddress getFirstNonLoopbackAddress(boolean preferIpv4, boolean preferIPv6) throws SocketException {
