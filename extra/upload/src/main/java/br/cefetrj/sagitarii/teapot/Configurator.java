@@ -43,7 +43,12 @@ public class Configurator {
 	private int storagePort;
 	private SystemProperties systemProperties;
 	private Logger logger = LogManager.getLogger( this.getClass().getName()  );
-
+	private String announceUrl;
+	
+	public String getAnnounceUrl() {
+		return announceUrl;
+	}
+	
 	public SystemProperties getSystemProperties() {
 		return this.systemProperties;
 	}
@@ -120,6 +125,7 @@ public class Configurator {
 				storagePort = Integer.valueOf( getTagValue("storagePort", mpElement) );
 				fileSenderDelay = Integer.valueOf( getTagValue("fileSenderDelay", mpElement) );
 				useProxy = Integer.parseInt( getValue("proxy", "useProxy") );
+				announceUrl = getTagValue("announceURL", mpElement);
 				
 				if (useProxy == 1) {
 					proxyInfo = new ProxyInfo();

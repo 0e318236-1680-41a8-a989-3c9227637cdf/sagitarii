@@ -34,7 +34,10 @@ import java.util.zip.GZIPOutputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.turn.ttorrent.common.Torrent;
+
 import br.cefetrj.sagitarii.teapot.Configurator;
+import br.cefetrj.sagitarii.teapot.torrent.SynchFolderClient;
  
 public class Client {
 	private List<String> filesToSend;
@@ -44,6 +47,7 @@ public class Client {
 	private String sagiHost;
 	private int fileSenderDelay;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
+	private String announceUrl;
 
 	
 	public Client( Configurator configurator ) {
@@ -52,12 +56,25 @@ public class Client {
 		this.storagePort = configurator.getStoragePort();
 		this.sagiHost = configurator.getHostURL();
 		this.fileSenderDelay = configurator.getFileSenderDelay();
+		this.announceUrl = configurator.getAnnounceUrl();		
 	}
 	
 	
 	public void sendFile( String fileName, String folder, String targetTable, String experimentSerial,  
 			String macAddress) throws Exception {
 
+		File f = new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath() );
+		String storageRootFolder =  f.getAbsolutePath();
+		storageRootFolder = storageRootFolder.substring(0, storageRootFolder.lastIndexOf( File.separator ) + 1) + "namespaces/";
+		
+		String folderName = "outbox";
+		String folderPath = folder.replace(storageRootFolder, "").replaceAll("/+", "/");
+		
+		SynchFolderClient sfc = new SynchFolderClient( storageRootFolder , announceUrl );
+		Torrent torrent = sfc.createTorrentFromFolder(folderPath, folderName);
+		
+		String torrentFile = storageRootFolder + "/" + torrent.getHexInfoHash() + ".torrent";
+		
 		
 		String instanceSerial = "";
 		String activity = "";
@@ -81,10 +98,19 @@ public class Client {
 			filesFolder.mkdirs();
 		}		
 		
+
+		File tor = new File(torrentFile);
+		if ( tor.exists() ) {
+			xml.append("<file name=\""+tor.getName()+"\" type=\"FILE_TYPE_TORRENT\" />\n");
+			filesToSend.add( torrentFile );
+		} else {
+			logger.error("will not send Torrent file.");
+		}		
+		
 	    for (final File fileEntry : filesFolder.listFiles() ) {
 	        if ( !fileEntry.isDirectory() ) {
 	    		xml.append("<file name=\""+fileEntry.getName()+"\" type=\"FILE_TYPE_FILE\" />\n");
-	    		filesToSend.add( folder + File.separator + "outbox" + File.separator + fileEntry.getName() );
+	    		//filesToSend.add( folder + File.separator + "outbox" + File.separator + fileEntry.getName() );
 	        }
 	    }
 		
@@ -109,6 +135,18 @@ public class Client {
 			logger.debug("total bytes sent: " + totalBytesSent );
 		}
 		commit();
+		
+		logger.debug("Will wait for Sagitarii to download the torrent...");
+		while ( sfc.isSharing( torrent.getHexInfoHash() ) ) {
+			sfc.show();
+			try {
+				Thread.sleep(2000);
+			} catch (Exception e) {
+				//
+			}
+		}
+		logger.debug("Done. Upload task finished.");
+		
 	}
 	
 	
