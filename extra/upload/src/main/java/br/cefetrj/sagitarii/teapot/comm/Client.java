@@ -65,16 +65,18 @@ public class Client {
 
 		File f = new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath() );
 		String storageRootFolder =  f.getAbsolutePath();
-		storageRootFolder = storageRootFolder.substring(0, storageRootFolder.lastIndexOf( File.separator ) + 1) + "namespaces/";
+		storageRootFolder = storageRootFolder.substring(0, storageRootFolder.lastIndexOf( File.separator ) + 1) ;
 		
 		String folderName = "outbox";
-		String folderPath = folder.replace(storageRootFolder, "").replaceAll("/+", "/");
+		//String folderPath = folder.replaceAll("/+", "/").replace(storageRootFolder, "").replaceAll("/+", "/");
 		
 		SynchFolderClient sfc = new SynchFolderClient( storageRootFolder , announceUrl );
-		Torrent torrent = sfc.createTorrentFromFolder(folderPath, folderName);
+		Torrent torrent = sfc.createTorrentFromFolder(folderName, "");
 		
-		String torrentFile = storageRootFolder + "/" + torrent.getHexInfoHash() + ".torrent";
-		
+		String torrentFile = "";
+		if ( torrent != null ) {
+			torrentFile = storageRootFolder + "/" + torrent.getHexInfoHash() + ".torrent";
+		}		
 		
 		String instanceSerial = "";
 		String activity = "";
@@ -99,13 +101,15 @@ public class Client {
 		}		
 		
 
-		File tor = new File(torrentFile);
-		if ( tor.exists() ) {
-			xml.append("<file name=\""+tor.getName()+"\" type=\"FILE_TYPE_TORRENT\" />\n");
-			filesToSend.add( torrentFile );
-		} else {
-			logger.error("will not send Torrent file.");
-		}		
+		if ( torrent != null ) {
+			File tor = new File(torrentFile);
+			if ( tor.exists() ) {
+				xml.append("<file name=\""+tor.getName()+"\" type=\"FILE_TYPE_TORRENT\" />\n");
+				filesToSend.add( torrentFile );
+			} else {
+				logger.error("will not send Torrent file.");
+			}
+		}	
 		
 	    for (final File fileEntry : filesFolder.listFiles() ) {
 	        if ( !fileEntry.isDirectory() ) {
@@ -136,16 +140,18 @@ public class Client {
 		}
 		commit();
 		
-		logger.debug("Will wait for Sagitarii to download the torrent...");
-		while ( sfc.isSharing( torrent.getHexInfoHash() ) ) {
-			sfc.show();
-			try {
-				Thread.sleep(2000);
-			} catch (Exception e) {
-				//
+		if ( torrent != null ) {
+			logger.debug("Will wait for Sagitarii to download the torrent...");
+			while ( sfc.isSharing( torrent.getHexInfoHash() ) ) {
+				sfc.show();
+				try {
+					Thread.sleep(2000);
+				} catch (Exception e) {
+					//
+				}
 			}
+			logger.debug("Done. Upload task finished.");
 		}
-		logger.debug("Done. Upload task finished.");
 		
 	}
 	

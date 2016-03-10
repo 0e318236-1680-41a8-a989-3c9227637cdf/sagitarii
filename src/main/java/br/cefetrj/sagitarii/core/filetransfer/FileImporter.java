@@ -67,6 +67,7 @@ public class FileImporter extends Thread {
 	private String fragment;
 	private long importedFiles = 0;
 	private String targetFilesFolder;
+	private String receivedTorrentFileFullPath;
 	
 	public long getImportedFiles() {
 		return importedFiles;
@@ -197,7 +198,7 @@ public class FileImporter extends Thread {
 		logger.debug( log + " : Experiment " + experimentSerial + " Activity " + activity.getSerial() + " Instance " + instance.getSerial()  );
 		int response = -1;
 		try {
-			String fullFile = targetFilesFolder + "/outbox/" + fileName;
+			String fullFile = Sagitarii.getInstance().getTracker().getStorageFolder() + "/" + targetFilesFolder + "/outbox/" + fileName;
 			File sourceFile = new File( fullFile );
 			if ( !sourceFile.exists() ) {
 				throw new Exception( "File " + fullFile + " not found." ); 
@@ -475,27 +476,27 @@ public class FileImporter extends Thread {
 				// Will block here until all files are downloaded.
 				logger.debug("will add torrent " + receivedFile.getFileName() + " to tracker." );
 				
-				String srcName = sessionContext + "/" + receivedFile.getFileName();
-				String trgName = Sagitarii.getInstance().getTracker().getStorageFolder()+ "/"+ receivedFile.getFileName();
+				receivedTorrentFileFullPath = sessionContext + "/" + receivedFile.getFileName();
+				String decompressedTorrentFile = Sagitarii.getInstance().getTracker().getStorageFolder()+ "/"+ receivedFile.getFileName();
 				
-				File src = new File( srcName );
+				File src = new File( receivedTorrentFileFullPath );
 
 				if ( !src.exists() ) {
 					logger.error("torrent file not found: " + sessionContext + "/" + receivedFile.getFileName() );
 				} else {
-					decompress( srcName, trgName );
+					decompress( receivedTorrentFileFullPath, decompressedTorrentFile );
 
 					try {
 						logger.debug("Will add torrent to tracker");
-						Client seeder = Sagitarii.getInstance().getTracker().addToTrackerAndDownload( trgName );
-						targetFilesFolder = Sagitarii.getInstance().getTracker().getStorageFolder() + "/" + seeder.getTorrent().getCreatedBy();
+						Client seeder = Sagitarii.getInstance().getTracker().addToTrackerAndDownload( decompressedTorrentFile );
+						targetFilesFolder = seeder.getTorrent().getCreatedBy();
 						logger.debug("Will wait for torrent to download to folder");
 						logger.debug( targetFilesFolder );
 						// will block until client is done
 						while ( (seeder != null) && (seeder.getState() != ClientState.DONE) ) {
 							try {
 								logger.debug(" > " + seeder.getTorrent().getCreatedBy() + ": " + seeder.getState() + " " + seeder.getTorrent().getCompletion() + "%" );
-								Thread.sleep(2000);
+								Thread.sleep(1000);
 							} catch ( Exception e ) { }
 						}
 						logger.debug("Done downloading torrent.");
@@ -504,6 +505,10 @@ public class FileImporter extends Thread {
 					}
 					
 					logger.debug("Torrent folder synchronized.");
+					// Once the torrent was downloaded, will not need the .torrent file anymore:
+					Sagitarii.getInstance().getTracker().removeFromTracker( decompressedTorrentFile );
+					File toDeleteTheTorrentFile = new File( decompressedTorrentFile );
+					toDeleteTheTorrentFile.delete();
 				}
 			}
 		} // End received files loop
@@ -549,7 +554,6 @@ public class FileImporter extends Thread {
 	private boolean isActive() {
 		logger.debug("checking session " + sessionSerial + "...");
 		for ( FileSaver saver : server.getSavers() ) {
-			//logger.debug(" > " + saver.getFileName() + ": " + saver.getStatus() + " " + saver.getPercent() + "%");
 			try {
 				if ( ( saver.getSessionSerial().equals(sessionSerial) ) && ( saver.getStatus() == SaverStatus.TRANSFERRING ) ) {
 					logger.debug("active saver found.");

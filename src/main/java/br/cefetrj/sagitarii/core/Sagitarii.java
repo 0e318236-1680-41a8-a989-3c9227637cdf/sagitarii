@@ -425,7 +425,7 @@ public class Sagitarii {
 		runningExperiments = new ArrayList<Experiment>();
 		updateSystemMetrics();
 		try { 
-			tracker = new SynchFolderServer( PathFinder.getInstance().getPath() + "/storage");
+			tracker = new SynchFolderServer( PathFinder.getInstance().getPath() );
 			tracker.startTracker();
 		} catch ( Exception e ) {
 			logger.error( e.getMessage() );

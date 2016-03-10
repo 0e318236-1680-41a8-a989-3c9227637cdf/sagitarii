@@ -41,7 +41,7 @@ public class SynchFolderClient {
 
 	public boolean isSharing( String torrentHash ) {
 		cleanCompletedMonitors();
-		for ( Client client : clients ) {
+		for ( Client client : getClients() ) {
 			if ( client.getTorrent().getHexInfoHash().toLowerCase().equals( torrentHash.toLowerCase() ) ) {
 				return true;
 			}
@@ -49,19 +49,32 @@ public class SynchFolderClient {
 		return false;
 	}
 	
-	public void show() {
-		for ( Client client : clients ) {
-			ClientState state = client.getState();
-			float completion = client.getTorrent().getCompletion();
-			logger.debug(" > " + client.getTorrent().getCreatedBy() + " " + state + " " + completion + "%");
-			for ( SharingPeer sp : client.getPeers() ) {
-				logger.debug("    > " + sp.getIp() );
+	public List<Client> getClients() {
+		return new ArrayList<Client>( clients ); 
+	}
+	
+	public synchronized void show() {
+		for ( Client client : getClients() ) {
+			//ClientState state = client.getState();
+			//float completion = client.getTorrent().getCompletion();
+			try {
+				boolean canClose = ( client.getPeers().size() > 0 );
+				for ( SharingPeer sp : client.getPeers() ) {
+					//logger.debug("    > " + sp.getIp() + " " + sp.isConnected() + " " + sp.isDownloading() );
+					if ( sp.isConnected() || sp.isDownloading() ) {
+						canClose = false;
+					}
+				}
+				if ( client.getPeers().size() == 1 ) canClose = false;
+				logger.debug(" > " + client.getTorrent().getCreatedBy() + ": " + client.getPeers().size() + " peers. (" + canClose + ")");
+			} catch ( Exception e ) {
+				logger.error( e.getMessage() );
 			}
 		}
 	}
 	
 	public synchronized void cleanCompletedMonitors() {
-		for ( Client client : clients ) {
+		for ( Client client : getClients() ) {
 			if ( client.getState() == ClientState.DONE ) {
 				logger.debug("Stop finished sharing: " + client.getTorrent().getName() );
 				client.stop();
@@ -74,7 +87,7 @@ public class SynchFolderClient {
 	}
 	
 	public void stopAll() {
-		for ( Client client : clients ) {
+		for ( Client client : getClients() ) {
 			client.stop();
 		}
 		clients.clear();
@@ -138,23 +151,30 @@ public class SynchFolderClient {
 		logger.debug("creating outbox torrent from " + folderPath );
 		if ( !canCreateTorrent ) throw new Exception("Cannot create torrent without Announce URL");
 		String sourceFolder = storageFolder + "/" + folderPath + "/" + folderName;
+		sourceFolder = sourceFolder.replaceAll("/+", "/");
 
 		logger.debug("full path: " + sourceFolder);
 		
-		Torrent torrent = Torrent.create(
-				new File(sourceFolder), 
-				getFiles( sourceFolder ), 
-				trackerAnnounceUrl, folderPath);
-		
-		String torrentFile = serverRootFolder + "/" + torrent.getHexInfoHash() + ".torrent";
-	    FileOutputStream fos = new FileOutputStream( torrentFile );
-	    torrent.save( fos );		    
-		fos.close();
-		
-		logger.debug("saved to " + torrentFile );
-
-		shareFile( torrentFile );
-		return torrent;
+		File ff = new File(sourceFolder);
+		List<File> fileList = getFiles( sourceFolder );
+		if ( fileList.size() > 0 ) {
+			Torrent torrent = Torrent.create(
+					ff, 
+					fileList, 
+					trackerAnnounceUrl, folderPath);
+			
+			String torrentFile = serverRootFolder + "/" + torrent.getHexInfoHash() + ".torrent";
+		    FileOutputStream fos = new FileOutputStream( torrentFile );
+		    torrent.save( fos );		    
+			fos.close();
+			
+			logger.debug("saved to " + torrentFile );
+	
+			shareFile( torrentFile );
+			return torrent;
+		} else {
+			return null;
+		}
 	}
 	
 	public void saveTorrentDownloadAndShare( TorrentFile torrentFile ) throws Exception  {
@@ -225,9 +245,10 @@ public class SynchFolderClient {
 		targetContentFolder.mkdirs();
 		SharedTorrent st = SharedTorrent.fromFile( tf, targetContentFolder );
 		Client seeder = new Client( bindAddress, st);
-		
-	    seeder.share(1800); 
-	    startMonitor( seeder );
+	    
+		seeder.share(60); 
+	    
+		startMonitor( seeder );
 	    return seeder;
 	}
 	

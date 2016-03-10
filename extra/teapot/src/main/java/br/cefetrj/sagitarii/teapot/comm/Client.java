@@ -75,8 +75,10 @@ public class Client {
 		
 		SynchFolderClient sfc = new SynchFolderClient( storageRootFolder , announceUrl );
 		Torrent torrent = sfc.createTorrentFromFolder(folderPath, folderName);
-		
-		String torrentFile = storageRootFolder + "/" + torrent.getHexInfoHash() + ".torrent";
+		String torrentFile = "";
+		if ( torrent != null ) {
+			torrentFile = storageRootFolder + "/" + torrent.getHexInfoHash() + ".torrent";
+		}
 		
 		String instanceSerial = "";
 		String activity = "";
@@ -116,12 +118,14 @@ public class Client {
 			logger.error("will not send sagi_output.txt in session.xml file: this activity instance produced no data");
 		}
 		
-		File tor = new File(torrentFile);
-		if ( tor.exists() ) {
-			xml.append("<file name=\""+tor.getName()+"\" type=\"FILE_TYPE_TORRENT\" />\n");
-			filesToSend.add( torrentFile );
-		} else {
-			logger.error("will not send Torrent file.");
+		if ( torrent != null ) {
+			File tor = new File(torrentFile);
+			if ( tor.exists() ) {
+				xml.append("<file name=\""+tor.getName()+"\" type=\"FILE_TYPE_TORRENT\" />\n");
+				filesToSend.add( torrentFile );
+			} else {
+				logger.error("will not send Torrent file.");
+			}
 		}
 
 		File filesFolder = new File( folder + "/" + "outbox" );
@@ -174,16 +178,19 @@ public class Client {
 		
 		commit();
 		
-		logger.debug("Will wait for Sagitarii to download the torrent...");
-		while ( sfc.isSharing( torrent.getHexInfoHash() ) ) {
-			sfc.show();
-			try {
-				Thread.sleep(2000);
-			} catch (Exception e) {
-				//
+		if ( torrent != null ) {
+			logger.debug("Will wait for Sagitarii to download the torrent...");
+			while ( sfc.isSharing( torrent.getHexInfoHash() ) ) {
+				sfc.show();
+				try {
+					Thread.sleep(2000);
+				} catch (Exception e) {
+					//
+				}
 			}
+			logger.debug("Done. Upload task finished.");
 		}
-		logger.debug("Done. Upload task finished.");
+		
 	}
 	
 

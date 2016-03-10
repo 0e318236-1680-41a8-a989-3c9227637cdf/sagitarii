@@ -139,22 +139,30 @@ public class SynchFolderClient {
 		if ( !canCreateTorrent ) throw new Exception("Cannot create torrent without Announce URL");
 		String sourceFolder = storageFolder + "/" + folderPath + "/" + folderName;
 
+		sourceFolder = sourceFolder.replaceAll("/+", "/");
+		
 		logger.debug("full path: " + sourceFolder);
 		
-		Torrent torrent = Torrent.create(
-				new File(sourceFolder), 
-				getFiles( sourceFolder ), 
-				trackerAnnounceUrl, folderPath);
-		
-		String torrentFile = serverRootFolder + "/" + torrent.getHexInfoHash() + ".torrent";
-	    FileOutputStream fos = new FileOutputStream( torrentFile );
-	    torrent.save( fos );		    
-		fos.close();
-		
-		logger.debug("saved to " + torrentFile );
-
-		shareFile( torrentFile );
-		return torrent;
+		File ff = new File(sourceFolder);
+		List<File> fileList = getFiles( sourceFolder );
+		if ( fileList.size() > 0 ) {
+			Torrent torrent = Torrent.create(
+					ff, 
+					fileList, 
+					trackerAnnounceUrl, folderPath);
+			
+			String torrentFile = serverRootFolder + "/" + torrent.getHexInfoHash() + ".torrent";
+		    FileOutputStream fos = new FileOutputStream( torrentFile );
+		    torrent.save( fos );		    
+			fos.close();
+			
+			logger.debug("saved to " + torrentFile );
+	
+			shareFile( torrentFile );
+			return torrent;
+		} else {
+			return null;
+		}
 	}
 	
 	public void saveTorrentDownloadAndShare( TorrentFile torrentFile ) throws Exception  {

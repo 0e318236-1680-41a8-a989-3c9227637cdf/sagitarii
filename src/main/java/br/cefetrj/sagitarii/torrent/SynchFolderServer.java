@@ -108,6 +108,18 @@ public class SynchFolderServer {
 		logger.debug("Tracker stopped.");
 	}
 
+	public void removeFromTracker(String torrentFile) throws Exception {
+		File file = new File(torrentFile);
+		logger.debug("Will remove from tracker : " + torrentFile );
+		if ( !file.exists() ) {
+			logger.error("Torrent file not exists.");
+			throw new Exception("Torrent file " + torrentFile + " not exists.");
+		} else {
+			tracker.remove( TrackedTorrent.load(file) );
+			logger.debug("Torrent file removed from tracker.");
+		}
+	}
+	
 	public Client addToTrackerAndDownload(String torrentFile) throws Exception {
 		File file = new File(torrentFile);
 		logger.debug("New Torrent file incomming : " + torrentFile );
@@ -123,8 +135,6 @@ public class SynchFolderServer {
 	} 
 	
 	public void shareFile( String torrentFile) throws Exception {
-		//log("Sharing... ");
-		
 		File tf = new File(torrentFile);
 		Torrent tr = Torrent.load( tf );
 		String parentFolder = tr.getCreatedBy();
@@ -135,7 +145,7 @@ public class SynchFolderServer {
 		SharedTorrent st = SharedTorrent.fromFile( tf, targetContentFolder );
 		Client seeder = new Client( bindAddress, st);
 		
-	    seeder.share(1800); // Will share for 30 min
+	    seeder.share(2); 
 	}
 	
 	public Client downloadFile( String torrentFile) throws Exception {
