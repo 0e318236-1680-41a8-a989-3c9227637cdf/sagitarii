@@ -2,15 +2,28 @@ package br.cefetrj.sagitarii.core.filetransfer;
 
 import java.io.File;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.ftpserver.DataConnectionConfigurationFactory;
+import org.apache.ftpserver.FtpServer;
+import org.apache.ftpserver.FtpServerFactory;
+import org.apache.ftpserver.ftplet.Authority;
+import org.apache.ftpserver.ftplet.Ftplet;
+import org.apache.ftpserver.ftplet.UserManager;
+import org.apache.ftpserver.listener.Listener;
+import org.apache.ftpserver.listener.ListenerFactory;
+import org.apache.ftpserver.usermanager.PropertiesUserManagerFactory;
+import org.apache.ftpserver.usermanager.impl.BaseUser;
+import org.apache.ftpserver.usermanager.impl.ConcurrentLoginPermission;
+import org.apache.ftpserver.usermanager.impl.WritePermission;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,19 +31,12 @@ import br.cefetrj.sagitarii.metrics.MetricController;
 import br.cefetrj.sagitarii.metrics.MetricType;
 import br.cefetrj.sagitarii.misc.PathFinder;
 
-public class Server extends Thread {
-	private int chunkBuffer;
+public class Server {
 	private ServerSocket serverSocket;
-	private boolean canStop = false;
-	private List<FileSaver> savers;
-	private int serverPort;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 	private List<FileImporter> importers;
+	private FtpServer server;
 	
-	public void pauseServer( long millis ) throws Exception {
-		Thread.sleep(millis);
-	}
-
 	public List<FileImporter> getImporters() {
 		return new ArrayList<FileImporter>( importers );
 	}
@@ -40,9 +46,7 @@ public class Server extends Thread {
 		String cacheDirectory = PathFinder.getInstance().getPath() + "/cache/" + sessionSerial + "/";
 		new File(cacheDirectory).mkdirs();
 		logger.debug("starting session " + sessionSerial);
-
 		MetricController.getInstance().hit( "Session Open", MetricType.FILE );
-
 		return sessionSerial;
 	}
 
@@ -73,58 +77,71 @@ public class Server extends Thread {
 		return "ok";
 	}
 	
-	public Server( int serverPort, int chunkBuffer ) {
-		this.chunkBuffer = chunkBuffer;
-		this.serverPort = serverPort;
-		this.importers = new ArrayList<FileImporter>();
-	}
-	
-	@Override
-	public void run() {
-		savers = new ArrayList<FileSaver>();
-				
+	public Server( int serverPort, int chunkBuffer ) throws Exception {
 		logger.debug("start");
+
+		this.importers = new ArrayList<FileImporter>();
 		
 		try {
-			serverSocket = new ServerSocket(serverPort);
-			while ( !canStop ) {
-				Socket s = serverSocket.accept();
-				logger.debug("starting new saver thread");
-				FileSaver saver = new FileSaver( s, chunkBuffer, this );
+	        PropertiesUserManagerFactory userManagerFactory = new PropertiesUserManagerFactory();
+	        UserManager userManager = userManagerFactory.createUserManager();
 
-				MetricController.getInstance().hit( "Files Received", MetricType.FILE );
-				
-				savers.add( saver );
-				saver.setName("Sagitarii file receiver");
-				saver.start();
-			}
-			
-		} catch (Exception e) {
-			//
+	        List<Authority> authorities = new ArrayList<Authority>();
+	        authorities.add( new WritePermission() );
+	        authorities.add( new ConcurrentLoginPermission(5000,5000) );
+	        
+	        BaseUser user = new BaseUser();
+	        user.setName("cache");
+	        user.setPassword("cache");
+	        user.setHomeDirectory( PathFinder.getInstance().getPath() + "/cache/" );
+	        user.setAuthorities(authorities);
+	        user.setMaxIdleTime(1000);
+	        user.setEnabled( true );
+	        userManager.save( user );
+	         
+	        BaseUser scientist = new BaseUser();
+	        scientist.setName("storage");
+	        scientist.setPassword("storage");
+	        scientist.setHomeDirectory( PathFinder.getInstance().getPath() + "/storage/" );
+	        scientist.setAuthorities(authorities);
+	        scientist.setMaxIdleTime(1000);
+	        scientist.setEnabled(true);
+	        userManager.save( scientist );
+	
+	        ListenerFactory listenerFactory = new ListenerFactory();
+	        DataConnectionConfigurationFactory dataConnectionFactory = new DataConnectionConfigurationFactory();
+	        dataConnectionFactory.setPassivePorts( "0-" );
+	        dataConnectionFactory.setActiveLocalAddress("192.168.1.30");
+	        dataConnectionFactory.setPassiveAddress("192.168.1.30");
+	        dataConnectionFactory.setPassiveExternalAddress("192.168.1.30");
+	        
+	        listenerFactory.setDataConnectionConfiguration( dataConnectionFactory.createDataConnectionConfiguration() );
+	        listenerFactory.setPort( serverPort );
+	        Listener listener = listenerFactory.createListener();
+	        
+	        Map<String, Ftplet> m = new HashMap<String, Ftplet>();
+	        m.put("miaFtplet", new FtpletMonitor() );
+
+	        FtpServerFactory factory = new FtpServerFactory(); 
+	        factory.setUserManager(userManager);
+	        factory.addListener("default", listener );
+	        factory.setFtplets(m);
+	        
+	        server = factory.createServer();
+	        server.start();
+	        
+		} catch ( Exception e ) {
+			logger.error("error when starting server: " + e.getMessage() );
+			e.printStackTrace();
 		}
-
+		
 	}
 
+
 	public void clean() {
-		List<FileSaver> toRemove = new ArrayList<FileSaver>();
 		List<FileImporter> importersToRemove = new ArrayList<FileImporter>();
 		
 		logger.debug("clean up");
-		
-		logger.debug("checking savers to remove...");
-		for ( FileSaver saver : savers ) {
-			try {
-				if ( (saver.getStatus() != SaverStatus.TRANSFERRING) && ( saver.getStatus() != SaverStatus.WAITCOMMIT )
-						&& ( saver.getStatus() != SaverStatus.COMMITING ) ) {
-					logger.debug(" > will remove " + saver.getName()  );
-					toRemove.add( saver ); 
-				}
-			} catch ( Exception e ) {
-				//
-			}
-		}
-		logger.debug("will clean " + toRemove.size() + " savers");
-		savers.removeAll( toRemove );
 		
 		logger.debug("checking importers to remove...");
 		for ( FileImporter importer : getImporters() ) {
@@ -140,22 +157,12 @@ public class Server extends Thread {
 		
 	}
 	
-	public List<FileSaver> getSavers() {
-		return new ArrayList<FileSaver>( savers );
-	}
-	
 	public void stopServer() {
-		canStop = true;
 		logger.debug("stop");
-		
-		for ( FileSaver saver :  savers ) {
-			saver.stopProcess();
-		}
-		
+		server.stop();
 		try {
 			serverSocket.close();
 		} catch ( Exception ignored ) { }
-		
 	}
 
 

@@ -4,7 +4,6 @@ import java.util.List;
 
 public class TransferSession {
 	private String sessionSerial;
-	private List<FileSaver> savers;
 	private List<FileImporter> importers;
 	
 	public String getSessionSerial() {
@@ -15,15 +14,6 @@ public class TransferSession {
 		this.sessionSerial = sessionSerial;
 	}
 	
-	
-	public List<FileSaver> getSavers() {
-		return savers;
-	}
-	
-	public void setSavers(List<FileSaver> savers) {
-		this.savers = savers;
-	}
-	
 	public List<FileImporter> getImporters() {
 		return importers;
 	}
@@ -32,7 +22,4 @@ public class TransferSession {
 		this.importers = importers;
 	}
 	
-	
-	
-
 }

@@ -23,7 +23,6 @@ public class FileReceiverManager {
 		List<TransferSession> sessions = new ArrayList<TransferSession>();
 		for ( String sessionSerial : getSessions()  ) {
 			TransferSession session = new TransferSession( sessionSerial );
-			session.setSavers( getSaversBySession( sessionSerial ) );
 			session.setImporters( getImportersBySession( sessionSerial ) );
 			sessions.add( session );
 		}
@@ -53,9 +52,8 @@ public class FileReceiverManager {
 	
 	public boolean workingOnExperiment( String experimentSerial ) {
 		int importers = getImportersByExperiment( experimentSerial ).size();
-		int savers = getSaversByExperiment( experimentSerial ).size();
-		logger.debug("check open sessions for experiment " + experimentSerial + ": savers: " + savers + " importers: " + importers);
-		return ( ( importers > 0 ) && ( savers > 0) );
+		logger.debug("check open sessions for experiment " + experimentSerial + " importers: " + importers);
+		return ( importers > 0 ) ;
 	}
 	
 	public List<FileImporter> getImportersByExperiment( String experimentSerial ) {
@@ -73,24 +71,18 @@ public class FileReceiverManager {
 	}
 	
 	/**
-	 * Get all active Savers (open sessions)
-	 * 
-	 * @return a list of FileSaver objects
-	 */
-	public List<FileSaver> getSavers() {
-		return server.getSavers();
-	}
-
-	/**
 	 * Start the File Receiver Server
 	 */
 	public void startServer( int serverPort, int chunkBuffer ) {
 		logger.debug("start server port " + serverPort + " buffer " + chunkBuffer );
 		if ( server == null ) {
-			server = new Server( serverPort, chunkBuffer );
-			server.setName("Sagitarii Data Receiver Server (port " + serverPort + ")");
-			server.start();
+			try {
+				server = new Server( serverPort, chunkBuffer );
+			} catch ( Exception e ) {
+				logger.error("Error while starting FTP server: " + e.getMessage() );
+			}
 		}
+		logger.debug("done");
 	}
 	
 	/**
@@ -107,12 +99,7 @@ public class FileReceiverManager {
 	public void forceStopAndCancel( String sessionSerial ) throws Exception {
 		logger.debug("will stop session " + sessionSerial + " at user request");
 		logger.debug("pausing server...");
-		logger.debug("notifying Savers...");
-		for ( FileSaver saver : getSavers() ) {
-			if ( saver.getSessionSerial().equals(sessionSerial) ) {
-				saver.stopProcess();
-			}
-		}
+
 		logger.debug("notifying Importers...");
 		for ( FileImporter importer : getImporters() ) {
 			if ( importer.getSessionSerial().equals( sessionSerial ) ) {
@@ -126,86 +113,6 @@ public class FileReceiverManager {
 		logger.debug("done closing session " + sessionSerial);
 	}
 
-	
-	/**
-	 * Return all savers from a given session serial number
-	 * 
-	 */
-	public List<FileSaver> getSaversBySession( String sessionSerial ) {
-		List<FileSaver> savers = new ArrayList<FileSaver>();
-		for ( FileSaver saver : getSavers() ) {
-			if ( saver.getSessionSerial().equals( sessionSerial ) ) {
-				savers.add( saver );
-			}
-		}
-		return savers;
-	}
-
-	/**
-	 * Return all savers in transfer process
-	 */
-	public List<FileSaver> getSaversInTransfer() {
-		List<FileSaver> savers = new ArrayList<FileSaver>();
-		for ( FileSaver saver : getSavers() ) {
-			if ( saver.getStatus() == SaverStatus.TRANSFERRING ) {
-				savers.add( saver );
-			}
-		}
-		return savers;
-	}
-	
-	/**
-	 * Returns all savers in progress for a given session
-	 * 
-	 */
-	public List<FileSaver> getSaversInTransfer( String sessionSerial ) {
-		List<FileSaver> savers = new ArrayList<FileSaver>();
-		for ( FileSaver saver : getSavers() ) {
-			try {
-				if ( (saver.getStatus() == SaverStatus.TRANSFERRING) && (saver.getSessionSerial().equals( sessionSerial ) ) ) {
-					savers.add( saver );
-				}
-			} catch ( Exception e ) {
-				// incomplete saver...
-			}
-		}
-		return savers;
-	}
-
-	
-	/**
-	 * Return all savers from a given experiment Execution Tag (serial)
-	 * 
-	 */
-	public List<FileSaver> getSaversByExperiment( String experimentSerial ) {
-		List<FileSaver> savers = new ArrayList<FileSaver>();
-		for ( FileSaver saver : getSavers() ) {
-			try {
-				if ( (saver.getStatus() == SaverStatus.TRANSFERRING) && (saver.getSessionSerial().equals( experimentSerial ) ) ) {
-					savers.add( saver );
-				}
-			} catch ( Exception e ) {
-				logger.error("error checking File Savers for Experiment " + experimentSerial + ": " + e.getMessage() );
-			}
-		}
-		return savers;
-	}
-
-	/**
-	 * Return all savers that is importing data to a given table name
-	 *  
-	 */
-	public List<FileSaver> getSaversByTargetTable( String tableName ) {
-		List<FileSaver> savers = new ArrayList<FileSaver>();
-		for ( FileSaver saver : getSavers() ) {
-			if ( saver.getTargetTable().equals( tableName ) ) {
-				if ( saver.getStatus() == SaverStatus.TRANSFERRING ) {
-					savers.add( saver );
-				}
-			}
-		}
-		return savers;
-	}
 
 	/**
 	 * Commit a session.
@@ -216,30 +123,6 @@ public class FileReceiverManager {
 	}
 	
 	
-	public String getSaversPercentAsJson( String sessionSerial ) {
-		List<FileSaver> savers;
-		if ( (sessionSerial != null) && (!sessionSerial.equals(""))  ) {
-			savers = getSaversBySession( sessionSerial );
-		} else {
-			savers = getSaversInTransfer();
-		}
-		
-		String prefix = "";
-		StringBuilder sb = new StringBuilder();
-		sb.append( "[" );
-		for ( FileSaver saver : savers ) {
-			String tag = saver.getTag();
-			String percent = String.valueOf( saver.getPercent() );
-			String total = String.valueOf( saver.getTotalBytes() );
-			String done = String.valueOf( saver.getBytes() );
-			String data = "{\"total\":\""+total+"\",\"done\":\""+done+"\",\"percent\":\""+percent+"\",\"tag\":\""+tag+"\"}";
-			sb.append( prefix + data);
-			prefix = ",";
-		}
-		sb.append("]");
-		return sb.toString();
-	}
-
 	public String getImportersPercentAsJson( String sessionSerial ) {
 		List<FileImporter> importers = getImportersBySession( sessionSerial );
 		String prefix = "";
@@ -275,7 +158,6 @@ public class FileReceiverManager {
 	}
 	
 	private FileReceiverManager() throws Exception {
-		logger.debug("start");
 		String fileCacheDirectory = PathFinder.getInstance().getPath() + "/cache/";
 		File cache = new File( fileCacheDirectory );
 		// Clear old cache

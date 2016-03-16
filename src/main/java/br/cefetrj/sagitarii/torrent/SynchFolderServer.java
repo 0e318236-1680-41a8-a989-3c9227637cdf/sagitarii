@@ -1,15 +1,12 @@
 package br.cefetrj.sagitarii.torrent;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -120,66 +117,40 @@ public class SynchFolderServer {
 		}
 	}
 	
-	public Client addToTrackerAndDownload(String torrentFile) throws Exception {
+	public void addToTracker(String torrentFile) throws Exception {
 		File file = new File(torrentFile);
-		logger.debug("New Torrent file incomming : " + torrentFile );
+		logger.debug("will add file " + torrentFile + " to tracker"	);
 		if ( !file.exists() ) {
 			logger.error("Torrent file not exists.");
 			throw new Exception("Torrent file " + torrentFile + " not exists.");
 		} else {
 			tracker.announce( TrackedTorrent.load( file ) );
-			logger.debug("Torrent file added to tracker.");
-			Client seeder = downloadFile(torrentFile);
-			return seeder;
+			logger.debug("Torrent file " + torrentFile + " added to tracker.");
 		}
 	} 
 	
-	public void shareFile( String torrentFile) throws Exception {
-		File tf = new File(torrentFile);
-		Torrent tr = Torrent.load( tf );
-		String parentFolder = tr.getCreatedBy();
-
-		File targetContentFolder = new File( storageFolder + "/" + parentFolder );
-
-		targetContentFolder.mkdirs();
-		SharedTorrent st = SharedTorrent.fromFile( tf, targetContentFolder );
-		Client seeder = new Client( bindAddress, st);
-		
-	    seeder.share(2); 
-	}
-	
-	public Client downloadFile( String torrentFile) throws Exception {
+	public Client downloadFile( String torrentFile ) throws Exception {
 		logger.debug("Will download torrent:");
-		logger.debug( torrentFile );
 
 		File tf = new File(torrentFile);
-		Torrent tr = Torrent.load( tf );
+		Torrent tr = Torrent.load( tf, false );
 		String parentFolder = tr.getCreatedBy();
+
+		logger.debug(" > " + parentFolder );
 
 		File targetContentFolder = new File( storageFolder + "/" + parentFolder );
 
 		targetContentFolder.mkdirs();
 		SharedTorrent st = SharedTorrent.fromFile( tf, targetContentFolder );
-		Client seeder = new Client( bindAddress, st);
+		Client client = new Client( bindAddress, st);
 		
-	    seeder.download();
-	    logger.debug("Seeder created.");
-	    return seeder;
-	}
-	
-	public List<String> getTorrentFiles() {
-		File folder = new File( serverRootFolder );
-		List<String> files = new ArrayList<String>();
-		for (File fileEntry : folder.listFiles() ) {
-	        if ( !fileEntry.isDirectory() ) {
-	        	files.add( serverRootFolder + "/" + fileEntry.getName() );
-	        } 
-	    }
-		return files;
+	    client.download();
+	    logger.debug("Downloader created.");
+	    return client;
 	}
 	
 	public void startTracker() throws Exception {
-
+		/*
 	    FilenameFilter filter = new FilenameFilter() {
 	    	  @Override
 	    	  public boolean accept(File dir, String name) {
@@ -192,6 +163,7 @@ public class SynchFolderServer {
 	    	logger.debug("Announce " + f.getName() );
 	    	tracker.announce( TrackedTorrent.load(f) );
 	    }
+	    */
 	    
 		tracker.start();
 		

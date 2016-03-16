@@ -32,14 +32,10 @@
 										<tr>
 											
 											<td>
-												<a href="viewFileTransfersSession?sessionSerial=${session.sessionSerial}">${session.sessionSerial}</a>
-												<br>
-												<table class="tableForm"  id="tblSavers" style="margin:0px; border:0px; width: 100%;">
-													<tr class="saverControl">
-														<td style="border:0px;" class="tableCellFormRight">Savers: ${fn:length(session.savers)}</td>
-													</tr>
-												</table>						
+												${session.sessionSerial}
+											</td>
 											
+											<td>
 												<table class="tableForm"  id="tblImporters" style="margin:0px; border:0px; width: 100%;">
 													<c:forEach var="importer" items="${session.importers}">
 														<tr class="importerControl" >
@@ -52,16 +48,14 @@
 															<td style="border:0px;" class="tableCellFormRight">${importer.activity} / ${importer.instance} &nbsp;</td>
 															<td style="border:0px;" class="tableCellFormRight">
 															<fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" type="both" timeStyle="short" value="${importer.startTime}"/></td>
+															
 															<td style="border:0px;" class="tableCellFormRight">${importer.log}</td>
+															<td style="border:0px;" class="tableCellFormRight">${importer.hostAddress}</td>
+															<td style="border:0px;" class="tableCellFormRight">${importer.clientState} : ${importer.clientCompletion}%</td>
 															
 														</tr>
 													</c:forEach>
 												</table>						
-											
-											</td>
-											
-											<td>
-												<img class="miniButton dicas" title="Cancel this session" onclick="stop('${session.sessionSerial}')" style="width:20px;height:20px;" src="img/delete.png">
 											</td>
 											
 										</tr>
@@ -85,7 +79,7 @@
 	}
 
 	$(document).ready(function() {
-		window.setInterval(reloadPage, 5000);
+
 		
 		$('#example').dataTable({
 	        "oLanguage": {

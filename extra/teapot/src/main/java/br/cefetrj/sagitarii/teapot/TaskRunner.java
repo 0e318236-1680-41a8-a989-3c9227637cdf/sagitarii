@@ -18,7 +18,6 @@ package br.cefetrj.sagitarii.teapot;
  * 
  */
 
-import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
@@ -34,8 +33,7 @@ public class TaskRunner extends Thread {
 	private boolean active = true;
 	private String startTime;  
 	private long startTimeMillis;   
-	private Communicator communicator;
-	private Configurator configurator;
+
 
 	public String getStartTime() {
 		return startTime;
@@ -63,8 +61,6 @@ public class TaskRunner extends Thread {
 	
 	
 	public TaskRunner( String response, Communicator communicator, Configurator configurator ) {
-		this.communicator = communicator;
-		this.configurator = configurator;
 		this.teapot = new TaskManager( communicator, configurator);
 		this.serial = UUID.randomUUID().toString().substring(0, 5).toUpperCase();
 		this.response = response;

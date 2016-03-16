@@ -19,7 +19,7 @@ public class MetricController {
 				entity.saveImage( path );
 			}
 		} catch ( Exception e ) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 	

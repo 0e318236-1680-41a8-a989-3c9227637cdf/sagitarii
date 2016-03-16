@@ -35,10 +35,6 @@ public class GetPercentAction extends BasicActionClass {
 				type = "";
 			}
 			
-			if( type.equals("savers") ) {
-				resp = FileReceiverManager.getInstance().getSaversPercentAsJson( sessionSerial );
-			}
-			
 			if( type.equals("importers") ) {
 				resp = FileReceiverManager.getInstance().getImportersPercentAsJson( sessionSerial );
 			}

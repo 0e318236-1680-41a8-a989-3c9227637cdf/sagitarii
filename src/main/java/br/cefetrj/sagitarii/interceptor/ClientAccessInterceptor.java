@@ -3,7 +3,6 @@ package br.cefetrj.sagitarii.interceptor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import br.cefetrj.sagitarii.misc.json.GSONThreadLocalImmolater;
 import br.cefetrj.sagitarii.persistence.entity.User;
 
 import com.opensymphony.xwork2.ActionInvocation;

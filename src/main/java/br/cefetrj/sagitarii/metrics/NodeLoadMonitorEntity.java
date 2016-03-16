@@ -33,10 +33,12 @@ public class NodeLoadMonitorEntity implements IMetricEntity {
 	
 	@Override
 	public void saveImage(String path) throws Exception {
+		/*
 		JFreeChart chart = getImage();
 		BufferedImage image = chart.createBufferedImage( 210, 110);
         File outputfile = new File( path + name + "_load.png");
-        ImageIO.write( image, "png", outputfile );		
+        ImageIO.write( image, "png", outputfile );
+        */		
 	}
 	
 	@Override

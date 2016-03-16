@@ -196,7 +196,6 @@ public class ExternalApi {
 				data.append(dataPrefix + "{");
 
 				int importers = FileReceiverManager.getInstance().getImportersByExperiment( experiment.getTagExec() ).size();
-				int savers = FileReceiverManager.getInstance().getSaversByExperiment( experiment.getTagExec() ).size();
 
 				String importerLog = "";
 				if( importers > 0 ) {
@@ -206,7 +205,6 @@ public class ExternalApi {
 				data.append( generateJsonPair( "tagExec", experiment.getTagExec() ) + "," );
 				data.append( generateJsonPair( "startDate", startDate ) + "," );
 				data.append( generateJsonPair( "importer", importerLog ) + "," );
-				data.append( generateJsonPair( "savers", String.valueOf(savers) ) + "," );
 				data.append( generateJsonPair( "status", experiment.getStatus().toString() )  + ","  );
 				data.append( generateJsonPair( "workflow", experiment.getWorkflow().getTag() )  + ","  );
 				data.append( generateJsonPair( "elapsedTime", experiment.getElapsedTime() ) );
@@ -378,7 +376,6 @@ public class ExternalApi {
 				fragment.append("]");				
 				
 				int importers = FileReceiverManager.getInstance().getImportersByExperiment( experiment.getTagExec() ).size();
-				int savers = FileReceiverManager.getInstance().getSaversByExperiment( experiment.getTagExec() ).size();
 				
 				String importerLog = "";
 				String importerStatus = "";
@@ -393,7 +390,6 @@ public class ExternalApi {
 				data.append( generateJsonPair( "tagExec" , experiment.getTagExec() ) + "," ); 
 				data.append( generateJsonPair( "importer" , importerLog ) + "," ); 
 				data.append( generateJsonPair( "importerStatus" , importerStatus ) + "," ); 
-				data.append( generateJsonPair( "savers" , String.valueOf(savers) ) + "," ); 
 				data.append( addArray( "fragments" , fragment.toString() ) + "," );
 				data.append( generateJsonPair( "owner", experiment.getOwner().getLoginName() ) ); 
 				dataPrefix = ",";

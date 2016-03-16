@@ -4,7 +4,11 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -131,10 +135,35 @@ public class MetricHitEntity implements IMetricEntity {
 
 	@Override
 	public void saveImage(String path) throws Exception {
+		/*
 		JFreeChart chart = getImage();
+		
+		BufferedImage objBufferedImage = chart.createBufferedImage(210, 110);
+		ByteArrayOutputStream bas = new ByteArrayOutputStream();
+		        try {
+		            ImageIO.write(objBufferedImage, "png", bas);
+		        } catch (IOException e) {
+		            e.printStackTrace();
+		        }
+
+		byte[] byteArray = bas.toByteArray();		
+		bas.close();
+		
+		InputStream in = new ByteArrayInputStream( byteArray );
+		BufferedImage image = ImageIO.read(in);
+		File outputfile = new File( path + name + ".png" );
+		ImageIO.write(image, "png", outputfile);		
+		
+		in.close();
+		
+		*/
+		
+		/*
+		
 		BufferedImage image = chart.createBufferedImage( 210, 110);
         File outputfile = new File( path + name + ".png");
-        ImageIO.write( image, "png", outputfile );		
+        ImageIO.write( image, "png", outputfile );
+        */		
 	}
 	
 }

@@ -54,8 +54,12 @@ public class RelationService {
 					genericFetchList("select avg(speedup) as speedup from experiments where status = 'FINISHED'") );
 			if ( res.size() > 0 ) {
 				UserTableEntity ute = res.get(0);
-				String sQtd = ute.getData("speedup").substring(0, 8);
-				ret = Double.valueOf( sQtd );
+				try {
+					String sQtd = ute.getData("speedup").substring(0, 5);
+					ret = Double.valueOf( sQtd );
+				} catch ( Exception e) {
+					ret = 0;
+				}
 			}
 		} catch ( Exception e ) {
 			logger.error( e.getMessage() );
@@ -71,8 +75,12 @@ public class RelationService {
 					genericFetchList("select avg(parallelefficiency) as efficiency from experiments where status = 'FINISHED' limit 30") );
 			if ( res.size() > 0 ) {
 				UserTableEntity ute = res.get(0);
-				String sQtd = ute.getData("efficiency").substring(0, 8);
-				ret = Double.valueOf( sQtd );
+				try {
+					String sQtd = ute.getData("efficiency").substring(0, 5);
+					ret = Double.valueOf( sQtd );
+				} catch ( Exception e) {
+					ret = 0;
+				}
 			}
 		} catch ( Exception e ) {
 			logger.error( e.getMessage() );

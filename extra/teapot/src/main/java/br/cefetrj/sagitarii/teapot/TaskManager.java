@@ -145,22 +145,8 @@ public class TaskManager {
 	
 	public void notifySagitarii( String message ) {
 		Notifier.getInstance(comm, configurator).notifySagitarii( message, currentActivation);
-		/*
-		message = "[" + executor + "] " + message;
-		try {
-			String parameters = "macAddress=" + tm.getMacAddress() + "&errorLog=" + URLEncoder.encode( message, "UTF-8");
-			comm.send("receiveNodeLog", parameters);
-		} catch ( Exception e ) {
-			e.printStackTrace();
-		}
-		*/
 	}
 	
-	/**
-	 * Formata o comando da ativacao seguinte usando o resultado CSV da ativacao anterior
-	 * 
-	 * @return o comando da ativacao apos a substituicao das tags
-	 */
 	private String generateCommand( Activation activation ) {
 		String command = "";
 		String classPathParam = "-Djava.library.path=" + configurator.getSystemProperties().getJriPath();

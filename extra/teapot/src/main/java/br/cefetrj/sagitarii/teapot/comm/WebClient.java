@@ -25,13 +25,11 @@ import java.util.List;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 
 import br.cefetrj.sagitarii.teapot.Configurator;
@@ -48,16 +46,16 @@ public class WebClient {
 	}
 
 	public void doPost( String action, String parameter, String content) throws Exception {
-		HttpClient httpclient = HttpClients.createDefault();
+		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 		HttpPost httppost = new HttpPost( gf.getHostURL() + "/" + action );
 
 		// Request parameters and other properties.
 		List<NameValuePair> params = new ArrayList<NameValuePair>(2);
 		params.add(new BasicNameValuePair( parameter, content) );
-		//params.add(new BasicNameValuePair("param-2", "Hello!"));
 		httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
-		httpclient.execute(httppost);
+		httpClient.execute(httppost);
+		httpClient.close();
 
 	}
 
@@ -82,8 +80,6 @@ public class WebClient {
 		}
 		*/
 		
-		//httpClient.getParams().setParameter(CoreProtocolPNames.HTTP_CONTENT_CHARSET,"UTF-8");
-		
 		HttpGet getRequest = new HttpGet(url);
 		getRequest.addHeader("accept", "application/json");
 		getRequest.addHeader("Content-Type", "plain/text; charset=utf-8");
@@ -106,8 +102,7 @@ public class WebClient {
 			isr.close();
 		}
 		
-		
-		//httpClient.getConnectionManager().shutdown();
+		httpClient.close();
 		
 		return result;
 	}

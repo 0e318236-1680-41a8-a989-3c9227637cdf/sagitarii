@@ -14,6 +14,10 @@
 	
 	<loggers>
 
+		<Logger name="br.cefetrj.sagitarii.core.filetransfer.FtpletMonitor" level="debug" additivity="false"> 
+			<appender-ref ref="File"/> 
+		</Logger>
+		
 		<Logger name="br.cefetrj.sagitarii.torrent.SynchFolderServer" level="debug" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>

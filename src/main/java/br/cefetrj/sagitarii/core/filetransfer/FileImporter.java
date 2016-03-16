@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.commons.csv.CSVFormat;
@@ -40,6 +39,7 @@ import br.cefetrj.sagitarii.persistence.services.ExperimentService;
 import br.cefetrj.sagitarii.persistence.services.FileService;
 import br.cefetrj.sagitarii.persistence.services.InstanceService;
 import br.cefetrj.sagitarii.persistence.services.RelationService;
+import br.cefetrj.sagitarii.torrent.SynchFolderServer;
 
 import com.turn.ttorrent.client.Client;
 import com.turn.ttorrent.client.Client.ClientState;
@@ -68,6 +68,35 @@ public class FileImporter extends Thread {
 	private long importedFiles = 0;
 	private String targetFilesFolder;
 	private String receivedTorrentFileFullPath;
+	private Client torrentDownloader;
+	private String hostAddress;
+	private double clientCompletion;
+	private String clientState;
+	private String peerId;
+	
+	public double getClientCompletion() {
+		clientCompletion = torrentDownloader.getTorrent().getCompletion();
+		return clientCompletion;
+	}
+	
+	public String getClientState() {
+		clientState = torrentDownloader.getState().toString();
+		return clientState;
+	}
+
+	public String getHostAddress() {
+		hostAddress = torrentDownloader.getPeerSpec().getAddress().getHostAddress();
+		return hostAddress;
+	}
+	
+	public String getPeerId() {
+		peerId = torrentDownloader.getPeerSpec().getHexPeerId(); 
+		return peerId;
+	}
+	
+	public Client getTorrentDownloader() {
+		return torrentDownloader;
+	}
 	
 	public long getImportedFiles() {
 		return importedFiles;
@@ -151,6 +180,7 @@ public class FileImporter extends Thread {
 	}
 	
 	public FileImporter(  String sessionSerial, Server server ) throws Exception {
+		this.tag = sessionSerial;
 		this.server = server;
 		this.startTime = Calendar.getInstance().getTime();
 		this.sessionSerial = sessionSerial;
@@ -161,17 +191,21 @@ public class FileImporter extends Thread {
 
 	
 	private void cleanFiles() {
-		if ( receivedFiles.size() > 0 ) {
-			logger.error("YOU MUST DELETE THESE FILES:");
-			for( ReceivedFile receivedFile : receivedFiles ) {
-				String name = receivedFile.getFileName();
-				try {
-					Integer fileID = fileIds.get( name );
-					logger.error(" > " + fileID + ": " + name);
-				} catch ( Exception ignored ) {
-					//
+		logger.debug("Cleaning session files...");
+		try {
+			if ( receivedFiles.size() > 0 ) {
+				for( ReceivedFile receivedFile : receivedFiles ) {
+					String name = receivedFile.getFileName();
+					try {
+						Integer fileID = fileIds.get( name );
+						logger.error(" > " + fileID + ": " + name);
+					} catch ( Exception ignored ) {
+						//
+					}
 				}
 			}
+		} catch ( Exception e ) {
+			//
 		}
 	}
 	
@@ -420,6 +454,8 @@ public class FileImporter extends Thread {
 	 * Decompress a file
 	 */
 	public void decompress( String compressedFile, String decompressedFile ) {
+		compressedFile = compressedFile + ".gz";
+		
 		logger.debug("uncompressing " + compressedFile + "...");
 		byte[] buffer = new byte[1024];
 		try {
@@ -479,34 +515,64 @@ public class FileImporter extends Thread {
 				receivedTorrentFileFullPath = sessionContext + "/" + receivedFile.getFileName();
 				String decompressedTorrentFile = Sagitarii.getInstance().getTracker().getStorageFolder()+ "/"+ receivedFile.getFileName();
 				
-				File src = new File( receivedTorrentFileFullPath );
+				File testTorrentFile = new File( receivedTorrentFileFullPath + ".gz" );
 
-				if ( !src.exists() ) {
+				if ( !testTorrentFile.exists() ) {
 					logger.error("torrent file not found: " + sessionContext + "/" + receivedFile.getFileName() );
 				} else {
 					decompress( receivedTorrentFileFullPath, decompressedTorrentFile );
 
+					SynchFolderServer sfs = Sagitarii.getInstance().getTracker();
 					try {
+						
 						logger.debug("Will add torrent to tracker");
-						Client seeder = Sagitarii.getInstance().getTracker().addToTrackerAndDownload( decompressedTorrentFile );
-						targetFilesFolder = seeder.getTorrent().getCreatedBy();
-						logger.debug("Will wait for torrent to download to folder");
-						logger.debug( targetFilesFolder );
-						// will block until client is done
-						while ( (seeder != null) && (seeder.getState() != ClientState.DONE) ) {
+						sfs.addToTracker( decompressedTorrentFile );
+
+						torrentDownloader = sfs.downloadFile( decompressedTorrentFile );
+						targetFilesFolder = torrentDownloader.getTorrent().getCreatedBy();
+						logger.debug("Will wait for torrent " + torrentDownloader.getTorrent().getHexInfoHash() + " to download to folder : ");
+						logger.debug( " > " + targetFilesFolder );
+
+						// will block until download is done
+						int tick = 0;
+						while ( (torrentDownloader != null) && (torrentDownloader.getState() != ClientState.DONE) ) {
+
+							if ( torrentDownloader.getState() == ClientState.SEEDING ) {
+								break;
+							}
+							
 							try {
-								logger.debug(" > " + seeder.getTorrent().getCreatedBy() + ": " + seeder.getState() + " " + seeder.getTorrent().getCompletion() + "%" );
-								Thread.sleep(1000);
+								tick++;
+								
+								double completion = torrentDownloader.getTorrent().getCompletion();
+								
+								if ( (tick > 20) && ( completion == 0 ) && (torrentDownloader.getState() == ClientState.SHARING ) ) {
+									logger.error("Torrent is not downloading: " + torrentDownloader.getTorrent().getCreatedBy() );
+									tick = 0;
+									torrentDownloader.stop();
+									torrentDownloader = sfs.downloadFile( decompressedTorrentFile );
+									continue;
+								}
+
+								logger.debug(" > " + torrentDownloader.getTorrent().getCreatedBy() + ": " + torrentDownloader.getState() + " " + completion + "% (" + tick + ") " );
+								
+								Thread.sleep(2000);
 							} catch ( Exception e ) { }
+							
 						}
-						logger.debug("Done downloading torrent.");
+						
+						// downloaded... go ahead
+						logger.debug("Done downloading torrent " + torrentDownloader.getTorrent().getHexInfoHash() + " to folder : ");
+						logger.debug( " > " + targetFilesFolder );
+						torrentDownloader.stop();
+						
 					} catch ( Exception e ) {
-						logger.error( e.getMessage() );
+						logger.error( "error while creating torrent downloader: " + e.getMessage() );
 					}
 					
 					logger.debug("Torrent folder synchronized.");
 					// Once the torrent was downloaded, will not need the .torrent file anymore:
-					Sagitarii.getInstance().getTracker().removeFromTracker( decompressedTorrentFile );
+					sfs.removeFromTracker( decompressedTorrentFile );
 					File toDeleteTheTorrentFile = new File( decompressedTorrentFile );
 					toDeleteTheTorrentFile.delete();
 				}
@@ -547,62 +613,26 @@ public class FileImporter extends Thread {
 
 	}
 	
-	/**
-	 * Check if a session is receiving file (active)
-	 * 
-	 */
-	private boolean isActive() {
-		logger.debug("checking session " + sessionSerial + "...");
-		for ( FileSaver saver : server.getSavers() ) {
-			try {
-				if ( ( saver.getSessionSerial().equals(sessionSerial) ) && ( saver.getStatus() == SaverStatus.TRANSFERRING ) ) {
-					logger.debug("active saver found.");
-					return true;
-				}
-			} catch ( Exception ex ) {
-				logger.debug("inconsistent saver status.");
-				return false;
-			}
-		}
-		logger.debug("no active savers found.");
-		return false;
-	}
-	
-	
-	private void setSaversStatus( SaverStatus status ) {
-		for ( FileSaver saver : server.getSavers() ) {
-			try {
-				if ( saver.getSessionSerial().equals( sessionSerial ) ) {
-					saver.setStatus( status );
-				}
-			} catch ( Exception e ) {
-				logger.debug("cannot set saver " + saver.getFileName() + " status to " + status );
-				
-			}
-		}
-	}
 	
 	
 	@Override
 	public void run() {
-		tag = UUID.randomUUID().toString().replace("-", "");
-		logger.debug("new importer " + tag );
-		while ( isActive() ) {
-			log = "Waiting to finish all file transfers";
-			status = "WAITING";
-			try { Thread.sleep(4000); } catch ( Exception e ) { }
-		} 
+		logger.debug("starting new file importer for session " + tag );
 		
-		setSaversStatus( SaverStatus.COMMITING );
 		status = "WORKING";
 		
 		try {
 			String descriptor = sessionContext + "/session.xml";
+			File testDescriptor = new File( descriptor + ".gz" );
+			if( !testDescriptor.exists() ) {
+				throw new Exception("Descriptor " + sessionContext + "/session.xml.gz not found");
+			}
+
 			parseXml( descriptor );
 		
 			logger.debug("session " + sessionSerial + " commited");
 		} catch ( Exception e ) {
-			logger.error( e.getMessage() + " while commiting session " + sessionSerial);
+			logger.error("Error '" + e.getMessage() + "' while commiting session " + sessionSerial);
 			cleanFiles();
 		}
 		

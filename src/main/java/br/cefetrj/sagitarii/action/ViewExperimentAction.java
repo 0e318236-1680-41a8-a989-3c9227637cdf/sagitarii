@@ -11,7 +11,6 @@ import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 
 import br.cefetrj.sagitarii.core.filetransfer.FileImporter;
-import br.cefetrj.sagitarii.core.filetransfer.FileSaver;
 import br.cefetrj.sagitarii.persistence.entity.Activity;
 import br.cefetrj.sagitarii.persistence.entity.CustomQuery;
 import br.cefetrj.sagitarii.persistence.entity.Experiment;
@@ -33,7 +32,6 @@ public class ViewExperimentAction extends BasicActionClass {
 	private Experiment experiment;
 	private Set<CustomQuery> queries;
 	private List<Activity> activities = new ArrayList<Activity>();
-	private List<FileSaver> savers;
 	private List<FileImporter> importers;
 	
 	public String execute () {
@@ -79,10 +77,6 @@ public class ViewExperimentAction extends BasicActionClass {
 
 	public Set<CustomQuery> getQueries() {
 		return queries;
-	}
-	
-	public List<FileSaver> getSavers() {
-		return savers;
 	}
 	
 	public List<FileImporter> getImporters() {

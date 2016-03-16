@@ -140,6 +140,8 @@ public class Orchestrator implements ServletContextListener {
 			loggerDebug(" > " + PathFinder.getInstance().getPath() + "/cache");
 			FileReceiverManager.getInstance().startServer( fileReceiverPort, chunkBuffer );
 
+			loggerDebug("File Receiver Manager started.");
+
 			scheduler = Executors.newSingleThreadScheduledExecutor();
 			
 			MainHeartBeat as = new MainHeartBeat();
@@ -155,7 +157,7 @@ public class Orchestrator implements ServletContextListener {
 		} catch (Exception e) { 
 			System.out.println( e.getMessage() );
 			loggerError( e.getMessage() );
-			//e.printStackTrace(); 
+			e.printStackTrace(); 
 		}
         
         
