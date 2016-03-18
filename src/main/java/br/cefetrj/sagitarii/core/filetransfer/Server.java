@@ -52,9 +52,12 @@ public class Server {
 
 	
 	public void closeTransaction( String sessionSerial ) throws Exception {
+		logger.error("will not delete session folder. REMEBER TO MOVE FILES TO STORAGE.");
+		/*
 		String directory = PathFinder.getInstance().getPath() + "/cache/" + sessionSerial;
 		File cache = new File( directory );
 		FileUtils.deleteDirectory( cache );
+		*/
 		MetricController.getInstance().hit( "Session Close", MetricType.FILE );
 	}	
 

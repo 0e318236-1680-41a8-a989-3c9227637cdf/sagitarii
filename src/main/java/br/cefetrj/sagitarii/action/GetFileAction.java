@@ -40,7 +40,7 @@ public class GetFileAction extends BasicActionClass {
 			if ( (idFile != null) && ( idFile > -1 ) ) {
 				file = fs.getFile( idFile );
 				fileName = file.getFileName() + gz;
-				String theFile = PathFinder.getInstance().getPath() + "/storage/" + file.getFilePath() + "/" + fileName;
+				String theFile = PathFinder.getInstance().getPath() + "/cache/" + file.getFilePath() + "/" + fileName;
 				File fil = new File( theFile );
 				fileInputStream = new FileInputStream( fil );
 			}

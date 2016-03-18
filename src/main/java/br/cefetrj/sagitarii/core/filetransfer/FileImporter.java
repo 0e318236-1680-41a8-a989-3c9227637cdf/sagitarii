@@ -66,8 +66,8 @@ public class FileImporter extends Thread {
 	private String activity;
 	private String fragment;
 	private long importedFiles = 0;
-	private String targetFilesFolder;
-	private String receivedTorrentFileFullPath;
+	//private String targetFilesFolder;
+	//private String receivedTorrentFileFullPath;
 	private Client torrentDownloader;
 	private String hostAddress;
 	private double clientCompletion;
@@ -226,13 +226,14 @@ public class FileImporter extends Thread {
 		return result;
 	}
 	
-	
+	// TODO: Move to storage
 	private int importFile( String experimentSerial, String fileName, Activity activity, Instance instance ) {
 		log = "Storing file " + fileName + " to database";
 		logger.debug( log + " : Experiment " + experimentSerial + " Activity " + activity.getSerial() + " Instance " + instance.getSerial()  );
 		int response = -1;
 		try {
-			String fullFile = Sagitarii.getInstance().getTracker().getStorageFolder() + "/" + targetFilesFolder + "/outbox/" + fileName;
+			//String fullFile = Sagitarii.getInstance().getTracker().getStorageFolder() + "/" + targetFilesFolder + "/outbox/" + fileName;
+			String fullFile = sessionContext + "/" + fileName;
 			File sourceFile = new File( fullFile + ".gz" );
 			if ( !sourceFile.exists() ) {
 				throw new Exception( "File " + fullFile + " not found." ); 
@@ -247,7 +248,8 @@ public class FileImporter extends Thread {
 			file.setFileName( fileName );
 			file.setActivity( activity );
 			file.setInstance( instance );
-			file.setFilePath( targetFilesFolder + "/outbox/" );
+			//file.setFilePath( targetFilesFolder + "/outbox/" );
+			file.setFilePath( sessionContext + "/" );
 			
 			/*
 			byte[] bFile = new byte[(int) sourceFile.length()];
@@ -506,7 +508,9 @@ public class FileImporter extends Thread {
 				logger.debug("will process csv from " + receivedFile.getFileName() );
 				csvDataFile = receivedFile;
 			}
-						
+
+			
+			/*
 			if ( receivedFile.getType().equals("FILE_TYPE_TORRENT") ) {
 				// Take the TORRENT file
 				// Will block here until all files are downloaded.
@@ -577,6 +581,9 @@ public class FileImporter extends Thread {
 					toDeleteTheTorrentFile.delete();
 				}
 			}
+			*/
+			
+			
 		} // End received files loop
 		
 		

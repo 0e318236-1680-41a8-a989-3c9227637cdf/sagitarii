@@ -111,8 +111,9 @@ public class Client {
 		File filesFolder = new File( folder + "/" + "outbox" );
 	    for (final File fileEntry : filesFolder.listFiles() ) {
 	        if ( !fileEntry.isDirectory() ) {
-	        	ZipUtil.compress( folder + "/" + "outbox/" + fileEntry.getName(), folder + "/" + "outbox/" + fileEntry.getName() + ".gz" );
+	        	//ZipUtil.compress( folder + "/" + "outbox/" + fileEntry.getName(), folder + "/" + "outbox/" + fileEntry.getName() + ".gz" );
 	    		xml.append("<file name=\""+fileEntry.getName()+"\" type=\"FILE_TYPE_FILE\" />\n");
+	    		filesToSend.add( folder + "/outbox/" + fileEntry.getName() );
 	        }
 	    }
 		
@@ -121,12 +122,13 @@ public class Client {
 		String storageRootFolder =  f.getAbsolutePath();
 		storageRootFolder = storageRootFolder.substring(0, storageRootFolder.lastIndexOf( File.separator ) + 1) + "namespaces/";
 		
-		String folderName = "outbox";
+		//String folderName = "outbox";
 		String folderPath = folder.replace(storageRootFolder, "").replaceAll("/+", "/");
 		
 		logger.debug("sending content of folder:");
 		logger.debug(" > " + folderPath );
 		
+		/*
 		SynchFolderClient sfc = new SynchFolderClient( storageRootFolder , announceUrl );
 		Torrent torrent = sfc.createTorrentFromFolder(folderPath, folderName);
 		String torrentFile = "";
@@ -141,6 +143,7 @@ public class Client {
 				logger.error("will not send Torrent file.");
 			}
 		}
+		*/
 
 	    xml.append("<file name=\"session.xml\" type=\"FILE_TYPE_SESSION\" />\n");
 	    
@@ -180,12 +183,14 @@ public class Client {
 		
 		commit();
 		
+		/*
 		if ( torrent != null ) {
 			logger.debug("Will wait for Sagitarii to download the torrent...");
 			sfc.shareFile( torrentFile );
 			sfc.waiForFinish();
 			logger.debug("Done. Upload task finished.");
 		}
+		*/
 		
 	}
 	

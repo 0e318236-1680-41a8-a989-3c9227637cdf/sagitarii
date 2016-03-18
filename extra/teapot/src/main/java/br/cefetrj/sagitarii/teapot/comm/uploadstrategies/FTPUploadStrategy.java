@@ -47,14 +47,15 @@ public class FTPUploadStrategy implements IUploadStrategy {
 			
 				String newFileName = fileName + ".gz";
 				
-				logger.debug("compressing...");
+				logger.debug("compressing " + fileName + "...");
 				ZipUtil.compress(fileName, newFileName);
+				logger.debug("done compressing " + fileName + ".");
 			
 				File localFile = new File(newFileName);
 				
 				size = size + localFile.length();
 				
-		        logger.debug("sending " + localFile.getName() + " with size of " + localFile.length() + " bytes..." );
+		        logger.debug("sending [" + sessionSerial + "] " + localFile.getName() + " with size of " + localFile.length() + " bytes..." );
 		        logger.debug("Strategy: FTP to " + user + "@" + storageAddress + ":" + storagePort);
 			
 	        	
