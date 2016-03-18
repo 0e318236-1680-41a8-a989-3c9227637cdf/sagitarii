@@ -36,6 +36,7 @@ public class SynchFolderClient {
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 	private boolean canClose = false;
 	private int ticks = 0;
+	private int tooFewCounter = 0;
 	private String torrentFile;
 	
 	public String getTorrentFile() {
@@ -99,7 +100,7 @@ public class SynchFolderClient {
 		}
 		
 		
-		if( (ticks > 20) && ( !isConnected && !isInterested ) ) {
+		if( (ticks > 50) && ( !isConnected && !isInterested ) ) {
 			logger.error("restart sharing of " + client.getTorrent().getCreatedBy()  + " due to client freezing.");
 			ticks = 0;
 			client.stop();
@@ -109,6 +110,10 @@ public class SynchFolderClient {
 		
 		if ( totalValidPeers == 0 ) {
 			logger.debug( client.getTorrent().getCreatedBy() + ": too few peers. Will wait for more...");
+			tooFewCounter++;
+			if ( tooFewCounter > 20 ) {
+				canClose = true;
+			}
 			return;
 		}
 
