@@ -1,10 +1,9 @@
 package br.cefetrj.sagitarii.core.filetransfer;
 
-import java.util.List;
 
 public class TransferSession {
 	private String sessionSerial;
-	private List<FileImporter> importers;
+	private FileImporter importer;
 	
 	public String getSessionSerial() {
 		return sessionSerial;
@@ -14,12 +13,12 @@ public class TransferSession {
 		this.sessionSerial = sessionSerial;
 	}
 	
-	public List<FileImporter> getImporters() {
-		return importers;
+	public FileImporter getImporter() {
+		return importer;
 	}
 	
-	public void setImporters(List<FileImporter> importers) {
-		this.importers = importers;
+	public void setImporter(FileImporter importer) {
+		this.importer = importer;
 	}
 	
 }

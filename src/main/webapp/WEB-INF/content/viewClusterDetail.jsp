@@ -142,38 +142,6 @@
 					</table>
 				</c:if>
 
-				<c:if test="${not fn:contains(cluster.type, 'MAIN')}">
-					<c:if test="${fn:length(cluster.progressListeners) > 0}">
-						<table
-							style="margin-bottom: 5px; width: 98%; margin-left: 10px; margin-top: 20px">
-							<tr>
-								<td style="width: 1%"><img
-									style="width: 24px; height: 24px;float:left"
-									onclick="clearNodeListeners('${cluster.macAddress}')"
-									class="dicas miniButton" title="Clear node download info"
-									src="img/clean.png"></td>
-							</tr>
-						</table>
-
-						<table style="margin-bottom: 5px; width: 98%; margin-left: 10px;">
-							<tr>
-								<th style='width: 100px'>Serial</th>
-								<th style='width: 135px'>File</th>
-								<th style='width: 135px'>Percent</th>
-							</tr>
-							<c:forEach var="listener" items="${cluster.progressListeners}">
-								<c:if test="${listener.percentage > 0}">
-									<tr>
-										<td>${listener.serial}&nbsp;</td>
-										<td>${listener.fileName}&nbsp;</td>
-										<td>${listener.percentage}</td>
-									</tr>
-								</c:if>
-							</c:forEach>
-						</table>
-					</c:if>
-				</c:if>
-
 
 					<c:if test="${fn:length(cluster.tasks) > 0}">
 						<table
@@ -270,10 +238,6 @@
 
 	function clearNodeLog(node) {
 		window.location.href = "clearNodeLog?macAddress=" + node;
-	}
-
-	function clearNodeListeners(node) {
-		window.location.href = "clearNodeListeners?macAddress=" + node;
 	}
 
 	function clearNodeTasks(node) {

@@ -18,7 +18,7 @@ import br.cefetrj.sagitarii.core.filetransfer.FileReceiverManager;
 import br.cefetrj.sagitarii.misc.DateLibrary;
 import br.cefetrj.sagitarii.persistence.entity.Activity;
 import br.cefetrj.sagitarii.persistence.entity.Experiment;
-import br.cefetrj.sagitarii.persistence.entity.FileLight;
+import br.cefetrj.sagitarii.persistence.entity.File;
 import br.cefetrj.sagitarii.persistence.entity.Fragment;
 import br.cefetrj.sagitarii.persistence.entity.Relation;
 import br.cefetrj.sagitarii.persistence.entity.User;
@@ -272,12 +272,12 @@ public class ExternalApi {
 				String rangeEnd = (String)map.get("rangeEnd");
 				
 				FileService fs = new FileService();
-				Set<FileLight> files = fs.getList( experiment.getIdExperiment(), activityTag, rangeStart, rangeEnd );
+				Set<File> files = fs.getList( experiment.getIdExperiment(), activityTag, rangeStart, rangeEnd );
 				
 				StringBuilder data = new StringBuilder();
 				String dataPrefix = "";
 				data.append("[");
-				for ( FileLight file : files ) {
+				for ( File file : files ) {
 					data.append( dataPrefix + "{");
 					data.append( generateJsonPair( "fileName" , file.getFileName() ) + "," ); 
 					data.append( generateJsonPair( "fileId", String.valueOf( file.getIdFile() ) ) ); 

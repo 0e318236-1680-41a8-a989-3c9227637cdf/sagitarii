@@ -31,6 +31,7 @@ import br.cefetrj.sagitarii.teapot.Configurator;
 import br.cefetrj.sagitarii.teapot.LogManager;
 import br.cefetrj.sagitarii.teapot.Logger;
 import br.cefetrj.sagitarii.teapot.Task;
+import br.cefetrj.sagitarii.teapot.ZipUtil;
 import br.cefetrj.sagitarii.teapot.comm.uploadstrategies.FTPUploadStrategy;
 import br.cefetrj.sagitarii.teapot.comm.uploadstrategies.IUploadStrategy;
 import br.cefetrj.sagitarii.teapot.torrent.SynchFolderClient;
@@ -68,23 +69,6 @@ public class Client {
 	public void sendFile( String fileName, String folder, String targetTable, String experimentSerial,  
 			String macAddress, Task task ) throws Exception {
 
-		File f = new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath() );
-		String storageRootFolder =  f.getAbsolutePath();
-		storageRootFolder = storageRootFolder.substring(0, storageRootFolder.lastIndexOf( File.separator ) + 1) + "namespaces/";
-		
-		String folderName = "outbox";
-		String folderPath = folder.replace(storageRootFolder, "").replaceAll("/+", "/");
-		
-		logger.debug("sending content of folder:");
-		logger.debug(" > " + folderPath );
-		
-		SynchFolderClient sfc = new SynchFolderClient( storageRootFolder , announceUrl );
-		Torrent torrent = sfc.createTorrentFromFolder(folderPath, folderName);
-		String torrentFile = "";
-		if ( torrent != null ) {
-			torrentFile = storageRootFolder + "/" + torrent.getHexInfoHash() + ".torrent";
-		}
-		
 		String instanceSerial = "";
 		String activity = "";
 		String fragment = "";
@@ -123,7 +107,35 @@ public class Client {
 			logger.error("will not send sagi_output.txt in session.xml file: this activity instance produced no data");
 		}
 		
+
+		File filesFolder = new File( folder + "/" + "outbox" );
+	    for (final File fileEntry : filesFolder.listFiles() ) {
+	        if ( !fileEntry.isDirectory() ) {
+	        	ZipUtil.compress( folder + "/" + "outbox/" + fileEntry.getName(), folder + "/" + "outbox/" + fileEntry.getName() + ".gz" );
+	    		xml.append("<file name=\""+fileEntry.getName()+"\" type=\"FILE_TYPE_FILE\" />\n");
+	    		// After compress, remove the original file to avoid send both in torrent
+	    		fileEntry.delete();
+	        }
+	    }
+		
+		
+		File f = new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath() );
+		String storageRootFolder =  f.getAbsolutePath();
+		storageRootFolder = storageRootFolder.substring(0, storageRootFolder.lastIndexOf( File.separator ) + 1) + "namespaces/";
+		
+		String folderName = "outbox";
+		String folderPath = folder.replace(storageRootFolder, "").replaceAll("/+", "/");
+		
+		logger.debug("sending content of folder:");
+		logger.debug(" > " + folderPath );
+		
+		SynchFolderClient sfc = new SynchFolderClient( storageRootFolder , announceUrl );
+		Torrent torrent = sfc.createTorrentFromFolder(folderPath, folderName);
+		String torrentFile = "";
 		if ( torrent != null ) {
+			//torrentFile = storageRootFolder + "/" + torrent.getHexInfoHash() + ".torrent";
+			torrentFile = storageRootFolder + "/" + folderPath + "/" + torrent.getHexInfoHash() + ".torrent";
+
 			File tor = new File(torrentFile);
 			if ( tor.exists() ) {
 				xml.append("<file name=\""+tor.getName()+"\" type=\"FILE_TYPE_TORRENT\" />\n");
@@ -133,13 +145,6 @@ public class Client {
 			}
 		}
 
-		File filesFolder = new File( folder + "/" + "outbox" );
-	    for (final File fileEntry : filesFolder.listFiles() ) {
-	        if ( !fileEntry.isDirectory() ) {
-	    		xml.append("<file name=\""+fileEntry.getName()+"\" type=\"FILE_TYPE_FILE\" />\n");
-	        }
-	    }
-		
 	    xml.append("<file name=\"session.xml\" type=\"FILE_TYPE_SESSION\" />\n");
 	    
 	    xml.append("<console><![CDATA[");

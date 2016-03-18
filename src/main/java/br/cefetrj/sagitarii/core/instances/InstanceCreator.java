@@ -11,7 +11,7 @@ import br.cefetrj.sagitarii.core.UserTableEntity;
 import br.cefetrj.sagitarii.persistence.entity.ActivationExecutor;
 import br.cefetrj.sagitarii.persistence.entity.Activity;
 import br.cefetrj.sagitarii.persistence.entity.Domain;
-import br.cefetrj.sagitarii.persistence.entity.FileLight;
+import br.cefetrj.sagitarii.persistence.entity.File;
 import br.cefetrj.sagitarii.persistence.entity.Fragment;
 import br.cefetrj.sagitarii.persistence.entity.Instance;
 import br.cefetrj.sagitarii.persistence.entity.Relation;
@@ -176,7 +176,7 @@ public class InstanceCreator {
 						// Com o valor da coluna columnIndex 
 						// tenta pegar o arquivo correspondente (este valor eh o indice do arquivo).
 						fs.newTransaction();
-						FileLight file = fs.getFileLight(fileIndex);
+						File file = fs.getFile(fileIndex);
 						logger.debug("found file " + file.getFileName() );
 						// Troca o indice pelo nome na lista de dados da linha em questao.
 						dataValues[columnIndex] = file.getFileName();

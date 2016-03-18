@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import br.cefetrj.sagitarii.persistence.entity.File;
-import br.cefetrj.sagitarii.persistence.entity.FileLight;
 import br.cefetrj.sagitarii.persistence.exceptions.DatabaseConnectException;
 import br.cefetrj.sagitarii.persistence.exceptions.DeleteException;
 import br.cefetrj.sagitarii.persistence.exceptions.InsertException;
@@ -19,13 +18,13 @@ public class FileRepository extends BasicRepository {
 		logger.debug("init");
 	}
 
-	public Set<FileLight> getList( int idExperiment ) throws NotFoundException {
+	public Set<File> getList( int idExperiment ) throws NotFoundException {
 		logger.debug("get list" );
-		DaoFactory<FileLight> df = new DaoFactory<FileLight>();
-		IDao<FileLight> fm = df.getDao(this.session, FileLight.class);
-		Set<FileLight> files = null;
+		DaoFactory<File> df = new DaoFactory<File>();
+		IDao<File> fm = df.getDao(this.session, File.class);
+		Set<File> files = null;
 		try {
-			files = new HashSet<FileLight>( fm.getList("select * from files where id_experiment = " + idExperiment ) );
+			files = new HashSet<File>( fm.getList("select * from files where id_experiment = " + idExperiment ) );
 		} catch ( Exception e ) {
 			closeSession();
 			throw e;
@@ -36,14 +35,14 @@ public class FileRepository extends BasicRepository {
 	}
 
 	
-	public Set<FileLight> getList( int idExperiment, String activityTag, String rangeStart, String rangeEnd ) throws NotFoundException {
+	public Set<File> getList( int idExperiment, String activityTag, String rangeStart, String rangeEnd ) throws NotFoundException {
 		logger.debug("get list from " + rangeStart + " to" + rangeEnd + " and activity " + activityTag );
-		DaoFactory<FileLight> df = new DaoFactory<FileLight>();
-		IDao<FileLight> fm = df.getDao(this.session, FileLight.class);
+		DaoFactory<File> df = new DaoFactory<File>();
+		IDao<File> fm = df.getDao(this.session, File.class);
 
-		Set<FileLight> files = null;
+		Set<File> files = null;
 		try {
-			files = new HashSet<FileLight>( fm.getList("select f.* from files f "
+			files = new HashSet<File>( fm.getList("select f.* from files f "
 					+ "join activities a on f.id_activity = a.id_activity where f.id_experiment = " + idExperiment + 
 					" and a.tag = '"+ activityTag +"' offset " +	rangeStart + " limit " + rangeEnd ) );
 		} catch ( Exception e ) {
@@ -87,31 +86,14 @@ public class FileRepository extends BasicRepository {
 			throw e;
 		} 
 		closeSession();		
-		logger.debug("done: " + file.getFileName() + ": " + file.getFile().length + " bytes (GZIPPED)" );
+		logger.debug("done: " + file.getFileName()  );
 		return file;
 	}
 	
-	public FileLight getFileLight(int idFile) throws NotFoundException {
-		logger.debug("get light file " + idFile + "...");
-		DaoFactory<FileLight> df = new DaoFactory<FileLight>();
-		IDao<FileLight> fm = df.getDao(this.session, FileLight.class);
-		FileLight file = null;
-		try {
-			file = fm.getDO(idFile);
-		} catch ( Exception e ) {
-			e.printStackTrace();
-			closeSession();		
-			throw e;
-		} 
-		closeSession();		
-		logger.debug("done: " + file.getFileName() );
-		return file;
-	}
-
-	public void deleteFile(FileLight file) throws DeleteException {
+	public void deleteFile(File file) throws DeleteException {
 		logger.debug("delete" );
-		DaoFactory<FileLight> df = new DaoFactory<FileLight>();
-		IDao<FileLight> fm = df.getDao(this.session, FileLight.class);
+		DaoFactory<File> df = new DaoFactory<File>();
+		IDao<File> fm = df.getDao(this.session, File.class);
 		try {
 			fm.deleteDO(file);
 			commit();

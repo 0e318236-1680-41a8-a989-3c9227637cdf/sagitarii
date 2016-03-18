@@ -2,16 +2,14 @@ package br.cefetrj.sagitarii.teapot.comm.uploadstrategies;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.zip.GZIPOutputStream;
 
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 
 import br.cefetrj.sagitarii.teapot.Logger;
+import br.cefetrj.sagitarii.teapot.ZipUtil;
 
 public class FTPUploadStrategy implements IUploadStrategy {
 	private Logger logger;
@@ -48,7 +46,10 @@ public class FTPUploadStrategy implements IUploadStrategy {
 				indexFile++;
 			
 				String newFileName = fileName + ".gz";
-				compress(fileName, newFileName);
+				
+				logger.debug("compressing...");
+				ZipUtil.compress(fileName, newFileName);
+			
 				File localFile = new File(newFileName);
 				
 				size = size + localFile.length();
@@ -74,7 +75,8 @@ public class FTPUploadStrategy implements IUploadStrategy {
 	            } else {
 	            	logger.error("Cant upload the file [" + sessionSerial + "] " + localFile.getName() );
 	            }
-	            
+
+
 			}
             
         } catch ( Exception e ) {
@@ -96,29 +98,6 @@ public class FTPUploadStrategy implements IUploadStrategy {
         
         return size;
 	}
-	
-	public void compress(String source_filepath, String destinaton_zip_filepath) {
-		logger.debug("compressing file ...");
-		byte[] buffer = new byte[1024];
-		try {
-			FileOutputStream fileOutputStream =new FileOutputStream(destinaton_zip_filepath);
-			GZIPOutputStream gzipOuputStream = new GZIPOutputStream(fileOutputStream);
-			FileInputStream fileInput = new FileInputStream(source_filepath);
-			int bytes_read;
-			while ((bytes_read = fileInput.read(buffer)) > 0) {
-				gzipOuputStream.write(buffer, 0, bytes_read);
-			}
-			fileInput.close();
-			gzipOuputStream.finish();
-			gzipOuputStream.close();
-			fileOutputStream.close();
-			
-			logger.debug( "file was compressed successfully" );
-
-		} catch (IOException ex) {
-			logger.error("error compressing file: " + ex.getMessage() );
-		}
-	}	
 	
 	
 }

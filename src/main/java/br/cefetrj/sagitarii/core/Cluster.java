@@ -3,7 +3,6 @@ package br.cefetrj.sagitarii.core;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -19,7 +18,6 @@ import br.cefetrj.sagitarii.metrics.MetricType;
 import br.cefetrj.sagitarii.metrics.NodeLoadMonitorEntity;
 import br.cefetrj.sagitarii.metrics.NodeVMMonitorEntity;
 import br.cefetrj.sagitarii.misc.DateLibrary;
-import br.cefetrj.sagitarii.misc.ProgressListener;
 import br.cefetrj.sagitarii.misc.json.NodeTask;
 import br.cefetrj.sagitarii.persistence.entity.Activity;
 import br.cefetrj.sagitarii.persistence.entity.Instance;
@@ -56,7 +54,6 @@ public class Cluster {
 	private long totalDiskSpace;
 	private List<NodeTask> tasks;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
-	private List<ProgressListener> progressListeners;
 	private List<String> log = new ArrayList<String>();
 	private List<LogEntry> logEntries = new ArrayList<LogEntry>();
 	private int counter = 0;
@@ -98,31 +95,6 @@ public class Cluster {
 	
 	public long getTotalDiskSpace() {
 		return totalDiskSpace;
-	}
-	
-	public void addProgressListener( ProgressListener listener ) {
-		progressListeners.add( listener );
-	}
-
-	public List<ProgressListener> getProgressListeners() {
-		return new ArrayList<ProgressListener>(progressListeners);
-	}
-	
-	private void removeListeners() {
-		int total = 0;
-		try {
-			Iterator<ProgressListener> i = progressListeners.iterator();
-			while ( i.hasNext() ) {
-				ProgressListener pl = i.next(); 
-				if ( pl.getPercentage() > 95 ) {
-					i.remove();
-					total++;
-				}
-			}
-		} catch ( Exception e ) { }
-		if ( total > 0 ) {
-			logger.debug( total + " listeners deleted" );
-		}
 	}
 	
 	public void setTasks(List<NodeTask> tasks) {
@@ -409,7 +381,6 @@ public class Cluster {
 		this.status = ClusterStatus.IDLE;
 		this.maxAllowedTasks = maxAllowedTasks;
 		this.runningInstances = new ArrayList<Instance>();
-		this.progressListeners = new ArrayList<ProgressListener>(); 
 		this.type = type;
 		metrics = new NodeLoadMonitorEntity( macAddress, MetricType.NODE_LOAD );
 		metricsVmRam = new NodeVMMonitorEntity( macAddress, MetricType.NODE_LOAD );
@@ -536,7 +507,6 @@ public class Cluster {
 			InstanceDeliveryControl.getInstance().cancelUnit( pipe.getSerial() );
 			pipe = getFinishedTask();
 		}
-		removeListeners();
 	}
 	
 	public void setLastAnnounce(Date lastAnnounce) {
@@ -640,10 +610,6 @@ public class Cluster {
 	
 	public List<String> getLog() {
 		return new ArrayList<String>(log);
-	}
-	
-	public void clearListeners() {
-		progressListeners.clear();
 	}
 	
 	public void clearTasks() {

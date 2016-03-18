@@ -8,8 +8,6 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.google.gson.Gson;
-
 import br.cefetrj.sagitarii.core.config.Configurator;
 import br.cefetrj.sagitarii.core.delivery.InstanceDeliveryControl;
 import br.cefetrj.sagitarii.core.types.ActivityType;
@@ -18,10 +16,11 @@ import br.cefetrj.sagitarii.core.types.ClusterType;
 import br.cefetrj.sagitarii.core.types.InstanceStatus;
 import br.cefetrj.sagitarii.core.types.LogType;
 import br.cefetrj.sagitarii.misc.PathFinder;
-import br.cefetrj.sagitarii.misc.ProgressListener;
 import br.cefetrj.sagitarii.misc.ZipUtil;
 import br.cefetrj.sagitarii.misc.json.NodeTasks;
 import br.cefetrj.sagitarii.persistence.entity.Instance;
+
+import com.google.gson.Gson;
 
 public class ClustersManager {
 	private List<Cluster> clusterList;
@@ -67,14 +66,6 @@ public class ClustersManager {
 		return cores;
 	}
 	
-	public void clearNodeListeners( String macAddress ) {
-		logger.debug( "will clear listeners for node " + macAddress );
-		Cluster clu = getCluster(macAddress);
-		if ( clu != null ) {
-			clu.clearListeners();
-		}
-	}
-	
 	public void clearNodeLog( String macAddress ) {
 		logger.debug( "will clear log for node " + macAddress );
 		Cluster clu = getCluster(macAddress);
@@ -102,16 +93,6 @@ public class ClustersManager {
 		}
 	}
 
-	
-	public void addProgressListener( String macAddress, ProgressListener listener ) {
-		logger.debug( "node " + macAddress + " is downloading file " + listener.getFileName() );
-		Cluster clu = getCluster(macAddress);
-		if ( clu != null ) {
-			clu.addProgressListener(listener);
-		}
-	}
-	
-	
 	public void receiveNodeTasks( String data ) {
 		if ( data == null ) {
 			return;

@@ -233,7 +233,7 @@ public class FileImporter extends Thread {
 		int response = -1;
 		try {
 			String fullFile = Sagitarii.getInstance().getTracker().getStorageFolder() + "/" + targetFilesFolder + "/outbox/" + fileName;
-			File sourceFile = new File( fullFile );
+			File sourceFile = new File( fullFile + ".gz" );
 			if ( !sourceFile.exists() ) {
 				throw new Exception( "File " + fullFile + " not found." ); 
 			}

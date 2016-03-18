@@ -12,7 +12,6 @@ import br.cefetrj.sagitarii.core.UserTableEntity;
 import br.cefetrj.sagitarii.misc.json.JsonUserTableConversor;
 import br.cefetrj.sagitarii.persistence.entity.Activity;
 import br.cefetrj.sagitarii.persistence.entity.File;
-import br.cefetrj.sagitarii.persistence.entity.FileLight;
 import br.cefetrj.sagitarii.persistence.exceptions.DatabaseConnectException;
 import br.cefetrj.sagitarii.persistence.exceptions.DeleteException;
 import br.cefetrj.sagitarii.persistence.exceptions.InsertException;
@@ -94,12 +93,8 @@ public class FileService {
 		this.rep = new FileRepository();
 	}
 
-	public FileLight getFileLight(int idFile) throws NotFoundException{
-		return rep.getFileLight(idFile);
-	}
-
 	public File getFile(int idFile) throws NotFoundException{
-		return rep.getFile(idFile); 
+		return rep.getFile(idFile);
 	}
 
 	public void newTransaction() {
@@ -115,7 +110,7 @@ public class FileService {
 	
 	public void deleteFile( int idFile ) throws DeleteException {
 		try {
-			FileLight file = rep.getFileLight(idFile);
+			File file = rep.getFile(idFile);
 			rep.newTransaction();
 			rep.deleteFile(file);
 		} catch (NotFoundException e) {
@@ -124,13 +119,13 @@ public class FileService {
 		}
 	}
 
-	public Set<FileLight> getList( int idExperiment ) throws NotFoundException {
-		Set<FileLight> preList = rep.getList( idExperiment );
+	public Set<File> getList( int idExperiment ) throws NotFoundException {
+		Set<File> preList = rep.getList( idExperiment );
 		return preList;	
 	}
 
-	public Set<FileLight> getList( int idExperiment, String activityTag, String rangeStart, String rangeEnd ) throws NotFoundException {
-		Set<FileLight> preList = rep.getList( idExperiment, activityTag, rangeStart, rangeEnd );
+	public Set<File> getList( int idExperiment, String activityTag, String rangeStart, String rangeEnd ) throws NotFoundException {
+		Set<File> preList = rep.getList( idExperiment, activityTag, rangeStart, rangeEnd );
 		return preList;	
 	}
 

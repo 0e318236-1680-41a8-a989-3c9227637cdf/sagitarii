@@ -82,10 +82,11 @@ public class SynchFolderClient {
 			return;
 		}
 
-		boolean isInterested = false; boolean isConnected = false;
+		boolean isInterested = false; boolean isConnected = false; int totalValidPeers = 0;
 		String ii = " "; String cc = " ";
 		for ( SharingPeer sp : client.getPeers() ) {
 			if ( sp.getHexPeerId() != null ) {
+				totalValidPeers++;
 				if ( sp.isInterested()  ) {
 					isInterested = true;
 					ii = "I";
@@ -106,21 +107,21 @@ public class SynchFolderClient {
 			return;
 		}
 		
-		if ( client.getPeers().size() == 0 ) {
+		if ( totalValidPeers == 0 ) {
 			logger.debug( client.getTorrent().getCreatedBy() + ": too few peers. Will wait for more...");
 			return;
 		}
 
 		try {
-			if ( client.getPeers().size() > 1 ) {
-				canClose = true;
-				if ( isConnected || isInterested ) {
-					canClose = false;
-				}
+			
+			canClose = true;
+			if ( isConnected || isInterested ) {
+				canClose = false;
 			}
 			
+			
 			// Just to show... can be removed.
-			logger.debug(client.getTorrent().getCreatedBy() + ": " + client.getPeers().size() + " peers. (" + 
+			logger.debug(client.getTorrent().getCreatedBy() + ": " + totalValidPeers + " peers. (" + 
 					canClose + " / " + ticks + ") " + state + " [" + cc + "|" + ii + "] ");
 			
 			
@@ -197,7 +198,8 @@ public class SynchFolderClient {
 					fileList, 
 					trackerAnnounceUrl, folderPath);
 			
-			String torrentFile = serverRootFolder + "/" + torrent.getHexInfoHash() + ".torrent";
+			String torrentFile = storageFolder + "/" + folderPath + "/" + torrent.getHexInfoHash() + ".torrent";
+			//String torrentFile = serverRootFolder + "/" + torrent.getHexInfoHash() + ".torrent";
 		    FileOutputStream fos = new FileOutputStream( torrentFile );
 		    torrent.save( fos );		    
 			fos.close();

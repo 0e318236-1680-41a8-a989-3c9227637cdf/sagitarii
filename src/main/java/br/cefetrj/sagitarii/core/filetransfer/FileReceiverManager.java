@@ -23,7 +23,7 @@ public class FileReceiverManager {
 		List<TransferSession> sessions = new ArrayList<TransferSession>();
 		for ( String sessionSerial : getSessions()  ) {
 			TransferSession session = new TransferSession( sessionSerial );
-			session.setImporters( getImportersBySession( sessionSerial ) );
+			session.setImporter( getImporterBySession( sessionSerial ) );
 			sessions.add( session );
 		}
 		return sessions;
@@ -40,14 +40,13 @@ public class FileReceiverManager {
 		return server.getImporters();
 	}
 	
-	public List<FileImporter> getImportersBySession( String sessionSerial ) {
-		List<FileImporter> importers = new ArrayList<FileImporter>();
+	public FileImporter getImporterBySession( String sessionSerial ) {
 		for ( FileImporter importer : getImporters() ) {
 			if ( importer.getSessionSerial().equals( sessionSerial ) ) {
-				importers.add( importer );
+				return importer;
 			}
 		}
-		return importers;
+		return null;
 	}
 	
 	public boolean workingOnExperiment( String experimentSerial ) {
@@ -124,21 +123,22 @@ public class FileReceiverManager {
 	
 	
 	public String getImportersPercentAsJson( String sessionSerial ) {
-		List<FileImporter> importers = getImportersBySession( sessionSerial );
+		FileImporter importer = getImporterBySession( sessionSerial );
 		String prefix = "";
 		StringBuilder sb = new StringBuilder();
 		sb.append( "[" );
-		for ( FileImporter importer : importers ) {
+		if ( importer != null ) {
 			String tag = importer.getTag();
 			String percent = String.valueOf( importer.getPercent() );
 			String total = String.valueOf( importer.getImportedLines() );
 			String done = String.valueOf( importer.getInsertedLines() );
+			String status = importer.getClientState();
+			String completion = String.valueOf( importer.getClientCompletion() );
 			String targetTable = "";
 			try {
 				targetTable = importer.getMainCsvFile().getTargetTable();
 			} catch ( Exception e ) {	}
-			String status = importer.getStatus();
-			String data = "{\"status\":\""+status+"\",\"targetTable\":\""+targetTable+"\",\"total\":\""+total+"\",\"done\":\""+done+"\",\"percent\":\""+percent+"\",\"tag\":\""+tag+"\"}";
+			String data = "{\"completion\":\""+completion+"\",\"status\":\""+status+"\",\"targetTable\":\""+targetTable+"\",\"total\":\""+total+"\",\"done\":\""+done+"\",\"percent\":\""+percent+"\",\"tag\":\""+tag+"\"}";
 			sb.append( prefix + data);
 			prefix = ",";
 		}

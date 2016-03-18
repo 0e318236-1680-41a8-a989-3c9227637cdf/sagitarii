@@ -25,41 +25,37 @@
 										<th>Session</th>
 										<th>&nbsp;</th>
 										<th>&nbsp;</th>
+										<th>&nbsp;</th>
+										<th>&nbsp;</th>
+										<th>&nbsp;</th>
 									</tr>
 								</thead>
 								<tbody>
 									<c:forEach var="session" items="${sessions}">
-										<tr>
-											
-											<td>
-												${session.sessionSerial}
-											</td>
-											
-											<td>
-												<table class="tableForm"  id="tblImporters" style="margin:0px; border:0px; width: 100%;">
-													<c:forEach var="importer" items="${session.importers}">
-														<tr class="importerControl" >
-															<td style="border:0px;" class="tableCellFormRight">${importer.mainCsvFile.macAddress}&nbsp;</td>
-															<td style="border:0px;" class="tableCellFormRight">${importer.mainCsvFile.fileName}&nbsp;</td>
-															<td style="border:0px;" class="tableCellFormRight">${importer.importedFiles} / ${importer.totalFiles}</td>
-															<td style="border:0px;" class="tableCellFormRight">${importer.importedLines}</td>
-															<td style="border:0px;" class="tableCellFormRight">${importer.insertedLines}</td>											
-															<td style="border:0px;" class="tableCellFormRight">${importer.mainCsvFile.targetTable}&nbsp;</td>
-															<td style="border:0px;" class="tableCellFormRight">${importer.activity} / ${importer.instance} &nbsp;</td>
-															<td style="border:0px;" class="tableCellFormRight">
-															<fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" type="both" timeStyle="short" value="${importer.startTime}"/></td>
-															
-															<td style="border:0px;" class="tableCellFormRight">${importer.log}</td>
-															<td style="border:0px;" class="tableCellFormRight">${importer.hostAddress}</td>
-															<td style="border:0px;" class="tableCellFormRight">${importer.clientState} : ${importer.clientCompletion}%</td>
-															
-														</tr>
-													</c:forEach>
-												</table>						
-											</td>
-											
+										<tr >
+											<td style="background-color:#F6F6F6;border:0px;width:20%" class="tableCellFormRight"><b>${session.sessionSerial}</b></td>
+											<td style="background-color:#F6F6F6;border:0px;width:20%" class="tableCellFormRight">${session.importer.mainCsvFile.macAddress}&nbsp;</td>
+											<td style="background-color:#F6F6F6;border:0px;width:15%" class="tableCellFormRight">${session.importer.mainCsvFile.fileName}&nbsp;</td>
+											<td style="background-color:#F6F6F6;border:0px;width:10%" class="tableCellFormRight">${session.importer.mainCsvFile.targetTable}&nbsp;</td>
+											<td colspan="2" style="background-color:#F6F6F6;border:0px;width:30%" class="tableCellFormRight">${session.importer.log}&nbsp;</td>
 										</tr>
-										
+										<tr>											
+											<td style="border:0px;border-bottom: 1px dotted #ADADAD;" class="tableCellFormRight">${session.importer.activity} / ${session.importer.instance} &nbsp;</td>
+											<td style="border:0px;border-bottom: 1px dotted #ADADAD;" class="tableCellFormRight">${session.importer.importedLines} / ${session.importer.insertedLines}</td>
+											<td style="border:0px;border-bottom: 1px dotted #ADADAD;" class="tableCellFormRight">
+												<fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" type="both" timeStyle="short" value="${session.importer.startTime}"/>
+											</td>
+											<td style="border:0px;border-bottom: 1px dotted #ADADAD;" class="tableCellFormRight">${session.importer.hostAddress}</td>
+											<td style="border:0px;border-bottom: 1px dotted #ADADAD;" class="tableCellFormRight">${session.importer.clientState}</td>
+											<td style="border:0px;border-bottom: 1px dotted #ADADAD;" class="tableCellFormRight">
+												<div style="width:100%"
+													title="Completion: ${session.importer.clientCompletion}%"
+													class="clusterCpuOut dicas">
+													<div class="clusterCpuIn"
+														style="width:${session.importer.clientCompletion}%">&nbsp;</div>
+												</div>															
+											</td>
+										</tr>
 									</c:forEach>
 								</tbody>
 							</table>						

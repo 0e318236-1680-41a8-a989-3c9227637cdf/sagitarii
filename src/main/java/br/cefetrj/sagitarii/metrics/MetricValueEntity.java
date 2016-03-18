@@ -30,12 +30,12 @@ public class MetricValueEntity implements IMetricEntity {
 	
 	@Override
 	public void saveImage(String path) throws Exception {
-		/*
+		
 		JFreeChart chart = getImage();
 		BufferedImage image = chart.createBufferedImage( 210, 110);
         File outputfile = new File( path + name + ".png");
         ImageIO.write( image, "png", outputfile );
-        */		
+        image.flush();		
 	}
 	
 	public void set( double value ) {

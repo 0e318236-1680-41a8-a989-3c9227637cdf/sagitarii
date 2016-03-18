@@ -30,7 +30,7 @@ import br.cefetrj.sagitarii.persistence.entity.Consumption;
 import br.cefetrj.sagitarii.persistence.entity.CustomQuery;
 import br.cefetrj.sagitarii.persistence.entity.Domain;
 import br.cefetrj.sagitarii.persistence.entity.Experiment;
-import br.cefetrj.sagitarii.persistence.entity.FileLight;
+import br.cefetrj.sagitarii.persistence.entity.File;
 import br.cefetrj.sagitarii.persistence.entity.Relation;
 import br.cefetrj.sagitarii.persistence.exceptions.DatabaseConnectException;
 import br.cefetrj.sagitarii.persistence.exceptions.DeleteException;
@@ -410,7 +410,7 @@ public class RelationService {
 					if ( DomainStorage.getInstance().domainExists(domainName)  ) {
 						try {
 							fs.newTransaction();
-							FileLight fil = fs.getFileLight( Integer.valueOf( ute.getData(columnName) ) );
+							File fil = fs.getFile( Integer.valueOf( ute.getData(columnName) ) );
 							data = "<a href='getFile?idFile="+data+"'>" + fil.getFileName() + "</a>";
 						} catch ( Exception e ) {
 							//
@@ -474,7 +474,7 @@ public class RelationService {
 							try {
 								int id = Integer.valueOf( ute.getData(columnName) );
 								fs.newTransaction();
-								FileLight fil = fs.getFileLight( id );
+								File fil = fs.getFile( id );
 								data = "<a href='getFile?idFile="+data+"'>" + fil.getFileName() + "</a>";
 							} catch ( Exception e ) {
 								
@@ -566,7 +566,7 @@ public class RelationService {
 					try {
 						if ( DomainStorage.getInstance().domainExists(domainName)  ) {
 							fs.newTransaction();
-							FileLight fil = fs.getFileLight( Integer.valueOf( ute.getData(columnName) ) );
+							File fil = fs.getFile( Integer.valueOf( ute.getData(columnName) ) );
 							data = "<a href='getFile?idFile="+data+"'>" + fil.getFileName() + "</a>";
 						}
 					} catch ( Exception e ) { }
@@ -651,7 +651,7 @@ public class RelationService {
 					try {
 						if ( DomainStorage.getInstance().domainExists(domainName)  ) {
 							fs.newTransaction();
-							FileLight fil = fs.getFileLight( Integer.valueOf( data ) );
+							File fil = fs.getFile( Integer.valueOf( data ) );
 							data = "<a href='getFile?idFile="+data+"'>" + fil.getFileName() + "</a>";
 						}
 					} catch ( Exception e ) { }

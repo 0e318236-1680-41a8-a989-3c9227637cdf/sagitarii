@@ -269,7 +269,7 @@ public class ExperimentService {
 			rs.executeQuery( sql );
 			logger.debug("done.");
 			
-			
+			/*
 			logger.debug("removing large objects...");
 			try {
 				sql = "delete from pg_catalog.pg_largeobject where loid in ( select file from " + 
@@ -280,7 +280,7 @@ public class ExperimentService {
 				logger.error("cannot remove LOBs: " + e.getMessage() +": You MUST do it by yourself by running this query:" );
 				logger.error(" > " + sql);
 			}
-			
+			*/
 
 			logger.debug("removing files...");
 			try {

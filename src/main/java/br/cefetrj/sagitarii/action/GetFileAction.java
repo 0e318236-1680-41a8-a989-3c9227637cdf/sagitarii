@@ -1,11 +1,14 @@
 
 package br.cefetrj.sagitarii.action;
 
+import java.io.File;
+import java.io.FileInputStream;
+
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 
-import br.cefetrj.sagitarii.misc.ProgressAwareInputStream;
+import br.cefetrj.sagitarii.misc.PathFinder;
 import br.cefetrj.sagitarii.persistence.services.FileService;
 
 @Action(value="getFile", results= {  
@@ -21,7 +24,7 @@ import br.cefetrj.sagitarii.persistence.services.FileService;
 public class GetFileAction extends BasicActionClass {
 	private String fileName;
 	private Integer idFile;
-	private ProgressAwareInputStream fileInputStream;
+	private FileInputStream fileInputStream;
 	private String macAddress;
 	
 	public String execute () {
@@ -37,7 +40,9 @@ public class GetFileAction extends BasicActionClass {
 			if ( (idFile != null) && ( idFile > -1 ) ) {
 				file = fs.getFile( idFile );
 				fileName = file.getFileName() + gz;
-				fileInputStream = file.getDownloadStream( macAddress );
+				String theFile = PathFinder.getInstance().getPath() + "/storage/" + file.getFilePath() + "/" + fileName;
+				File fil = new File( theFile );
+				fileInputStream = new FileInputStream( fil );
 			}
 		} catch ( Exception e ) {
             e.printStackTrace();
@@ -56,7 +61,7 @@ public class GetFileAction extends BasicActionClass {
 	}
 	
 	
-	public ProgressAwareInputStream getFileInputStream() {
+	public FileInputStream getFileInputStream() {
 		return fileInputStream;
 	}
 	

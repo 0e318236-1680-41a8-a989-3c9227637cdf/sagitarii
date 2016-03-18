@@ -45,13 +45,13 @@ public class Processor implements IWrapperProcessor {
 		System.out.println("Will write the random data:");
 		PrintWriter writer = new PrintWriter( helper.getOutboxFolder() + "sourcedata.csv" , "UTF-8");
 
-		for ( int y=0; y<20; y++ ) {
+		//for ( int y=0; y<20; y++ ) {
 			for ( int x =0; x <= 350000; x++ ) {
 				writer.println( attr01 + " " + attr02 + " " + attr03 + "This is a line of data: How to add a new " +
 									"column to the output CSV ( remember this column must exists in output table ) " + 
 									Calendar.getInstance().getTimeInMillis() );
 			}
-		}
+		//}
 		writer.close();
 		System.out.println("Output file created with random data.");
 		
