@@ -113,8 +113,6 @@ public class Client {
 	        if ( !fileEntry.isDirectory() ) {
 	        	ZipUtil.compress( folder + "/" + "outbox/" + fileEntry.getName(), folder + "/" + "outbox/" + fileEntry.getName() + ".gz" );
 	    		xml.append("<file name=\""+fileEntry.getName()+"\" type=\"FILE_TYPE_FILE\" />\n");
-	    		// After compress, remove the original file to avoid send both in torrent
-	    		fileEntry.delete();
 	        }
 	    }
 		
@@ -133,7 +131,6 @@ public class Client {
 		Torrent torrent = sfc.createTorrentFromFolder(folderPath, folderName);
 		String torrentFile = "";
 		if ( torrent != null ) {
-			//torrentFile = storageRootFolder + "/" + torrent.getHexInfoHash() + ".torrent";
 			torrentFile = storageRootFolder + "/" + folderPath + "/" + torrent.getHexInfoHash() + ".torrent";
 
 			File tor = new File(torrentFile);

@@ -122,6 +122,7 @@ public class SynchFolderClient {
 			canClose = true;
 			if ( isConnected || isInterested ) {
 				canClose = false;
+				ticks = 0;
 			}
 			
 			
@@ -167,8 +168,8 @@ public class SynchFolderClient {
 		File folder = new File( folderName );
 		List<File> files = new ArrayList<File>();
 		for (File fileEntry : folder.listFiles() ) {
-	        if ( !fileEntry.isDirectory() ) {
-	        	files.add( fileEntry );
+	        if ( !fileEntry.isDirectory() && ( fileEntry.getName().endsWith(".gz") ) ) {
+        		files.add( fileEntry );
 	        } else {
 	        	files.addAll( getFiles( fileEntry.getAbsolutePath() ) );
 	        }
