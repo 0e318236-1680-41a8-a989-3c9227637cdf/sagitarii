@@ -56,11 +56,6 @@ public class Configurator {
 	private int maximunRamToUse;
 	private int maximunCPULimit;
 	private int minimunCPULimit;
-	private String announceUrl;
-	
-	public String getAnnounceUrl() {
-		return announceUrl;
-	}
 	
 	public int getMaximunCPULimit() {
 		return maximunCPULimit;
@@ -259,8 +254,6 @@ public class Configurator {
 
 				maximunCPULimit = Integer.valueOf( getTagValue("maximunCPULimit", mpElement) );
 				minimunCPULimit = Integer.valueOf( getTagValue("minimunCPULimit", mpElement) );
-
-				announceUrl = getTagValue("announceURL", mpElement);
 				
 				if ( enforceTaskLimitToCores ) {
 					useSpeedEqualizer = false;

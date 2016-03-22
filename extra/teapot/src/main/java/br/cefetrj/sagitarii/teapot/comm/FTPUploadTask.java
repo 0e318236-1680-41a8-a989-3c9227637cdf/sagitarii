@@ -1,9 +1,10 @@
-package br.cefetrj.sagitarii.teapot.comm.uploadstrategies;
+package br.cefetrj.sagitarii.teapot.comm;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
@@ -11,27 +12,33 @@ import org.apache.commons.net.ftp.FTPClient;
 import br.cefetrj.sagitarii.teapot.Logger;
 import br.cefetrj.sagitarii.teapot.ZipUtil;
 
-public class FTPUploadStrategy implements IUploadStrategy {
+public class FTPUploadTask implements Callable<Long> {
 	private Logger logger;
 	private String storageAddress;
 	private int storagePort;
-	private int fileSenderDelay;
-	
     private String user = "cache";
-    private String password = "cache";	
+    private String password = "cache";
+    private List<String> fileNames;
+    private String targetTable;
+    private String experimentSerial; 
+	private String sessionSerial; 
+	private String sourcePath;
 	
-	public FTPUploadStrategy(Logger logger, String storageAddress, int storagePort, String user, String password, int fileSenderDelay) {
+	public FTPUploadTask(List<String> fileNames, Logger logger, String storageAddress, 
+			int storagePort, String targetTable, String experimentSerial, 
+			String sessionSerial, String sourcePath ) {
 		this.logger = logger;
 		this.storageAddress = storageAddress;
 		this.storagePort = storagePort;
-		this.user = user;
-		this.password = password;
-		this.fileSenderDelay = fileSenderDelay;
+		this.targetTable = targetTable;
+		this.experimentSerial = experimentSerial;
+		this.sessionSerial = sessionSerial;
+		this.sourcePath = sourcePath;
 	}
 	
-	public synchronized long uploadFile( List<String> fileNames, String targetTable, String experimentSerial, 
-			String sessionSerial, String sourcePath ) throws Exception {
-
+	private long uploadFiles() throws Exception {
+		logger.debug("sending " + fileNames.size() + " files to table " + targetTable + " in session " +
+					sessionSerial + " experiment " + experimentSerial + ": " + sourcePath );
 		long size = 0;
         FTPClient ftpClient = new FTPClient();
         try {
@@ -39,6 +46,8 @@ public class FTPUploadStrategy implements IUploadStrategy {
             ftpClient.connect(storageAddress, storagePort);
             ftpClient.login(user, password);
             logger.debug("FTP Response: " + ftpClient.getReplyString() );  
+            
+            ftpClient.setBufferSize(1048576);
             
 			int indexFile = 1;
 			for ( String fileName : fileNames ) {
@@ -77,7 +86,7 @@ public class FTPUploadStrategy implements IUploadStrategy {
 	            	logger.error("Cant upload the file [" + sessionSerial + "] " + localFile.getName() );
 	            }
 
-
+	            localFile.delete();
 			}
             
         } catch ( Exception e ) {
@@ -91,13 +100,12 @@ public class FTPUploadStrategy implements IUploadStrategy {
         	}
         }
         
-        try {
-        	Thread.sleep( fileSenderDelay );
-        } catch ( Exception e ) {
-        	
-        }
-        
         return size;
+	}
+
+	@Override
+	public Long call() throws Exception {
+		return uploadFiles();
 	}
 	
 	

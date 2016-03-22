@@ -31,38 +31,20 @@ import br.cefetrj.sagitarii.teapot.Configurator;
 import br.cefetrj.sagitarii.teapot.LogManager;
 import br.cefetrj.sagitarii.teapot.Logger;
 import br.cefetrj.sagitarii.teapot.Task;
-import br.cefetrj.sagitarii.teapot.ZipUtil;
-import br.cefetrj.sagitarii.teapot.comm.uploadstrategies.FTPUploadStrategy;
-import br.cefetrj.sagitarii.teapot.comm.uploadstrategies.IUploadStrategy;
-import br.cefetrj.sagitarii.teapot.torrent.SynchFolderClient;
-
-import com.turn.ttorrent.common.Torrent;
  
 public class Client {
 	private List<String> filesToSend;
 	private String storageAddress;
 	private int storagePort;
-	private int fileSenderDelay;
 	private String sessionSerial;
 	private String sagiHost;
-	private String announceUrl;
-	private IUploadStrategy uploadStrategy;
-	
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 
-	
 	public Client( Configurator configurator ) {
 		filesToSend = new ArrayList<String>();
 		this.storageAddress = configurator.getStorageHost();
 		this.storagePort = configurator.getStoragePort();
 		this.sagiHost = configurator.getHostURL();
-		this.fileSenderDelay = configurator.getFileSenderDelay();
-		this.announceUrl = configurator.getAnnounceUrl();
-		
-		
-		// Choose the upload strategy:
-		uploadStrategy = new FTPUploadStrategy(logger, storageAddress, storagePort, "cache", "cache", fileSenderDelay);
-		
 	}
 	
 	
@@ -128,23 +110,6 @@ public class Client {
 		logger.debug("sending content of folder:");
 		logger.debug(" > " + folderPath );
 		
-		/*
-		SynchFolderClient sfc = new SynchFolderClient( storageRootFolder , announceUrl );
-		Torrent torrent = sfc.createTorrentFromFolder(folderPath, folderName);
-		String torrentFile = "";
-		if ( torrent != null ) {
-			torrentFile = storageRootFolder + "/" + folderPath + "/" + torrent.getHexInfoHash() + ".torrent";
-
-			File tor = new File(torrentFile);
-			if ( tor.exists() ) {
-				xml.append("<file name=\""+tor.getName()+"\" type=\"FILE_TYPE_TORRENT\" />\n");
-				filesToSend.add( torrentFile );
-			} else {
-				logger.error("will not send Torrent file.");
-			}
-		}
-		*/
-
 	    xml.append("<file name=\"session.xml\" type=\"FILE_TYPE_SESSION\" />\n");
 	    
 	    xml.append("<console><![CDATA[");
@@ -183,22 +148,17 @@ public class Client {
 		
 		commit();
 		
-		/*
-		if ( torrent != null ) {
-			logger.debug("Will wait for Sagitarii to download the torrent...");
-			sfc.shareFile( torrentFile );
-			sfc.waiForFinish();
-			logger.debug("Done. Upload task finished.");
-		}
-		*/
-		
 	}
 	
 
-	private synchronized long uploadFile( List<String> fileNames, String targetTable, String experimentSerial, 
-			String sessionSerial, String sourcePath ) throws Exception {
+	private synchronized long uploadFile( List<String> fileNames, String targetTable, 
+			String experimentSerial, String sessionSerial, String sourcePath ) throws Exception {
 
-		return uploadStrategy.uploadFile(fileNames, targetTable, experimentSerial, sessionSerial, sourcePath);
+		MultiThreadUpload mtu = new MultiThreadUpload( 4 );
+		mtu.upload(fileNames, logger, storageAddress, storagePort, 
+				targetTable, experimentSerial, sessionSerial, sourcePath);
+		
+		return mtu.getTotalBytes();
 		
 	}
 
