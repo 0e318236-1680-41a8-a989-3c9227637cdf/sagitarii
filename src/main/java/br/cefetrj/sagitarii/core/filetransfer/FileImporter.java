@@ -23,7 +23,6 @@ import br.cefetrj.sagitarii.core.ClustersManager;
 import br.cefetrj.sagitarii.core.DataReceiver;
 import br.cefetrj.sagitarii.core.DomainStorage;
 import br.cefetrj.sagitarii.core.ReceivedData;
-import br.cefetrj.sagitarii.core.Sagitarii;
 import br.cefetrj.sagitarii.core.config.Configurator;
 import br.cefetrj.sagitarii.core.types.ActivityStatus;
 import br.cefetrj.sagitarii.core.types.ActivityType;
@@ -39,10 +38,6 @@ import br.cefetrj.sagitarii.persistence.services.ExperimentService;
 import br.cefetrj.sagitarii.persistence.services.FileService;
 import br.cefetrj.sagitarii.persistence.services.InstanceService;
 import br.cefetrj.sagitarii.persistence.services.RelationService;
-import br.cefetrj.sagitarii.torrent.SynchFolderServer;
-
-import com.turn.ttorrent.client.Client;
-import com.turn.ttorrent.client.Client.ClientState;
 
 public class FileImporter extends Thread {
 	private Server server;
@@ -66,37 +61,6 @@ public class FileImporter extends Thread {
 	private String activity;
 	private String fragment;
 	private long importedFiles = 0;
-	//private String targetFilesFolder;
-	//private String receivedTorrentFileFullPath;
-	private Client torrentDownloader;
-	private String hostAddress;
-	private double clientCompletion;
-	private String clientState;
-	private String peerId;
-	
-	public double getClientCompletion() {
-		clientCompletion = torrentDownloader.getTorrent().getCompletion();
-		return clientCompletion;
-	}
-	
-	public String getClientState() {
-		clientState = torrentDownloader.getState().toString();
-		return clientState;
-	}
-
-	public String getHostAddress() {
-		hostAddress = torrentDownloader.getPeerSpec().getAddress().getHostAddress();
-		return hostAddress;
-	}
-	
-	public String getPeerId() {
-		peerId = torrentDownloader.getPeerSpec().getHexPeerId(); 
-		return peerId;
-	}
-	
-	public Client getTorrentDownloader() {
-		return torrentDownloader;
-	}
 	
 	public long getImportedFiles() {
 		return importedFiles;

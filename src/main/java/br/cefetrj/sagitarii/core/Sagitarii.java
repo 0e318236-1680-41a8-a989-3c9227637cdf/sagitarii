@@ -15,7 +15,6 @@ import br.cefetrj.sagitarii.core.filetransfer.FileReceiverManager;
 import br.cefetrj.sagitarii.core.mail.MailService;
 import br.cefetrj.sagitarii.core.types.ExperimentStatus;
 import br.cefetrj.sagitarii.core.types.FragmentStatus;
-import br.cefetrj.sagitarii.misc.PathFinder;
 import br.cefetrj.sagitarii.persistence.entity.Experiment;
 import br.cefetrj.sagitarii.persistence.entity.Fragment;
 import br.cefetrj.sagitarii.persistence.entity.Instance;
@@ -24,7 +23,6 @@ import br.cefetrj.sagitarii.persistence.services.ExperimentService;
 import br.cefetrj.sagitarii.persistence.services.FragmentService;
 import br.cefetrj.sagitarii.persistence.services.InstanceService;
 import br.cefetrj.sagitarii.persistence.services.RelationService;
-import br.cefetrj.sagitarii.torrent.SynchFolderServer;
 
 
 public class Sagitarii {
@@ -35,7 +33,6 @@ public class Sagitarii {
 	private InstanceBuffer instanceBuffer;
 	private double systemSpeedUp = 0;
 	private double systemEfficiency = 0;
-	private SynchFolderServer tracker;
 	
 	public void removeExperiment( Experiment exp ) {
 		for ( Experiment experiment : runningExperiments ) {
@@ -424,16 +421,6 @@ public class Sagitarii {
 		instanceBuffer = new InstanceBuffer();
 		runningExperiments = new ArrayList<Experiment>();
 		updateSystemMetrics();
-		try { 
-			tracker = new SynchFolderServer( PathFinder.getInstance().getPath() );
-			tracker.startTracker();
-		} catch ( Exception e ) {
-			logger.error( e.getMessage() );
-		}
-	}
-	
-	public SynchFolderServer getTracker() {
-		return tracker;
 	}
 	
 	/**

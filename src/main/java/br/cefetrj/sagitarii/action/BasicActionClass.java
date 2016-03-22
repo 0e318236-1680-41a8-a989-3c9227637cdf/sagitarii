@@ -19,7 +19,6 @@ public class BasicActionClass {
 	private double systemSpeedUp = 0;
 	private double systemEfficiency = 0;
 	private String useDLB;
-	private String announceUrl;
 	
 	public String getUseDLB() {
 		return useDLB;
@@ -81,7 +80,6 @@ public class BasicActionClass {
 		maxBufferCapacity = sagi.getMaxInputBufferCapacity();
 		systemSpeedUp = sagi.getSystemSpeedUp();
 		systemEfficiency = sagi.getSystemEfficiency();
-		announceUrl = sagi.getTracker().getAnnounceUrl();
 		
 		try {
 			freeMemory = Configurator.getInstance().getFreeMemory();
@@ -97,10 +95,6 @@ public class BasicActionClass {
 
 	public int getMaxBufferCapacity() {
 		return maxBufferCapacity;
-	}
-	
-	public String getAnnounceUrl() {
-		return announceUrl;
 	}
 	
 }

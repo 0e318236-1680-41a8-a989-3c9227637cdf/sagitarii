@@ -13,6 +13,7 @@ import br.cefetrj.sagitarii.misc.PathFinder;
 public class FileReceiverManager {
 	private static FileReceiverManager instance;
 	private Server server;
+	private String status = "WORKING";
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 	
 	public void stopServer() {
@@ -132,13 +133,12 @@ public class FileReceiverManager {
 			String percent = String.valueOf( importer.getPercent() );
 			String total = String.valueOf( importer.getImportedLines() );
 			String done = String.valueOf( importer.getInsertedLines() );
-			String status = importer.getClientState();
-			String completion = String.valueOf( importer.getClientCompletion() );
 			String targetTable = "";
+			status = importer.getStatus();
 			try {
 				targetTable = importer.getMainCsvFile().getTargetTable();
 			} catch ( Exception e ) {	}
-			String data = "{\"completion\":\""+completion+"\",\"status\":\""+status+"\",\"targetTable\":\""+targetTable+"\",\"total\":\""+total+"\",\"done\":\""+done+"\",\"percent\":\""+percent+"\",\"tag\":\""+tag+"\"}";
+			String data = "{\"status\":\""+status+"\",\"targetTable\":\""+targetTable+"\",\"total\":\""+total+"\",\"done\":\""+done+"\",\"percent\":\""+percent+"\",\"tag\":\""+tag+"\"}";
 			sb.append( prefix + data);
 			prefix = ",";
 		}
