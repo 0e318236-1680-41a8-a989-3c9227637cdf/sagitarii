@@ -139,11 +139,10 @@ public class Client {
 		writer.close();
 
 		// Send files
-		long totalBytesSent = 0;
 		if ( filesToSend.size() > 0 ) {
 			logger.debug("need to send " + filesToSend.size() + " files to Sagitarii...");
-			totalBytesSent = totalBytesSent + uploadFile( filesToSend, targetTable, experimentSerial, sessionSerial, folderPath );
-			logger.debug("total bytes sent: " + totalBytesSent );
+			uploadFiles( filesToSend, targetTable, experimentSerial, sessionSerial, folderPath );
+			
 		}
 		
 		commit();
@@ -151,14 +150,13 @@ public class Client {
 	}
 	
 
-	private synchronized long uploadFile( List<String> fileNames, String targetTable, 
+	private void uploadFiles( List<String> fileNames, String targetTable, 
 			String experimentSerial, String sessionSerial, String sourcePath ) throws Exception {
 
-		MultiThreadUpload mtu = new MultiThreadUpload( 4 );
+		logger.debug("starting Multithread Uploader for session " + sessionSerial );
+		MultiThreadUpload mtu = new MultiThreadUpload( 5 );
 		mtu.upload(fileNames, logger, storageAddress, storagePort, 
 				targetTable, experimentSerial, sessionSerial, sourcePath);
-		
-		return mtu.getTotalBytes();
 		
 	}
 

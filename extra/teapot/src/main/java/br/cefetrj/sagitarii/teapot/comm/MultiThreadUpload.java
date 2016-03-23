@@ -15,7 +15,6 @@ public class MultiThreadUpload {
 	
 	public MultiThreadUpload( int maxThreadsRunning ) {
 		this.maxThreadsRunning = maxThreadsRunning;
-		
 	}
 	
 	public long getTotalBytes() {
@@ -26,11 +25,17 @@ public class MultiThreadUpload {
 			int storagePort, String targetTable, String experimentSerial, 
 			String sessionSerial, String sourcePath ) {
 		
+		logger.debug("Multithread Uploader started to send " + fileList.size() + " files.");
+		
 		List< FutureTask<Long> > futureTasks = new ArrayList< FutureTask<Long> >();
-		List<List<String>> partitions = splitList( fileList );
-		ExecutorService executor = Executors.newFixedThreadPool( maxThreadsRunning );
 
+		List<List<String>> partitions = splitList( fileList );
+		
+		ExecutorService executor = Executors.newFixedThreadPool( maxThreadsRunning );
+		
 		for( List<String> list : partitions ) {
+			logger.debug(" > starting upload thread with " + list.size() + " elements for session " + sessionSerial + 
+					" / " + sourcePath);
 			FTPUploadTask fut = new FTPUploadTask(list, logger, storageAddress, storagePort, 
 					targetTable, experimentSerial, sessionSerial, sourcePath);
 			
@@ -39,6 +44,7 @@ public class MultiThreadUpload {
 			futureTasks.add( futureTask );
 		}
 		
+		logger.debug("waiting to all threads to finish...");
 		while ( true ) {
             try {
             	boolean done = true;
@@ -50,19 +56,26 @@ public class MultiThreadUpload {
             	}
             	if ( done ) break;
             } catch ( Exception e ) {
-            	
+            	logger.error("thread error: " + e.getMessage() );
             }
 		}
 		executor.shutdown();
+		logger.debug("all threads finished. Multithread Uploader shutdown. ");
 	}
 	
 	public List<List<String>> splitList( List<String> list ) {
-		int partitionSize = list.size() / maxThreadsRunning;
 		List<List<String>> partitions = new LinkedList<List<String>>();
-		for (int i = 0; i < list.size(); i += partitionSize) {
-			partitions.add(list.subList(i,
-					Math.min(i + partitionSize, list.size())));
+		
+		if ( list.size() <= maxThreadsRunning ) {
+			partitions.add( list );
+		} else {
+			int partitionSize = list.size() / maxThreadsRunning;
+			for (int i = 0; i < list.size(); i += partitionSize) {
+				partitions.add(list.subList(i,
+						Math.min(i + partitionSize, list.size())));
+			}
 		}
+		
 		return partitions;
 	}
 	

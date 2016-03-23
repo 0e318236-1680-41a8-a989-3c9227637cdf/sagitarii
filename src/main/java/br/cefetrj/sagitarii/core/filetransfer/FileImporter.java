@@ -212,20 +212,7 @@ public class FileImporter extends Thread {
 			file.setFileName( fileName );
 			file.setActivity( activity );
 			file.setInstance( instance );
-			//file.setFilePath( targetFilesFolder + "/outbox/" );
 			file.setFilePath( sessionContext + "/" );
-			
-			/*
-			byte[] bFile = new byte[(int) sourceFile.length()];
-			try {
-				FileInputStream fileInputStream = new FileInputStream( sourceFile );
-				fileInputStream.read(bFile);
-				fileInputStream.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}				
-			file.setFile( bFile );
-			*/
 			
 			fs.insertFile(file);
 			
