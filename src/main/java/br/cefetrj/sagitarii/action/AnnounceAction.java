@@ -24,7 +24,7 @@ public class AnnounceAction  {
 	private String macAddress;
 	private String machineName;
 	private	String localIpAddress;
-	private String soFamily;
+	private String nodeType;
 	private String javaVersion;
 	private String cpuLoad;
 	private Integer availableProcessors;
@@ -48,11 +48,11 @@ public class AnnounceAction  {
 	
 			try {
 				cpu = Double.valueOf( cpuLoad );
-				ClustersManager.getInstance().addOrUpdateCluster( ClusterType.NODE, javaVersion, soFamily, macAddress, 
+				ClustersManager.getInstance().addOrUpdateCluster( ClusterType.NODE, javaVersion, nodeType, macAddress, 
 						localIpAddress, machineName, cpu, soName, availableProcessors, 
 						maxAllowedTasks, freeMemory, totalMemory );
 				
-				resposta = ClustersManager.getInstance().getTask( macAddress, packageSize );
+				resposta = ClustersManager.getInstance().getTask( macAddress, packageSize, nodeType );
 				
 			} catch ( Exception e ) {
 				e.printStackTrace();
@@ -91,8 +91,8 @@ public class AnnounceAction  {
 	}
 
 
-	public void setSoFamily(String soFamily) {
-		this.soFamily = soFamily;
+	public void setNodeType(String nodeType) {
+		this.nodeType = nodeType;
 	}
 
 

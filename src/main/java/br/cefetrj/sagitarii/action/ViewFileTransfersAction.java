@@ -1,6 +1,7 @@
 
 package br.cefetrj.sagitarii.action;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.struts2.convention.annotation.Action;
@@ -24,6 +25,7 @@ public class ViewFileTransfersAction extends BasicActionClass {
 		
 		try {
 			sessions = FileReceiverManager.getInstance().getTransferSessions();
+			sessions = new ArrayList<TransferSession>();
 		} catch( Exception e) {
 			e.printStackTrace();
 		}

@@ -30,17 +30,12 @@ public class GetFileAction extends BasicActionClass {
 	public String execute () {
 		br.cefetrj.sagitarii.persistence.entity.File file = null;
 		
-		String gz = "";
-		if ( (macAddress == null) || (macAddress.equals("") ) ) {
-			gz = ".gz";
-		}
-		
 		try {
 			FileService fs = new FileService();
 			if ( (idFile != null) && ( idFile > -1 ) ) {
 				file = fs.getFile( idFile );
-				fileName = file.getFileName() + gz;
-				String theFile = PathFinder.getInstance().getPath() + "/cache/" + file.getFilePath() + "/" + fileName;
+				fileName = file.getFileName() + ".gz";
+				String theFile = file.getFilePath() + idFile + "/" + fileName;
 				File fil = new File( theFile );
 				fileInputStream = new FileInputStream( fil );
 			}
