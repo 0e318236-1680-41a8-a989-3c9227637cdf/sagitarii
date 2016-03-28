@@ -23,10 +23,10 @@
 								<thead>
 									<tr>
 										<th>Session</th>
-										<th>&nbsp;</th>
-										<th>&nbsp;</th>
-										<th>&nbsp;</th>
-										<th>&nbsp;</th>
+										<th>Node</th>
+										<th>Data File</th>
+										<th>Target Table</th>
+										<th>Last Message</th>
 										<th>&nbsp;</th>
 									</tr>
 								</thead>
@@ -39,21 +39,22 @@
 											<td style="background-color:#F6F6F6;border:0px;width:10%" class="tableCellFormRight">${session.importer.mainCsvFile.targetTable}&nbsp;</td>
 											<td colspan="2" style="background-color:#F6F6F6;border:0px;width:30%" class="tableCellFormRight">${session.importer.log}&nbsp;</td>
 										</tr>
+										<tr>
+											<td>Activity</td>
+											<td>Instance</td>
+											<td>Imp. Lines</td>
+											<td>Ins. Lines</td>
+											<td>Imp. Files (Last)</td>
+											<td>Start Time</td>
+										</tr>
 										<tr>											
-											<td style="border:0px;border-bottom: 1px dotted #ADADAD;" class="tableCellFormRight">${session.importer.activity} / ${session.importer.instance} &nbsp;</td>
-											<td style="border:0px;border-bottom: 1px dotted #ADADAD;" class="tableCellFormRight">${session.importer.importedLines} / ${session.importer.insertedLines}</td>
+											<td style="border:0px;border-bottom: 1px dotted #ADADAD;" class="tableCellFormRight">${session.importer.activity}&nbsp;</td>
+											<td style="border:0px;border-bottom: 1px dotted #ADADAD;" class="tableCellFormRight">${session.importer.instance} &nbsp;</td>
+											<td style="border:0px;border-bottom: 1px dotted #ADADAD;" class="tableCellFormRight">${session.importer.importedLines}</td>
+											<td style="border:0px;border-bottom: 1px dotted #ADADAD;" class="tableCellFormRight">${session.importer.insertedLines}</td>
+											<td style="border:0px;border-bottom: 1px dotted #ADADAD;" class="tableCellFormRight">${session.importer.importedFiles} (${session.importer.lastImportedFile}) </td>
 											<td style="border:0px;border-bottom: 1px dotted #ADADAD;" class="tableCellFormRight">
 												<fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" type="both" timeStyle="short" value="${session.importer.startTime}"/>
-											</td>
-											<td style="border:0px;border-bottom: 1px dotted #ADADAD;" class="tableCellFormRight">${session.importer.hostAddress}</td>
-											<td style="border:0px;border-bottom: 1px dotted #ADADAD;" class="tableCellFormRight">${session.importer.clientState}</td>
-											<td style="border:0px;border-bottom: 1px dotted #ADADAD;" class="tableCellFormRight">
-												<div style="width:100%"
-													title="Completion: ${session.importer.clientCompletion}%"
-													class="clusterCpuOut dicas">
-													<div class="clusterCpuIn"
-														style="width:${session.importer.clientCompletion}%">&nbsp;</div>
-												</div>															
 											</td>
 										</tr>
 									</c:forEach>

@@ -37,6 +37,27 @@
 						</div>
 
 
+						<div class="basicCentralPanelBar">
+							<img src="img/fragment.png">
+							<div class="basicCentralPanelBarText">Checkout Register ( Instances Delivered to Nodes )</div>
+						</div>
+						<div style="margin : 0 auto; width : 95%; margin-top:10px;margin-bottom: 20px;"  >
+							<table>
+								<tr>
+									<th style="width:100px">Serial</th>
+									<th style="width:100px">Times Tried</th>
+									<th >Finished</th>
+								</tr>
+								<c:forEach var="instance" items="${instanceOutputBuffer}">
+									<tr>
+										<td>${instance.serial}</td>
+										<td>${instance.timesTried}</td>
+										<td>${instance.finishedActivities}</td>
+									</tr>
+								</c:forEach>
+							</table>
+						</div>
+
 					
 						<div class="basicCentralPanelBar">
 							<img src="img/running.png">
