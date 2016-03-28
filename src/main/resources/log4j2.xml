@@ -14,14 +14,10 @@
 	
 	<loggers>
 
-		<Logger name="br.cefetrj.sagitarii.core.filetransfer.FtpletMonitor" level="debug" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.core.filetransfer.FtpletMonitor" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 		
-		<Logger name="br.cefetrj.sagitarii.torrent.SynchFolderServer" level="debug" additivity="false"> 
-			<appender-ref ref="File"/> 
-		</Logger>
-
 		<Logger name="br.cefetrj.sagitarii.core.delivery.DeliveryUnit" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
@@ -62,14 +58,10 @@
 			<appender-ref ref="File"/> 
 		</Logger>
 		
-		<Logger name="br.cefetrj.sagitarii.core.filetransfer.FileImporter" level="debug" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.core.filetransfer.FileImporter" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
-		
-		<Logger name="br.cefetrj.sagitarii.core.filetransfer.FileSaver" level="debug" additivity="false"> 
-			<appender-ref ref="File"/> 
-		</Logger>
-
+	
 		<Logger name="br.cefetrj.sagitarii.core.ReceivedData" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
@@ -132,15 +124,15 @@
 			<appender-ref ref="File"/> 
 		</Logger>
 
-		<Logger name="br.cefetrj.sagitarii.core.Sagitarii" level="debug" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.core.Sagitarii" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 
-		<Logger name="br.cefetrj.sagitarii.core.ClustersManager" level="error" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.core.ClustersManager" level="debug" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 		
-		<Logger name="br.cefetrj.sagitarii.core.Cluster" level="error" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.core.Cluster" level="debug" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 
