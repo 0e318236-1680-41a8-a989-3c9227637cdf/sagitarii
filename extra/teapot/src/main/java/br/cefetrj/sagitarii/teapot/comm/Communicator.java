@@ -33,7 +33,6 @@ public class Communicator  {
     private String macAddress;	
     private int availableProcessors;
     private String java;
-    private String soFamily;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 
 	public Communicator( Configurator gf ) throws Exception {
@@ -46,7 +45,6 @@ public class Communicator  {
 			this.macAddress = URLEncoder.encode(tm.getMacAddress(), "UTF-8");
 			this.availableProcessors = tm.getAvailableProcessors();
 			this.java = URLEncoder.encode(tm.getJavaVersion(), "UTF-8");
-			this.soFamily = URLEncoder.encode(tm.getOsType().toString(), "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			throw e;
 		}
@@ -89,7 +87,7 @@ public class Communicator  {
 		
 		String parameters = "soName=" + soName + "&localIpAddress=" + localIpAddress + 
 				"&machineName=" + machineName + "&macAddress=" + macAddress + "&cpuLoad=" + cpuLoad +
-				"&availableProcessors=" + availableProcessors + "&soFamily=" + soFamily +
+				"&availableProcessors=" + availableProcessors + "&nodeType=TEAPOT" + 
 				"&javaVersion=" + java + "&maxAllowedTasks=" + maxAllowedTasks + "&freeMemory=" + freeMemory +
 				"&totalMemory=" + totalMemory + "&packageSize=" + packageSize + "&memoryPercent=" + memoryPercent;
 		

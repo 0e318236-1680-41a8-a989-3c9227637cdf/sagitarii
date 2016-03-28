@@ -56,9 +56,14 @@ public class Configurator {
 	private int maximunRamToUse;
 	private int maximunCPULimit;
 	private int minimunCPULimit;
+	private int maxUploadThreads;
 	
 	public int getMaximunCPULimit() {
 		return maximunCPULimit;
+	}
+	
+	public int getMaxUploadThreads() {
+		return maxUploadThreads;
 	}
 	
 	public int getMinimunCPULimit() {
@@ -254,6 +259,7 @@ public class Configurator {
 
 				maximunCPULimit = Integer.valueOf( getTagValue("maximunCPULimit", mpElement) );
 				minimunCPULimit = Integer.valueOf( getTagValue("minimunCPULimit", mpElement) );
+				maxUploadThreads = Integer.valueOf( getTagValue("maxUploadThreads", mpElement) );
 				
 				if ( enforceTaskLimitToCores ) {
 					useSpeedEqualizer = false;

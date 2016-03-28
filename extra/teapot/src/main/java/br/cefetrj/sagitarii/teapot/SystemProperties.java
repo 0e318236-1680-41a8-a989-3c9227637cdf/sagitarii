@@ -26,7 +26,6 @@ import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -240,8 +239,8 @@ public class SystemProperties  {
 			ip = getFirstNonLoopbackAddress(true, false);
 			this.localIpAddress = ip.toString().replace("/", "");
 			
-			InetAddress iplocal = InetAddress.getLocalHost();
-			this.machineName = iplocal.getCanonicalHostName();
+			//InetAddress iplocal = InetAddress.getLocalHost();
+			this.machineName = ip.getCanonicalHostName();
 
 			NetworkInterface network = NetworkInterface.getByInetAddress(ip);
 			
@@ -251,7 +250,7 @@ public class SystemProperties  {
 				sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));		
 			}
 			this.macAddress =  sb.toString();    	
-		} catch ( SocketException | UnknownHostException e) {
+		} catch ( SocketException e) {
 		}
     	getProcessCpuLoad();
     	discoverOsType();

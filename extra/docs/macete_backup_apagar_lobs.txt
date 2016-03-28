@@ -1,0 +1,7 @@
+sudo -u postgres psql
+\c sagitarii
+delete from pg_catalog.pg_largeobject;
+vacuum full;
+pg_dump --host localhost --username admin --format tar --blobs --verbose --file "/home/sagitarii/sagitarii.backup" "sagitarii"
+
+

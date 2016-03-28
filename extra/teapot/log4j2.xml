@@ -14,7 +14,11 @@
 	
 	<loggers>
 	
-		<Logger name="br.cefetrj.sagitarii.teapot.torrent.SynchFolderClient" level="debug" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.teapot.comm.MultiThreadUpload" level="debug" additivity="false"> 
+			<appender-ref ref="File"/> 
+		</Logger>
+
+		<Logger name="br.cefetrj.sagitarii.teapot.comm.FTPUploadTask" level="debug" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 
@@ -44,7 +48,7 @@
 			<appender-ref ref="File"/> 
 		</Logger>
 
-		<Logger name="br.cefetrj.sagitarii.teapot.TaskRunner" level="error" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.teapot.TaskRunner" level="debug" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 		
@@ -68,11 +72,11 @@
 			<appender-ref ref="File"/> 
 		</Logger>
 		
-		<Logger name="br.cefetrj.sagitarii.teapot.Task" level="error" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.teapot.Task" level="debug" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 
-		<Logger name="br.cefetrj.sagitarii.teapot.TaskManager" level="error" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.teapot.TaskManager" level="debug" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 

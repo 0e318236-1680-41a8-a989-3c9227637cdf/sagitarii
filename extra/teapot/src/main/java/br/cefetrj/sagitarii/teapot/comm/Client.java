@@ -38,12 +38,14 @@ public class Client {
 	private int storagePort;
 	private String sessionSerial;
 	private String sagiHost;
+	private int maxUploadThreads;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 
 	public Client( Configurator configurator ) {
 		filesToSend = new ArrayList<String>();
 		this.storageAddress = configurator.getStorageHost();
 		this.storagePort = configurator.getStoragePort();
+		this.maxUploadThreads = configurator.getMaxUploadThreads();
 		this.sagiHost = configurator.getHostURL();
 	}
 	
@@ -142,20 +144,17 @@ public class Client {
 		if ( filesToSend.size() > 0 ) {
 			logger.debug("need to send " + filesToSend.size() + " files to Sagitarii...");
 			uploadFiles( filesToSend, targetTable, experimentSerial, sessionSerial, folderPath );
-			
 		}
-		
 		commit();
-		
 	}
 	
 
 	private void uploadFiles( List<String> fileNames, String targetTable, 
 			String experimentSerial, String sessionSerial, String sourcePath ) throws Exception {
 
-		logger.debug("starting Multithread Uploader for session " + sessionSerial );
-		MultiThreadUpload mtu = new MultiThreadUpload( 5 );
-		mtu.upload(fileNames, logger, storageAddress, storagePort, 
+		logger.debug("starting Multithread Uploader for session " + sessionSerial + " with " + maxUploadThreads + " threads." );
+		MultiThreadUpload mtu = new MultiThreadUpload( maxUploadThreads );
+		mtu.upload(fileNames, storageAddress, storagePort, 
 				targetTable, experimentSerial, sessionSerial, sourcePath);
 		
 	}

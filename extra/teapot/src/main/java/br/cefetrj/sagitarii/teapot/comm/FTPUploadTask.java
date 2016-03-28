@@ -8,12 +8,13 @@ import java.util.concurrent.Callable;
 
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import br.cefetrj.sagitarii.teapot.Logger;
 import br.cefetrj.sagitarii.teapot.ZipUtil;
 
 public class FTPUploadTask implements Callable<Long> {
-	private Logger logger;
+	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 	private String storageAddress;
 	private int storagePort;
     private String user = "cache";
@@ -23,22 +24,26 @@ public class FTPUploadTask implements Callable<Long> {
     private String experimentSerial; 
 	private String sessionSerial; 
 	private String sourcePath;
+	private int sendTry = 0;
+	private final int TRY_LIMIT = 5;
 	
-	public FTPUploadTask(List<String> fileNames, Logger logger, String storageAddress, 
+	public FTPUploadTask(List<String> fileNames, String storageAddress, 
 			int storagePort, String targetTable, String experimentSerial, 
 			String sessionSerial, String sourcePath ) {
-		this.logger = logger;
+		this.fileNames = fileNames;
 		this.storageAddress = storageAddress;
 		this.storagePort = storagePort;
 		this.targetTable = targetTable;
 		this.experimentSerial = experimentSerial;
 		this.sessionSerial = sessionSerial;
 		this.sourcePath = sourcePath;
+		logger.debug("create");
 	}
 	
-	private long uploadFiles() throws Exception {
+	private long uploadFiles() {
 		logger.debug("sending " + fileNames.size() + " files to table " + targetTable + " in session " +
 					sessionSerial + " experiment " + experimentSerial + ": " + sourcePath );
+		boolean hasError = false;
 		long size = 0;
         FTPClient ftpClient = new FTPClient();
         try {
@@ -91,21 +96,34 @@ public class FTPUploadTask implements Callable<Long> {
             
         } catch ( Exception e ) {
         	logger.error("Error sending file by FTP: " + e.getMessage() );
-        } finally {
-        	try { 
-        		ftpClient.disconnect();
-            	logger.debug("FTP client disconnected.");
-        	} catch ( Exception e ) { 
-        		logger.error("cannot close FTP client: " + e.getMessage() );
-        	}
+        	hasError = true;
         }
+        
+    	try { 
+    		ftpClient.disconnect();
+        	logger.debug("FTP client disconnected.");
+    	} catch ( Exception e ) { 
+    		logger.error("cannot close FTP client: " + e.getMessage() );
+    	}
+    	
+    	if( hasError && sendTry < TRY_LIMIT ) {
+    		sendTry++;
+    		logger.debug("try " + sendTry + ". will try to send again.");
+    		uploadFiles();
+    	}
         
         return size;
 	}
 
 	@Override
 	public Long call() throws Exception {
-		return uploadFiles();
+		logger.debug("start");
+		try {
+			uploadFiles();
+		} catch ( Exception e ) {
+			e.printStackTrace();
+		}
+		return 0L;
 	}
 	
 	

@@ -74,6 +74,7 @@ public class TaskManager {
 
 	private void sanitize( Task task ) {
 		if ( configurator.getClearDataAfterFinish() ) {
+			debug("deleting work folder");
 			try {
 				FileUtils.deleteDirectory( new File( currentTask.getActivation().getNamespace() ) ); 
 			} catch ( IOException e ) {
