@@ -62,8 +62,10 @@ public class InstanceDeliveryControl {
 		logger.debug("   > Diff Secs. : " + secs );
 		
 		if ( secs > secsLimit ) { // Is taking more than double of average time for this kind of instance
+			logger.debug( ac.getHash() + " must inform");
 			return true;
 		} else {
+			logger.debug( ac.getHash() + " its ok");
 			return false;
 		}
 	}
@@ -116,12 +118,12 @@ public class InstanceDeliveryControl {
 					unity.setDelayed();
 				}
 				if ( mustInform( ac, unity ) ) {
-					ClustersManager.getInstance().inform( unity.getMacAddress(), unity.getInstance().getSerial() );
+					ClustersManager.getInstance().inform( unity.getMacAddress(), unity.getInstance().getSerial(), false );
 				}
 			} else {
 				if ( isTakingTooMuchTime( unity ) ) {
 					logger.debug( "instance '" + unity.getInstanceActivities() + "' is taking too much time than the system limit");
-					ClustersManager.getInstance().inform( unity.getMacAddress(), unity.getInstance().getSerial() );
+					ClustersManager.getInstance().inform( unity.getMacAddress(), unity.getInstance().getSerial(), false );
 				}
 			}
 		}
@@ -133,7 +135,7 @@ public class InstanceDeliveryControl {
 			Accumulator ac = AgeCalculator.getInstance().getAccumulator( unity.getHash() );
 			if ( ac != null ) {
 				if ( isDelayed( ac, unity ) ) {
-					ClustersManager.getInstance().inform( unity.getMacAddress(), unity.getInstance().getSerial() );
+					ClustersManager.getInstance().inform( unity.getMacAddress(), unity.getInstance().getSerial(), true );
 				}
 			}
 		}
@@ -143,16 +145,16 @@ public class InstanceDeliveryControl {
 		for ( DeliveryUnit unity : getUnits() ) {
 			if ( instance.equals( unity.getInstance().getSerial() ) ) {
 				logger.debug("force asking for Instance " + instance );
-				ClustersManager.getInstance().inform( unity.getMacAddress(), unity.getInstance().getSerial() );
+				ClustersManager.getInstance().inform( unity.getMacAddress(), unity.getInstance().getSerial(), true );
 			}
 		}
 	}
 	
+	// The node is idle but have an instance registered in IDC to it ( probably lost ). Try to run the instance again.
 	public void claimInstance( Cluster cluster ) {
-		logger.debug("node " + cluster.getmacAddress() + " is idle. check IDC for lost instances...");
 		for ( DeliveryUnit unity : getUnits() ) {
 			if ( cluster.getmacAddress().equals( unity.getMacAddress() ) ) {
-				logger.debug(" > " + unity.getInstance().getSerial() );
+				logger.debug("instance " + unity.getInstance().getSerial() + " was lost and claimed by idle node " + cluster.getmacAddress() );
 				cluster.resubmitInstanceToBuffer( unity.getInstance().getSerial() );
 			}
 		}

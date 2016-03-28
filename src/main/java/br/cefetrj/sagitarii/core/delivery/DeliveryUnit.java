@@ -10,8 +10,8 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import br.cefetrj.sagitarii.core.processor.Activation;
-import br.cefetrj.sagitarii.core.processor.XMLParser;
+import br.cefetrj.sagitarii.misc.Activation;
+import br.cefetrj.sagitarii.misc.XMLParser;
 import br.cefetrj.sagitarii.persistence.entity.Instance;
 
 public class DeliveryUnit {

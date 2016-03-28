@@ -160,6 +160,7 @@ public class Cluster {
 		cleanUp();
 		if( !isRunning( instanceSerial ) ) {
 			logger.debug("instance " + instanceSerial + " is not running. done.");
+			InstanceDeliveryControl.getInstance().cancelUnit( instanceSerial );
 			return;
 		}
 		
@@ -171,22 +172,29 @@ public class Cluster {
 		
 	}
 	
-	public void inform( String instanceSerial ) {
+	public void inform( String instanceSerial, boolean fromUser ) {
 		informRepeatCount++;
-		if ( informRepeatCount < 20 ) return;
+		if ( !fromUser && (informRepeatCount < 20) ) {
+			logger.debug("too soon (" + informRepeatCount + "). will not ask anything until 20." );
+			return;
+		}
 		informRepeatCount = 0;
 		
 		logger.debug("asking Teapot for lost instance " + instanceSerial + " working at node " + macAddress );
 		
 		cleanUp();
 		if( !isRunning( instanceSerial ) ) {
-			logger.debug("instance " + instanceSerial + " is not running. done.");
+			logger.debug("instance " + instanceSerial + " is not running anymore. done.");
+			InstanceDeliveryControl.getInstance().cancelUnit( instanceSerial );
+			askingForInstance = false;
+			lostInstance = "";
 			return;
 		}
 		
 		if ( status == ClusterStatus.DEAD ) {
 			logger.debug("this node is DEAD. try to recover lost instance from output buffer");
 			informReport( instanceSerial, "NOT_FOUND");
+			return;
 		}
 		
 		if ( amILookingFor(instanceSerial) ) {
@@ -305,8 +313,11 @@ public class Cluster {
 	
 	public void setInstanceAsDone( String instanceSerial, Activity actvt, String startTimeMillis, String finishTimeMillis ) {
 		debug("checking if instance " + instanceSerial + " (" + actvt.getTag() + ") is done");
+		boolean found = false;
 		for( Instance instance : runningInstances ) {
 			if ( instance.getSerial().equals( instanceSerial ) ) {
+				logger.debug("instance " + instanceSerial + " found in node " + macAddress + " execution list. try to finish.");
+				found = true;
 				instance.decreaseQtdActivations();
 				String finished = instance.getFinishedActivities();
 				if ( finished == null ) { finished = ""; }
@@ -333,6 +344,9 @@ public class Cluster {
 				}
 				break;
 			}
+		}
+		if ( !found ) {
+			logger.error("instance " + instanceSerial + " not found in node " + macAddress + " execution list");
 		}
 	}
 	
@@ -504,6 +518,7 @@ public class Cluster {
 		Instance pipe = getFinishedTask();
 		while ( pipe != null ) {
 			runningInstances.remove( pipe );
+			logger.debug("instance " + pipe.getSerial() + " removed from running list because is finished.");
 			InstanceDeliveryControl.getInstance().cancelUnit( pipe.getSerial() );
 			pipe = getFinishedTask();
 		}

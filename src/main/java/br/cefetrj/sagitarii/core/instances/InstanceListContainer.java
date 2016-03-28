@@ -4,10 +4,10 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.cefetrj.sagitarii.core.processor.Activation;
-import br.cefetrj.sagitarii.core.processor.XMLParser;
 import br.cefetrj.sagitarii.core.statistics.Accumulator;
 import br.cefetrj.sagitarii.core.statistics.AgeCalculator;
+import br.cefetrj.sagitarii.misc.Activation;
+import br.cefetrj.sagitarii.misc.XMLParser;
 import br.cefetrj.sagitarii.persistence.entity.Instance;
 
 public class InstanceListContainer {

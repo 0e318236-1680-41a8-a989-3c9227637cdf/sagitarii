@@ -1,5 +1,6 @@
 package br.cefetrj.sagitarii.core;
 
+import java.io.File;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -12,7 +13,6 @@ import javax.servlet.annotation.WebListener;
 
 import br.cefetrj.sagitarii.core.config.Configurator;
 import br.cefetrj.sagitarii.core.filetransfer.FileReceiverManager;
-import br.cefetrj.sagitarii.core.processor.MainCluster;
 import br.cefetrj.sagitarii.core.statistics.AgeCalculator;
 import br.cefetrj.sagitarii.core.types.UserType;
 import br.cefetrj.sagitarii.metrics.Chronos;
@@ -54,9 +54,6 @@ public class Orchestrator implements ServletContextListener {
     	try {
 
 	        int interval = 5;
-	        int pseudoInterval = 5;
-	        int pseudoMaxTasks = 4;
-	        int mainNodesQuant = 1;
 	        int maxInputBufferCapacity = 500;
 	        int fileReceiverPort = 3333;
 	        int chunkBuffer = 100;
@@ -64,11 +61,7 @@ public class Orchestrator implements ServletContextListener {
 			Configurator config = Configurator.getInstance("config.xml");
 			
 			interval = config.getPoolIntervalSeconds();
-			pseudoInterval = config.getPseudoClusterIntervalSeconds();
-			pseudoMaxTasks = config.getPseudoMaxTasks();
-			pseudoMaxTasks = config.getPseudoMaxTasks();
 			maxInputBufferCapacity = config.getMaxInputBufferCapacity();
-			mainNodesQuant = config.getMainNodesQuant();
 			fileReceiverPort = config.getFileReceiverPort();
 			chunkBuffer = config.getFileReceiverChunkBufferSize();
 			String user = config.getUserName();
@@ -114,18 +107,9 @@ public class Orchestrator implements ServletContextListener {
 				loggerDebug("no running experiments found");	
 			} 
 			loggerDebug("done.");
-			
-			if ( mainNodesQuant < 1 ) {
-				mainNodesQuant = 1;
-			}
-			if ( mainNodesQuant > 9 ) {
-				mainNodesQuant = 9;
-			}
-			
+
 			Sagitarii.getInstance().setMaxInputBufferCapacity(maxInputBufferCapacity);
-			
 			loggerDebug("Sagitarii Scheduler: check every " + interval + " seconds");
-			loggerDebug("Main Cluster: check every " + pseudoInterval + " seconds");
 
 			try {
 				RelationRepository rr = new RelationRepository();
@@ -142,6 +126,9 @@ public class Orchestrator implements ServletContextListener {
 
 			loggerDebug("File Receiver Manager started.");
 
+			File createStorage = new File( PathFinder.getInstance().getPath() + "/storage/" );
+			createStorage.mkdirs();
+			
 			scheduler = Executors.newSingleThreadScheduledExecutor();
 			
 			MainHeartBeat as = new MainHeartBeat();
@@ -150,10 +137,6 @@ public class Orchestrator implements ServletContextListener {
 	        Chronos chronos = new Chronos();
 	        scheduler.scheduleAtFixedRate( chronos , 0, 1, TimeUnit.SECONDS);
 	        
-	        for ( int x = 1; x <= mainNodesQuant; x++ ) {
-	        	scheduler.scheduleAtFixedRate( new MainCluster( pseudoMaxTasks, "S0-A0-G0-I0-T0-A0-RI-0" + x ), 0, pseudoInterval , TimeUnit.SECONDS);
-	        }
-			
 		} catch (Exception e) { 
 			System.out.println( e.getMessage() );
 			loggerError( e.getMessage() );
@@ -167,7 +150,7 @@ public class Orchestrator implements ServletContextListener {
     public void contextDestroyed(ServletContextEvent event) {
 		loggerDebug("shutdown");
         scheduler.shutdownNow();
-		loggerDebug("immolating GSON threads...");
+		loggerDebug("immolating JSON threads...");
 		int result = 0;
 		try {
 			result = GSONThreadLocalImmolater.immolate();

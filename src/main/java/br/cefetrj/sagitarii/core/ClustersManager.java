@@ -10,7 +10,6 @@ import org.apache.logging.log4j.Logger;
 
 import br.cefetrj.sagitarii.core.config.Configurator;
 import br.cefetrj.sagitarii.core.delivery.InstanceDeliveryControl;
-import br.cefetrj.sagitarii.core.types.ActivityType;
 import br.cefetrj.sagitarii.core.types.ClusterStatus;
 import br.cefetrj.sagitarii.core.types.ClusterType;
 import br.cefetrj.sagitarii.core.types.InstanceStatus;
@@ -211,14 +210,16 @@ public class ClustersManager {
 		}
 	}
 
-	public void inform(String macAddress, String instanceSerial ) {
+	public void inform(String macAddress, String instanceSerial, boolean fromUser ) {
 		logger.debug("Sagitarii needs to know about instance " + instanceSerial + " running on node " + macAddress );
 		Cluster cluster = cm.getCluster(macAddress);
 		if ( cluster != null ) {
-			cluster.inform( instanceSerial );
+			logger.error("node " + macAddress + " found as connected. asking...");
+			cluster.inform( instanceSerial, fromUser );
 		} else {
-			logger.error("cluster " + macAddress + " not connected");
+			logger.error("cluster " + macAddress + " not connected.");
 		}
+		logger.debug("inform check done.");
 	}
 	
 	public void informReport( String macAddress, String status, String instanceSerial ) {
@@ -233,11 +234,17 @@ public class ClustersManager {
 
 	
 	private String fillInstanceID( Instance instance ) {
-		return instance.getContent().replace("##TAG_ID_INSTANCE##", String.valueOf( instance.getIdInstance() ) );
+		String content = instance.getContent();
+		try {
+			content = instance.getContent().replace("%ID_PIP%", String.valueOf( instance.getIdInstance() ) );
+		} catch ( Exception e ) {
+			logger.error("Error setting Instance ID to instance content tag.");
+		}
+		return content.replace("##TAG_ID_INSTANCE##", String.valueOf( instance.getIdInstance() ) );
 	}
 	
 	
-	private synchronized String getNextInstance( Cluster cluster, int packageSize ) {
+	private synchronized String getNextInstance( Cluster cluster, int packageSize, String nodeType ) {
 		String resposta = "";
 		String macAddress = cluster.getmacAddress();
 		if ( packageSize < 1 ) { packageSize = 1; }
@@ -249,27 +256,32 @@ public class ClustersManager {
 		} catch ( Exception e ) { }
 		
 		List<String> instancePack = new ArrayList<String>();
-		logger.debug( "node " + macAddress + " needs a package size of " + packageSize + " instance(s).");
+		logger.debug( "node " + macAddress + " ("+nodeType+") needs a package size of " + packageSize + " instance(s).");
 		for ( int x=0; x < packageSize; x++) {
-			Instance instance = Sagitarii.getInstance().getNextInstance( macAddress );
+			
+			Instance instance = null;
+			if ( nodeType.equals("TEAPOT") ) {
+				instance = Sagitarii.getInstance().getNextInstance( macAddress );
+			}
+			if ( nodeType.equals("NUNKI") ) {
+				instance = Sagitarii.getInstance().getNextJoinInstance( macAddress );
+			}
+			
 			if ( instance != null ) {
-				if ( instance.getType() != ActivityType.SELECT ) {
-					logger.debug( " > sending instance "+ instance.getSerial() + " data to node " + macAddress );
-					
-					instance.setStartDateTime( Calendar.getInstance().getTime() );
-					instance.setStatus( InstanceStatus.WAITING );
-					cluster.addInstance(instance);
-					resposta = fillInstanceID ( instance );
-					instance.setContent( resposta );
-	
-					byte[] respCompressed = ZipUtil.compress( resposta );
-					String respHex = ZipUtil.toHexString( respCompressed );
-					instancePack.add( respHex );
-					
-					InstanceDeliveryControl.getInstance().addUnit(instance, macAddress);
-				} else {
-					logger.error("Wrong Instance type (SELECT) refused ("+instance.getSerial()+")."); 
-				}
+				logger.debug( " > sending instance "+ instance.getSerial() + " data to node " + macAddress + " ("+nodeType+")" );
+				
+				instance.setStartDateTime( Calendar.getInstance().getTime() );
+				instance.setStatus( InstanceStatus.WAITING );
+				cluster.addInstance(instance);
+				resposta = fillInstanceID ( instance );
+				instance.setContent( resposta );
+
+				byte[] respCompressed = ZipUtil.compress( resposta );
+				String respHex = ZipUtil.toHexString( respCompressed );
+				instancePack.add( respHex );
+				
+				InstanceDeliveryControl.getInstance().addUnit(instance, macAddress);
+				logger.debug( " > instance "+ instance.getSerial() + " compressed and control tags replaced." );
 			} 
 		}
 		if ( instancePack.size() > 0 ) {
@@ -279,14 +291,15 @@ public class ClustersManager {
 		}
 	}
 	
-	public  String getTask(String macAddress, int packageSize) {
-		logger.debug("node " + macAddress + " requesting task");
+	public  String getTask(String macAddress, int packageSize, String nodeType) {
+		logger.debug("node " + macAddress + " ("+nodeType+") requesting task");
 		String resposta = "";
 		Cluster cluster = cm.getCluster(macAddress);
 		if ( (cluster != null)  ) {
 			// if it is allowed to receive new tasks...
 			if ( !cluster.signaled() ) {
-				resposta = getNextInstance( cluster, packageSize );
+				resposta = getNextInstance( cluster, packageSize, nodeType );
+				logger.debug("task package sent to node " + macAddress + " ("+nodeType+")");
 			} else {
 				logger.warn("node " + macAddress + " not allowed to run tasks for now");
 				// if not...

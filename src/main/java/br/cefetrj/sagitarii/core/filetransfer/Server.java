@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.ftpserver.DataConnectionConfigurationFactory;
 import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.FtpServerFactory;
@@ -51,13 +52,11 @@ public class Server {
 
 	
 	public void closeTransaction( String sessionSerial ) throws Exception {
-		logger.error("will not delete session folder. REMEBER TO MOVE FILES TO STORAGE.");
-		/*
+		logger.debug("will delete session folder " + sessionSerial + "....");
 		String directory = PathFinder.getInstance().getPath() + "/cache/" + sessionSerial;
-		File cache = new File( directory );
-		FileUtils.deleteDirectory( cache );
-		*/
+		FileUtils.deleteDirectory( new File( directory ) );
 		MetricController.getInstance().hit( "Session Close", MetricType.FILE );
+		logger.debug("done deleting session folder " + sessionSerial );
 	}	
 
 	private boolean checkSession( String sessionSerial ) throws Exception {

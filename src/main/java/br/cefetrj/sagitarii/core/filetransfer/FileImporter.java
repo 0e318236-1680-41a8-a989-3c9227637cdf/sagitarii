@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -61,6 +62,11 @@ public class FileImporter extends Thread {
 	private String activity;
 	private String fragment;
 	private long importedFiles = 0;
+	private String lastImportedFile = "";
+	
+	public String getLastImportedFile() {
+		return lastImportedFile;
+	}
 	
 	public long getImportedFiles() {
 		return importedFiles;
@@ -196,7 +202,6 @@ public class FileImporter extends Thread {
 		logger.debug( log + " : Experiment " + experimentSerial + " Activity " + activity.getSerial() + " Instance " + instance.getSerial()  );
 		int response = -1;
 		try {
-			//String fullFile = Sagitarii.getInstance().getTracker().getStorageFolder() + "/" + targetFilesFolder + "/outbox/" + fileName;
 			String fullFile = sessionContext + "/" + fileName;
 			File sourceFile = new File( fullFile + ".gz" );
 			if ( !sourceFile.exists() ) {
@@ -207,16 +212,24 @@ public class FileImporter extends Thread {
 			Experiment experiment = ex.getExperiment( experimentSerial );
 			FileService fs = new FileService();
 
+			String storageTargetPath = PathFinder.getInstance().getPath() + "/storage/" ; 
+
 			br.cefetrj.sagitarii.persistence.entity.File file = new br.cefetrj.sagitarii.persistence.entity.File();
 			file.setExperiment(experiment);
 			file.setFileName( fileName );
 			file.setActivity( activity );
 			file.setInstance( instance );
-			file.setFilePath( sessionContext + "/" );
+			file.setFilePath( storageTargetPath );
 			
 			fs.insertFile(file);
 			
 			response = file.getIdFile();
+
+			File fil = new File( storageTargetPath + response + "/" );
+			fil.mkdirs();
+			
+			File targetFile = new File( storageTargetPath + "/" + response + "/" + fileName + ".gz" );
+			Files.copy(sourceFile.toPath(), targetFile.toPath());
 			
 			importedFiles++;
 			
@@ -352,6 +365,7 @@ public class FileImporter extends Thread {
 				// If so, store the file into database, get its ID and change its name to ID in CSV data.
 				String valVal = csvRecord.get(x).replace("'", "`");
 				if ( isFile(valVal) ) {
+					lastImportedFile = valVal;
 					if ( fileIds.get(valVal) == null ) {
 						// Its a new file to store. Send to database and store it's ID to a list
 						int fileId = importFile( csvDataFile.getExperimentSerial(), valVal, activity, instance );
@@ -459,83 +473,7 @@ public class FileImporter extends Thread {
 				logger.debug("will process csv from " + receivedFile.getFileName() );
 				csvDataFile = receivedFile;
 			}
-
-			
-			/*
-			if ( receivedFile.getType().equals("FILE_TYPE_TORRENT") ) {
-				// Take the TORRENT file
-				// Will block here until all files are downloaded.
-				logger.debug("will add torrent " + receivedFile.getFileName() + " to tracker." );
-				
-				receivedTorrentFileFullPath = sessionContext + "/" + receivedFile.getFileName();
-				String decompressedTorrentFile = Sagitarii.getInstance().getTracker().getStorageFolder()+ "/"+ receivedFile.getFileName();
-				
-				File testTorrentFile = new File( receivedTorrentFileFullPath + ".gz" );
-
-				if ( !testTorrentFile.exists() ) {
-					logger.error("torrent file not found: " + sessionContext + "/" + receivedFile.getFileName() );
-				} else {
-					decompress( receivedTorrentFileFullPath, decompressedTorrentFile );
-
-					SynchFolderServer sfs = Sagitarii.getInstance().getTracker();
-					try {
-						
-						logger.debug("Will add torrent to tracker");
-						sfs.addToTracker( decompressedTorrentFile );
-
-						torrentDownloader = sfs.downloadFile( decompressedTorrentFile );
-						targetFilesFolder = torrentDownloader.getTorrent().getCreatedBy();
-						logger.debug("Will wait for torrent " + torrentDownloader.getTorrent().getHexInfoHash() + " to download to folder : ");
-						logger.debug( " > " + targetFilesFolder );
-
-						// will block until download is done
-						int tick = 0;
-						while ( (torrentDownloader != null) && (torrentDownloader.getState() != ClientState.DONE) ) {
-
-							if ( torrentDownloader.getState() == ClientState.SEEDING ) {
-								break;
-							}
-							
-							try {
-								tick++;
-								
-								double completion = torrentDownloader.getTorrent().getCompletion();
-								
-								if ( (tick > 20) && ( completion == 0 ) && (torrentDownloader.getState() == ClientState.SHARING ) ) {
-									logger.error("Torrent is not downloading: " + torrentDownloader.getTorrent().getCreatedBy() );
-									tick = 0;
-									torrentDownloader.stop();
-									torrentDownloader = sfs.downloadFile( decompressedTorrentFile );
-									continue;
-								}
-
-								logger.debug(" > " + torrentDownloader.getTorrent().getCreatedBy() + ": " + torrentDownloader.getState() + " " + completion + "% (" + tick + ") " );
-								
-								Thread.sleep(2000);
-							} catch ( Exception e ) { }
-							
-						}
-						
-						// downloaded... go ahead
-						logger.debug("Done downloading torrent " + torrentDownloader.getTorrent().getHexInfoHash() + " to folder : ");
-						logger.debug( " > " + targetFilesFolder );
-						torrentDownloader.stop();
-						
-					} catch ( Exception e ) {
-						logger.error( "error while creating torrent downloader: " + e.getMessage() );
-					}
-					
-					logger.debug("Torrent folder synchronized.");
-					// Once the torrent was downloaded, will not need the .torrent file anymore:
-					sfs.removeFromTracker( decompressedTorrentFile );
-					File toDeleteTheTorrentFile = new File( decompressedTorrentFile );
-					toDeleteTheTorrentFile.delete();
-				}
-			}
-			*/
-			
-			
-		} // End received files loop
+		} 
 		
 		
 		// If found, open it, store files to database and import CSV data

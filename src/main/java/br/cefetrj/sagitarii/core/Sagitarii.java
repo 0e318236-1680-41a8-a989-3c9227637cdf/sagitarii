@@ -306,6 +306,7 @@ public class Sagitarii {
 
 	
 	public synchronized void returnToBuffer( Instance instance ) {
+		instance.triedAgain();
 		instanceBuffer.returnToBuffer(instance);
 	}
 	
