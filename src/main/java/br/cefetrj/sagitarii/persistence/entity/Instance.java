@@ -79,6 +79,9 @@ public class Instance implements Serializable {
 	@Column(name="qtd_activations")
 	private Integer qtdActivations;
 
+	@Column(name="times_tried")
+	private Integer timesTried = 1;
+
 	@Column(length=50)
 	@Enumerated(EnumType.STRING)
 	private InstanceStatus status;	
@@ -285,6 +288,14 @@ public class Instance implements Serializable {
 	
 	public Long getRealStartTimeMillis() {
 		return realStartTimeMillis;
+	}
+	
+	public Integer getTimesTried() {
+		return timesTried;
+	}
+	
+	public void triedAgain() {
+		this.timesTried++;
 	}
 	
 }
