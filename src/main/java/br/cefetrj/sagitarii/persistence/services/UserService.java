@@ -95,12 +95,13 @@ public class UserService {
 		return expRet ;
 	}	
 
-	public User requestAccess( String fullName, String username, String password, String mailAddress ) throws InsertException {
+	public User requestAccess( String fullName, String username, String password, String mailAddress, String details ) throws InsertException {
 		User user = new User();
 		user.setFullName( fullName );
 		user.setLoginName( username );
 		user.setPassword( password );
 		user.setUserMail( mailAddress );
+		user.setDetails(details);
 		
 		try {
 			String sha1Password = convertPassword( user.getPassword().getBytes() );

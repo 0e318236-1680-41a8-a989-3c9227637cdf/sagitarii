@@ -19,6 +19,9 @@
 										<td>Mail Address</td><td><input autocomplete="off" id="mailAddress" type="text" name="mailAddress"></td>
 									</tr>
 									<tr>
+										<td>Details</td><td><input autocomplete="off" id="details" type="text" name="details"></td>
+									</tr>
+									<tr>
 										<td>Password</td><td><input autocomplete="off" id="password" type="password" name="password"></td>
 									</tr>
 									<tr>

@@ -17,14 +17,14 @@ public class DoRequestAccessAction extends BasicActionClass {
 	private String password;
 	private String fullName;
 	private String mailAddress;
-	
+	private String details;
 	
 	public String execute () {
 		
 		try {
 			
 			UserService es = new UserService();
-			es.requestAccess(fullName, username, password, mailAddress );
+			es.requestAccess(fullName, username, password, mailAddress, details );
 			setMessageText("Request sent");
 			
 		} catch ( DatabaseConnectException e ) {
@@ -51,6 +51,10 @@ public class DoRequestAccessAction extends BasicActionClass {
 
 	public void setMailAddress(String mailAddress) {
 		this.mailAddress = mailAddress;
+	}
+	
+	public void setDetails(String details) {
+		this.details = details;
 	}
 
 }

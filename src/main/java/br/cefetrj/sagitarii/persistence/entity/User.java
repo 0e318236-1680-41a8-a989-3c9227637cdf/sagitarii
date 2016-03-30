@@ -27,6 +27,9 @@ public class User {
 	@Column(length=250)
 	private String fullName;
 
+	@Column(length=250)
+	private String details;
+
 	@Column(length=100)
 	private String userMail;
 	
@@ -88,5 +91,12 @@ public class User {
 		this.type = type;
 	}
 
+	public String getDetails() {
+		return details;
+	}
+	
+	public void setDetails(String details) {
+		this.details = details;
+	}
 	
 }

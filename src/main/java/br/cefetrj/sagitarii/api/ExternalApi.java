@@ -151,10 +151,11 @@ public class ExternalApi {
 			String fullName = (String)map.get("fullName");
 			String username = (String)map.get("username");
 			String password = (String)map.get("password");
+			String details = (String)map.get("details");
 			String mailAddress = (String)map.get("mailAddress");
 			if( !username.equals("") && !mailAddress.equals("") && !password.equals("") ) {
 				UserService es = new UserService();
-				User user = es.requestAccess(fullName, username, password, mailAddress);
+				User user = es.requestAccess(fullName, username, password, mailAddress, details);
 				return user.getPassword();
 			}
 		} catch ( Exception e ) {
@@ -305,6 +306,7 @@ public class ExternalApi {
 
 	private String getToken( Map<String, Object> map ) {
 		String token = "";
+		StringBuilder data = new StringBuilder();
 		try {
 			String userName = (String)map.get("user");
 			String password = (String)map.get("password");
@@ -312,12 +314,22 @@ public class ExternalApi {
 			UserService es = new UserService();
 			User user = es.login(userName, password);
 			token = UUID.randomUUID().toString().replaceAll("-", "");
+			
+			data.append("{");
+			data.append( generateJsonPair("idUser", String.valueOf( user.getIdUser() ) ) + "," );
+			data.append( generateJsonPair("fullName", user.getFullName() ) + "," );
+			data.append( generateJsonPair("userMail", user.getUserMail() ) + "," );
+			data.append( generateJsonPair("loginName", user.getLoginName() ) + "," );
+			data.append( generateJsonPair("details", user.getDetails() ) + "," );
+			data.append( generateJsonPair("token", token ) + "}" );
+			
+			
 			ActionContext.getContext().getSession().put( token, user );
 		} catch ( Exception e ) {
 			logger.error( e.getMessage() );
 			return formatMessage( e.getMessage() );
 		}
-		return token;
+		return data.toString();
 	}
 	
 	private User getUserByToken( String token ) {
