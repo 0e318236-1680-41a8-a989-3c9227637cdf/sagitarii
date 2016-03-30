@@ -10,6 +10,9 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.gson.GsonBuilder;
+import com.opensymphony.xwork2.ActionContext;
+
 import br.cefetrj.sagitarii.core.DataReceiver;
 import br.cefetrj.sagitarii.core.Sagitarii;
 import br.cefetrj.sagitarii.core.TableAttribute;
@@ -28,9 +31,6 @@ import br.cefetrj.sagitarii.persistence.services.FileService;
 import br.cefetrj.sagitarii.persistence.services.RelationService;
 import br.cefetrj.sagitarii.persistence.services.UserService;
 import br.cefetrj.sagitarii.persistence.services.WorkflowService;
-
-import com.google.gson.GsonBuilder;
-import com.opensymphony.xwork2.ActionContext;
 
 public class ExternalApi {
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
@@ -322,7 +322,6 @@ public class ExternalApi {
 			data.append( generateJsonPair("loginName", user.getLoginName() ) + "," );
 			data.append( generateJsonPair("details", user.getDetails() ) + "," );
 			data.append( generateJsonPair("token", token ) + "}" );
-			
 			
 			ActionContext.getContext().getSession().put( token, user );
 		} catch ( Exception e ) {

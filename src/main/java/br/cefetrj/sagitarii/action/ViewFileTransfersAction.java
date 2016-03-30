@@ -23,9 +23,9 @@ public class ViewFileTransfersAction extends BasicActionClass {
 	
 	public String execute () {
 		
+		sessions = new ArrayList<TransferSession>();
 		try {
 			sessions = FileReceiverManager.getInstance().getTransferSessions();
-			sessions = new ArrayList<TransferSession>();
 		} catch( Exception e) {
 			e.printStackTrace();
 		}
