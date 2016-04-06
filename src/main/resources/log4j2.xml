@@ -54,11 +54,11 @@
 			<appender-ref ref="File"/> 
 		</Logger>
 
-		<Logger name="br.cefetrj.sagitarii.core.filetransfer.FileReceiverManager" level="error" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.core.filetransfer.FileReceiverManager" level="debug" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 		
-		<Logger name="br.cefetrj.sagitarii.core.filetransfer.FileImporter" level="error" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.core.filetransfer.FileImporter" level="debug" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 	
@@ -128,11 +128,11 @@
 			<appender-ref ref="File"/> 
 		</Logger>
 
-		<Logger name="br.cefetrj.sagitarii.core.ClustersManager" level="debug" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.core.ClustersManager" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 		
-		<Logger name="br.cefetrj.sagitarii.core.Cluster" level="debug" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.core.Cluster" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 

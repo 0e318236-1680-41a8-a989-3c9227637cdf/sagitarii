@@ -139,7 +139,7 @@ public class Sagitarii {
 					fp.generate();
 					int pips = fp.getInstances().size();
 					if ( pips == 0) {
-						logger.error("experiment " + exp.getTagExec() + " generate empty instance list. Will finish it" );
+						logger.debug("experiment " + exp.getTagExec() + " generate empty instance list. Will finish it" );
 						haveReady = false;
 					} 
 				} catch (Exception e) {

@@ -68,6 +68,7 @@ public class ExperimentPerformance {
 				qtd = Long.valueOf( sQtd );
 			}
 		} catch ( Exception e ) {
+			e.printStackTrace();
 			logger.error( e.getMessage() );
 		}
 		logger.debug("done: " + qtd + "ms");
@@ -102,6 +103,7 @@ public class ExperimentPerformance {
 				coresWorking = Double.valueOf( sQtd );
 			}
 		} catch ( Exception e ) {
+			e.printStackTrace();
 			logger.error( e.getMessage() );
 		}
 		logger.debug("done: " + coresWorking + " cores");
@@ -124,6 +126,7 @@ public class ExperimentPerformance {
 			try {
 				parallelEfficiency = speedUp / coresWorking;
 			} catch ( Exception e ) { 
+				e.printStackTrace();
 				logger.error( e.getMessage() );
 			}
 		}
@@ -152,6 +155,7 @@ public class ExperimentPerformance {
 				qtd = Integer.valueOf( sQtd );
 			}
 		} catch ( Exception e ) {
+			e.printStackTrace();
 			logger.error( e.getMessage() );
 		}
 		logger.debug("done: " + qtd + "ms");

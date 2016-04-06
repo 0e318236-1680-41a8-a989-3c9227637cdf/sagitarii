@@ -1,6 +1,7 @@
 package br.cefetrj.sagitarii.persistence.repository;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import br.cefetrj.sagitarii.persistence.entity.File;
@@ -42,9 +43,15 @@ public class FileRepository extends BasicRepository {
 
 		Set<File> files = null;
 		try {
-			files = new HashSet<File>( fm.getList("select f.* from files f "
+			List<File> fils = fm.getList("select f.* from files f "
 					+ "join activities a on f.id_activity = a.id_activity where f.id_experiment = " + idExperiment + 
-					" and a.tag = '"+ activityTag +"' offset " +	rangeStart + " limit " + rangeEnd ) );
+					" and a.tag = '"+ activityTag +"' offset " +	rangeStart + " limit " + rangeEnd );
+			
+			files = new HashSet<File>();
+			if ( fils != null ) {
+				files.addAll( fils );
+			}
+			
 		} catch ( Exception e ) {
 			closeSession();
 			throw e;

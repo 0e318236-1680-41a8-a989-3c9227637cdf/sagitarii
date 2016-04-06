@@ -214,10 +214,10 @@ public class ClustersManager {
 		logger.debug("Sagitarii needs to know about instance " + instanceSerial + " running on node " + macAddress );
 		Cluster cluster = cm.getCluster(macAddress);
 		if ( cluster != null ) {
-			logger.error("node " + macAddress + " found as connected. asking...");
+			logger.debug("node " + macAddress + " found as connected. asking...");
 			cluster.inform( instanceSerial, fromUser );
 		} else {
-			logger.error("cluster " + macAddress + " not connected.");
+			logger.debug("cluster " + macAddress + " not connected.");
 		}
 		logger.debug("inform check done.");
 	}
