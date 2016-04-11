@@ -142,28 +142,42 @@ public class ClustersManager {
 	
 	public void refuseTask( String instanceId, String macAddress ) {
 		logger.debug( "node " + macAddress + " refused task in instance " + instanceId );
-		Cluster clu = cm.getCluster(macAddress);
+		Cluster clu = getCluster(macAddress);
 		clu.setMessage(LogType.SYSTEM, "Cannot run task in instance " + instanceId, "" );
 		clu.resubmitInstanceToBuffer( instanceId );
 	}
 
+	public synchronized Cluster tryToFindInstance( String instanceSerial ) {
+		for ( Cluster cl : getClusterList() ) {
+			if ( cl.isRunning(instanceSerial) ) return cl;
+		}
+		return null;
+	}
 	
 	public void confirmReceiveData( ReceivedData rd ) throws Exception {
-		Cluster cluster = cm.getCluster( rd.getMacAddress() );
-		if ( cluster != null ) {
-			logger.debug( "receiving instance "+ rd.getInstance().getSerial() +" data from cluster " + rd.getMacAddress() );
+		String instanceSerial = rd.getInstance().getSerial();
+		logger.debug( "receiving instance "+ instanceSerial +" close command from node " + rd.getMacAddress() );
+		
+		Cluster cl = tryToFindInstance( instanceSerial ); //getCluster( rd.getMacAddress() );
+		
+		if ( cl != null ) {
+			if ( !rd.getMacAddress().equals( cl.getmacAddress() ) ) {
+				logger.debug("Wrong running node. Must be " + rd.getMacAddress() + " but find in " + cl.getmacAddress() );
+			}
 			try {
-				cluster.confirmReceiveData( rd );
+				cl.confirmReceiveData( rd );
 			} catch ( Exception e ) {
 				logger.error("activity " + rd.getInstance().getSerial() + ": " + e.getMessage() );
-				cluster.setMessage( LogType.SYSTEM, e.getMessage(), rd.getInstance().getSerial() );
+				cl.setMessage( LogType.SYSTEM, e.getMessage(), rd.getInstance().getSerial() );
 				throw e;
 			}
+		} else {
+			logger.error("Cannot find who is running instance " + instanceSerial + ". Must be node " + rd.getMacAddress() );
 		}
 	}
 	
 	public void finishInstance( ReceivedData rd ) {
-		Cluster cluster = cm.getCluster( rd.getMacAddress() );
+		Cluster cluster = getCluster( rd.getMacAddress() );
 		if ( cluster != null ) {
 			logger.debug( "finishing instance "+ rd.getInstance().getSerial() +" from cluster " + rd.getMacAddress() );
 			try {
@@ -177,7 +191,7 @@ public class ClustersManager {
 	}
 
 	public void reloadWrappers() {
-		for ( Cluster clu : cm.getClusterList() ) {
+		for ( Cluster clu : getClusterList() ) {
 			if ( !clu.isMainCluster() ) {
 				clu.reloadWrappers();
 			}
@@ -188,7 +202,7 @@ public class ClustersManager {
 		if ( Sagitarii.getInstance().getRunningExperiments().size() > 0 ) {
 			throw new Exception("Cannot clean nodes workspaces when experiments are running.");
 		} else { 
-			for ( Cluster clu : cm.getClusterList() ) {
+			for ( Cluster clu : getClusterList() ) {
 				if ( !clu.isMainCluster() ) {
 					clu.cleanWorkspace();
 				}
@@ -197,14 +211,14 @@ public class ClustersManager {
 	}
 	
 	public void quit(String macAddress) {
-		Cluster cluster = cm.getCluster(macAddress);
+		Cluster cluster = getCluster(macAddress);
 		if ( !cluster.isMainCluster() ) {
 			cluster.quit();
 		}
 	}
 
 	public void restart(String macAddress) {
-		Cluster cluster = cm.getCluster(macAddress);
+		Cluster cluster = getCluster(macAddress);
 		if ( !cluster.isMainCluster() ) {
 			cluster.restart();
 		}
@@ -212,7 +226,7 @@ public class ClustersManager {
 
 	public void inform(String macAddress, String instanceSerial, boolean fromUser ) {
 		logger.debug("Sagitarii needs to know about instance " + instanceSerial + " running on node " + macAddress );
-		Cluster cluster = cm.getCluster(macAddress);
+		Cluster cluster = getCluster(macAddress);
 		if ( cluster != null ) {
 			logger.debug("node " + macAddress + " found as connected. asking...");
 			cluster.inform( instanceSerial, fromUser );
@@ -224,7 +238,7 @@ public class ClustersManager {
 	
 	public void informReport( String macAddress, String status, String instanceSerial ) {
 		logger.debug("Teapot node " + macAddress + " informs instance " + instanceSerial + " status as " + status );
-		Cluster cluster = cm.getCluster(macAddress);
+		Cluster cluster = getCluster(macAddress);
 		if ( cluster != null ) {
 			cluster.informReport( instanceSerial, status );
 		} else {
@@ -256,7 +270,7 @@ public class ClustersManager {
 		} catch ( Exception e ) { }
 		
 		List<String> instancePack = new ArrayList<String>();
-		logger.debug( "node " + macAddress + " ("+nodeType+") needs a package size of " + packageSize + " instance(s).");
+		//logger.debug( "node " + macAddress + " ("+nodeType+") needs a package size of " + packageSize + " instance(s).");
 		for ( int x=0; x < packageSize; x++) {
 			
 			Instance instance = null;
@@ -292,14 +306,14 @@ public class ClustersManager {
 	}
 	
 	public  String getTask(String macAddress, int packageSize, String nodeType) {
-		logger.debug("node " + macAddress + " ("+nodeType+") requesting task");
+		//logger.debug("node " + macAddress + " ("+nodeType+") requesting task");
 		String resposta = "";
-		Cluster cluster = cm.getCluster(macAddress);
+		Cluster cluster = getCluster(macAddress);
 		if ( (cluster != null)  ) {
 			// if it is allowed to receive new tasks...
 			if ( !cluster.signaled() ) {
 				resposta = getNextInstance( cluster, packageSize, nodeType );
-				logger.debug("task package sent to node " + macAddress + " ("+nodeType+")");
+				//logger.debug("task package sent to node " + macAddress + " ("+nodeType+")");
 			} else {
 				logger.warn("node " + macAddress + " not allowed to run tasks for now");
 				// if not...
@@ -326,7 +340,7 @@ public class ClustersManager {
 			
 		}
 		if ( resposta.length() == 0 ) {
-			logger.warn("empty instance sent to node " + macAddress + ". System idle.");
+			//logger.warn("empty instance sent to node " + macAddress + ". System idle.");
 		} else {
 			logger.debug("task sent to node " + macAddress );
 		}
@@ -380,7 +394,7 @@ public class ClustersManager {
 			int availableProcessors, int maxAllowedTasks, long freeMemory, long totalMemory) {
 		Cluster retorno = null;
 		
-		Cluster clu = cm.getCluster(macAddress);
+		Cluster clu = getCluster(macAddress);
 		if ( clu != null ) {
 			clu.setMachineName( machineName );
 			clu.setIpAddress( ipAddress );

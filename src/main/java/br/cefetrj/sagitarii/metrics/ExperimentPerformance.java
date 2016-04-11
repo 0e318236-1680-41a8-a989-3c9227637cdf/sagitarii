@@ -43,7 +43,7 @@ public class ExperimentPerformance {
 			logger.error( e.getMessage() );
 		}
 		if ( speedUp.isNaN() ) {
-			logger.error("speedup is NaN");
+			//logger.error("speedup is NaN");
 			speedUp = 0.0;
 		} else {
 			logger.debug("done: speedup is " + speedUp);
@@ -65,7 +65,7 @@ public class ExperimentPerformance {
 			if ( res.size() > 0 ) {
 				UserTableEntity ute = res.get(0);
 				String sQtd = ute.getData("soma");
-				qtd = Long.valueOf( sQtd );
+				try { qtd = Long.valueOf( sQtd ); } catch ( Exception e ) { qtd = 0; }
 			}
 		} catch ( Exception e ) {
 			e.printStackTrace();
@@ -100,7 +100,7 @@ public class ExperimentPerformance {
 			if ( res.size() > 0 ) {
 				UserTableEntity ute = res.get(0);
 				String sQtd = ute.getData("cores");
-				coresWorking = Double.valueOf( sQtd );
+				try { coresWorking = Double.valueOf( sQtd ); } catch ( Exception e ) { coresWorking = 0; }
 			}
 		} catch ( Exception e ) {
 			e.printStackTrace();
@@ -152,7 +152,7 @@ public class ExperimentPerformance {
 			if ( res.size() > 0 ) {
 				UserTableEntity ute = res.get(0);
 				String sQtd = ute.getData("sum");
-				qtd = Integer.valueOf( sQtd );
+				try { qtd = Integer.valueOf( sQtd ); } catch ( Exception e) { qtd = 0; }
 			}
 		} catch ( Exception e ) {
 			e.printStackTrace();

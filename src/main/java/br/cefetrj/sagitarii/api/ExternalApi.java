@@ -187,7 +187,11 @@ public class ExternalApi {
 		Set<Experiment> experiments = new HashSet<Experiment>();
 		try {
 			ExperimentService es = new ExperimentService();
-			experiments = es.getList( user );
+			try {
+				experiments = es.getList( user );
+			} catch ( Exception e ) {
+				// 
+			}
 			
 			StringBuilder data = new StringBuilder();
 			String dataPrefix = "";
@@ -222,6 +226,7 @@ public class ExternalApi {
 			return formatMessage( sb.toString() );
 			
 		} catch ( Exception e ) {
+			e.printStackTrace();
 			logger.error( e.getMessage() );
 			return formatMessage( e.getMessage() );
 		}
@@ -360,51 +365,58 @@ public class ExternalApi {
 		try {
 			Sagitarii sagi = Sagitarii.getInstance();
 			List<Experiment> runningExperiments = sagi.getRunningExperiments();
-			
+			String experimentSerial = (String)map.get("experimentSerial");
+					
 			StringBuilder data = new StringBuilder();
 			String dataPrefix = "";
 			data.append("[");
 			for ( Experiment experiment : runningExperiments ) {
-				
-				
-				StringBuilder fragment = new StringBuilder();
-				String fragmentPrefix = "";
-				fragment.append("[");
-				for ( Fragment frag : experiment.getFragments() ) {
-					fragment.append( fragmentPrefix + "{");
-					fragment.append( generateJsonPair( "serial" , frag.getSerial() ) + "," ); 
-					fragment.append( generateJsonPair( "status" , frag.getStatus().toString() ) + "," );
-					fragment.append( generateJsonPair( "totalInstances" , String.valueOf( frag.getTotalInstances() ) ) + "," );
-					fragment.append( generateJsonPair( "remainingInstances" , String.valueOf( frag.getRemainingInstances() ) ) + "," );
-					String activities = "";
-					for ( Activity act : frag.getActivities() ) {
-						activities = activities + act.getTag() + " ";
+				if ( experimentSerial.equals( experiment.getTagExec() ) ) {
+					StringBuilder fragment = new StringBuilder();
+					String fragmentPrefix = "";
+					fragment.append("[");
+					for ( Fragment frag : experiment.getFragments() ) {
+						fragment.append( fragmentPrefix + "{");
+						fragment.append( generateJsonPair( "serial" , frag.getSerial() ) + "," ); 
+						fragment.append( generateJsonPair( "status" , frag.getStatus().toString() ) + "," );
+						fragment.append( generateJsonPair( "totalInstances" , String.valueOf( frag.getTotalInstances() ) ) + "," );
+						fragment.append( generateJsonPair( "remainingInstances" , String.valueOf( frag.getRemainingInstances() ) ) + "," );
+						String activities = "";
+						for ( Activity act : frag.getActivities() ) {
+							activities = activities + act.getTag() + " ";
+						}
+						fragment.append( generateJsonPair( "activities", activities.trim() ) ); 
+						fragmentPrefix = ",";
+						fragment.append("}");
 					}
-					fragment.append( generateJsonPair( "activities", activities.trim() ) ); 
-					fragmentPrefix = ",";
-					fragment.append("}");
+					fragment.append("]");				
+					
+					
+					List<FileImporter> fil = FileReceiverManager.getInstance().getImportersByExperiment( experiment.getTagExec() );
+					
+					StringBuilder importer = new StringBuilder();
+					String importerPrefix = "";
+					importer.append("[");
+					for ( FileImporter fi : fil ) {
+						String importerLog = fi.getLog();
+						String importerStatus = fi.getImportedFiles() + " of " + fi.getTotalFiles();
+						
+						importer.append( importerPrefix + "{");
+						importer.append( generateJsonPair( "log" , importerLog ) + "," ); 
+						importer.append( generateJsonPair( "status" , importerStatus ) );
+						importerPrefix = ",";
+						importer.append("}");
+					}
+					importer.append("]");
+					
+					data.append( dataPrefix + "{");
+					data.append( generateJsonPair( "tagExec" , experiment.getTagExec() ) + "," ); 
+					data.append( addArray( "importers" , importer.toString() ) + "," ); 
+					data.append( addArray( "fragments" , fragment.toString() ) + "," );
+					data.append( generateJsonPair( "owner", experiment.getOwner().getLoginName() ) ); 
+					dataPrefix = ",";
+					data.append("}");
 				}
-				fragment.append("]");				
-				
-				int importers = FileReceiverManager.getInstance().getImportersByExperiment( experiment.getTagExec() ).size();
-				
-				String importerLog = "";
-				String importerStatus = "";
-				if( importers > 0 ) {
-					List<FileImporter> fil = FileReceiverManager.getInstance().getImportersByExperiment( experiment.getTagExec() ); 
-					FileImporter fi = fil.get(0); 
-					importerLog = fi.getLog();
-					importerStatus = fi.getImportedFiles() + " of " + fi.getTotalFiles();
-				}
-				
-				data.append( dataPrefix + "{");
-				data.append( generateJsonPair( "tagExec" , experiment.getTagExec() ) + "," ); 
-				data.append( generateJsonPair( "importer" , importerLog ) + "," ); 
-				data.append( generateJsonPair( "importerStatus" , importerStatus ) + "," ); 
-				data.append( addArray( "fragments" , fragment.toString() ) + "," );
-				data.append( generateJsonPair( "owner", experiment.getOwner().getLoginName() ) ); 
-				dataPrefix = ",";
-				data.append("}");
 			}
 			data.append("]");
 			

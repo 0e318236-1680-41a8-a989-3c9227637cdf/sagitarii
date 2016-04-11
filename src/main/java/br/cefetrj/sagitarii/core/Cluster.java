@@ -42,6 +42,9 @@ public class Cluster {
     private String lastError = "";
     private String lostInstance = "";
 	private List<Instance> runningInstances;
+	private List<NodeTask> tasks;
+	private List<String> log = new ArrayList<String>();
+	private List<LogEntry> logEntries = new ArrayList<LogEntry>();
 	private boolean restartSignal = false;
 	private boolean quitSignal = false;
 	private boolean cleanWorkspaceSignal = false;
@@ -52,10 +55,7 @@ public class Cluster {
 	private long freeDiskSpace;
 	private long totalMemory;
 	private long totalDiskSpace;
-	private List<NodeTask> tasks;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
-	private List<String> log = new ArrayList<String>();
-	private List<LogEntry> logEntries = new ArrayList<LogEntry>();
 	private int counter = 0;
 	private NodeLoadMonitorEntity metrics;
 	private NodeVMMonitorEntity metricsVmRam;
@@ -312,11 +312,11 @@ public class Cluster {
 	
 	
 	public void setInstanceAsDone( String instanceSerial, Activity actvt, String startTimeMillis, String finishTimeMillis ) {
-		debug("checking if instance " + instanceSerial + " (" + actvt.getTag() + ") is done");
+		debug( macAddress + ": checking if instance " + instanceSerial + " (" + actvt.getTag() + ") is done");
 		boolean found = false;
-		for( Instance instance : runningInstances ) {
+		for( Instance instance : getRunningInstances() ) {
 			if ( instance.getSerial().equals( instanceSerial ) ) {
-				logger.debug("instance " + instanceSerial + " found in node " + macAddress + " execution list. try to finish.");
+				logger.debug( macAddress + ": instance " + instanceSerial + " found in node " + macAddress + " execution list. try to finish.");
 				found = true;
 				instance.decreaseQtdActivations();
 				String finished = instance.getFinishedActivities();
@@ -355,16 +355,17 @@ public class Cluster {
 		setMessage( LogType.SYSTEM, s );
 	}
 	
-	public List<Instance> getRunningInstances() {
+	public synchronized List<Instance> getRunningInstances() {
 		return new ArrayList<Instance>( runningInstances );
 	}
 	
-	public void addInstance( Instance pipe ) {
+	public synchronized void addInstance( Instance pipe ) {
+		logger.debug( macAddress + ": Adding Instance " + pipe.getSerial() + " to the running list");
 		runningInstances.add( pipe ); 
 	}
 
 	public void resubmitInstanceToBuffer( String instanceSerial ) {
-		logger.debug("Resubmit Instance " + instanceSerial + " to Sagitarii buffer..." );
+		logger.debug( macAddress + ": Resubmit Instance " + instanceSerial + " to Sagitarii buffer..." );
 		for ( Instance instance : getRunningInstances() ) {
 			if ( instance.getSerial().equalsIgnoreCase( instanceSerial ) ) {
 				instance.setStatus( InstanceStatus.PIPELINED );
@@ -375,7 +376,7 @@ public class Cluster {
 				return;
 			}
 		}
-		logger.debug("Instance " + instanceSerial + " is not in Node buffer.");
+		logger.debug( macAddress + ": Instance " + instanceSerial + " is not in Node buffer.");
 	}
 
 	public Cluster(ClusterType type, String javaVersion, String soFamily, String macAddress, String ipAddress, String machineName, Double cpuLoad, 
@@ -505,12 +506,22 @@ public class Cluster {
 		return null;
 	}
 
-	private synchronized boolean isRunning( String instanceSerial ) {
-		for ( Instance pipe : getRunningInstances() ) {
-			if ( ( pipe.getSerial().equals( instanceSerial ) ) && ( pipe.getStatus() == InstanceStatus.RUNNING ) ) {
-				return true;
+	public synchronized boolean isRunning( String instanceSerial ) {
+		logger.debug(macAddress + ": is Instance " + instanceSerial + " running here?");
+		List<Instance> instances = getRunningInstances();
+		for ( Instance pipe : instances ) {
+			logger.debug("   > " + macAddress + ": " + pipe.getSerial() + " : " + pipe.getStatus() );
+			if ( pipe.getSerial().equals( instanceSerial ) ) {
+				if ( pipe.getStatus() == InstanceStatus.RUNNING ) {
+					logger.debug(macAddress + ": Instance " + instanceSerial + " IS running here.");
+					return true;
+				} else {
+					logger.debug(macAddress + ": Instance " + instanceSerial + " is here but status is " + pipe.getStatus() );
+					return false;
+				}
 			}
 		}
+		logger.debug( macAddress + ": Instance " + instanceSerial + " is NOT running here.");
 		return false;
 	}
 
