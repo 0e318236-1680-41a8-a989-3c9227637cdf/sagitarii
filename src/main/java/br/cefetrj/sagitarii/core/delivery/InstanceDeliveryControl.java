@@ -8,9 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import br.cefetrj.sagitarii.core.Cluster;
-import br.cefetrj.sagitarii.core.ClustersManager;
 import br.cefetrj.sagitarii.core.config.Configurator;
-import br.cefetrj.sagitarii.core.statistics.Accumulator;
 import br.cefetrj.sagitarii.core.statistics.AgeCalculator;
 import br.cefetrj.sagitarii.misc.DateLibrary;
 import br.cefetrj.sagitarii.persistence.entity.Instance;
@@ -36,10 +34,7 @@ public class InstanceDeliveryControl {
 		}
 	}
 
-	/**
-	 * Check if Sagitarii must ask the node for an instance that is take much more time
-	 * than the average
-	 */
+	/*
 	private boolean mustInform( Accumulator ac, DeliveryUnit unity ) {
 
 		// Below this limit all is normal
@@ -70,10 +65,6 @@ public class InstanceDeliveryControl {
 		}
 	}
 
-	
-	/**
-	 * Check if an instance that is taking many time as the average
-	 */
 	private boolean isDelayed( Accumulator ac, DeliveryUnit unity ) {
 		long m1 = unity.getAgeMillis();
 		long m2 = ac.getAverageMillis();
@@ -86,10 +77,6 @@ public class InstanceDeliveryControl {
 		}
 	}
 
-	/**
-	 * Check if an instance that is taking many time as we think is too much
-	 * For all first run is a time limit. After first run, the average time is taken. 
-	 */
 	private boolean isTakingTooMuchTime( DeliveryUnit unity ) {
 		try {
 			long m1 = unity.getAgeMillis();
@@ -105,7 +92,6 @@ public class InstanceDeliveryControl {
 			return false;
 		}
 	}
-	
 	
 	public void checkLostPackets() {
 		// For each Instance we have with nodes...
@@ -129,7 +115,6 @@ public class InstanceDeliveryControl {
 		}
 	}
 
-	
 	public void forceInformAllDelayed() {
 		for ( DeliveryUnit unity : getUnits() ) {
 			Accumulator ac = AgeCalculator.getInstance().getAccumulator( unity.getHash() );
@@ -149,6 +134,7 @@ public class InstanceDeliveryControl {
 			}
 		}
 	}
+	*/
 	
 	// The node is idle but have an instance registered in IDC to it ( probably lost ). Try to run the instance again.
 	public void claimInstance( Cluster cluster ) {

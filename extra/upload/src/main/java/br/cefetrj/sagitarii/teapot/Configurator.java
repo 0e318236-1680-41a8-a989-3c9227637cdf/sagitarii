@@ -44,6 +44,11 @@ public class Configurator {
 	private SystemProperties systemProperties;
 	private Logger logger = LogManager.getLogger( this.getClass().getName()  );
 	private String announceUrl;
+	private int maxUploadThreads;
+	
+	public int getMaxUploadThreads() {
+		return maxUploadThreads;
+	}
 	
 	public String getAnnounceUrl() {
 		return announceUrl;
@@ -125,7 +130,7 @@ public class Configurator {
 				storagePort = Integer.valueOf( getTagValue("storagePort", mpElement) );
 				fileSenderDelay = Integer.valueOf( getTagValue("fileSenderDelay", mpElement) );
 				useProxy = Integer.parseInt( getValue("proxy", "useProxy") );
-				announceUrl = getTagValue("announceURL", mpElement);
+				maxUploadThreads = Integer.valueOf( getTagValue("maxUploadThreads", mpElement) );
 				
 				if (useProxy == 1) {
 					proxyInfo = new ProxyInfo();

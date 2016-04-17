@@ -187,7 +187,7 @@ public class SystemProperties  {
 			ip = getFirstNonLoopbackAddress(true, false);
 			this.localIpAddress = ip.toString().replace("/", "");
 			
-			this.machineName = ip.getCanonicalHostName();
+			this.machineName = ip.getHostName();
 
 			NetworkInterface network = NetworkInterface.getByInetAddress(ip);
 			

@@ -1,6 +1,5 @@
 package br.cefetrj.sagitarii.core;
 
-import br.cefetrj.sagitarii.core.delivery.InstanceDeliveryControl;
 import br.cefetrj.sagitarii.metrics.MetricController;
 
 
@@ -16,7 +15,9 @@ public class MainHeartBeat implements Runnable {
     	try {
 	    	ClustersManager.getInstance().updateClustersStatus();
 	    	Sagitarii.getInstance().loadInputBuffer();
-	   		InstanceDeliveryControl.getInstance().checkLostPackets();
+	    	
+	   		// InstanceDeliveryControl.getInstance().checkLostPackets();
+	   		
 	   		ClustersManager.getInstance().saveMetrics();
 	   		MetricController.getInstance().saveMetrics();
     	} catch ( Exception e ) {

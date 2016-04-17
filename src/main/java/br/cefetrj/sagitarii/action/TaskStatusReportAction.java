@@ -9,8 +9,6 @@ import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 
-import br.cefetrj.sagitarii.core.ClustersManager;
-
 import com.opensymphony.xwork2.ActionContext;
 
 @Action(value="taskStatusReport", results= {  
@@ -26,7 +24,8 @@ public class TaskStatusReportAction extends BasicActionClass {
 	public String execute(){
 		String resposta = "";
 		
-		ClustersManager.getInstance().informReport(macAddress, status, instance);
+		//ClustersManager.getInstance().informReport(macAddress, status, instance);
+		setMessageText("This feature was disabled for now.");
 		
 		try { 
 			HttpServletResponse response = (HttpServletResponse)ActionContext.getContext().get(StrutsStatics.HTTP_RESPONSE);

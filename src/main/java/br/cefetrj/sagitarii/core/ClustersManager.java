@@ -224,6 +224,7 @@ public class ClustersManager {
 		}
 	}
 
+	/*
 	public void inform(String macAddress, String instanceSerial, boolean fromUser ) {
 		logger.debug("Sagitarii needs to know about instance " + instanceSerial + " running on node " + macAddress );
 		Cluster cluster = getCluster(macAddress);
@@ -245,7 +246,7 @@ public class ClustersManager {
 			logger.error("cluster " + macAddress + " not connected");
 		}
 	}
-
+	*/
 	
 	private String fillInstanceID( Instance instance ) {
 		String content = instance.getContent();
@@ -318,9 +319,13 @@ public class ClustersManager {
 				logger.warn("node " + macAddress + " not allowed to run tasks for now");
 				// if not...
 				if ( !cluster.isMainCluster() ) {
+					
+					/*
 					if ( cluster.isAskingForInstance() ) {
 						resposta = "INFORM#" + cluster.getLostInstance();
 					}
+					*/
+					
 					if ( cluster.isReloadWrappersSignal() ) {
 						resposta = "RELOAD_WRAPPERS";
 					}

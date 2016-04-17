@@ -80,11 +80,11 @@
 	<dependencies>
 	
 		<dependency>
-			<groupId>org.ttorrent</groupId>
-			<artifactId>ttorrent</artifactId>
-			<version>1.5</version>
-		</dependency>	
-
+			<groupId>org.nuiton.thirdparty</groupId>
+			<artifactId>JRI</artifactId>
+			<version>0.9-6</version>
+		</dependency>
+		
 		<dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
@@ -97,6 +97,12 @@
 			<version>1.1</version>
 		</dependency>	
 	
+			<dependency>
+			<groupId>commons-net</groupId>
+			<artifactId>commons-net</artifactId>
+			<version>3.3</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>

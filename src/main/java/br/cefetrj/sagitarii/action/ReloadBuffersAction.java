@@ -16,6 +16,8 @@ public class ReloadBuffersAction extends BasicActionClass {
 	
 	public String execute(){
 
+		setMessageText( "This feature was disabled for now.");
+		/*
 		try {
 			if( instance == null ) {
 				InstanceDeliveryControl.getInstance().forceInformAllDelayed();
@@ -29,6 +31,7 @@ public class ReloadBuffersAction extends BasicActionClass {
 			setMessageText( e.getMessage() );
 		} 
 			
+		*/
 		return "ok";
 	}
 

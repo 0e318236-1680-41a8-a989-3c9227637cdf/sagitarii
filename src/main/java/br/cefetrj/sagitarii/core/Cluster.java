@@ -49,7 +49,10 @@ public class Cluster {
 	private boolean quitSignal = false;
 	private boolean cleanWorkspaceSignal = false;
 	private boolean reloadWrappersSignal = false;
-	private boolean askingForInstance = false;
+	
+	// private boolean askingForInstance = false;
+	// private int informRepeatCount = 0;
+	
 	private boolean mainCluster = false;
 	private long freeMemory;
 	private long freeDiskSpace;
@@ -61,15 +64,18 @@ public class Cluster {
 	private NodeVMMonitorEntity metricsVmRam;
 	private double memoryPercent;
 	private String timeWhenGoesDead = "";
-	private int informRepeatCount = 0;
+	
+	
 	
 	public void setMemoryPercent(double memoryPercent) {
 		this.memoryPercent = memoryPercent;
 	}
 	
+	/*
 	private boolean amILookingFor( String instanceSerial ) {
 		return lostInstance.equals( instanceSerial );
 	}
+	*/
 
 	public void saveMetricImages( String path ) throws Exception {
 		metrics.saveImage(path);
@@ -77,7 +83,7 @@ public class Cluster {
 	}
 
 	public boolean signaled() {
-		return ( restartSignal || quitSignal || cleanWorkspaceSignal || reloadWrappersSignal || askingForInstance );
+		return ( restartSignal || quitSignal || cleanWorkspaceSignal /* || reloadWrappersSignal */ );
 		
 	}
 	
@@ -144,14 +150,17 @@ public class Cluster {
 		cleanWorkspaceSignal = true;
 	}
 
+	/*
 	public boolean isAskingForInstance() {
 		return askingForInstance;
 	}
+	*/
 	
 	public String getLostInstance() {
 		return lostInstance;
 	}
 	
+	/*
 	public void informReport( String instanceSerial, String status ) {
 		logger.debug( instanceSerial + " status is " + status );
 		askingForInstance = false;
@@ -204,6 +213,7 @@ public class Cluster {
 			lostInstance = instanceSerial;
 		}
 	}
+	*/
 	
 	public void restart() {
 		setMessage(LogType.SYSTEM, "SIGNALED: Restart");
@@ -300,11 +310,13 @@ public class Cluster {
 		
 		setInstanceAsDone( instanceSerial, actvt, startTimeMillis, finishTimeMillis);
 		
+		/*
 		if ( amILookingFor(instanceSerial) ) {
 			logger.debug("was waiting instance " + instanceSerial + ". Will clear waiting flag." );
 			askingForInstance = false;
 			lostInstance = "";
 		}
+		*/
 		
 		cleanUp();
 		
