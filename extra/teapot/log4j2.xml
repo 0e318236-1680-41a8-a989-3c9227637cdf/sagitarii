@@ -21,6 +21,10 @@
 		<Logger name="br.cefetrj.sagitarii.teapot.comm.FTPUploadTask" level="debug" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
+		
+		<Logger name="br.cefetrj.sagitarii.teapot.comm.HDFSUploadTask" level="debug" additivity="false"> 
+			<appender-ref ref="File"/> 
+		</Logger>
 
 		<Logger name="cmabreu.sagitarii.teapot.DynamicLoadBalancer" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 

@@ -57,6 +57,8 @@ public class Configurator {
 	private int maximunCPULimit;
 	private int minimunCPULimit;
 	private int maxUploadThreads;
+	private boolean useHdfs = false;
+	private String hadoopConfigPath;
 	
 	public int getMaximunCPULimit() {
 		return maximunCPULimit;
@@ -228,6 +230,14 @@ public class Configurator {
 		return rPath;
 	}
 	
+	public boolean useHdfs() {
+		return useHdfs;
+	}
+	
+	public String getHadoopConfigPath() {
+		return hadoopConfigPath;
+	}
+	
 	public int getDLBFrequency() {
 		return DLBFrequency;
 	}
@@ -260,6 +270,9 @@ public class Configurator {
 				maximunCPULimit = Integer.valueOf( getTagValue("maximunCPULimit", mpElement) );
 				minimunCPULimit = Integer.valueOf( getTagValue("minimunCPULimit", mpElement) );
 				maxUploadThreads = Integer.valueOf( getTagValue("maxUploadThreads", mpElement) );
+				
+				useHdfs = Boolean.parseBoolean( getTagValue("useHdfs", mpElement) );
+				hadoopConfigPath = getTagValue("hadoopConfigPath", mpElement);
 				
 				if ( enforceTaskLimitToCores ) {
 					useSpeedEqualizer = false;

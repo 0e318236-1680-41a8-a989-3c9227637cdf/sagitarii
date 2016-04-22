@@ -14,19 +14,21 @@ import org.apache.logging.log4j.Logger;
 public class MultiThreadUpload {
 	private int maxThreadsRunning; 
 	private long totalBytes = 0;
+	private String hadoopConfigPath;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 	
-	public MultiThreadUpload( int maxThreadsRunning ) {
+	public MultiThreadUpload( int maxThreadsRunning, String hadoopConfigPath ) {
 		this.maxThreadsRunning = maxThreadsRunning;
+		this.hadoopConfigPath = hadoopConfigPath;
 	}
 	
 	public long getTotalBytes() {
 		return totalBytes;
 	}
 	
-	public void upload( List<String> fileList, String storageAddress, 
+	public void upload( List<String> fileList, List<String> dataFilesList, String storageAddress, 
 			int storagePort, String targetTable, String experimentSerial, 
-			String sessionSerial, String sourcePath ) {
+			String sessionSerial, String sourcePath ) throws Exception {
 		
 		if ( maxThreadsRunning == 0 ) { maxThreadsRunning = 7; }
 		
@@ -42,16 +44,27 @@ public class MultiThreadUpload {
 		
 		List< FutureTask<Long> > futureTasks = new ArrayList< FutureTask<Long> >();
 		ExecutorService executor = Executors.newFixedThreadPool( maxThreadsRunning );
+
+		// Send CSV data and XML manifest to sagitarii via FTP
+		logger.debug(" > starting upload thread with " + dataFilesList.size() + " elements for session " + sessionSerial + 
+				" / " + sourcePath);
+		FTPUploadTask fut = new FTPUploadTask(dataFilesList, storageAddress, storagePort, 
+				targetTable, experimentSerial, sessionSerial, sourcePath);
+		FutureTask<Long> futureTask = new FutureTask<Long>( fut );
+		executor.execute( futureTask );
+		futureTasks.add( futureTask );
 		
+		
+		// Send Task files to HDFS
 		for( List<String> list : partitions ) {
 			logger.debug(" > starting upload thread with " + list.size() + " elements for session " + sessionSerial + 
 					" / " + sourcePath);
-			FTPUploadTask fut = new FTPUploadTask(list, storageAddress, storagePort, 
-					targetTable, experimentSerial, sessionSerial, sourcePath);
 			
-			FutureTask<Long> futureTask = new FutureTask<Long>( fut );
-			executor.execute( futureTask );
-			futureTasks.add( futureTask );
+			HDFSUploadTask futHdfs = new HDFSUploadTask(list, hadoopConfigPath, 
+					targetTable, experimentSerial, sessionSerial, sourcePath);
+			FutureTask<Long> futureTaskHdfs = new FutureTask<Long>( futHdfs );
+			executor.execute( futureTaskHdfs );
+			futureTasks.add( futureTaskHdfs );
 		}
 		
 		logger.debug("waiting to all threads to finish...");

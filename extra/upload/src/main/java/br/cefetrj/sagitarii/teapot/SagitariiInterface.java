@@ -46,12 +46,20 @@ public class SagitariiInterface {
 	
 	private String getSecurityToken( String user, String password ) {
 		StringBuilder sb = new StringBuilder();
+		User userData = null;
 		sb.append("{");
 		sb.append( generateJsonPair("SagitariiApiFunction", "apiGetToken") + "," ); 
 		sb.append( generateJsonPair("user", user) + "," ); 
 		sb.append( generateJsonPair("password", password) ); 
 		sb.append("}");
-		return execute( sb.toString() );
+		
+		String result = execute( sb.toString() );
+		
+		if ( !result.equals("") ) {
+			Gson gson = new Gson();
+			userData = gson.fromJson( result, User.class );
+		}
+		return userData.getToken();		
 	}
 
 	

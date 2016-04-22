@@ -33,16 +33,17 @@ import br.cefetrj.sagitarii.teapot.Logger;
 import br.cefetrj.sagitarii.teapot.Task;
  
 public class Client {
-	private List<String> filesToSend;
+
 	private String storageAddress;
 	private int storagePort;
 	private String sessionSerial;
 	private String sagiHost;
 	private int maxUploadThreads;
+	private String hadoopConfigPath;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 
 	public Client( Configurator configurator ) {
-		filesToSend = new ArrayList<String>();
+		this.hadoopConfigPath = configurator.getHadoopConfigPath();
 		this.storageAddress = configurator.getStorageHost();
 		this.storagePort = configurator.getStoragePort();
 		this.maxUploadThreads = configurator.getMaxUploadThreads();
@@ -53,6 +54,9 @@ public class Client {
 	public void sendFile( String fileName, String folder, String targetTable, String experimentSerial,  
 			String macAddress, Task task ) throws Exception {
 
+		List<String> filesToSend = new ArrayList<String>();
+		List<String> dataFilesList = new ArrayList<String>();
+		
 		String instanceSerial = "";
 		String activity = "";
 		String fragment = "";
@@ -86,9 +90,11 @@ public class Client {
 		File fil = new File(folder + "/" + fileName);
 		if ( fil.exists() ) {
 			xml.append("<file name=\""+fileName+"\" type=\"FILE_TYPE_CSV\" />\n");
-			filesToSend.add( folder + "/" + fileName );
+			dataFilesList.add( folder + "/" + fileName );
 		} else {
 			logger.error("will not send sagi_output.txt in session.xml file: this activity instance produced no data");
+			commit();
+			return;
 		}
 		
 
@@ -134,7 +140,7 @@ public class Client {
 	    xml.append("]]></execLog>");
 	    
 		xml.append("</session>\n");
-		filesToSend.add( folder + "/" + "session.xml" );
+		dataFilesList.add( folder + "/" + "session.xml" );
 		
 		Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(folder + "/" + "session.xml"), "UTF-8"));
 		writer.write( xml.toString().replace("#TOTAL_FILES#", String.valueOf(filesToSend.size()) ) );
@@ -143,18 +149,18 @@ public class Client {
 		// Send files
 		if ( filesToSend.size() > 0 ) {
 			logger.debug("need to send " + filesToSend.size() + " files to Sagitarii...");
-			uploadFiles( filesToSend, targetTable, experimentSerial, sessionSerial, folderPath );
+			uploadFiles( filesToSend, dataFilesList, targetTable, experimentSerial, sessionSerial, folderPath );
 		}
 		commit();
 	}
 	
 
-	private void uploadFiles( List<String> fileNames, String targetTable, 
+	private void uploadFiles( List<String> fileNames, List<String> dataFilesList, String targetTable, 
 			String experimentSerial, String sessionSerial, String sourcePath ) throws Exception {
 
 		logger.debug("starting Multithread Uploader for session " + sessionSerial + " with " + maxUploadThreads + " threads." );
-		MultiThreadUpload mtu = new MultiThreadUpload( maxUploadThreads );
-		mtu.upload(fileNames, storageAddress, storagePort, 
+		MultiThreadUpload mtu = new MultiThreadUpload( maxUploadThreads, hadoopConfigPath );
+		mtu.upload(fileNames, dataFilesList, storageAddress, storagePort, 
 				targetTable, experimentSerial, sessionSerial, sourcePath);
 		
 	}

@@ -1,11 +1,17 @@
 package br.cefetrj.sagitarii.core.filetransfer;
 
 import java.io.File;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.ServerSocket;
+import java.net.SocketException;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -109,12 +115,17 @@ public class Server {
 	        scientist.setEnabled(true);
 	        userManager.save( scientist );
 	
+	        InetAddress address = getFirstNonLoopbackAddress(true, false);
+	        String externalIpAddress = address.getHostAddress();
+	        
+	        logger.debug("Bind FTP address to " + externalIpAddress);
+	        
 	        ListenerFactory listenerFactory = new ListenerFactory();
 	        DataConnectionConfigurationFactory dataConnectionFactory = new DataConnectionConfigurationFactory();
 	        dataConnectionFactory.setPassivePorts( "0-" );
-	        dataConnectionFactory.setActiveLocalAddress("192.168.1.30");
-	        dataConnectionFactory.setPassiveAddress("192.168.1.30");
-	        dataConnectionFactory.setPassiveExternalAddress("192.168.1.30");
+	        dataConnectionFactory.setActiveLocalAddress(externalIpAddress);
+	        dataConnectionFactory.setPassiveAddress(externalIpAddress);
+	        dataConnectionFactory.setPassiveExternalAddress(externalIpAddress);
 	        
 	        listenerFactory.setDataConnectionConfiguration( dataConnectionFactory.createDataConnectionConfiguration() );
 	        listenerFactory.setPort( serverPort );
@@ -138,6 +149,30 @@ public class Server {
 		
 	}
 
+    private InetAddress getFirstNonLoopbackAddress(boolean preferIpv4, boolean preferIPv6) throws SocketException {
+        Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();
+        while (en.hasMoreElements()) {
+            NetworkInterface i = en.nextElement();
+            for (Enumeration<InetAddress> en2 = i.getInetAddresses(); en2.hasMoreElements();) {
+                InetAddress addr = en2.nextElement();
+                if (!addr.isLoopbackAddress()) {
+                    if (addr instanceof Inet4Address) {
+                        if (preferIPv6) {
+                            continue;
+                        }
+                        return addr;
+                    }
+                    if (addr instanceof Inet6Address) {
+                        if (preferIpv4) {
+                            continue;
+                        }
+                        return addr;
+                    }
+                }
+            }
+        }
+        return null;
+    }    
 
 	public void clean() {
 		List<FileImporter> importersToRemove = new ArrayList<FileImporter>();
