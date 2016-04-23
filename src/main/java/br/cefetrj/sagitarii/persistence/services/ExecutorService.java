@@ -8,7 +8,7 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import br.cefetrj.sagitarii.core.ClustersManager;
+import br.cefetrj.sagitarii.core.NodesManager;
 import br.cefetrj.sagitarii.core.types.ExecutorType;
 import br.cefetrj.sagitarii.misc.PathFinder;
 import br.cefetrj.sagitarii.persistence.entity.ActivationExecutor;
@@ -89,7 +89,7 @@ public class ExecutorService {
 		
 		newTransaction();
 		rep.updateActivationExecutor(oldExecutor);
-		ClustersManager.getInstance().reloadWrappers();
+		NodesManager.getInstance().reloadWrappers();
 	}	
 	
 	public ActivationExecutor getExecutor(int idExecutor) throws NotFoundException{
@@ -112,7 +112,7 @@ public class ExecutorService {
 		executor.setHash(hash);
 		rep.newTransaction();
 		rep.updateActivationExecutor( executor );
-		ClustersManager.getInstance().reloadWrappers();
+		NodesManager.getInstance().reloadWrappers();
 	}
 	
 	public ActivationExecutor insertExecutor(ActivationExecutor executor) throws InsertException {
@@ -120,7 +120,7 @@ public class ExecutorService {
 		String hash = UUID.randomUUID().toString().replace("-", "").substring(0, 10);
 		executor.setHash(hash);
 		ActivationExecutor expRet = rep.insereActivationExecutor( executor );
-		ClustersManager.getInstance().reloadWrappers();
+		NodesManager.getInstance().reloadWrappers();
 		logger.debug("done");
 		return expRet;
 	}	

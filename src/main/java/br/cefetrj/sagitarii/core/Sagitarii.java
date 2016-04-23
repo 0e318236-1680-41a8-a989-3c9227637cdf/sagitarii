@@ -364,7 +364,7 @@ public class Sagitarii {
 			return;
 		}
 
-		if ( ClustersManager.getInstance().hasClusters() ) {
+		if ( NodesManager.getInstance().hasClusters() ) {
 			
 			try {
 				instanceBuffer.loadBuffers();

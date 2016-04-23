@@ -7,7 +7,7 @@ import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 
 import br.cefetrj.sagitarii.core.Cluster;
-import br.cefetrj.sagitarii.core.ClustersManager;
+import br.cefetrj.sagitarii.core.NodesManager;
 import br.cefetrj.sagitarii.core.ssh.SSHSession;
 import br.cefetrj.sagitarii.core.ssh.SSHSessionManager;
 
@@ -26,7 +26,7 @@ public class NodeSSHTerminalAction extends BasicActionClass {
 	private String hideCommand;
 	
 	public String execute () {
-		ClustersManager cm = ClustersManager.getInstance();
+		NodesManager cm = NodesManager.getInstance();
 		cluster = cm.getCluster( macAddress );
 		
 		if ( cluster == null ) {

@@ -105,7 +105,7 @@ public class DataReceiver {
 		if ( !initialLoad ) {
 			logger.debug("closing instance " + instance.getSerial() );
 			try {
-				ClustersManager.getInstance().confirmReceiveData( rd );
+				NodesManager.getInstance().confirmReceiveData( rd );
 				logger.debug("instance " + instance.getSerial() + " close.");
 			} catch ( Exception e ) {
 				logger.debug("cannot close instance " + instance.getSerial() + ". this may cause trouble...");

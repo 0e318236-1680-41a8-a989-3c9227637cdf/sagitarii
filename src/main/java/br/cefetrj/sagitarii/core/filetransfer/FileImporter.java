@@ -20,7 +20,7 @@ import org.apache.commons.csv.CSVRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import br.cefetrj.sagitarii.core.ClustersManager;
+import br.cefetrj.sagitarii.core.NodesManager;
 import br.cefetrj.sagitarii.core.DataReceiver;
 import br.cefetrj.sagitarii.core.DomainStorage;
 import br.cefetrj.sagitarii.core.ReceivedData;
@@ -497,7 +497,7 @@ public class FileImporter extends Thread {
 					Relation table = relationService.getTable( any.getTargetTable() );					
 					
 					ReceivedData rd = new ReceivedData(null, any.getMacAddress(), instance, act, table, any );
-					ClustersManager.getInstance().finishInstance( rd );				
+					NodesManager.getInstance().finishInstance( rd );				
 				} catch ( Exception e ) {
 					e.printStackTrace();
 				}

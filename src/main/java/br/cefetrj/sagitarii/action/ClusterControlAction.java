@@ -5,7 +5,7 @@ import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 
-import br.cefetrj.sagitarii.core.ClustersManager;
+import br.cefetrj.sagitarii.core.NodesManager;
 
 @Action (value = "clusterControl", results = { @Result (type="redirect", location = "viewClusters", name = "ok") 
 }, interceptorRefs= { @InterceptorRef("seguranca")	 } ) 
@@ -20,15 +20,15 @@ public class ClusterControlAction extends BasicActionClass {
 		if( command != null ) {
 			try {
 				if ( command.equals("quit")) {
-					ClustersManager.getInstance().quit(mac);
+					NodesManager.getInstance().quit(mac);
 				}
 				
 				if ( command.equals("restart")) {
-					ClustersManager.getInstance().restart(mac);
+					NodesManager.getInstance().restart(mac);
 				}
 				
 				if ( command.equals("reloadWrappers")) {
-					ClustersManager.getInstance().reloadWrappers();
+					NodesManager.getInstance().reloadWrappers();
 				}
 			} catch ( Exception e ) {
 				setMessageText( e.getMessage() );

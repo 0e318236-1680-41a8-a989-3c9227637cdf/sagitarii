@@ -5,7 +5,7 @@ import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 
-import br.cefetrj.sagitarii.core.ClustersManager;
+import br.cefetrj.sagitarii.core.NodesManager;
 
 @Action (value = "clearNodeTasks", results = { @Result (type="redirect", location = "viewClusters", name = "ok") 
 }, interceptorRefs= { @InterceptorRef("seguranca")	 } ) 
@@ -17,7 +17,7 @@ public class ClearNodeTasksAction extends BasicActionClass {
 	public String execute(){
 
 		try {
-			ClustersManager.getInstance().clearNodeTasks( macAddress );
+			NodesManager.getInstance().clearNodeTasks( macAddress );
 		} catch ( Exception e ) {
 			setMessageText( e.getMessage() );
 		} 

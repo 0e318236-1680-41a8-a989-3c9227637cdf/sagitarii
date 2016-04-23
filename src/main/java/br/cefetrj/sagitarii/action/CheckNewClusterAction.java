@@ -9,7 +9,7 @@ import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 
-import br.cefetrj.sagitarii.core.ClustersManager;
+import br.cefetrj.sagitarii.core.NodesManager;
 
 import com.opensymphony.xwork2.ActionContext;
 
@@ -23,7 +23,7 @@ public class CheckNewClusterAction extends BasicActionClass {
 	public String execute(){
 		String resposta = "";
 		String have = "";
-		ClustersManager cm = ClustersManager.getInstance();
+		NodesManager cm = NodesManager.getInstance();
 		
 		if ( cm.haveNewCluster() ) {
 			have = "\"result\":\"YES\"";
