@@ -24,7 +24,7 @@ import br.cefetrj.sagitarii.persistence.entity.Instance;
 import br.cefetrj.sagitarii.persistence.entity.LogEntry;
 import br.cefetrj.sagitarii.persistence.services.LogService;
 
-public class Cluster {
+public class Node {
 	private ClusterType type;
 	private String soName;
 	private String macAddress;
@@ -391,7 +391,7 @@ public class Cluster {
 		logger.debug( macAddress + ": Instance " + instanceSerial + " is not in Node buffer.");
 	}
 
-	public Cluster(ClusterType type, String javaVersion, String soFamily, String macAddress, String ipAddress, String machineName, Double cpuLoad, 
+	public Node(ClusterType type, String javaVersion, String soFamily, String macAddress, String ipAddress, String machineName, Double cpuLoad, 
 			String soName, int availableProcessors,  int maxAllowedTasks, long freeMemory, long totalMemory) {
 		this.soName = soName;
 		this.macAddress = macAddress;

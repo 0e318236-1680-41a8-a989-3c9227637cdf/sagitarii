@@ -7,7 +7,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import br.cefetrj.sagitarii.core.Cluster;
+import br.cefetrj.sagitarii.core.Node;
 import br.cefetrj.sagitarii.core.config.Configurator;
 import br.cefetrj.sagitarii.core.statistics.AgeCalculator;
 import br.cefetrj.sagitarii.misc.DateLibrary;
@@ -137,7 +137,7 @@ public class InstanceDeliveryControl {
 	*/
 	
 	// The node is idle but have an instance registered in IDC to it ( probably lost ). Try to run the instance again.
-	public void claimInstance( Cluster cluster ) {
+	public void claimInstance( Node cluster ) {
 		for ( DeliveryUnit unity : getUnits() ) {
 			if ( cluster.getmacAddress().equals( unity.getMacAddress() ) ) {
 				logger.debug("instance " + unity.getInstance().getSerial() + " was lost and claimed by idle node " + cluster.getmacAddress() );

@@ -22,7 +22,7 @@ import br.cefetrj.sagitarii.persistence.entity.Instance;
 import com.google.gson.Gson;
 
 public class NodesManager {
-	private List<Cluster> clusterList;
+	private List<Node> clusterList;
 	private static NodesManager cm;
 	private int lastQuant = 0;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
@@ -35,7 +35,7 @@ public class NodesManager {
 	}
 	
 	private void checkLazy() {
-		for ( Cluster cluster : getClusterList() ) {
+		for ( Node cluster : getClusterList() ) {
 			if ( cluster.getStatus() != ClusterStatus.IDLE ) continue;
 			InstanceDeliveryControl.getInstance().claimInstance( cluster );
 		}
@@ -46,7 +46,7 @@ public class NodesManager {
 			String path = PathFinder.getInstance().getPath() + "/metrics/";
 			File newFile = new File(path);
 			newFile.mkdirs();
-			for ( Cluster cluster : getClusterList() ) {
+			for ( Node cluster : getClusterList() ) {
 				cluster.saveMetricImages( path );
 			}
 		} catch ( Exception e ) {
@@ -57,7 +57,7 @@ public class NodesManager {
 	
 	public int getCores() {
 		int cores = 0;
-		for ( Cluster clu : getClusterList()  ) {
+		for ( Node clu : getClusterList()  ) {
 			if ( ( !clu.isMainCluster() ) && ( clu.getStatus() == ClusterStatus.ACTIVE ) ) {
 				cores = cores + clu.getAvailableProcessors();
 			}
@@ -67,7 +67,7 @@ public class NodesManager {
 	
 	public void clearNodeLog( String macAddress ) {
 		logger.debug( "will clear log for node " + macAddress );
-		Cluster clu = getCluster(macAddress);
+		Node clu = getCluster(macAddress);
 		if ( clu != null ) {
 			clu.clearLog();
 		}
@@ -75,7 +75,7 @@ public class NodesManager {
 
 	public void clearNodeTasks( String macAddress ) {
 		logger.debug( "will clear tasks for node " + macAddress );
-		Cluster clu = getCluster(macAddress);
+		Node clu = getCluster(macAddress);
 		if ( clu != null ) {
 			clu.clearTasks();
 		}
@@ -83,7 +83,7 @@ public class NodesManager {
 
 	public void acceptTask( String instanceId, String macAddress) {
 		logger.debug( "node " + macAddress + " accepted task in instance " + instanceId );
-		Cluster clu = getCluster(macAddress);
+		Node clu = getCluster(macAddress);
 		for ( Instance instance : clu.getRunningInstances() ) {
 			if ( instance.getSerial().equalsIgnoreCase( instanceId ) ) {
 				instance.setStatus( InstanceStatus.RUNNING );
@@ -99,7 +99,7 @@ public class NodesManager {
 		try {
 			Gson gson = new Gson();
 			NodeTasks tasks = gson.fromJson( data, NodeTasks.class );
-			Cluster cluster = getCluster( tasks.getNodeId() );
+			Node cluster = getCluster( tasks.getNodeId() );
 			
 			if ( cluster != null ) {
 				cluster.setLastAnnounce( Calendar.getInstance().getTime() );
@@ -121,7 +121,7 @@ public class NodesManager {
 
 	public void receiveNodeLog( String activitySerial, String message, String macAddress) {
 		logger.debug( "node " + macAddress + " report (" + activitySerial + "): " + message );
-		Cluster clu = getCluster(macAddress);
+		Node clu = getCluster(macAddress);
 		clu.setMessage( LogType.NODE, message, activitySerial );
 	}
 
@@ -129,7 +129,7 @@ public class NodesManager {
 	public boolean hasClusters() {
 		boolean hasAliveNodes = false;
 		boolean result = false;
-		for ( Cluster clu : getClusterList() ) {
+		for ( Node clu : getClusterList() ) {
 			if ( !clu.isMainCluster() && !clu.isDead() ) {
 				hasAliveNodes = true;
 			}
@@ -142,13 +142,13 @@ public class NodesManager {
 	
 	public void refuseTask( String instanceId, String macAddress ) {
 		logger.debug( "node " + macAddress + " refused task in instance " + instanceId );
-		Cluster clu = getCluster(macAddress);
+		Node clu = getCluster(macAddress);
 		clu.setMessage(LogType.SYSTEM, "Cannot run task in instance " + instanceId, "" );
 		clu.resubmitInstanceToBuffer( instanceId );
 	}
 
-	public synchronized Cluster tryToFindInstance( String instanceSerial ) {
-		for ( Cluster cl : getClusterList() ) {
+	public synchronized Node tryToFindInstance( String instanceSerial ) {
+		for ( Node cl : getClusterList() ) {
 			if ( cl.isRunning(instanceSerial) ) return cl;
 		}
 		return null;
@@ -158,7 +158,7 @@ public class NodesManager {
 		String instanceSerial = rd.getInstance().getSerial();
 		logger.debug( "receiving instance "+ instanceSerial +" close command from node " + rd.getMacAddress() );
 		
-		Cluster cl = tryToFindInstance( instanceSerial ); //getCluster( rd.getMacAddress() );
+		Node cl = tryToFindInstance( instanceSerial ); //getCluster( rd.getMacAddress() );
 		
 		if ( cl != null ) {
 			if ( !rd.getMacAddress().equals( cl.getmacAddress() ) ) {
@@ -177,7 +177,7 @@ public class NodesManager {
 	}
 	
 	public void finishInstance( ReceivedData rd ) {
-		Cluster cluster = getCluster( rd.getMacAddress() );
+		Node cluster = getCluster( rd.getMacAddress() );
 		if ( cluster != null ) {
 			logger.debug( "finishing instance "+ rd.getInstance().getSerial() +" from cluster " + rd.getMacAddress() );
 			try {
@@ -191,7 +191,7 @@ public class NodesManager {
 	}
 
 	public void reloadWrappers() {
-		for ( Cluster clu : getClusterList() ) {
+		for ( Node clu : getClusterList() ) {
 			if ( !clu.isMainCluster() ) {
 				clu.reloadWrappers();
 			}
@@ -202,7 +202,7 @@ public class NodesManager {
 		if ( Sagitarii.getInstance().getRunningExperiments().size() > 0 ) {
 			throw new Exception("Cannot clean nodes workspaces when experiments are running.");
 		} else { 
-			for ( Cluster clu : getClusterList() ) {
+			for ( Node clu : getClusterList() ) {
 				if ( !clu.isMainCluster() ) {
 					clu.cleanWorkspace();
 				}
@@ -211,14 +211,14 @@ public class NodesManager {
 	}
 	
 	public void quit(String macAddress) {
-		Cluster cluster = getCluster(macAddress);
+		Node cluster = getCluster(macAddress);
 		if ( !cluster.isMainCluster() ) {
 			cluster.quit();
 		}
 	}
 
 	public void restart(String macAddress) {
-		Cluster cluster = getCluster(macAddress);
+		Node cluster = getCluster(macAddress);
 		if ( !cluster.isMainCluster() ) {
 			cluster.restart();
 		}
@@ -259,7 +259,7 @@ public class NodesManager {
 	}
 	
 	
-	private synchronized String getNextInstance( Cluster cluster, int packageSize, String nodeType ) {
+	private synchronized String getNextInstance( Node cluster, int packageSize, String nodeType ) {
 		String resposta = "";
 		String macAddress = cluster.getmacAddress();
 		if ( packageSize < 1 ) { packageSize = 1; }
@@ -309,7 +309,7 @@ public class NodesManager {
 	public  String getTask(String macAddress, int packageSize, String nodeType) {
 		//logger.debug("node " + macAddress + " ("+nodeType+") requesting task");
 		String resposta = "";
-		Cluster cluster = getCluster(macAddress);
+		Node cluster = getCluster(macAddress);
 		if ( (cluster != null)  ) {
 			// if it is allowed to receive new tasks...
 			if ( !cluster.signaled() ) {
@@ -360,17 +360,17 @@ public class NodesManager {
 		return false;
 	}
 	
-	public List<Cluster> getClusterList() {
-		return new ArrayList<Cluster>( clusterList );
+	public List<Node> getClusterList() {
+		return new ArrayList<Node>( clusterList );
 	}
 	
 
 	private NodesManager() {
-		clusterList = new ArrayList<Cluster>();
+		clusterList = new ArrayList<Node>();
 	}
 	
-	public Cluster getCluster(String macAddress) {
-		for ( Cluster clu : getClusterList()  ) {
+	public Node getCluster(String macAddress) {
+		for ( Node clu : getClusterList()  ) {
 			if ( clu.getmacAddress().equalsIgnoreCase( macAddress ) ) {
 				return clu;
 			}
@@ -380,7 +380,7 @@ public class NodesManager {
 
 
 	public void updateClustersStatus() {
-		for ( Cluster clu : clusterList  ) {
+		for ( Node clu : clusterList  ) {
 			clu.updateStatus();
 		}
 		checkLazy();
@@ -394,12 +394,12 @@ public class NodesManager {
     	}
     }
     
-	public Cluster addOrUpdateCluster(ClusterType type, String javaVersion, String soFamily, String macAddress, 
+	public Node addOrUpdateCluster(ClusterType type, String javaVersion, String soFamily, String macAddress, 
 			String ipAddress, String machineName, Double cpuLoad, String soName, 
 			int availableProcessors, int maxAllowedTasks, long freeMemory, long totalMemory) {
-		Cluster retorno = null;
+		Node retorno = null;
 		
-		Cluster clu = getCluster(macAddress);
+		Node clu = getCluster(macAddress);
 		if ( clu != null ) {
 			clu.setMachineName( machineName );
 			clu.setIpAddress( ipAddress );
@@ -414,7 +414,7 @@ public class NodesManager {
 			clu.updateStatus();
 			retorno = clu;
 		} else {
-			Cluster c1 = new Cluster(type, javaVersion,soFamily,macAddress,ipAddress,machineName,
+			Node c1 = new Node(type, javaVersion,soFamily,macAddress,ipAddress,machineName,
 					cpuLoad,soName,availableProcessors,maxAllowedTasks,freeMemory,totalMemory);
 			clusterList.add( c1 );
 			retorno = c1;

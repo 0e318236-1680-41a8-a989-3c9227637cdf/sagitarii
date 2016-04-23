@@ -6,7 +6,7 @@ import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 
-import br.cefetrj.sagitarii.core.Cluster;
+import br.cefetrj.sagitarii.core.Node;
 import br.cefetrj.sagitarii.core.NodesManager;
 
 @Action (value = "showNodeDetails", results = { @Result (location = "viewClusterDetail.jsp", name = "ok") 
@@ -15,7 +15,7 @@ import br.cefetrj.sagitarii.core.NodesManager;
 @ParentPackage("default")
 public class ShowNodeDetailsAction extends BasicActionClass {
 	private String macAddress;
-	private Cluster cluster;
+	private Node cluster;
 	
 	public String execute () {
 		NodesManager cm = NodesManager.getInstance();
@@ -27,7 +27,7 @@ public class ShowNodeDetailsAction extends BasicActionClass {
 		this.macAddress = macAddress;
 	}
 	
-	public Cluster getCluster() {
+	public Node getCluster() {
 		return cluster;
 	}
 	

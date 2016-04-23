@@ -8,7 +8,7 @@ import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 
-import br.cefetrj.sagitarii.core.Cluster;
+import br.cefetrj.sagitarii.core.Node;
 import br.cefetrj.sagitarii.core.NodesManager;
 
 @Action (value = "viewClusters", results = { @Result (location = "viewClusters.jsp", name = "ok") 
@@ -16,7 +16,7 @@ import br.cefetrj.sagitarii.core.NodesManager;
 
 @ParentPackage("default")
 public class ViewClustersAction extends BasicActionClass {
-	private List<Cluster> clusterList;
+	private List<Node> clusterList;
 	
 	public String execute () {
 		NodesManager cm = NodesManager.getInstance();
@@ -24,11 +24,11 @@ public class ViewClustersAction extends BasicActionClass {
 		return "ok";
 	}
 
-	public List<Cluster> getClusterList() {
+	public List<Node> getClusterList() {
 		return clusterList;
 	}
 
-	public void setClusterList(List<Cluster> clusterList) {
+	public void setClusterList(List<Node> clusterList) {
 		this.clusterList = clusterList;
 	}
 

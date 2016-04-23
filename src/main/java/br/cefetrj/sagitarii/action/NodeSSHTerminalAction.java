@@ -6,7 +6,7 @@ import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 
-import br.cefetrj.sagitarii.core.Cluster;
+import br.cefetrj.sagitarii.core.Node;
 import br.cefetrj.sagitarii.core.NodesManager;
 import br.cefetrj.sagitarii.core.ssh.SSHSession;
 import br.cefetrj.sagitarii.core.ssh.SSHSessionManager;
@@ -17,7 +17,7 @@ import br.cefetrj.sagitarii.core.ssh.SSHSessionManager;
 @ParentPackage("default")
 public class NodeSSHTerminalAction extends BasicActionClass {
 	private String macAddress;
-	private Cluster cluster;
+	private Node cluster;
 	private String user;
 	private String password;
 	private SSHSession session;
@@ -95,7 +95,7 @@ public class NodeSSHTerminalAction extends BasicActionClass {
 		return session;
 	}
 	
-	public Cluster getCluster() {
+	public Node getCluster() {
 		return cluster;
 	}
 	
