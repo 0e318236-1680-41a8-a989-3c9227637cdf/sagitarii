@@ -35,14 +35,14 @@ public class InstanceDeliveryControl {
 	}
 
 	/*
-	private boolean mustInform( Accumulator ac, DeliveryUnit unity ) {
+	private boolean mustInform( Accumulator ac, DeliveryUnit unit ) {
 
 		// Below this limit all is normal
-		if ( !isTakingTooMuchTime(unity)  ) {
+		if ( !isTakingTooMuchTime(unit)  ) {
 			return false;
 		}
 		
-		long m1 = unity.getAgeMillis();
+		long m1 = unit.getAgeMillis();
 		long m2 = ac.getAverageMillis();
 		long mt = ac.getTotalAgeMillis();
 		
@@ -65,8 +65,8 @@ public class InstanceDeliveryControl {
 		}
 	}
 
-	private boolean isDelayed( Accumulator ac, DeliveryUnit unity ) {
-		long m1 = unity.getAgeMillis();
+	private boolean isDelayed( Accumulator ac, DeliveryUnit unit ) {
+		long m1 = unit.getAgeMillis();
 		long m2 = ac.getAverageMillis();
 		long secs = ( (m1 - m2) / 1000 ) + 1 ;
 		
@@ -77,9 +77,9 @@ public class InstanceDeliveryControl {
 		}
 	}
 
-	private boolean isTakingTooMuchTime( DeliveryUnit unity ) {
+	private boolean isTakingTooMuchTime( DeliveryUnit unit ) {
 		try {
-			long m1 = unity.getAgeMillis();
+			long m1 = unit.getAgeMillis();
 			long m2 = Configurator.getInstance().getFirstDelayLimitSeconds();
 			long secs = ( ( m1 / 1000 ) - m2 + 1 ) ;
 			
@@ -95,53 +95,53 @@ public class InstanceDeliveryControl {
 	
 	public void checkLostPackets() {
 		// For each Instance we have with nodes...
-		for ( DeliveryUnit unity : getUnits() ) {
+		for ( DeliveryUnit unit : getUnits() ) {
 			// We take the Average time for this kind of Instance
 			// by checking the accumulator with same hash
-			Accumulator ac = AgeCalculator.getInstance().getAccumulator( unity.getHash() );
+			Accumulator ac = AgeCalculator.getInstance().getAccumulator( unit.getHash() );
 			if ( ac != null ) {
-				if ( isDelayed( ac, unity ) ) {
-					unity.setDelayed();
+				if ( isDelayed( ac, unit ) ) {
+					unit.setDelayed();
 				}
-				if ( mustInform( ac, unity ) ) {
-					ClustersManager.getInstance().inform( unity.getMacAddress(), unity.getInstance().getSerial(), false );
+				if ( mustInform( ac, unit ) ) {
+					ClustersManager.getInstance().inform( unit.getMacAddress(), unit.getInstance().getSerial(), false );
 				}
 			} else {
-				if ( isTakingTooMuchTime( unity ) ) {
-					logger.debug( "instance '" + unity.getInstanceActivities() + "' is taking too much time than the system limit");
-					ClustersManager.getInstance().inform( unity.getMacAddress(), unity.getInstance().getSerial(), false );
+				if ( isTakingTooMuchTime( unit ) ) {
+					logger.debug( "instance '" + unit.getInstanceActivities() + "' is taking too much time than the system limit");
+					ClustersManager.getInstance().inform( unit.getMacAddress(), unit.getInstance().getSerial(), false );
 				}
 			}
 		}
 	}
 
 	public void forceInformAllDelayed() {
-		for ( DeliveryUnit unity : getUnits() ) {
-			Accumulator ac = AgeCalculator.getInstance().getAccumulator( unity.getHash() );
+		for ( DeliveryUnit unit : getUnits() ) {
+			Accumulator ac = AgeCalculator.getInstance().getAccumulator( unit.getHash() );
 			if ( ac != null ) {
-				if ( isDelayed( ac, unity ) ) {
-					ClustersManager.getInstance().inform( unity.getMacAddress(), unity.getInstance().getSerial(), true );
+				if ( isDelayed( ac, unit ) ) {
+					ClustersManager.getInstance().inform( unit.getMacAddress(), unit.getInstance().getSerial(), true );
 				}
 			}
 		}
 	}
 	
 	public void forceInformDelayed( String instance ) {
-		for ( DeliveryUnit unity : getUnits() ) {
-			if ( instance.equals( unity.getInstance().getSerial() ) ) {
+		for ( DeliveryUnit unit : getUnits() ) {
+			if ( instance.equals( unit.getInstance().getSerial() ) ) {
 				logger.debug("force asking for Instance " + instance );
-				ClustersManager.getInstance().inform( unity.getMacAddress(), unity.getInstance().getSerial(), true );
+				ClustersManager.getInstance().inform( unit.getMacAddress(), unit.getInstance().getSerial(), true );
 			}
 		}
 	}
 	*/
 	
 	// The node is idle but have an instance registered in IDC to it ( probably lost ). Try to run the instance again.
-	public void claimInstance( Node cluster ) {
-		for ( DeliveryUnit unity : getUnits() ) {
-			if ( cluster.getmacAddress().equals( unity.getMacAddress() ) ) {
-				logger.debug("instance " + unity.getInstance().getSerial() + " was lost and claimed by idle node " + cluster.getmacAddress() );
-				cluster.resubmitInstanceToBuffer( unity.getInstance().getSerial() );
+	public void claimInstance( Node node ) {
+		for ( DeliveryUnit unit : getUnits() ) {
+			if ( unit.isDelayed() &&  node.getmacAddress().equals( unit.getMacAddress() ) ) {
+				logger.debug("instance " + unit.getInstance().getSerial() + " was lost and claimed by idle node " + node.getmacAddress() );
+				node.resubmitInstanceToBuffer( unit.getInstance().getSerial() );
 			}
 		}
 	}

@@ -34,7 +34,7 @@ public class DeliveryUnit {
 		return sb.toString();
 	}
 	
-	public boolean getDelayed() {
+	public boolean isDelayed() {
 		return this.delayed;
 	}
 	
@@ -99,11 +99,6 @@ public class DeliveryUnit {
 			
 			logger.debug("calculating age : start=" + deliverMillis + " end="+endMillis + " age=" + (endMillis - deliverMillis));
 			
-			//DateLibrary.getInstance().setTo( deliverTime );
-			//Calendar data = Calendar.getInstance();
-			//data.setTime(endTime);
-			//long millis = DateLibrary.getInstance().getDiffMillisTo( data );
-			//return millis;
 			return endMillis - deliverMillis;
 		} catch ( Exception e ) {
 			return 0;

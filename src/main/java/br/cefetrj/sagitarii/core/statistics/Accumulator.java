@@ -12,6 +12,8 @@ public class Accumulator {
 	private int calculatedCount = 0;
 	private String hash;
 	private Long totalAgeMillis = 0L;
+	private Long maxAgeMillis = 0L;
+	private Long minAgeMillis = 0L;
 	private int idTimeControl = -1;
 	private String content;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
@@ -51,6 +53,12 @@ public class Accumulator {
 	
 	public void addToStack( DeliveryUnit du ) {
 		Long duAgeMillis = du.getAgeMillis();
+		if ( duAgeMillis > maxAgeMillis ) {
+			maxAgeMillis = duAgeMillis;
+		}
+		if ( duAgeMillis < minAgeMillis) {
+			minAgeMillis = duAgeMillis;
+		}
 		logger.debug("updating average count for " + content + ": " + averageMillis + " | " + totalAgeMillis + " | " + calculatedCount + " | " + duAgeMillis );
 		calculatedCount++;
 		Long newTotalAgeMillis = totalAgeMillis + duAgeMillis;
