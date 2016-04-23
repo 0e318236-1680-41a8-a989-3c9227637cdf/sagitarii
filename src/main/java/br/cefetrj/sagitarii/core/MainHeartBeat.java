@@ -13,7 +13,7 @@ public class MainHeartBeat implements Runnable {
     @Override
     public void run() {
     	try {
-	    	NodesManager.getInstance().updateClustersStatus();
+	    	NodesManager.getInstance().updateNodesStatus();
 	    	Sagitarii.getInstance().loadInputBuffer();
 	    	
 	   		// InstanceDeliveryControl.getInstance().checkLostPackets();

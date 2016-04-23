@@ -1,5 +1,5 @@
 package br.cefetrj.sagitarii.core.types;
 
-public enum ClusterType {
+public enum NodeType {
 	MAIN, NODE
 }

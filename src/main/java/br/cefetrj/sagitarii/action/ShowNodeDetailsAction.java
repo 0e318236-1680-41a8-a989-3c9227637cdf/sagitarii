@@ -19,7 +19,7 @@ public class ShowNodeDetailsAction extends BasicActionClass {
 	
 	public String execute () {
 		NodesManager cm = NodesManager.getInstance();
-		cluster = cm.getCluster( macAddress );
+		cluster = cm.getNode( macAddress );
 		return "ok";
 	}
 

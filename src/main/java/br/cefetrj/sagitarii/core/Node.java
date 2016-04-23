@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 
 import br.cefetrj.sagitarii.core.delivery.InstanceDeliveryControl;
 import br.cefetrj.sagitarii.core.types.NodeStatus;
-import br.cefetrj.sagitarii.core.types.ClusterType;
+import br.cefetrj.sagitarii.core.types.NodeType;
 import br.cefetrj.sagitarii.core.types.InstanceStatus;
 import br.cefetrj.sagitarii.core.types.LogType;
 import br.cefetrj.sagitarii.metrics.MetricController;
@@ -25,7 +25,7 @@ import br.cefetrj.sagitarii.persistence.entity.LogEntry;
 import br.cefetrj.sagitarii.persistence.services.LogService;
 
 public class Node {
-	private ClusterType type;
+	private NodeType type;
 	private String soName;
 	private String macAddress;
 	private String ipAddress;
@@ -53,7 +53,6 @@ public class Node {
 	// private boolean askingForInstance = false;
 	// private int informRepeatCount = 0;
 	
-	private boolean mainCluster = false;
 	private long freeMemory;
 	private long freeDiskSpace;
 	private long totalMemory;
@@ -220,14 +219,6 @@ public class Node {
 		restartSignal = true;
 	}
 
-	public boolean isMainCluster() {
-		return mainCluster;
-	}
-	
-	public void setAsMainCluster() {
-		this.mainCluster = true;
-	}
-	
 	public boolean isRestartSignal() {
 		return restartSignal;
 	}
@@ -391,7 +382,7 @@ public class Node {
 		logger.debug( macAddress + ": Instance " + instanceSerial + " is not in Node buffer.");
 	}
 
-	public Node(ClusterType type, String javaVersion, String soFamily, String macAddress, String ipAddress, String machineName, Double cpuLoad, 
+	public Node(NodeType type, String javaVersion, String soFamily, String macAddress, String ipAddress, String machineName, Double cpuLoad, 
 			String soName, int availableProcessors,  int maxAllowedTasks, long freeMemory, long totalMemory) {
 		this.soName = soName;
 		this.macAddress = macAddress;
@@ -638,7 +629,7 @@ public class Node {
 		log.add( logItem );
 	}
 	
-	public ClusterType getType() {
+	public NodeType getType() {
 		return type;
 	}
 	

@@ -27,7 +27,7 @@ public class NodeSSHTerminalAction extends BasicActionClass {
 	
 	public String execute () {
 		NodesManager cm = NodesManager.getInstance();
-		cluster = cm.getCluster( macAddress );
+		cluster = cm.getNode( macAddress );
 		
 		if ( cluster == null ) {
 			setMessageText("Node " + macAddress + " not found");

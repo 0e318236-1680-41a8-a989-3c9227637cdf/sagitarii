@@ -10,7 +10,7 @@ import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 
 import br.cefetrj.sagitarii.core.NodesManager;
-import br.cefetrj.sagitarii.core.types.ClusterType;
+import br.cefetrj.sagitarii.core.types.NodeType;
 
 import com.opensymphony.xwork2.ActionContext;
 
@@ -48,7 +48,7 @@ public class AnnounceAction  {
 	
 			try {
 				cpu = Double.valueOf( cpuLoad );
-				NodesManager.getInstance().addOrUpdateCluster( ClusterType.NODE, javaVersion, nodeType, macAddress, 
+				NodesManager.getInstance().addOrUpdateNode( NodeType.NODE, javaVersion, nodeType, macAddress, 
 						localIpAddress, machineName, cpu, soName, availableProcessors, 
 						maxAllowedTasks, freeMemory, totalMemory );
 				
