@@ -1,5 +1,5 @@
 package br.cefetrj.sagitarii.core.types;
 
-public enum ClusterStatus {
+public enum NodeStatus {
 	ACTIVE, DEAD, TOO_BUSY, IDLE
 }

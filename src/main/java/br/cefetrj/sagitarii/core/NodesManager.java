@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 
 import br.cefetrj.sagitarii.core.config.Configurator;
 import br.cefetrj.sagitarii.core.delivery.InstanceDeliveryControl;
-import br.cefetrj.sagitarii.core.types.ClusterStatus;
+import br.cefetrj.sagitarii.core.types.NodeStatus;
 import br.cefetrj.sagitarii.core.types.ClusterType;
 import br.cefetrj.sagitarii.core.types.InstanceStatus;
 import br.cefetrj.sagitarii.core.types.LogType;
@@ -22,7 +22,7 @@ import br.cefetrj.sagitarii.persistence.entity.Instance;
 import com.google.gson.Gson;
 
 public class NodesManager {
-	private List<Node> clusterList;
+	private List<Node> nodeList;
 	private static NodesManager cm;
 	private int lastQuant = 0;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
@@ -35,9 +35,9 @@ public class NodesManager {
 	}
 	
 	private void checkLazy() {
-		for ( Node cluster : getClusterList() ) {
-			if ( cluster.getStatus() != ClusterStatus.IDLE ) continue;
-			InstanceDeliveryControl.getInstance().claimInstance( cluster );
+		for ( Node node : getNodeList() ) {
+			if ( node.getStatus() != NodeStatus.IDLE ) continue;
+			InstanceDeliveryControl.getInstance().claimInstance( node );
 		}
 	}
 	
@@ -46,7 +46,7 @@ public class NodesManager {
 			String path = PathFinder.getInstance().getPath() + "/metrics/";
 			File newFile = new File(path);
 			newFile.mkdirs();
-			for ( Node cluster : getClusterList() ) {
+			for ( Node cluster : getNodeList() ) {
 				cluster.saveMetricImages( path );
 			}
 		} catch ( Exception e ) {
@@ -57,8 +57,8 @@ public class NodesManager {
 	
 	public int getCores() {
 		int cores = 0;
-		for ( Node clu : getClusterList()  ) {
-			if ( ( !clu.isMainCluster() ) && ( clu.getStatus() == ClusterStatus.ACTIVE ) ) {
+		for ( Node clu : getNodeList()  ) {
+			if ( ( !clu.isMainCluster() ) && ( clu.getStatus() == NodeStatus.ACTIVE ) ) {
 				cores = cores + clu.getAvailableProcessors();
 			}
 		}
@@ -129,7 +129,7 @@ public class NodesManager {
 	public boolean hasClusters() {
 		boolean hasAliveNodes = false;
 		boolean result = false;
-		for ( Node clu : getClusterList() ) {
+		for ( Node clu : getNodeList() ) {
 			if ( !clu.isMainCluster() && !clu.isDead() ) {
 				hasAliveNodes = true;
 			}
@@ -148,7 +148,7 @@ public class NodesManager {
 	}
 
 	public synchronized Node tryToFindInstance( String instanceSerial ) {
-		for ( Node cl : getClusterList() ) {
+		for ( Node cl : getNodeList() ) {
 			if ( cl.isRunning(instanceSerial) ) return cl;
 		}
 		return null;
@@ -191,7 +191,7 @@ public class NodesManager {
 	}
 
 	public void reloadWrappers() {
-		for ( Node clu : getClusterList() ) {
+		for ( Node clu : getNodeList() ) {
 			if ( !clu.isMainCluster() ) {
 				clu.reloadWrappers();
 			}
@@ -202,7 +202,7 @@ public class NodesManager {
 		if ( Sagitarii.getInstance().getRunningExperiments().size() > 0 ) {
 			throw new Exception("Cannot clean nodes workspaces when experiments are running.");
 		} else { 
-			for ( Node clu : getClusterList() ) {
+			for ( Node clu : getNodeList() ) {
 				if ( !clu.isMainCluster() ) {
 					clu.cleanWorkspace();
 				}
@@ -353,24 +353,24 @@ public class NodesManager {
 	}
 	
 	public boolean haveNewCluster() {
-		if ( clusterList.size() != lastQuant ) {
-			lastQuant = clusterList.size();
+		if ( nodeList.size() != lastQuant ) {
+			lastQuant = nodeList.size();
 			return true;
 		}
 		return false;
 	}
 	
-	public List<Node> getClusterList() {
-		return new ArrayList<Node>( clusterList );
+	public List<Node> getNodeList() {
+		return new ArrayList<Node>( nodeList );
 	}
 	
 
 	private NodesManager() {
-		clusterList = new ArrayList<Node>();
+		nodeList = new ArrayList<Node>();
 	}
 	
 	public Node getCluster(String macAddress) {
-		for ( Node clu : getClusterList()  ) {
+		for ( Node clu : getNodeList()  ) {
 			if ( clu.getmacAddress().equalsIgnoreCase( macAddress ) ) {
 				return clu;
 			}
@@ -380,7 +380,7 @@ public class NodesManager {
 
 
 	public void updateClustersStatus() {
-		for ( Node clu : clusterList  ) {
+		for ( Node clu : nodeList  ) {
 			clu.updateStatus();
 		}
 		checkLazy();
@@ -416,7 +416,7 @@ public class NodesManager {
 		} else {
 			Node c1 = new Node(type, javaVersion,soFamily,macAddress,ipAddress,machineName,
 					cpuLoad,soName,availableProcessors,maxAllowedTasks,freeMemory,totalMemory);
-			clusterList.add( c1 );
+			nodeList.add( c1 );
 			retorno = c1;
 		}
 		

@@ -20,7 +20,7 @@ public class ViewClustersAction extends BasicActionClass {
 	
 	public String execute () {
 		NodesManager cm = NodesManager.getInstance();
-		clusterList = cm.getClusterList();
+		clusterList = cm.getNodeList();
 		return "ok";
 	}
 

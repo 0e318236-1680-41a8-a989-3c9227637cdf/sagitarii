@@ -9,7 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import br.cefetrj.sagitarii.core.delivery.InstanceDeliveryControl;
-import br.cefetrj.sagitarii.core.types.ClusterStatus;
+import br.cefetrj.sagitarii.core.types.NodeStatus;
 import br.cefetrj.sagitarii.core.types.ClusterType;
 import br.cefetrj.sagitarii.core.types.InstanceStatus;
 import br.cefetrj.sagitarii.core.types.LogType;
@@ -29,7 +29,7 @@ public class Node {
 	private String soName;
 	private String macAddress;
 	private String ipAddress;
-	private ClusterStatus status;
+	private NodeStatus status;
 	private String machineName;
 	private Date lastAnnounce;
 	private Integer cpuLoad;
@@ -405,7 +405,7 @@ public class Node {
 		this.soFamily = soFamily;
 		this.freeMemory = freeMemory;
 		this.totalMemory = totalMemory;
-		this.status = ClusterStatus.IDLE;
+		this.status = NodeStatus.IDLE;
 		this.maxAllowedTasks = maxAllowedTasks;
 		this.runningInstances = new ArrayList<Instance>();
 		this.type = type;
@@ -436,10 +436,10 @@ public class Node {
 	public void setIpAddress(String ipAddress) {
 		this.ipAddress = ipAddress;
 	}
-	public ClusterStatus getStatus() {
+	public NodeStatus getStatus() {
 		return status;
 	}
-	public void setStatus(ClusterStatus status) {
+	public void setStatus(NodeStatus status) {
 		this.status = status;
 	}
 
@@ -464,31 +464,31 @@ public class Node {
 	}
 
 	public boolean isDead() {
-		return this.status == ClusterStatus.DEAD;
+		return this.status == NodeStatus.DEAD;
 	}
 	
 	public void updateStatus() {
 		cleanUp();
-		ClusterStatus oldStatus = this.status;
+		NodeStatus oldStatus = this.status;
 		this.age++;
 		if ( age > 10 ) {
-			this.status = ClusterStatus.DEAD;
+			this.status = NodeStatus.DEAD;
 			clearSignals();
 		} else { 
 			if ( runningInstances.size() == 0 ) {
-				this.status = ClusterStatus.IDLE;
+				this.status = NodeStatus.IDLE;
 			}		
 			if ( runningInstances.size() > 0 ) {
-				this.status = ClusterStatus.ACTIVE;
+				this.status = NodeStatus.ACTIVE;
 			}
 		}
 		
 		if ( oldStatus != this.status ) {
-			if ( this.status == ClusterStatus.DEAD ) {
+			if ( this.status == NodeStatus.DEAD ) {
 				setMessage( LogType.NODE_STATUS, "Node " + macAddress + " is now OFFLINE." );
 				timeWhenGoesDead = DateLibrary.getInstance().getDateHourTextHuman();
 			}
-			if ( oldStatus == ClusterStatus.DEAD ) {
+			if ( oldStatus == NodeStatus.DEAD ) {
 				setMessage( LogType.NODE_STATUS, "Node " + macAddress + " was offline since " + timeWhenGoesDead + 
 						" and is now as " + this.status );
 				timeWhenGoesDead = "";
