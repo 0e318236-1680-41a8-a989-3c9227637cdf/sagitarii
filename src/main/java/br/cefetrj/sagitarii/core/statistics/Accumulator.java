@@ -76,6 +76,15 @@ public class Accumulator {
 		return DateLibrary.getInstance().getTimeRepresentation(averageMillis);
 	}
 	
+	public String getMinAgeAsText() {
+		return DateLibrary.getInstance().getTimeRepresentation(minAgeMillis);
+	}
+
+	public String getMaxAgeAsText() {
+		return DateLibrary.getInstance().getTimeRepresentation(maxAgeMillis);
+	}
+	
+
 	public String getHash() {
 		return this.hash;
 	}

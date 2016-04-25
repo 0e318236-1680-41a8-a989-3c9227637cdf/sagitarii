@@ -8,13 +8,13 @@ import br.cefetrj.sagitarii.persistence.entity.TimeControl;
 import br.cefetrj.sagitarii.persistence.services.TimeControlService;
 
 public class AgeCalculator {
-	private List<Accumulator> lista;
+	private List<Accumulator> list;
 	private static AgeCalculator instance;
 	private int totalAdded = 0;
 	
 	public void storeList() {
 		try {
-			for ( Accumulator ac : lista ) {
+			for ( Accumulator ac : list ) {
 				TimeControl tc = new TimeControl(ac.getIdTimeControl(), ac.getAverageMillis(), ac.getCalculatedCount(),	
 						ac.getHash(), ac.getTotalAgeMillis(), ac.getContent() );
 				
@@ -35,11 +35,11 @@ public class AgeCalculator {
 	
 	public void retrieveList() throws Exception {
 		TimeControlService tcs = new TimeControlService();
-		lista = tcs.getList();
+		list = tcs.getList();
 	}
 	
 	private AgeCalculator() {
-		lista = new ArrayList<Accumulator>();
+		list = new ArrayList<Accumulator>();
 	}
 	
 	public static AgeCalculator getInstance() {
@@ -50,12 +50,12 @@ public class AgeCalculator {
 	}
 	
 	public List<Accumulator> getList() {
-		return new ArrayList<Accumulator>(lista);
+		return new ArrayList<Accumulator>(list);
 	}
 	
 
 	public Accumulator getAccumulator( String hash ) {
-		for ( Accumulator accumulator : lista  ) {
+		for ( Accumulator accumulator : list  ) {
 			if( accumulator.getHash().equals(hash)  ) {
 				return accumulator;
 			}
@@ -66,14 +66,14 @@ public class AgeCalculator {
 	public void addToStatistics( DeliveryUnit du ) {
 		boolean found = false;
 		totalAdded++;
-		for ( Accumulator accumulator : lista  ) {
+		for ( Accumulator accumulator : list  ) {
 			if( accumulator.getHash().equals( du.getHash() )  ) {
 				accumulator.addToStack( du );
 				found = true;
 			}
 		}
 		if ( !found ) {
-			lista.add ( new Accumulator( du ) );
+			list.add ( new Accumulator( du ) );
 		}
 		
 		// Every 10 updates, store / update list on database
