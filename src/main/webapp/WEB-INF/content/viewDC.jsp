@@ -31,6 +31,8 @@
 									<th style="width:5%">ID</th>
 									<th style="width:15%">Instance Content</th>
 									<th style="width:10%">Average Time</th>
+									<th style="width:10%">Min Time</th>
+									<th style="width:10%">Max Time</th>
 									<th style="width:10%">Total Calculated</th>
 								</tr>
 								<c:forEach var="age" items="${ageStatistics}">
@@ -38,6 +40,8 @@
 										<td class="tableCellFormRight">${age.idTimeControl}</td>
 										<td class="tableCellFormRight">${age.content}</td>
 										<td class="tableCellFormRight">${age.averageAgeAsText}</td>
+										<td class="tableCellFormRight">${age.minAgeAsText}</td>
+										<td class="tableCellFormRight">${age.maxAgeAsText}</td>
 										<td class="tableCellFormRight">${age.calculatedCount}</td>
 									</tr>
 								</c:forEach>
