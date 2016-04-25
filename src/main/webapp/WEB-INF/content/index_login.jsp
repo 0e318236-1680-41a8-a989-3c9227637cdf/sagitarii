@@ -81,6 +81,7 @@
 		<div id="bottomBar" style="height:90px">
 			
 			<div class="footerDivCenter" style="position: relative;margin-top:5px;">
+				<a class="dicas" title="Hadoop HDFS" target="_BLANK" href="http://hadoop.apache.org/releases.html"><img src="img/logos/hdfs_badge.png" class="badge"></a>
 				<a class="dicas" title="CEFET-RJ" target="_BLANK" href="http://eic.cefet-rj.br/portal/"><img src="img/logos/cefet_badge.png" class="badge"></a>
 				<a class="dicas" title="Cytoscape.js" target="_BLANK" href="http://cytoscape.github.io/cytoscape.js/"><img src="img/logos/cytoscape_badge.png" class="badge"></a>
 				<a class="dicas" title="Download Code" target="_BLANK" href="https://github.com/eic-cefet-rj"><img src="img/logos/git_badge.png" class="badge"></a>

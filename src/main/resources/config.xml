@@ -20,8 +20,8 @@
 		<CSVDelimiter>,</CSVDelimiter>
 		<useDynamicLoadBalancer>true</useDynamicLoadBalancer>
 		<databaseName>sagitarii</databaseName>
-		<userName>postgres</userName>
-		<password>antares2</password>
+		<userName>sagitarii</userName>
+		<password>Chiron2014!</password>
 		<useHdfs>false</useHdfs>
 		<hadoopConfigPath>/opt/hadoop/hadoop/etc/hadoop/</hadoopConfigPath>
 	</sagitarii>
