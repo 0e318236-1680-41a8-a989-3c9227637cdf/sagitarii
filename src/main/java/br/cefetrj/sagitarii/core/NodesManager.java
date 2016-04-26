@@ -165,6 +165,7 @@ public class NodesManager {
 			try {
 				cl.confirmReceiveData( rd );
 			} catch ( Exception e ) {
+				e.printStackTrace();
 				logger.error("activity " + rd.getInstance().getSerial() + ": " + e.getMessage() );
 				cl.setMessage( LogType.SYSTEM, e.getMessage(), rd.getInstance().getSerial() );
 				throw e;

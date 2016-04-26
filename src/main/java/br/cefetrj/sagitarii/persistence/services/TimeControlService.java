@@ -30,6 +30,9 @@ public class TimeControlService {
 			oldTimeControl.setAverageMilis( tControl.getAverageMilis() );
 			oldTimeControl.setCalculatedCount( tControl.getCalculatedCount() );
 			oldTimeControl.setTotalAgeMilis( tControl.getTotalAgeMilis() );
+			oldTimeControl.setMinAgeMilis( tControl.getMinAgeMilis() );
+			oldTimeControl.setMaxAgeMilis( tControl.getMaxAgeMilis() );
+			
 		} catch ( Exception e) {
 			throw new UpdateException( e.getMessage() );
 		}

@@ -128,11 +128,11 @@
 			<appender-ref ref="File"/> 
 		</Logger>
 
-		<Logger name="br.cefetrj.sagitarii.core.ClustersManager" level="debug" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.core.NodesManager" level="debug" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 		
-		<Logger name="br.cefetrj.sagitarii.core.Cluster" level="debug" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.core.Node" level="debug" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 

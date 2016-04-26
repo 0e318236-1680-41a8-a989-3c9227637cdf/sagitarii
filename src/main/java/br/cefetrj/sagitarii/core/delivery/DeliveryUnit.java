@@ -2,13 +2,8 @@ package br.cefetrj.sagitarii.core.delivery;
 
 import java.security.MessageDigest;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import br.cefetrj.sagitarii.misc.Activation;
 import br.cefetrj.sagitarii.misc.XMLParser;
@@ -18,11 +13,12 @@ public class DeliveryUnit {
 	private Instance instance;
 	private List<Activation> activations;
 	private String macAddress;
-	private Date deliverTime;
-	private Date receiveTime;
+	//private Date deliverTime;
+	//private Date receiveTime;
+	private Date endTime;
 	private String hash;
 	private boolean delayed = false;
-	private Logger logger = LogManager.getLogger( this.getClass().getName() );
+	//private Logger logger = LogManager.getLogger( this.getClass().getName() );
 	
 	public String getInstanceActivities() {
 		String prefix = "";
@@ -40,6 +36,10 @@ public class DeliveryUnit {
 	
 	public List<Activation> getActivations() {
 		return new ArrayList<Activation>( activations );
+	}
+	
+	public Date getEndTime() {
+		return endTime;
 	}
 	
 	public String getHash() {
@@ -87,9 +87,10 @@ public class DeliveryUnit {
 		this.macAddress = macAddress;
 	}
 	
+	/*
 	public long getAgeMillis() {
 		try {
-			Date endTime = Calendar.getInstance().getTime();
+			endTime = Calendar.getInstance().getTime();
 			if( receiveTime != null ) {
 				endTime = receiveTime;
 			} 
@@ -101,11 +102,15 @@ public class DeliveryUnit {
 			
 			return endMillis - deliverMillis;
 		} catch ( Exception e ) {
+			logger.error("error calculating instance age: " + e.getMessage() );
 			return 0;
 		}
 	}
+	*/
 
 	public String getAgeTime() {
+		return instance.getElapsedTime();
+		/*
 		long millis = getAgeMillis();
 		String retorno = String.format("%02d:%02d:%02d", 
 				TimeUnit.MILLISECONDS.toHours(millis),
@@ -114,12 +119,14 @@ public class DeliveryUnit {
 				TimeUnit.MILLISECONDS.toSeconds(millis) - 
 				TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))); 	
 		return retorno;
+		*/
 	}
 	
 	public Date getDeliverTime() {
-		return deliverTime;
+		return instance.getStartDateTime();
 	}
 
+	/*
 	public void setDeliverTime(Date deliverTime) {
 		this.deliverTime = deliverTime;
 	}
@@ -132,6 +139,6 @@ public class DeliveryUnit {
 		this.receiveTime = receiveTime;
 	}
 
-	
+	*/
 	
 }

@@ -1,7 +1,6 @@
 package br.cefetrj.sagitarii.core.delivery;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -158,7 +157,7 @@ public class InstanceDeliveryControl {
 		DeliveryUnit du = new DeliveryUnit();
 		du.setMacAddress(macAddress);
 		du.setInstance(instance);
-		du.setDeliverTime( Calendar.getInstance().getTime() );
+		//du.setDeliverTime( Calendar.getInstance().getTime() );
 		units.add(du);
 	}
 
@@ -177,7 +176,7 @@ public class InstanceDeliveryControl {
 			if ( du.getInstance().getSerial().equalsIgnoreCase( instanceSerial ) ) {
 				logger.debug("will remove Instance " + instanceSerial + " from Delivery Control and add it to statistics");
 				units.remove( du );
-				du.setReceiveTime( Calendar.getInstance().getTime() );
+				//du.setReceiveTime( Calendar.getInstance().getTime() );
 				AgeCalculator.getInstance().addToStatistics( du );
 				break;
 			}

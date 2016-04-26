@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 
 import br.cefetrj.sagitarii.core.delivery.DeliveryUnit;
 import br.cefetrj.sagitarii.misc.DateLibrary;
+import br.cefetrj.sagitarii.persistence.entity.Instance;
 import br.cefetrj.sagitarii.persistence.entity.TimeControl;
 
 public class Accumulator {
@@ -39,6 +40,8 @@ public class Accumulator {
 		this.hash = tc.getHash();
 		this.idTimeControl = tc.getIdTimeControl();
 		this.totalAgeMillis = tc.getTotalAgeMilis();
+		this.minAgeMillis = tc.getMinAgeMilis();
+		this.maxAgeMillis = tc.getMaxAgeMilis();
 		this.content = tc.getContent();
 		logger.debug("[DB] new Accumulator for " + content + ": " + averageMillis + " | " + totalAgeMillis + " | " + calculatedCount );
 	}
@@ -52,13 +55,22 @@ public class Accumulator {
 	}
 	
 	public void addToStack( DeliveryUnit du ) {
-		Long duAgeMillis = du.getAgeMillis();
+		Instance instance = du.getInstance();
+		Long duAgeMillis = instance.getElapsedMillis();
+		// Long duAgeMillis = du.getAgeMillis();
+		
+		if ( duAgeMillis == 0 ) {
+			logger.error("Instance zero age detected: Deliver time " + du.getDeliverTime().getTime() + " | End time " + du.getEndTime().getTime() );
+		}
+		
 		if ( duAgeMillis > maxAgeMillis ) {
 			maxAgeMillis = duAgeMillis;
 		}
-		if ( duAgeMillis < minAgeMillis) {
+		
+		if ( ( minAgeMillis == 0 ) || ( duAgeMillis < minAgeMillis ) ) {
 			minAgeMillis = duAgeMillis;
 		}
+		
 		logger.debug("updating average count for " + content + ": " + averageMillis + " | " + totalAgeMillis + " | " + calculatedCount + " | " + duAgeMillis );
 		calculatedCount++;
 		Long newTotalAgeMillis = totalAgeMillis + duAgeMillis;
@@ -91,6 +103,14 @@ public class Accumulator {
 	
 	public long getTotalAgeMillis() {
 		return totalAgeMillis;
+	}
+	
+	public Long getMinAgeMillis() {
+		return minAgeMillis;
+	}
+	
+	public Long getMaxAgeMillis() {
+		return maxAgeMillis;
 	}
 	
 }

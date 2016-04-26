@@ -27,7 +27,6 @@ import org.hibernate.annotations.Type;
 
 import br.cefetrj.sagitarii.core.types.ActivityType;
 import br.cefetrj.sagitarii.core.types.InstanceStatus;
-import br.cefetrj.sagitarii.misc.DateLibrary;
 
 @SuppressWarnings("serial")
 @Entity
@@ -232,7 +231,14 @@ public class Instance implements Serializable {
 		if ( status == InstanceStatus.PIPELINED ) {
 			elapsedMillis = Long.valueOf(0);
 		} else {
-		
+			Date start = startDateTime;
+			Date end = finishDateTime;
+			if ( end == null ) {
+				end = Calendar.getInstance().getTime();
+			}
+			elapsedMillis = end.getTime() - start.getTime();
+			
+			/*
 			DateLibrary dl = DateLibrary.getInstance();
 			dl.setTo( startDateTime );
 			Calendar cl = Calendar.getInstance();
@@ -244,6 +250,7 @@ public class Instance implements Serializable {
 			}
 			
 			elapsedMillis = dl.getDiffMillisTo( cl ) ;
+			*/
 		}
 		return elapsedMillis;
 	}	
