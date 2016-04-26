@@ -25,7 +25,6 @@
 		<maximunCPULimit>85</maximunCPULimit>
 		<minimunCPULimit>70</minimunCPULimit>
 		<maxUploadThreads>7</maxUploadThreads>
-		<useHdfs>false</useHdfs>
 		<hadoopConfigPath>/opt/hadoop/hadoop/etc/hadoop/</hadoopConfigPath>
 	</cluster>
 

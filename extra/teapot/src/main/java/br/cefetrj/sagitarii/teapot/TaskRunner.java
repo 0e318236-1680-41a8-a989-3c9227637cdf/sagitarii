@@ -21,11 +21,12 @@ package br.cefetrj.sagitarii.teapot;
 import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import br.cefetrj.sagitarii.teapot.comm.Communicator;
 
-public class TaskRunner extends Thread {
+public class TaskRunner implements Callable<Long> {
 	private TaskManager teapot;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() ); 
 	private String serial;
@@ -64,7 +65,6 @@ public class TaskRunner extends Thread {
 		this.teapot = new TaskManager( communicator, configurator);
 		this.serial = UUID.randomUUID().toString().substring(0, 5).toUpperCase();
 		this.response = response;
-		setName("TaskManager Task Runner " + this.serial );
 	}
 	
 	public String getTime() {
@@ -87,7 +87,7 @@ public class TaskRunner extends Thread {
 	}
 	
 	@Override
-	public void run() {
+	public Long call() throws Exception {
 		startTime = DateLibrary.getInstance().getHourTextHuman();
 		startTimeMillis = Calendar.getInstance().getTimeInMillis();
 		try {
@@ -103,6 +103,7 @@ public class TaskRunner extends Thread {
 			logger.error("[" + serial + "] " + e.getMessage() );
 		}
 		active = false;
+		return null;
 	}
 	
 }

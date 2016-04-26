@@ -7,16 +7,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
 
 import org.apache.commons.io.FileUtils;
 
 import br.cefetrj.sagitarii.teapot.comm.Communicator;
-import br.cefetrj.sagitarii.teapot.console.CommandLoader;
 
 
 public class Main {
 	private static Logger logger = LogManager.getLogger( "br.cefetrj.sagitarii.teapot.Main" ); 
-	private static CommandLoader cm;
 	private static long totalInstancesProcessed = 0;
 	private static boolean paused = false;
 	private static List<TaskRunner> runners = new ArrayList<TaskRunner>();
@@ -27,6 +28,8 @@ public class Main {
 	private static Communicator communicator;
 	private static Configurator configurator;
 	private static Watchdog watchdog;
+	private static final int TASK_PREFETCH_VALUE = 2;
+	private static ExecutorService executor;
 	
 	public static void pause() {
 		paused = true;
@@ -130,22 +133,8 @@ public class Main {
 			
 			// =============================================================
 			// =============================================================
-			if ( args.length > 0) {
-				
-				if( args[0].equalsIgnoreCase("interactive") ) {
-					logger.debug("Stating interactive mode...");
-					cm = new CommandLoader();
-					cm.start();
-					LogManager.disableLoggers();
-				}
-
-				if( ( args.length > 1) && args[1].equalsIgnoreCase("norun") ) {
-					return;
-				}
-				
-			}
-			// =============================================================
-			// =============================================================
+			
+			executor = Executors.newFixedThreadPool( configurator.getActivationsMaxLimit() );
 			
 			while (true) {
 				clearRunners();
@@ -186,7 +175,7 @@ public class Main {
 										packageSize = 1;
 									}
 									
-									response = getTasksFromSagitarii(packageSize);
+									response = getTasksFromSagitarii(packageSize + TASK_PREFETCH_VALUE);
 									
 									if ( response.length() > 0 ) {
 										if ( response.equals("COMM_ERROR") ) {
@@ -195,7 +184,7 @@ public class Main {
 											if ( !specialCommand( response ) ) {
 												List<String> responses = decodeResponse( response );
 												for ( String decodedResponse : responses ) {
-													startTask( decodedResponse);
+													startTask( decodedResponse );
 												}
 											}
 										}
@@ -255,8 +244,14 @@ public class Main {
 		logger.debug("starting new task");
 		notifySagitarii("starting new task...");
 		TaskRunner tr = new TaskRunner( decodedResponse, communicator, configurator);
+		
+		
+		FutureTask<Long> futureTaskHdfs = new FutureTask<Long>( tr );
+		executor.execute( futureTaskHdfs );
+		
+		
 		runners.add(tr);
-		tr.start();
+		//tr.start();
 		totalInstancesProcessed++;
 		logger.debug("new task started");
 		notifySagitarii("new task started. Total: " + runners.size() );

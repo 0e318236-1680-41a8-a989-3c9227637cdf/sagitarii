@@ -57,7 +57,6 @@ public class Configurator {
 	private int maximunCPULimit;
 	private int minimunCPULimit;
 	private int maxUploadThreads;
-	private boolean useHdfs = false;
 	private String hadoopConfigPath;
 	
 	public int getMaximunCPULimit() {
@@ -230,10 +229,6 @@ public class Configurator {
 		return rPath;
 	}
 	
-	public boolean useHdfs() {
-		return useHdfs;
-	}
-	
 	public String getHadoopConfigPath() {
 		return hadoopConfigPath;
 	}
@@ -271,7 +266,6 @@ public class Configurator {
 				minimunCPULimit = Integer.valueOf( getTagValue("minimunCPULimit", mpElement) );
 				maxUploadThreads = Integer.valueOf( getTagValue("maxUploadThreads", mpElement) );
 				
-				useHdfs = Boolean.parseBoolean( getTagValue("useHdfs", mpElement) );
 				hadoopConfigPath = getTagValue("hadoopConfigPath", mpElement);
 				
 				if ( enforceTaskLimitToCores ) {
