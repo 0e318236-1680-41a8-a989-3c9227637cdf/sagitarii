@@ -11,6 +11,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.commons.csv.CSVFormat;
@@ -59,6 +62,9 @@ public class FileImporter extends Thread {
 	private String fragment;
 	private long importedFiles = 0;
 	private String lastImportedFile = "";
+	private ExecutorService executor;
+	private List< FutureTask<Long> > futureTasks;
+	private String hadoopConfigPath;
 	
 	public String getLastImportedFile() {
 		return lastImportedFile;
@@ -153,6 +159,9 @@ public class FileImporter extends Thread {
 		this.sessionContext = PathFinder.getInstance().getPath() + "/cache/" + sessionSerial;
 		this.fileIds = new HashMap<String,Integer>();
 		this.status = "WORKING";
+		this.executor = Executors.newFixedThreadPool( 5 );
+		this.futureTasks = new ArrayList< FutureTask<Long> >();
+		this.hadoopConfigPath = Configurator.getInstance().getHadoopConfigPath();
 	}
 
 	
@@ -267,6 +276,14 @@ public class FileImporter extends Thread {
 		return instance;
 	}
 	
+	
+	private void storeToHdfs( String fullFilePath, String hdfsFileTargetFolder ) throws Exception {
+		HDFSUploadTask futHdfs = new HDFSUploadTask(fullFilePath, hdfsFileTargetFolder, hadoopConfigPath, sessionSerial);
+		FutureTask<Long> futureTaskHdfs = new FutureTask<Long>( futHdfs );
+		executor.execute( futureTaskHdfs );
+		futureTasks.add( futureTaskHdfs );
+		
+	}
 
 	private void importData( ReceivedFile csvDataFile ) throws Exception {
 		String newDataFile = csvDataFile.getFileName() + ".uncompressed";
@@ -355,8 +372,8 @@ public class FileImporter extends Thread {
 						if ( fileIds.get( columnContent ) == null ) {
 							// No stored yet. store it to HDFS
 							// storeToHdfs( <localFile>, <targetFolder> );
-							// storeToHdfs( fullFilePath, hdfsFileTargetFolder );
-							// fileIds.put( columnContent, x );
+							storeToHdfs( fullFilePath, hdfsFileTargetFolder );
+							fileIds.put( columnContent, x );
 						}
 						// If already stored, nothing to do.
 					} else {

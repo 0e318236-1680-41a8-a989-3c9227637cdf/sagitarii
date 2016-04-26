@@ -14,6 +14,10 @@
 	
 	<loggers>
 
+		<Logger name="br.cefetrj.sagitarii.core.filetransfer.HDFSUploadTask" level="error" additivity="false"> 
+			<appender-ref ref="File"/> 
+		</Logger>
+
 		<Logger name="br.cefetrj.sagitarii.core.filetransfer.FtpletMonitor" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
