@@ -64,7 +64,8 @@ public class FileXMLParser {
 		String exitCode = pipeElement.getAttribute("exitCode");
 		
 		String startTimeMillis = pipeElement.getAttribute("startTime");
-		String finishTimeMillis = pipeElement.getAttribute("finishTime");		
+		String finishTimeMillis = pipeElement.getAttribute("finishTime");
+		String cpuCost = pipeElement.getAttribute("cpuCost");
 
 		List<String> consoleLines = new ArrayList<String>();
 		try {
@@ -112,6 +113,7 @@ public class FileXMLParser {
 				
 				receivedFile.setRealStartTime(startTimeMillis);
 				receivedFile.setRealFinishTime(finishTimeMillis);
+				receivedFile.setCpuCost(cpuCost);
 				
 				resp.add(receivedFile);
 				

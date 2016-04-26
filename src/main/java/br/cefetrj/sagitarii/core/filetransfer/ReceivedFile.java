@@ -19,6 +19,15 @@ public class ReceivedFile {
 	private List<String> execLog;
 	private String realStartTime;
 	private String realFinishTime;
+	private String cpuCost;
+	
+	public void setCpuCost(String cpuCost) {
+		this.cpuCost = cpuCost;
+	}
+	
+	public String getCpuCost() {
+		return cpuCost;
+	}
 
 	public ReceivedFile() {
 		exitCode = "0";

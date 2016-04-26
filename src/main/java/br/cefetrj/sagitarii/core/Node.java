@@ -276,6 +276,7 @@ public class Node {
 		String activity = actvt.getTag();
 		String startTimeMillis = rd.getCsvDataFile().getRealStartTime();
 		String finishTimeMillis = rd.getCsvDataFile().getRealFinishTime();
+		String cpuCost = rd.getCsvDataFile().getCpuCost();
 
 		logger.debug("finishing instance " + instanceSerial );
 		
@@ -299,7 +300,7 @@ public class Node {
 					consoleS.toString() + "\n\n" + execLogS.toString(), actvt.getSerial() );
 		}
 		
-		setInstanceAsDone( instanceSerial, actvt, startTimeMillis, finishTimeMillis);
+		setInstanceAsDone( instanceSerial, actvt, startTimeMillis, finishTimeMillis, cpuCost);
 		
 		/*
 		if ( amILookingFor(instanceSerial) ) {
@@ -314,7 +315,9 @@ public class Node {
 	}
 	
 	
-	public void setInstanceAsDone( String instanceSerial, Activity actvt, String startTimeMillis, String finishTimeMillis ) {
+	public void setInstanceAsDone( String instanceSerial, Activity actvt, String startTimeMillis, 
+			String finishTimeMillis, String cpuCost ) {
+		
 		debug( macAddress + ": checking if instance " + instanceSerial + " (" + actvt.getTag() + ") is done");
 		boolean found = false;
 		for( Instance instance : getRunningInstances() ) {
@@ -338,6 +341,8 @@ public class Node {
 					
 					instance.setRealStartTimeMillis( Long.valueOf( startTimeMillis) );
 					instance.setRealFinishTimeMillis( Long.valueOf( finishTimeMillis ) );
+					
+					instance.setCpuCost( Long.valueOf( cpuCost ) );
 					
 					Sagitarii.getInstance().finishInstance( instance );
 					InstanceDeliveryControl.getInstance().removeUnit( instanceSerial );

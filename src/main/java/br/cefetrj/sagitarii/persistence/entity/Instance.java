@@ -58,6 +58,9 @@ public class Instance implements Serializable {
 	@Column( name = "real_start_time_millis")
 	private Long realStartTimeMillis = Long.valueOf(0);
 	
+	@Column( name = "cpu_cost")
+	private Long cpuCost = Long.valueOf(0);
+
 	@Column( name = "real_finish_time_millis")
 	private Long realFinishTimeMillis = Long.valueOf(0);
 
@@ -111,6 +114,14 @@ public class Instance implements Serializable {
         UUID uuid = UUID.randomUUID();
         serial = uuid.toString().toUpperCase().substring(0,15);
         status = InstanceStatus.PIPELINED;
+	}
+	
+	public void setCpuCost(Long cpuCost) {
+		this.cpuCost = cpuCost;
+	}
+	
+	public Long getCpuCost() {
+		return cpuCost;
 	}
 	
 	public void addConsumption( Consumption consumption) {
