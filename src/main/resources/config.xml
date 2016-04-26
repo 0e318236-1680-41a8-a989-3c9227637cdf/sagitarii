@@ -22,7 +22,6 @@
 		<databaseName>sagitarii</databaseName>
 		<userName>sagitarii</userName>
 		<password>Chiron2014!</password>
-		<useHdfs>false</useHdfs>
 		<hadoopConfigPath>/opt/hadoop/hadoop/etc/hadoop/</hadoopConfigPath>
 	</sagitarii>
 	

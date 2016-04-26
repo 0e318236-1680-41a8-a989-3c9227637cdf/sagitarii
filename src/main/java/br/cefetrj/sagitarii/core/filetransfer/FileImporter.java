@@ -65,6 +65,7 @@ public class FileImporter extends Thread {
 	private ExecutorService executor;
 	private List< FutureTask<Long> > futureTasks;
 	private String hadoopConfigPath;
+	private final int MAX_HDFS_STORE_THREADS = 7;
 	
 	public String getLastImportedFile() {
 		return lastImportedFile;
@@ -159,7 +160,7 @@ public class FileImporter extends Thread {
 		this.sessionContext = PathFinder.getInstance().getPath() + "/cache/" + sessionSerial;
 		this.fileIds = new HashMap<String,Integer>();
 		this.status = "WORKING";
-		this.executor = Executors.newFixedThreadPool( 5 );
+		this.executor = Executors.newFixedThreadPool( MAX_HDFS_STORE_THREADS );
 		this.futureTasks = new ArrayList< FutureTask<Long> >();
 		this.hadoopConfigPath = Configurator.getInstance().getHadoopConfigPath();
 	}
@@ -360,14 +361,13 @@ public class FileImporter extends Thread {
 				// Is this column of file type?
 				if ( DomainStorage.getInstance().domainExists(relationName + "." + columnName) ) {
 					// File exists in session folder ( FTP from upload tool )
-					String fullFilePath = sessionContext + "/" + columnContent; 	// Full path to session local file
+					String fullFilePath = sessionContext + "/" + columnContent + ".gz"; 	// Full path to session local file + .gz because is compressed.
 					String hdfsFileTargetFolder = experimentSerial + "/" + sessionSerial;	// HDFS final file destination
 					
 					
 					File fil = new File( fullFilePath );
 					if ( fil.exists() ) {
 						// We have a file from upload tool! Need to store it into HDFS...
-						// TODO: Store file into HDFS
 						// check if already stored:
 						if ( fileIds.get( columnContent ) == null ) {
 							// No stored yet. store it to HDFS
@@ -377,6 +377,7 @@ public class FileImporter extends Thread {
 						}
 						// If already stored, nothing to do.
 					} else {
+						// No data files here. Just XML and CSV.
 						// We'll believe the file is already in HDFS because Teapot put it ... ( costly to confirm, so have faith )
 						// Nothing to do.
 					}

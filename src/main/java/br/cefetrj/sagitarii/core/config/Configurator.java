@@ -36,14 +36,9 @@ public class Configurator {
 	private String password;
 	private String databaseName;
 	private String hadoopConfigPath;
-	private boolean useHdfs;
 	
 	public String getHadoopConfigPath() {
 		return hadoopConfigPath;
-	}
-	
-	public boolean useHdfs() {
-		return useHdfs;
 	}
 	
 	public String toXml() {
@@ -211,7 +206,6 @@ public class Configurator {
 			password = getTagValue("password", mpElement);
 			databaseName = getTagValue("databaseName", mpElement);
 			hadoopConfigPath = getTagValue("hadoopConfigPath", mpElement);
-			useHdfs = Boolean.valueOf( getTagValue("useHdfs", mpElement).toLowerCase() );
 			useDynamicLoadBalancer = Boolean.valueOf( getTagValue("useDynamicLoadBalancer", mpElement).toLowerCase() );
 			
 			CSVDelimiter = getTagValue("CSVDelimiter", mpElement).charAt(0);
