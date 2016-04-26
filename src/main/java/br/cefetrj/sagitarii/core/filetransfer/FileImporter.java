@@ -286,18 +286,7 @@ public class FileImporter extends Thread {
 		return instance;
 	}
 	
-	/**
-	 * Verify the main CSV data file line by line.
-	 * For each line, we will search if some column contains the name of
-	 * any file uploaded. If found, store the file to database, get its ID and change
-	 * the name of the file by its ID because this column in target table is of internal type "File"
-	 * (or Postgres type of Integer with foreign key to the Files table).
-	 * After this we will verify what column exists in target table structure and 
-	 * prepare a INSERT statement with the line data and insert into target table.
-	 * 
-	 *  TODO: In case of any CSV import error, we MUST roll back all file insertions in File table. 
-	 * 
-	 */
+
 	private void importData( ReceivedFile csvDataFile ) throws Exception {
 		String newDataFile = csvDataFile.getFileName() + ".uncompressed";
 		decompress( sessionContext + "/" + csvDataFile.getFileName(), sessionContext + "/" + newDataFile );
@@ -362,7 +351,7 @@ public class FileImporter extends Thread {
 				}
 
 				// Check if any field of csv is a reference to a file
-				// If so, store the file into database, get its ID and change its name to ID in CSV data.
+				// ******************** THIS PART WAS CHANGED TO USE HDFS ****************************
 				String valVal = csvRecord.get(x).replace("'", "`");
 				if ( isFile(valVal) ) {
 					lastImportedFile = valVal;
@@ -384,8 +373,9 @@ public class FileImporter extends Thread {
 						logger.warn("the domain column " + columnName + " in table " + relationName + " has received no file");
 						valVal = "null";
 					}
-					
 				}
+				// **********************************************************************************
+				
 				sb.append( prefix + valVal );
 				prefix = ",";
 			}
@@ -521,7 +511,7 @@ public class FileImporter extends Thread {
 			String descriptor = sessionContext + "/session.xml";
 			File testDescriptor = new File( descriptor + ".gz" );
 			if( !testDescriptor.exists() ) {
-				throw new Exception("Descriptor " + sessionContext + "/session.xml.gz not found");
+				throw new Exception("Descriptor " + descriptor + " not found");
 			}
 
 			parseXml( descriptor );
