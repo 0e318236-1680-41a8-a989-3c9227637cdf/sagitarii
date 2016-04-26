@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -20,9 +19,9 @@ import org.apache.commons.csv.CSVRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import br.cefetrj.sagitarii.core.NodesManager;
 import br.cefetrj.sagitarii.core.DataReceiver;
 import br.cefetrj.sagitarii.core.DomainStorage;
+import br.cefetrj.sagitarii.core.NodesManager;
 import br.cefetrj.sagitarii.core.ReceivedData;
 import br.cefetrj.sagitarii.core.config.Configurator;
 import br.cefetrj.sagitarii.core.types.ActivityStatus;
@@ -30,13 +29,10 @@ import br.cefetrj.sagitarii.core.types.ActivityType;
 import br.cefetrj.sagitarii.core.types.InstanceStatus;
 import br.cefetrj.sagitarii.misc.PathFinder;
 import br.cefetrj.sagitarii.persistence.entity.Activity;
-import br.cefetrj.sagitarii.persistence.entity.Experiment;
 import br.cefetrj.sagitarii.persistence.entity.Instance;
 import br.cefetrj.sagitarii.persistence.entity.Relation;
 import br.cefetrj.sagitarii.persistence.exceptions.NotFoundException;
 import br.cefetrj.sagitarii.persistence.services.ActivityService;
-import br.cefetrj.sagitarii.persistence.services.ExperimentService;
-import br.cefetrj.sagitarii.persistence.services.FileService;
 import br.cefetrj.sagitarii.persistence.services.InstanceService;
 import br.cefetrj.sagitarii.persistence.services.RelationService;
 
@@ -179,23 +175,7 @@ public class FileImporter extends Thread {
 		}
 	}
 	
-	private boolean isFile( String value ) {
-		boolean result = false;
-		for( ReceivedFile receivedFile : receivedFiles ) {
-			String fileName = receivedFile.getFileName().replace(".gz", "");
-			//logger.debug("is file " + fileName + " -> " + value);
-			if ( fileName.equals(value) ) {
-				logger.debug(" > " + value + " is a file.");
-				result = true;
-				break;
-			}
-		}
-		if ( !result ) {
-			logger.debug(" > " + value + " is not a file.");
-		}
-		return result;
-	}
-	
+	/*
 	// TODO: Move to storage
 	private int importFile( String experimentSerial, String fileName, Activity activity, Instance instance ) {
 		log = "Storing file " + fileName + " to database";
@@ -241,6 +221,7 @@ public class FileImporter extends Thread {
 		log = fileName + " stored.";
 		return response;
 	}
+	*/
 	
 	private Activity retrieveActivity( String activitySerial, String macAddress, Relation table ) throws Exception {
 		ActivityService as = new ActivityService();
@@ -306,7 +287,8 @@ public class FileImporter extends Thread {
 		String activitySerial = csvDataFile.getActivity();
 		String instanceSerial = csvDataFile.getInstance();
 		String macAddress = csvDataFile.getMacAddress();
-
+		String experimentSerial = csvDataFile.getExperimentSerial();
+		
 		logger.debug("start CSV data import: relation " + relationName + " activity: " + activitySerial + " instance: " + instanceSerial);
 		
 		RelationService relationService = new RelationService();
@@ -335,49 +317,86 @@ public class FileImporter extends Thread {
 
 		log = "Importing CSV data";
 		logger.debug("checking CSV data...");
+		// Parsing lines...
 		for (CSVRecord csvRecord : parser) {
 			
 			importedLines++;
 			if ( headerLine == null ) { 
 				headerLine = csvRecord; 
 			}
+			
+			// For each line, parsing columns...
 			for ( int x = 0; x < csvRecord.size(); x++ ) {
 				// Mount the columns line (line 0)
 				if ( !headerReady ) {
-					String valVal = csvRecord.get(x).replace("'", "`");
-					sb.append( prefix + valVal );
+					String columnName = csvRecord.get(x).replace("'", "`");
+					sb.append( prefix + columnName );
 					prefix = ",";
 					continue;
 				}
 
 				// Check if any field of csv is a reference to a file
 				// ******************** THIS PART WAS CHANGED TO USE HDFS ****************************
-				String valVal = csvRecord.get(x).replace("'", "`");
-				if ( isFile(valVal) ) {
-					lastImportedFile = valVal;
-					if ( fileIds.get(valVal) == null ) {
+				String columnName = headerLine.get(x); 							// <<---- Column Name
+				// Get the column content 
+				String columnContent = csvRecord.get(x).replace("'", "`"); 	
+				// Is this column of file type?
+				if ( DomainStorage.getInstance().domainExists(relationName + "." + columnName) ) {
+					// File exists in session folder ( FTP from upload tool )
+					String fullFilePath = sessionContext + "/" + columnContent; 	// Full path to session local file
+					String hdfsFileTargetFolder = experimentSerial + "/" + sessionSerial;	// HDFS final file destination
+					
+					
+					File fil = new File( fullFilePath );
+					if ( fil.exists() ) {
+						// We have a file from upload tool! Need to store it into HDFS...
+						// TODO: Store file into HDFS
+						// check if already stored:
+						if ( fileIds.get( columnContent ) == null ) {
+							// No stored yet. store it to HDFS
+							// storeToHdfs( <localFile>, <targetFolder> );
+							// storeToHdfs( fullFilePath, hdfsFileTargetFolder );
+							// fileIds.put( columnContent, x );
+						}
+						// If already stored, nothing to do.
+					} else {
+						// We'll believe the file is already in HDFS because Teapot put it ... ( costly to confirm, so have faith )
+						// Nothing to do.
+					}
+					// Set the column content to HDFS file, so it will reflect in CSV and target table file name
+					columnContent = hdfsFileTargetFolder + "/" + columnContent;
+				}
+				
+				/*
+				if ( isFile(fileNameFromCSV) ) {
+					lastImportedFile = fileNameFromCSV;
+					if ( fileIds.get(fileNameFromCSV) == null ) {
 						// Its a new file to store. Send to database and store it's ID to a list
-						int fileId = importFile( csvDataFile.getExperimentSerial(), valVal, activity, instance );
-						fileIds.put( valVal, fileId );
-						valVal = String.valueOf( fileId );
+						int fileId = importFile( csvDataFile.getExperimentSerial(), fileNameFromCSV, activity, instance );
+						fileIds.put( fileNameFromCSV, fileId );
+						fileNameFromCSV = String.valueOf( fileId );
 					} else {
 						// We've stored this file already! get it's ID from list
-						valVal = String.valueOf( fileIds.get(valVal) );
+						fileNameFromCSV = String.valueOf( fileIds.get(fileNameFromCSV) );
 					}
 				} else {
 					// This data value is not correspondent to any file we have.
 					// But is the column a file domain for this table ?
-					String columnName = headerLine.get(x);
-					if ( DomainStorage.getInstance().domainExists(relationName + "." + columnName) ) {
+					
+					
 						// Yes... set it as null
 						logger.warn("the domain column " + columnName + " in table " + relationName + " has received no file");
-						valVal = "null";
+						fileNameFromCSV = "null";
 					}
 				}
+				
+				*/
 				// **********************************************************************************
 				
-				sb.append( prefix + valVal );
+				sb.append( prefix + columnContent );
 				prefix = ",";
+				
+				
 			}
 
 			headerReady = true;

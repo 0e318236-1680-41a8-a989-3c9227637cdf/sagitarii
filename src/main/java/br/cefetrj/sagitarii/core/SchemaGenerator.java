@@ -36,10 +36,11 @@ public class SchemaGenerator {
 		for( TableAttribute attr : attributes ) {
 			switch ( attr.getType() ) {
 				case FILE : 
-					attributeDef = attributeDef + attr.getName() +  " integer,"; 
+					attributeDef = attributeDef + attr.getName() +  " character varying(250),"; 
+					/*
 					foreignKeyFiles = foreignKeyFiles + 
 							" CONSTRAINT " + attr.getName() +  "_fkfile FOREIGN KEY ("+attr.getName()+") REFERENCES files (id_file), ";
-					
+					*/
 					break;
 				case INTEGER : attributeDef = attributeDef + attr.getName() +  " integer,"; break;
 				case STRING : attributeDef = attributeDef + attr.getName() +  " character varying(250),"; break;
