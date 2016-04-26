@@ -37,6 +37,19 @@ public class Task {
 	private Date realFinishTime;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() ); 
 	private int PID;
+	private Double cpuAcc = 0.0;
+	private int cpuCount = 0; 
+	private Double cpuCost = 0.0;
+	
+	public Double getCpuCost() {
+		return cpuCost;
+	}
+	
+	public void addCpuLevel( Double cpu ) {
+		cpuCount++;
+		cpuAcc = cpuAcc + cpu;
+		cpuCost = cpuAcc / cpuCount;
+	}
 
 	public int getPID() {
 		return PID;

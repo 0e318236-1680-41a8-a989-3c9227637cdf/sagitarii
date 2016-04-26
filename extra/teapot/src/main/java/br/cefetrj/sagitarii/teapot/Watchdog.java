@@ -3,21 +3,18 @@ package br.cefetrj.sagitarii.teapot;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-
-import br.cefetrj.sagitarii.teapot.comm.Communicator;
 
 public class Watchdog {
 	private Logger logger = LogManager.getLogger( this.getClass().getName() ); 
 	private List<String> processes = new ArrayList<String>();
-	private Communicator communicator;
-	private Configurator configurator;
+	//private Communicator communicator;
+	//private Configurator configurator;
 	
-	public Watchdog(Communicator communicator, Configurator configurator ) {
-		this.communicator = communicator;
-		this.configurator = configurator;
+	public Watchdog( ) {
+		//this.communicator = communicator;
+		//this.configurator = configurator;
 	}
 	
 	private Double getCpuFromProcess( String process ) {
@@ -73,6 +70,7 @@ public class Watchdog {
 					String line = getByPid( task.getPID() );
 					if ( !line.equals("") ) {
 						Double cpu = getCpuFromProcess( line );
+						task.addCpuLevel(cpu);
 						logger.debug("found task pid " + task.getPID() + ": " + cpu + "%" );
 						if ( cpu >= 99 ) {
 							logger.debug(" > You bastard! I'll kill you...");

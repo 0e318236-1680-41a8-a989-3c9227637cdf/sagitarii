@@ -64,6 +64,7 @@ public class Client {
 		String exitCode = "0";
 		String startTimeMillis = "";
 		String finishTimeMillis = "";
+		String cpuCost = "0";
 		
 		if ( task != null ) {
 			instanceSerial = task.getActivation().getInstanceSerial();
@@ -74,6 +75,8 @@ public class Client {
 			
 			startTimeMillis = String.valueOf( task.getRealStartTime().getTime() );
 			finishTimeMillis = String.valueOf( task.getRealFinishTime().getTime() );
+			cpuCost = String.valueOf( task.getCpuCost() );
+			
 		}			
 		
 		getSessionKey();
@@ -84,6 +87,7 @@ public class Client {
 		xml.append("<session macAddress=\""+macAddress+"\" instance=\""+instanceSerial+
 				"\" activity=\""+activity+"\"  taskId=\""+taskId+"\" exitCode=\""+exitCode+"\" fragment=\""+fragment + 
 				"\" startTime=\""+startTimeMillis + "\" finishTime=\""+finishTimeMillis +
+				"\" cpuCost=\""+cpuCost +
 				"\" totalFiles=\"#TOTAL_FILES#\" experiment=\""+experimentSerial + "\" id=\""+sessionSerial+"\" targetTable=\""+targetTable+"\">\n");
 		
 		

@@ -129,7 +129,7 @@ public class Main {
 				logger.debug("TaskManager started.");
 			}
 			
-			watchdog = new Watchdog(communicator, configurator);
+			watchdog = new Watchdog();
 			
 			// =============================================================
 			// =============================================================
