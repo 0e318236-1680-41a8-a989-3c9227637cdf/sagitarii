@@ -165,7 +165,7 @@ public class Main {
 						
 						String response = "NO_DATA";
 						try {
-							if ( runners.size() < configurator.getActivationsMaxLimit() ) {
+							if ( runners.size() < ( configurator.getActivationsMaxLimit() + TASK_PREFETCH_VALUE ) ) {
 
 								if ( !havePendentCommand() ) {
 									logger.debug( "asking Sagitarii for tasks to process...");
@@ -175,7 +175,7 @@ public class Main {
 										packageSize = 1;
 									}
 									
-									response = getTasksFromSagitarii(packageSize + TASK_PREFETCH_VALUE);
+									response = getTasksFromSagitarii( packageSize + TASK_PREFETCH_VALUE );
 									
 									if ( response.length() > 0 ) {
 										if ( response.equals("COMM_ERROR") ) {
