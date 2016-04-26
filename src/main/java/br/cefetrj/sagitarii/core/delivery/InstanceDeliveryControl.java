@@ -157,31 +157,37 @@ public class InstanceDeliveryControl {
 		DeliveryUnit du = new DeliveryUnit();
 		du.setMacAddress(macAddress);
 		du.setInstance(instance);
-		//du.setDeliverTime( Calendar.getInstance().getTime() );
 		units.add(du);
 	}
 
-	public void cancelUnit( String instanceSerial ) {
-		for ( DeliveryUnit du : units ) {
+	public synchronized void cancelUnit( String instanceSerial ) {
+		for ( DeliveryUnit du : getUnits() ) {
 			if ( du.getInstance().getSerial().equalsIgnoreCase( instanceSerial ) ) {
 				logger.debug("will cancel Instance " + instanceSerial + " from Delivery Control");
-				units.remove( du );
+				removeFromList(du);
 				break;
 			}
 		}
 	}
 	
-	public void removeUnit( String instanceSerial ) {
-		for ( DeliveryUnit du : units ) {
+	public synchronized void removeUnit( String instanceSerial ) {
+		for ( DeliveryUnit du : getUnits() ) {
 			if ( du.getInstance().getSerial().equalsIgnoreCase( instanceSerial ) ) {
 				logger.debug("will remove Instance " + instanceSerial + " from Delivery Control and add it to statistics");
-				units.remove( du );
-				//du.setReceiveTime( Calendar.getInstance().getTime() );
+				removeFromList(du);
 				AgeCalculator.getInstance().addToStatistics( du );
 				break;
 			}
 		}
 	}
 	
+	private void removeFromList( DeliveryUnit du ) {
+		try {
+			units.remove( du );
+		} catch ( Exception e ) {
+			logger.error("error removing Delivery Unit from list: " + du.getMacAddress() + " | " + du.getInstance().getSerial() );
+			logger.error(" > " + e.getMessage() );
+		}
+	}
 	
 }

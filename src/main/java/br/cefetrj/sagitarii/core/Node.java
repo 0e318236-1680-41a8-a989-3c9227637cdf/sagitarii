@@ -541,7 +541,6 @@ public class Node {
 	public void setLastAnnounce(Date lastAnnounce) {
 		this.age = 0;
 		this.lastAnnounce = lastAnnounce;
-		cleanUp();
 	}
 
 	public Integer getCpuLoad() {
