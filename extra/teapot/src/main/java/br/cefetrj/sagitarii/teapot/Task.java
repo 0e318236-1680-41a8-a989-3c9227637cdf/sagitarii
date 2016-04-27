@@ -47,8 +47,13 @@ public class Task {
 	
 	public void addCpuLevel( Double cpu ) {
 		cpuCount++;
-		cpuAcc = cpuAcc + cpu;
-		cpuCost = cpuAcc / cpuCount;
+		try {
+			cpuAcc = cpuAcc + cpu;
+			cpuCost = cpuAcc / cpuCount;
+		} catch ( Exception e ) {	}
+		if ( cpuCost == 0 ) {
+			cpuCost = cpu;
+		}
 	}
 
 	public int getPID() {
