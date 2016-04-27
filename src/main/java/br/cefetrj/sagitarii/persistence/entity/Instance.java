@@ -59,7 +59,7 @@ public class Instance implements Serializable {
 	private Long realStartTimeMillis = Long.valueOf(0);
 	
 	@Column( name = "cpu_cost")
-	private Long cpuCost = Long.valueOf(0);
+	private Double cpuCost = 0.0;
 
 	@Column( name = "real_finish_time_millis")
 	private Long realFinishTimeMillis = Long.valueOf(0);
@@ -116,11 +116,11 @@ public class Instance implements Serializable {
         status = InstanceStatus.PIPELINED;
 	}
 	
-	public void setCpuCost(Long cpuCost) {
+	public void setCpuCost(Double cpuCost) {
 		this.cpuCost = cpuCost;
 	}
 	
-	public Long getCpuCost() {
+	public Double getCpuCost() {
 		return cpuCost;
 	}
 	

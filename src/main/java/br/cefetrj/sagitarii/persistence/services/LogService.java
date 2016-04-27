@@ -26,7 +26,11 @@ public class LogService {
 	
 	public void insertLogEntry(LogEntry logEntry) throws InsertException {
 		logger.debug("inserting Log " );
-		rep.insertLogEntry( logEntry );
+		try {
+			rep.insertLogEntry( logEntry );
+		} catch ( Exception e ) {
+			logger.error(" > " + logEntry.getLog() );
+		}
 	}
 	
 	public LogEntry getLogEntry(int idLog) throws NotFoundException{

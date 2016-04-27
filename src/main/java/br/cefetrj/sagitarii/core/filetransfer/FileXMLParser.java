@@ -67,6 +67,8 @@ public class FileXMLParser {
 		String finishTimeMillis = pipeElement.getAttribute("finishTime");
 		String cpuCost = pipeElement.getAttribute("cpuCost");
 
+		System.out.println(" >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + cpuCost );
+		
 		List<String> consoleLines = new ArrayList<String>();
 		try {
 			String console = getTagValue("console", pipeElement);

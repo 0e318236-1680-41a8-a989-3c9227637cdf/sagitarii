@@ -50,6 +50,12 @@ public class Orchestrator implements ServletContextListener {
     	ServletContext context = event.getServletContext();
     	System.setProperty("rootPath", context.getRealPath("/") );
 
+    	String databaseName = System.getProperty("SAGITARII_DATABASE");
+    	String password = System.getProperty("SAGITARII_PASSWORD");
+    	String userName = System.getProperty("SAGITARII_USER");
+    	
+    	System.out.println( " >>>>> " + userName + "@" + password + ":" + databaseName );
+    	
     	UserService us;
     	try {
 

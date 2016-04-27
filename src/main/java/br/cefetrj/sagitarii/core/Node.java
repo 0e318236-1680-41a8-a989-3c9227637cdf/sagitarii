@@ -342,7 +342,11 @@ public class Node {
 					instance.setRealStartTimeMillis( Long.valueOf( startTimeMillis) );
 					instance.setRealFinishTimeMillis( Long.valueOf( finishTimeMillis ) );
 					
-					instance.setCpuCost( Long.valueOf( cpuCost ) );
+					try {
+						instance.setCpuCost( Double.valueOf( cpuCost ) );
+					} catch ( Exception e ) {
+						logger.error("invalid CPU cost from node " + macAddress + ": " + cpuCost );
+					}
 					
 					Sagitarii.getInstance().finishInstance( instance );
 					InstanceDeliveryControl.getInstance().removeUnit( instanceSerial );
@@ -598,6 +602,7 @@ public class Node {
 			ls.insetLogEntryList( logEntries );
 		} catch ( Exception e ) {
 			setMessage(LogType.SYSTEM, "cannot save log activity: " + e.getCause() + " " + e.getMessage() );
+			logger.error("cannot save log activity: " + e.getCause() + " " + e.getMessage() );
 		}
 		logEntries.clear();
 	}
