@@ -79,7 +79,7 @@ public class Client {
 			
 		}			
 		
-		getSessionKey();
+		getSessionKey( macAddress );
 		
 		StringBuilder xml = new StringBuilder();
 		xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -95,28 +95,24 @@ public class Client {
 		if ( fil.exists() ) {
 			xml.append("<file name=\""+fileName+"\" type=\"FILE_TYPE_CSV\" />\n");
 			dataFilesList.add( folder + "/" + fileName );
+			
+			File filesFolder = new File( folder + "/" + "outbox" );
+		    for (final File fileEntry : filesFolder.listFiles() ) {
+		        if ( !fileEntry.isDirectory() ) {
+		    		xml.append("<file name=\""+fileEntry.getName()+"\" type=\"FILE_TYPE_FILE\" />\n");
+		    		filesToSend.add( folder + "/outbox/" + fileEntry.getName() );
+		        }
+		    }
+			
 		} else {
 			logger.error("will not send sagi_output.txt in session.xml file: this activity instance produced no data");
-			commit();
-			return;
 		}
 		
 
-		File filesFolder = new File( folder + "/" + "outbox" );
-	    for (final File fileEntry : filesFolder.listFiles() ) {
-	        if ( !fileEntry.isDirectory() ) {
-	        	//ZipUtil.compress( folder + "/" + "outbox/" + fileEntry.getName(), folder + "/" + "outbox/" + fileEntry.getName() + ".gz" );
-	    		xml.append("<file name=\""+fileEntry.getName()+"\" type=\"FILE_TYPE_FILE\" />\n");
-	    		filesToSend.add( folder + "/outbox/" + fileEntry.getName() );
-	        }
-	    }
-		
-		
 		File f = new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath() );
 		String storageRootFolder =  f.getAbsolutePath();
 		storageRootFolder = storageRootFolder.substring(0, storageRootFolder.lastIndexOf( File.separator ) + 1) + "namespaces/";
 		
-		//String folderName = "outbox";
 		String folderPath = folder.replace(storageRootFolder, "").replaceAll("/+", "/");
 		
 		logger.debug("sending content of folder:");
@@ -155,7 +151,7 @@ public class Client {
 			logger.debug("need to send " + filesToSend.size() + " files to Sagitarii...");
 			uploadFiles( filesToSend, dataFilesList, targetTable, experimentSerial, sessionSerial, folderPath );
 		}
-		commit();
+		commit( macAddress );
 	}
 	
 
@@ -169,17 +165,17 @@ public class Client {
 		
 	}
 
-	private void commit() throws Exception {
+	private void commit( String macAddress ) throws Exception {
 		logger.debug("session "+sessionSerial+" commit.");
-		URL url = new URL( sagiHost + "/sagitarii/transactionManager?command=commit&sessionSerial=" + sessionSerial );
+		URL url = new URL( sagiHost + "/sagitarii/transactionManager?command=commit&sessionSerial=" + sessionSerial + "&macAddress=" + macAddress );
 		Scanner s = new Scanner( url.openStream() );
 		String response = s.nextLine();
 		logger.debug("server commit response: " + response);
 		s.close();
 	}
 	
-	private void getSessionKey() throws Exception {
-		URL url = new URL( sagiHost + "/sagitarii/transactionManager?command=beginTransaction");
+	private void getSessionKey( String macAddress ) throws Exception {
+		URL url = new URL( sagiHost + "/sagitarii/transactionManager?command=beginTransaction&macAddress=" + macAddress);
 		Scanner s = new Scanner( url.openStream() );
 		sessionSerial = s.nextLine();
 		logger.debug("open session " + sessionSerial );
