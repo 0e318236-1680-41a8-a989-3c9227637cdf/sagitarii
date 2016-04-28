@@ -82,7 +82,7 @@
 			<appender-ref ref="File"/> 
 		</Logger>
 		
-		<Logger name="br.cefetrj.sagitarii.core.filetransfer.Server" level="error" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.core.filetransfer.Server" level="debug" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 
