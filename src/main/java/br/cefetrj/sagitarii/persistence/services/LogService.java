@@ -37,7 +37,7 @@ public class LogService {
 		return rep.getLogEntry(idLog);
 	}
 
-	public void insetLogEntryList( List<LogEntry> list ) throws Exception {
+	public void insertLogEntryList( List<LogEntry> list ) throws Exception {
 		for ( LogEntry logEntry : list ) {
 			rep.newTransaction();
 			insertLogEntry(logEntry);

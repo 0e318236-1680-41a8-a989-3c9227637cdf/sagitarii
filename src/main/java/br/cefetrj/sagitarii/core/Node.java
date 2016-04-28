@@ -599,10 +599,10 @@ public class Node {
 	private void flushLog() {
 		try {
 			LogService ls = new LogService();
-			ls.insetLogEntryList( logEntries );
+			ls.insertLogEntryList( logEntries );
 		} catch ( Exception e ) {
-			setMessage(LogType.SYSTEM, "cannot save log activity: " + e.getCause() + " " + e.getMessage() );
-			logger.error("cannot save log activity: " + e.getCause() + " " + e.getMessage() );
+			e.printStackTrace();
+			logger.error("cannot save log activity. See server log to details.");
 		}
 		logEntries.clear();
 	}

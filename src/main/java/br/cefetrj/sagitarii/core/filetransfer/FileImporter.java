@@ -167,18 +167,15 @@ public class FileImporter extends Thread {
 
 	
 	private void cleanFiles() {
-		logger.debug("Cleaning session files...");
+		logger.debug( "["+ sessionSerial + "] Cleaning session files...");
 		try {
 			if ( receivedFiles.size() > 0 ) {
 				for( ReceivedFile receivedFile : receivedFiles ) {
-					String name = receivedFile.getFileName();
-					try {
-						Integer fileID = fileIds.get( name );
-						logger.error(" > " + fileID + ": " + name);
-					} catch ( Exception ignored ) {
-						//
-					}
+					logger.error(" > " + receivedFile.getFileName() );
+					// TODO: Don't care. This folder will be deleted.
 				}
+			} else {
+				logger.debug("["+ sessionSerial + "] Empty session.");
 			}
 		} catch ( Exception e ) {
 			//
@@ -540,7 +537,7 @@ public class FileImporter extends Thread {
 	
 	@Override
 	public void run() {
-		logger.debug("starting new file importer for session " + tag );
+		logger.debug("starting new file importer for session " + sessionContext );
 		
 		status = "WORKING";
 		
@@ -558,6 +555,11 @@ public class FileImporter extends Thread {
 			logger.debug("session " + sessionSerial + " commited");
 		} catch ( Exception e ) {
 			logger.error("Error '" + e.getMessage() + "' while commiting session " + sessionSerial);
+			e.printStackTrace();
+			for ( StackTraceElement ste :  e.getStackTrace() ) {
+				logger.error("  > " + ste.getClassName() + " (" + ste.getMethodName() + " :" + ste.getLineNumber() + ") " );
+			}
+			
 			cleanFiles();
 		}
 		

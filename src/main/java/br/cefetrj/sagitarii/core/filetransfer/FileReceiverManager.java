@@ -85,11 +85,8 @@ public class FileReceiverManager {
 		logger.debug("done");
 	}
 	
-	/**
-	 * Start a transaction in Sagitarii File Cache to receive data from Node
-	 */
-	public String beginTransaction() throws Exception {
-		return server.beginTransaction();
+	public String beginTransaction( String macAddress ) throws Exception {
+		return server.beginTransaction( macAddress );
 	}
 	
 	/**

@@ -31,9 +31,6 @@ public class GetLocalFileAction extends BasicActionClass {
 		try {
 			String filePath = PathFinder.getInstance().getPath() + "/ssh-downloads/" + macAddress + "/" + fileName;			  
 			File file = new File( filePath );
-			
-			System.out.println( filePath );
-			
 			fileInputStream = new DeleteOnCloseFileInputStream( file );			
 		} catch ( Exception e ) {
             //

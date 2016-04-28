@@ -47,11 +47,11 @@ public class Server {
 		return new ArrayList<FileImporter>( importers );
 	}
 	
-	public String beginTransaction() throws Exception {
+	public String beginTransaction( String macAddress ) throws Exception {
 		String sessionSerial = UUID.randomUUID().toString().replace("-", "");
 		String cacheDirectory = PathFinder.getInstance().getPath() + "/cache/" + sessionSerial + "/";
 		new File(cacheDirectory).mkdirs();
-		logger.debug("starting session " + sessionSerial);
+		logger.debug("starting session " + sessionSerial + " to node " + macAddress );
 		MetricController.getInstance().hit( "Session Open", MetricType.FILE );
 		return sessionSerial;
 	}

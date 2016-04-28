@@ -23,6 +23,7 @@ import com.opensymphony.xwork2.ActionContext;
 public class FileTransactionManagerAction extends BasicActionClass {
 	private String command;
 	private String sessionSerial;
+	private String macAddress;
 	
 	
 	public String execute () {
@@ -31,7 +32,7 @@ public class FileTransactionManagerAction extends BasicActionClass {
 		try {
 			
 			if ( command.equals("beginTransaction") ) {
-				resp = FileReceiverManager.getInstance().beginTransaction();
+				resp = FileReceiverManager.getInstance().beginTransaction( macAddress );
 			}
 			
 			if ( command.equals("commit") ) {
