@@ -34,7 +34,6 @@
 		<mapping class="br.cefetrj.sagitarii.persistence.entity.Experiment"/>
 		<mapping class="br.cefetrj.sagitarii.persistence.entity.Fragment"/>
 		<mapping class="br.cefetrj.sagitarii.persistence.entity.Instance"/>
-		<mapping class="br.cefetrj.sagitarii.persistence.entity.File"/>
 		<mapping class="br.cefetrj.sagitarii.persistence.entity.ActivationExecutor"/>
 		<mapping class="br.cefetrj.sagitarii.persistence.entity.Domain"/>
 		<mapping class="br.cefetrj.sagitarii.persistence.entity.User"/>

@@ -30,7 +30,6 @@ import br.cefetrj.sagitarii.persistence.entity.Consumption;
 import br.cefetrj.sagitarii.persistence.entity.CustomQuery;
 import br.cefetrj.sagitarii.persistence.entity.Domain;
 import br.cefetrj.sagitarii.persistence.entity.Experiment;
-import br.cefetrj.sagitarii.persistence.entity.File;
 import br.cefetrj.sagitarii.persistence.entity.Relation;
 import br.cefetrj.sagitarii.persistence.exceptions.DatabaseConnectException;
 import br.cefetrj.sagitarii.persistence.exceptions.DeleteException;
@@ -398,7 +397,6 @@ public class RelationService {
 		
 		if ( !sortColumn.equals("ERROR") ) {
 			result = genericFetchList( sql );
-			FileService fs = new FileService();
 
 			// Show ID instance as a link
 			for ( UserTableEntity ute : result  ) {
@@ -409,9 +407,8 @@ public class RelationService {
 					
 					if ( DomainStorage.getInstance().domainExists(domainName)  ) {
 						try {
-							fs.newTransaction();
-							File fil = fs.getFile( Integer.valueOf( ute.getData(columnName) ) );
-							data = "<a href='getFile?idFile="+data+"'>" + fil.getFileName() + "</a>";
+							String fil = ute.getData(columnName);
+							data = "<a href='getFile?idFile="+fil+"'>" + columnName + "</a>";
 						} catch ( Exception e ) {
 							//
 						}
@@ -466,16 +463,13 @@ public class RelationService {
 				sortColumn + " " + sSortDir0 + " offset " + iDisplayStart + " limit " + iDisplayLength ); 
 			
 			try {
-				FileService fs = new FileService();
 				for ( UserTableEntity ute : result  ) {
 					for ( String columnName : ute.getColumnNames() ) {
 						String data = ute.getData( columnName ); 
 						if ( DomainStorage.getInstance().isColumnADomain(columnName)  ) {
 							try {
-								int id = Integer.valueOf( ute.getData(columnName) );
-								fs.newTransaction();
-								File fil = fs.getFile( id );
-								data = "<a href='getFile?idFile="+data+"'>" + fil.getFileName() + "</a>";
+								String fil = ute.getData(columnName);
+								data = "<a href='getFile?idFile="+fil+"'>" + fil + "</a>";
 							} catch ( Exception e ) {
 								
 							}
@@ -556,8 +550,6 @@ public class RelationService {
 		
 		if ( !sortColumn.equals("ERROR") ) {
 			result = genericFetchList( sql );
-			FileService fs = new FileService();
-			
 			for ( UserTableEntity ute : result  ) { // Each line of result ...
 				List<String> columns = ute.getColumnNames();
 				for ( String columnName : columns ) {
@@ -565,9 +557,8 @@ public class RelationService {
 					String data = ute.getData( columnName ); 
 					try {
 						if ( DomainStorage.getInstance().domainExists(domainName)  ) {
-							fs.newTransaction();
-							File fil = fs.getFile( Integer.valueOf( ute.getData(columnName) ) );
-							data = "<a href='getFile?idFile="+data+"'>" + fil.getFileName() + "</a>";
+							String fil = ute.getData(columnName);
+							data = "<a href='getFile?idFile="+fil+"'>" + fil + "</a>";
 						}
 					} catch ( Exception e ) { }
 
@@ -640,7 +631,6 @@ public class RelationService {
 			UserTableEntity ute = new UserTableEntity(data);
 			result.add(ute);
 		} else {
-			FileService fs = new FileService();
 			for ( UserTableEntity ute : result ) {
 				String tableName = ute.getData("table_name");
 				List<String> columns = ute.getColumnNames();
@@ -650,9 +640,7 @@ public class RelationService {
 					
 					try {
 						if ( DomainStorage.getInstance().domainExists(domainName)  ) {
-							fs.newTransaction();
-							File fil = fs.getFile( Integer.valueOf( data ) );
-							data = "<a href='getFile?idFile="+data+"'>" + fil.getFileName() + "</a>";
+							data = "<a href='getFile?idFile="+data+"'>" + data + "</a>";
 						}
 					} catch ( Exception e ) { }
 

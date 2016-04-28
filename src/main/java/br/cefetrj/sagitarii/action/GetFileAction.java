@@ -1,15 +1,11 @@
 
 package br.cefetrj.sagitarii.action;
 
-import java.io.File;
 import java.io.FileInputStream;
 
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
-
-import br.cefetrj.sagitarii.misc.PathFinder;
-import br.cefetrj.sagitarii.persistence.services.FileService;
 
 @Action(value="getFile", results= {  
 	    @Result(name="ok", type="stream", params = {
@@ -28,8 +24,7 @@ public class GetFileAction extends BasicActionClass {
 	private String macAddress;
 	
 	public String execute () {
-		br.cefetrj.sagitarii.persistence.entity.File file = null;
-		
+		/*
 		try {
 			FileService fs = new FileService();
 			if ( (idFile != null) && ( idFile > -1 ) ) {
@@ -42,6 +37,7 @@ public class GetFileAction extends BasicActionClass {
 		} catch ( Exception e ) {
             e.printStackTrace();
 		}
+		*/
 		
 		return "ok";
 	}

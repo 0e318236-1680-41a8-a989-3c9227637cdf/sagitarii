@@ -4,15 +4,12 @@ package br.cefetrj.sagitarii.action;
 import java.io.IOException;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts2.StrutsStatics;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
-
-import br.cefetrj.sagitarii.persistence.services.FileService;
 
 import com.opensymphony.xwork2.ActionContext;
 
@@ -37,6 +34,7 @@ public class ExperimentFilesAjaxProcessAction extends BasicActionClass {
 	public String execute () {
 		String resp = "";
 		
+		/*
 		try {
 			HttpServletRequest req = (HttpServletRequest)ActionContext.getContext().get(StrutsStatics.HTTP_REQUEST);
 			sEcho = req.getParameter("sEcho");
@@ -58,7 +56,7 @@ public class ExperimentFilesAjaxProcessAction extends BasicActionClass {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+		*/
 		try { 
 			HttpServletResponse response = (HttpServletResponse)ActionContext.getContext().get(StrutsStatics.HTTP_RESPONSE);
 			

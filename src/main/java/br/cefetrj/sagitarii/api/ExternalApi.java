@@ -10,9 +10,6 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.google.gson.GsonBuilder;
-import com.opensymphony.xwork2.ActionContext;
-
 import br.cefetrj.sagitarii.core.DataReceiver;
 import br.cefetrj.sagitarii.core.Sagitarii;
 import br.cefetrj.sagitarii.core.TableAttribute;
@@ -21,16 +18,17 @@ import br.cefetrj.sagitarii.core.filetransfer.FileReceiverManager;
 import br.cefetrj.sagitarii.misc.DateLibrary;
 import br.cefetrj.sagitarii.persistence.entity.Activity;
 import br.cefetrj.sagitarii.persistence.entity.Experiment;
-import br.cefetrj.sagitarii.persistence.entity.File;
 import br.cefetrj.sagitarii.persistence.entity.Fragment;
 import br.cefetrj.sagitarii.persistence.entity.Relation;
 import br.cefetrj.sagitarii.persistence.entity.User;
 import br.cefetrj.sagitarii.persistence.entity.Workflow;
 import br.cefetrj.sagitarii.persistence.services.ExperimentService;
-import br.cefetrj.sagitarii.persistence.services.FileService;
 import br.cefetrj.sagitarii.persistence.services.RelationService;
 import br.cefetrj.sagitarii.persistence.services.UserService;
 import br.cefetrj.sagitarii.persistence.services.WorkflowService;
+
+import com.google.gson.GsonBuilder;
+import com.opensymphony.xwork2.ActionContext;
 
 public class ExternalApi {
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
@@ -267,6 +265,7 @@ public class ExternalApi {
 	}
 
 	private String getFilesExperiment( Map<String, Object> map ) {
+		/*
 		try {
 			String experimentSerial = (String)map.get("experimentSerial");
 			if( ( experimentSerial != null ) && (!experimentSerial.equals("") ) ) {
@@ -307,6 +306,8 @@ public class ExternalApi {
 			logger.error( e.getMessage() );
 			return formatMessage( e.getMessage() );
 		}
+		*/
+		return formatMessage( "Feature disabled for now" );
 	}
 
 	private String getToken( Map<String, Object> map ) {

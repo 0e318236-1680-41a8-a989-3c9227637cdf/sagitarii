@@ -1,5 +1,6 @@
 package br.cefetrj.sagitarii.core.instances;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,14 +12,12 @@ import br.cefetrj.sagitarii.core.UserTableEntity;
 import br.cefetrj.sagitarii.persistence.entity.ActivationExecutor;
 import br.cefetrj.sagitarii.persistence.entity.Activity;
 import br.cefetrj.sagitarii.persistence.entity.Domain;
-import br.cefetrj.sagitarii.persistence.entity.File;
 import br.cefetrj.sagitarii.persistence.entity.Fragment;
 import br.cefetrj.sagitarii.persistence.entity.Instance;
 import br.cefetrj.sagitarii.persistence.entity.Relation;
 import br.cefetrj.sagitarii.persistence.exceptions.DatabaseConnectException;
 import br.cefetrj.sagitarii.persistence.exceptions.NotFoundException;
 import br.cefetrj.sagitarii.persistence.services.ExecutorService;
-import br.cefetrj.sagitarii.persistence.services.FileService;
 
 public class InstanceCreator {
 	private int order;
@@ -26,7 +25,6 @@ public class InstanceCreator {
 	private List<String> nativeAttributes = new ArrayList<String>();
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 	StringBuilder fileXMLEntries = new StringBuilder();
-	FileService fs;
 	ExecutorService cs;
 	
 	public InstanceCreator() throws DatabaseConnectException {
@@ -34,7 +32,6 @@ public class InstanceCreator {
 		nativeAttributes.add("index_id");
 		nativeAttributes.add("id_experiment");
 		nativeAttributes.add("id_instance");
-		fs = new FileService();
 		cs = new ExecutorService();
 	}
 	
@@ -171,18 +168,19 @@ public class InstanceCreator {
 						// Desmembra cada item de dados da linha CSV.
 						String dataValues[] = lines[lineNumber].split(",");
 						// Pega o valor do indice do arquivo, que estah na coluna columnIndex
-						int fileIndex = Integer.valueOf( dataValues[columnIndex] );
-						logger.debug( "try to retrieve file of index number " + fileIndex + "..." );
+						String fileNameAndPath = dataValues[columnIndex] ;
+						logger.debug( "using file " + fileNameAndPath + "..." );
 						// Com o valor da coluna columnIndex 
 						// tenta pegar o arquivo correspondente (este valor eh o indice do arquivo).
-						fs.newTransaction();
-						File file = fs.getFile(fileIndex);
-						logger.debug("found file " + file.getFileName() );
-						// Troca o indice pelo nome na lista de dados da linha em questao.
-						dataValues[columnIndex] = file.getFileName();
 						
-						fileXMLEntries.append("<file name='" + file.getFileName() + "' table='" + domain.getTable().getName() + "' attribute='" + column + 
-								"' index='"+ file.getIdFile() +"' />");
+						File file = new File( fileNameAndPath );
+						
+						logger.debug("found file " + file.getName() );
+						// Troca o indice pelo nome na lista de dados da linha em questao.
+						dataValues[columnIndex] = file.getName();
+						
+						fileXMLEntries.append("<file name='" + fileNameAndPath + "' table='" + domain.getTable().getName() + 
+								"' attribute='" + column + "' />");
 						
 						// Refazer a linha, mas com o valor do arquivo trocado pelo nome.
 						for ( String dataValue : dataValues ) {
