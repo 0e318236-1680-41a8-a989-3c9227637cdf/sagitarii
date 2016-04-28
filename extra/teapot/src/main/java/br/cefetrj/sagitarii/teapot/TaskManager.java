@@ -303,8 +303,13 @@ public class TaskManager {
 	}
 
 	
-	private void download ( FileUnity file, Activation act, Downloader dl ) throws Exception {
-		String target = act.getNamespace() + "/" + "inbox" + "/" + file.getName();
+	private String download ( FileUnity file, Activation act, Downloader dl ) throws Exception {
+		
+		// Just to remove the session ID from file name
+		File temp = new File( file.getName() );
+		String fileName = temp.getName();
+		
+		String target = act.getNamespace() + "/" + "inbox" + "/" + fileName;
 		
 		debug("providing file " + file.getName() + " for " + act.getTaskId() + " (" + act.getExecutor() + ")");
 		LocalStorage ls = new LocalStorage( comm, configurator, act );
@@ -314,6 +319,7 @@ public class TaskManager {
 			throw new Exception( "could not copy the file " + file.getName() );
 		}
 		
+		return fileName;
 	}
 	
 	
@@ -370,13 +376,17 @@ public class TaskManager {
 					debug("need file " + file.getName() + " (id " + file.getId() + ") for attribute " + file.getAttribute() +
 							" of table " + file.getSourceTable() );
 					
-					download(file, act, dl);
+
+					String justFileName = download(file, act, dl);
+					String targetName = act.getNamespace() + "/" + "inbox" + "/" + justFileName;
 					
-					File fil = new File( act.getNamespace() + "/" + "inbox" + "/" + file.getName() );
+					ZipUtil.decompress( targetName + ".gz", targetName );
+					
+					File fil = new File( targetName );
 					if ( fil.exists() ) {
-						debug( "file " + file.getName() + " downloaded.");
+						debug( "file " + targetName + " downloaded.");
 					} else {
-						error( "cannot find file " + file.getName() + " after download.");
+						error( "cannot find file " + targetName + " after download.");
 					}
 					
 				}

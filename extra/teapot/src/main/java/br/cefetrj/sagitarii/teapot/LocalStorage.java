@@ -1,9 +1,8 @@
 package br.cefetrj.sagitarii.teapot;
 
-import java.io.File;
-import java.nio.file.CopyOption;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 
 import br.cefetrj.sagitarii.teapot.comm.Communicator;
 import br.cefetrj.sagitarii.teapot.comm.Downloader;
@@ -11,25 +10,29 @@ import br.cefetrj.sagitarii.teapot.comm.FileUnity;
 
 public class LocalStorage {
 	private Configurator configurator;
-	private StorageLocker locker;
 	private Activation act;
 	private Communicator comm;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
+	private FileSystem fs;
 	
-    private CopyOption[] options = new CopyOption[]{
-  	      StandardCopyOption.REPLACE_EXISTING,
-  	      StandardCopyOption.COPY_ATTRIBUTES,
-    }; 				
-
 	public String getLocation() {
 		return configurator.getSystemProperties().getLocalStorage();
 	}
 	
-	public LocalStorage( Communicator comm, Configurator configurator, Activation act ) {
+	public LocalStorage( Communicator comm, Configurator configurator, Activation act ) throws Exception  {
 		this.configurator = configurator;
-		this.locker = StorageLocker.getInstance();
 		this.act = act;
 		this.comm = comm;
+		
+		Configuration conf=new Configuration();
+
+		conf.addResource(new Path( configurator.getHadoopConfigPath() + "/core-site.xml") );
+		conf.addResource(new Path( configurator.getHadoopConfigPath() + "/hdfs-site.xml") );        
+
+		conf.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName() );
+		conf.set("fs.file.impl", org.apache.hadoop.fs.LocalFileSystem.class.getName() );		
+		fs = FileSystem.get(conf);		
+		
 	}
 	
 	private void debug( String s ) {
@@ -49,6 +52,7 @@ public class LocalStorage {
 	}
 	
 	public synchronized boolean downloadAndCopy( FileUnity file, String dest, Downloader dl )  {
+		/*
 		String url = configurator.getHostURL() + "/getFile?idFile="+ file.getId()+"&macAddress=" + configurator.getSystemProperties().getMacAddress();
 		String targetPath = getLocation() + "/" + file.getId() + "/";
 		String targetFile = targetPath + file.getName();
@@ -92,17 +96,33 @@ public class LocalStorage {
 		} else {
 			debug("file "+file.getName()+" already downloaded by other task. using local storage");
 		}
-		
-		boolean result = copy( file, dest);
-		debug("will release the file lock for " + file.getName() );
-		locker.releaseFileLock(file);
+		*/
+		boolean result = copy( file, dest );
+		//debug("will release the file lock for " + file.getName() );
+		//locker.releaseFileLock(file);
 		return result;
 
 	}
 	
 	private synchronized boolean copy( FileUnity file, String dest ) {
-		String source = getLocation() + "/" + file.getId() + "/" + file.getName();
+		String source = file.getName();
 		debug("will copy " + source + " to " + dest);
+
+		try {
+			Path root = new Path("/");
+			fs.setWorkingDirectory( root );
+			
+			Path hdfsSourceFile = new Path( source + ".gz" );
+			Path localTargetFile = new Path( dest + ".gz" );
+			
+			fs.copyToLocalFile(hdfsSourceFile, localTargetFile);
+			logger.debug("all done. HDFS copy: " + source + " to " + dest );
+		} catch ( Exception e ) {
+			error("error while coping file " + dest + " from HDFS " + source );
+			return false;
+		}
+		return true;
+		/*
 		try {
 			File src = new File(source);
 			File trgt = new File(dest);
@@ -132,6 +152,7 @@ public class LocalStorage {
 			}
 			return false;
 		}
+		*/
 	}
 
 	

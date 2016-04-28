@@ -3,15 +3,13 @@ package br.cefetrj.sagitarii.teapot.comm;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.zip.GZIPInputStream;
 
 import br.cefetrj.sagitarii.teapot.LogManager;
 import br.cefetrj.sagitarii.teapot.Logger;
+import br.cefetrj.sagitarii.teapot.ZipUtil;
 
 public class Downloader {
 	private Logger logger = LogManager.getLogger( this.getClass().getName() ); 
@@ -52,7 +50,7 @@ public class Downloader {
 				throw new Exception(fileName + " is empty. Check original file.");
 			}
 			if ( decompress ) {
-				decompress(fileName, to);
+				ZipUtil.decompress(fileName, to);
 				new File( fileName ).delete();
 			}
 		} else {
@@ -60,24 +58,6 @@ public class Downloader {
 		}
 	}
 
-	public void decompress( String compressedFile, String decompressedFile ) throws Exception {
-		logger.debug("uncompressing " + compressedFile + "...");
-		byte[] buffer = new byte[1024];
-		try {
-			FileInputStream fileIn = new FileInputStream(compressedFile);
-			GZIPInputStream gZIPInputStream = new GZIPInputStream(fileIn);
-			FileOutputStream fileOutputStream = new FileOutputStream(decompressedFile);
-			int bytes_read;
-			while ((bytes_read = gZIPInputStream.read(buffer)) > 0) {
-				fileOutputStream.write(buffer, 0, bytes_read);
-			}
-			gZIPInputStream.close();
-			fileOutputStream.close();
-			logger.debug("file was decompressed successfully");
-		} catch (IOException ex) {
-			logger.error("error decompressing file: " + ex.getMessage() );
-			throw new Exception( ex.getMessage() );
-		}
-	}
+
 
 }

@@ -134,15 +134,19 @@ public class XMLParser {
 							String fileName = fileElement.getAttribute("name");
 							String table = fileElement.getAttribute("table");
 							String attribute = fileElement.getAttribute("attribute");
-							String index = fileElement.getAttribute("index");
+							//String index = fileElement.getAttribute("index");
 							FileUnity fu = new FileUnity( fileName );
-							fu.setId( Integer.valueOf( index ) );
+							fu.setId( 0 );
 							fu.setAttribute(attribute);
 							fu.setSourceTable(table);
 							activation.addFile( fu );
 							
 							logger.debug("found file " + fileName + " in XML instance. attribute:  " + attribute + " table: " + table +  
 									" executor: " + executor + "(" + serial + ")" );
+
+							System.out.println("found file " + fileName + " in XML instance. attribute:  " + attribute + " table: " + table +  
+									" executor: " + executor + "(" + serial + ")" );
+							
 							
 						} else {
 							Node nFile = (Node) nFileList.item( y );
