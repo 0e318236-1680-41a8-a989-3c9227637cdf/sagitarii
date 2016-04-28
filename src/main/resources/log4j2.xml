@@ -14,7 +14,7 @@
 	
 	<loggers>
 
-		<Logger name="br.cefetrj.sagitarii.core.filetransfer.HDFSUploadTask" level="debug" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.core.filetransfer.HDFSUploadTask" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 
@@ -62,7 +62,7 @@
 			<appender-ref ref="File"/> 
 		</Logger>
 		
-		<Logger name="br.cefetrj.sagitarii.core.filetransfer.FileImporter" level="error" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.core.filetransfer.FileImporter" level="debug" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 	
@@ -132,11 +132,11 @@
 			<appender-ref ref="File"/> 
 		</Logger>
 
-		<Logger name="br.cefetrj.sagitarii.core.NodesManager" level="debug" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.core.NodesManager" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 		
-		<Logger name="br.cefetrj.sagitarii.core.Node" level="debug" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.core.Node" level="error" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 

@@ -450,7 +450,7 @@ public class FileImporter extends Thread {
 	public void decompress( String compressedFile, String decompressedFile ) {
 		compressedFile = compressedFile + ".gz";
 		
-		logger.debug("uncompressing " + compressedFile + "...");
+		logger.debug("uncompressing " + compressedFile + " to " + decompressedFile );
 		byte[] buffer = new byte[1024];
 		try {
 			FileInputStream fileIn = new FileInputStream(compressedFile);
@@ -551,6 +551,8 @@ public class FileImporter extends Thread {
 				throw new Exception("Descriptor " + descriptor + " not found");
 			}
 
+			logger.debug("[" + sessionSerial + "] Compressed descriptor found: " + descriptor + ".gz : " + testDescriptor.length() + " bytes.");
+			
 			parseXml( descriptor );
 		
 			logger.debug("session " + sessionSerial + " commited");

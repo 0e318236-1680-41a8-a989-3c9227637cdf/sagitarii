@@ -33,6 +33,7 @@ public class FileXMLParser {
 	
 	
 	public List<ReceivedFile> parseDescriptor( String xmlFile ) throws Exception {
+		
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		dbFactory.setNamespaceAware(true);
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
