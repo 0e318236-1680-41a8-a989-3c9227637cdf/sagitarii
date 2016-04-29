@@ -9,7 +9,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.FutureTask;
 
 import org.apache.commons.io.FileUtils;
 
@@ -246,8 +245,8 @@ public class Main {
 		TaskRunner tr = new TaskRunner( decodedResponse, communicator, configurator);
 		
 		
-		FutureTask<Long> futureTaskHdfs = new FutureTask<Long>( tr );
-		executor.execute( futureTaskHdfs );
+		//FutureTask<Long> futureTaskHdfs = new FutureTask<Long>( tr );
+		executor.execute( tr );
 		
 		
 		runners.add(tr);

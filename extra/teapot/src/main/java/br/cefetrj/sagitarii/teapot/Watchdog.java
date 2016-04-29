@@ -35,13 +35,14 @@ public class Watchdog {
 	}
 	
 	private void getRunningProcesses() throws Exception {
-		Process process = Runtime.getRuntime().exec("top -b -n1 -c");
+		Process process = Runtime.getRuntime().exec("top -b -n1 -c | grep java");
 		InputStream is = process.getInputStream();
 		InputStreamReader isr = new InputStreamReader(is);
 		BufferedReader br = new BufferedReader(isr);
 		String line;
 		while ( (line = br.readLine()) != null) {
-			if( line.contains("java") ) processes.add( line );	
+			processes.add( line );
+			//if( line.contains("java") ) processes.add( line );	
 		}	
 	}
 
