@@ -39,6 +39,10 @@ import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
 
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+
 
 public class SystemProperties  {
     private int availableProcessors;
@@ -60,7 +64,6 @@ public class SystemProperties  {
 	private List<Double> mediumLoad = new ArrayList<Double>();
 	private final int LOADS_MEDIUM_SIZE = 100;
 	private static List<Double> mediumRamLoad = new ArrayList<Double>();
-
 	
 	private double getRamLoadsMedium( double value ) {
 		mediumRamLoad.add( value );

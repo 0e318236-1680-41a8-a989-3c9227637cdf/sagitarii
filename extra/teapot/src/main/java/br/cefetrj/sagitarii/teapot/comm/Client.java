@@ -93,6 +93,9 @@ public class Client {
 		
 		File fil = new File(folder + "/" + fileName);
 		if ( fil.exists() ) {
+
+			logger.debug("[" + sessionSerial + "] CSV file " + fileName + " found.");
+			
 			xml.append("<file name=\""+fileName+"\" type=\"FILE_TYPE_CSV\" />\n");
 			dataFilesList.add( folder + "/" + fileName );
 			
@@ -146,11 +149,9 @@ public class Client {
 		writer.write( xml.toString().replace("#TOTAL_FILES#", String.valueOf(filesToSend.size()) ) );
 		writer.close();
 
-		// Send files
-		if ( filesToSend.size() > 0 ) {
-			logger.debug("need to send " + filesToSend.size() + " files to Sagitarii...");
-			uploadFiles( filesToSend, dataFilesList, targetTable, experimentSerial, sessionSerial, folderPath );
-		}
+		logger.debug("need to send " + filesToSend.size() + " files to Sagitarii...");
+		uploadFiles( filesToSend, dataFilesList, targetTable, experimentSerial, sessionSerial, folderPath );
+		
 		commit( macAddress );
 	}
 	

@@ -32,16 +32,6 @@ public class MultiThreadUpload {
 		
 		if ( maxThreadsRunning == 0 ) { maxThreadsRunning = 7; }
 		
-		List<List<String>> partitions = splitList( fileList );
-		int totalFiles = fileList.size();
-		
-		if( partitions.size() < maxThreadsRunning ) {
-			maxThreadsRunning = partitions.size(); 
-		}
-		
-		logger.debug("Multithread Uploader started to send " + totalFiles + " files splited in " + partitions.size() +
-				" partitions limited to " + maxThreadsRunning + " threads.");
-		
 		List< FutureTask<Long> > futureTasks = new ArrayList< FutureTask<Long> >();
 		ExecutorService executor = Executors.newFixedThreadPool( maxThreadsRunning );
 
@@ -56,16 +46,29 @@ public class MultiThreadUpload {
 		
 		
 		// Send Task files to HDFS
-		for( List<String> list : partitions ) {
-			logger.debug(" > starting upload thread with " + list.size() + " elements for session " + sessionSerial + 
-					" / " + sourcePath);
+		if ( fileList.size() > 0 ) {
+			List<List<String>> partitions = splitList( fileList );
+			int totalFiles = fileList.size();
 			
-			HDFSUploadTask futHdfs = new HDFSUploadTask(list, hadoopConfigPath, 
-					targetTable, experimentSerial, sessionSerial, sourcePath);
-			FutureTask<Long> futureTaskHdfs = new FutureTask<Long>( futHdfs );
-			executor.execute( futureTaskHdfs );
-			futureTasks.add( futureTaskHdfs );
+			if( partitions.size() < maxThreadsRunning ) {
+				maxThreadsRunning = partitions.size(); 
+			}
+			
+			logger.debug("Multithread Uploader started to send " + totalFiles + " files splited in " + partitions.size() +
+					" partitions limited to " + maxThreadsRunning + " threads.");
+			
+			for( List<String> list : partitions ) {
+				logger.debug(" > starting upload thread with " + list.size() + " elements for session " + sessionSerial + 
+						" / " + sourcePath);
+				
+				HDFSUploadTask futHdfs = new HDFSUploadTask(list, hadoopConfigPath, 
+						targetTable, experimentSerial, sessionSerial, sourcePath);
+				FutureTask<Long> futureTaskHdfs = new FutureTask<Long>( futHdfs );
+				executor.execute( futureTaskHdfs );
+				futureTasks.add( futureTaskHdfs );
+			}
 		}
+		
 		
 		logger.debug("waiting to all threads to finish...");
 		while ( true ) {

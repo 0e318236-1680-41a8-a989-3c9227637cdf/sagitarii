@@ -218,7 +218,7 @@ public class TaskManager {
 		int order = activation.getOrder();
 		debug("starting executor " + activation.getExecutor() );
 
-		debug("start task " + activation.getTaskId() + "(" + activation.getType() + ") " + activation.getExecutor() + " ("+ instanceId + " :: " + order + ")");
+		debug("start task " + activation.getTaskId() + " (" + activation.getType() + ") " + activation.getExecutor() + " ("+ instanceId + " :: " + order + ")");
         
 		activation.setStatus( TaskStatus.RUNNING );
 		
@@ -353,7 +353,7 @@ public class TaskManager {
 			File source = new File( previousOutbox );
 			File dest = new File( destInbox );
 			if ( !isDirEmpty( source.toPath() )  ) {
-				debug(" > will copy files from previous task " + previous.getTaskId() + "..." );
+				debug(" > will copy files from previous task " + previous.getExecutor() + " ("+ previous.getTaskId() + ") ..." );
 				debug("   from > " + previousOutbox );
 				debug("   to   > " + destInbox );
 				

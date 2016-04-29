@@ -16,6 +16,10 @@ public class Notifier {
 		return instance;
 	}
 
+	public static Notifier getInstance() {
+		return instance;
+	}
+	
 	private Notifier( Communicator comm, Configurator config ) {
 		this.comm = comm;
 		this.configurator = config;
