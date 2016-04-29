@@ -9,7 +9,7 @@ import org.apache.struts2.convention.annotation.Result;
 import br.cefetrj.sagitarii.core.Node;
 import br.cefetrj.sagitarii.core.NodesManager;
 
-@Action (value = "showNodeDetails", results = { @Result (location = "viewClusterDetail.jsp", name = "ok") 
+@Action (value = "showNodeDetails", results = { @Result (location = "viewNodeDetail.jsp", name = "ok") 
 }, interceptorRefs= { @InterceptorRef("seguranca")	 } ) 
 
 @ParentPackage("default")

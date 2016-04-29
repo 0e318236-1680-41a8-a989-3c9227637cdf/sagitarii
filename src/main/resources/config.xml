@@ -23,11 +23,11 @@
 		
 		<databaseName>sagitarii</databaseName>
 
-		<userName2>postgres</userName2>
-		<password2>antares2</password2>
+		<userName>postgres</userName>
+		<password>antares2</password>
 		
-		<userName>sagitarii</userName>
-		<password>Chiron2014!</password>
+		<userName2>sagitarii</userName2>
+		<password2>Chiron2014!</password2>
 		
 		
 	</sagitarii>

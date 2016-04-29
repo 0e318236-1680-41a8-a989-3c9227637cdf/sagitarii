@@ -97,25 +97,7 @@
 
 						</div>
 
-						<div class="basicCentralPanelBar">
-							<img src="img/right.png">
-							<div class="basicCentralPanelBarText">Experiment files (GZIPPED)</div>
-						</div>
-						<div style="margin : 0 auto;width : 95%; margin-bottom:10px; margin-top:10px;display:table"  >
-							<table class="tableForm"  id="experimentFiles" >
-								<thead>
-									<tr>
-										<th>Experiment</th>
-										<th>Name</th>
-										<th>Source Activity</th>
-										<th>Owner Table</th>
-									</tr>
-								</thead>
-								<tbody>
-								</tbody>
-							</table>
-						</div>
-						
+					
 					</div>												
 					
 					

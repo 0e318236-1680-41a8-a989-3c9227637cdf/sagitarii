@@ -24,6 +24,47 @@
 		</div>
 
 		<div id="promoBar"	style="height: 220px; display: table; width: 95%; margin: 0 auto">
+
+
+			<div class="clusterBar" style="width: 220px;">
+
+				<table style="margin: 5px; width: 90%;">
+					<tr>
+						<td colspan="3">
+							<img style="width: 32px; height: 32px" src="img/disk.png">
+						</td>
+					</tr>
+					<tr>
+						<td colspan="3"><span
+							style="font-weight: bold; font-size: 12px">HDFS</span>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="3">&nbsp;</td>
+					</tr>
+					<tr>
+						<td colspan="3">&nbsp;</td>
+					</tr>
+					<tr>
+						<td><span >Capacity</span></td>
+						<td><span >Used</span></td>
+						<td><span >Remaining</span></td>
+					</tr>
+					<tr>
+						<td><span >${hdfsData.hdfsCapacity} GB</span></td>
+						<td><span >${hdfsData.hdfsUsed} GB</span></td>
+						<td><span >${hdfsData.hdfsRemaining} GB</span></td>
+					</tr>
+
+				</table>
+
+			</div>
+
+
+
+
+
+
 			<c:forEach var="cluster" items="${clusterList}">
 
 				<div onclick="showNodeDetails('${cluster.macAddress}')"
