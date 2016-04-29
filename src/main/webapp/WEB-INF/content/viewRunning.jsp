@@ -46,13 +46,15 @@
 								<tr>
 									<th style="width:100px">Serial</th>
 									<th style="width:100px">Times Tried</th>
+									<th style="width:100px">Node</th>
 									<th >Finished</th>
 								</tr>
 								<c:forEach var="instance" items="${instanceOutputBuffer}">
 									<tr>
 										<td>${instance.serial}</td>
 										<td>${instance.timesTried}</td>
-										<td>${instance.finishedActivities}</td>
+										<td>${instance.executedBy}</td>
+										<td>${instance.finishedActivities}&nbsp;</td>
 									</tr>
 								</c:forEach>
 							</table>
