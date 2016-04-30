@@ -1,5 +1,7 @@
 package br.cefetrj.sagitarii.persistence;
 
+import java.text.DecimalFormat;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -10,19 +12,19 @@ public class HDFS {
 	private FileSystem fs;
 	
 	public class HdfsData {
-		private long hdfsCapacity = 0;
-		private long hdfsUsed = 0;
-		private long hdfsRemaining = 0;
+		private String hdfsCapacity = "";
+		private String hdfsUsed = "";
+		private String hdfsRemaining = "";
 		
-		public long getHdfsCapacity() {
+		public String getHdfsCapacity() {
 			return hdfsCapacity;
 		}
 		
-		public long getHdfsRemaining() {
+		public String getHdfsRemaining() {
 			return hdfsRemaining;
 		}
 		
-		public long getHdfsUsed() {
+		public String getHdfsUsed() {
 			return hdfsUsed;
 		}
 		
@@ -43,11 +45,38 @@ public class HDFS {
 	
 	public HdfsData getHDFSSpace() throws Exception {
 		HdfsData hd = new HdfsData();
-		hd.hdfsCapacity = fs.getStatus().getCapacity() / 1048576 ; 
-		hd.hdfsUsed = fs.getStatus().getUsed() / 1048576; 
-		hd.hdfsRemaining = fs.getStatus().getRemaining() / 1048576;	
+		hd.hdfsCapacity = formatSize ( fs.getStatus().getCapacity() ); 
+		hd.hdfsUsed = formatSize ( fs.getStatus().getUsed() ) ; 
+		hd.hdfsRemaining = formatSize ( fs.getStatus().getRemaining() ) ;	
 		return hd;
 	}
+	
+	
+	public String formatSize( long size ) {
+	    String hrSize = null;
+
+	    double b = size;
+	    double k = size/1024.0;
+	    double m = ((size/1024.0)/1024.0);
+	    double g = (((size/1024.0)/1024.0)/1024.0);
+	    double t = ((((size/1024.0)/1024.0)/1024.0)/1024.0);
+
+	    DecimalFormat dec = new DecimalFormat("0.00");
+
+	    if ( t>1 ) {
+	        hrSize = dec.format(t).concat(" TB");
+	    } else if ( g>1 ) {
+	        hrSize = dec.format(g).concat(" GB");
+	    } else if ( m>1 ) {
+	        hrSize = dec.format(m).concat(" MB");
+	    } else if ( k>1 ) {
+	        hrSize = dec.format(k).concat(" KB");
+	    } else {
+	        hrSize = dec.format(b).concat(" Bytes");
+	    }
+
+	    return hrSize;
+	}	
 	
 	
 }

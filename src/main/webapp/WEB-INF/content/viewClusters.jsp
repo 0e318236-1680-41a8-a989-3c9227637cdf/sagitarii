@@ -26,8 +26,7 @@
 		<div id="promoBar"	style="height: 220px; display: table; width: 95%; margin: 0 auto">
 
 
-			<div class="clusterBar" style="width: 220px;">
-
+			<div class="clusterBar" style="width: 150px;">
 				<table style="margin: 5px; width: 90%;">
 					<tr>
 						<td colspan="3">
@@ -40,24 +39,21 @@
 						</td>
 					</tr>
 					<tr>
-						<td colspan="3">&nbsp;</td>
+						<td style="text-align: left;">Capacity</td>
+						<td>&nbsp;</td>
+						<td style="text-align: right;">${hdfsData.hdfsCapacity}</td>
 					</tr>
 					<tr>
-						<td colspan="3">&nbsp;</td>
+						<td style="text-align: left;">Used</td>
+						<td>&nbsp;</td>
+						<td style="text-align: right;">${hdfsData.hdfsUsed}</td>
 					</tr>
 					<tr>
-						<td><span >Capacity</span></td>
-						<td><span >Used</span></td>
-						<td><span >Remaining</span></td>
+						<td style="text-align: left;">Remaining</td>
+						<td>&nbsp;</td>
+						<td style="text-align: right;">${hdfsData.hdfsRemaining}</td>
 					</tr>
-					<tr>
-						<td><span >${hdfsData.hdfsCapacity} GB</span></td>
-						<td><span >${hdfsData.hdfsUsed} GB</span></td>
-						<td><span >${hdfsData.hdfsRemaining} GB</span></td>
-					</tr>
-
 				</table>
-
 			</div>
 
 

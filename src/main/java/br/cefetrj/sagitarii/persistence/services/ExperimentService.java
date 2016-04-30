@@ -282,15 +282,6 @@ public class ExperimentService {
 			}
 			*/
 
-			logger.debug("removing files...");
-			try {
-				sql = "delete from files where id_experiment = " + idExperiment;
-				rs.executeQuery( sql );
-				logger.debug("done.");
-			} catch ( Exception e ) {
-				logger.error("cannot remove files: " + e.getMessage() );
-			}
-			
 			logger.debug("removing fragments and activities...");
 			
 			for ( Fragment frag : experiment.getFragments() ) {
