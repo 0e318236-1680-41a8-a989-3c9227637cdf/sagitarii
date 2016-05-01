@@ -10,10 +10,10 @@ import org.apache.logging.log4j.Logger;
 
 import br.cefetrj.sagitarii.core.config.Configurator;
 import br.cefetrj.sagitarii.core.delivery.InstanceDeliveryControl;
-import br.cefetrj.sagitarii.core.types.NodeStatus;
-import br.cefetrj.sagitarii.core.types.NodeType;
 import br.cefetrj.sagitarii.core.types.InstanceStatus;
 import br.cefetrj.sagitarii.core.types.LogType;
+import br.cefetrj.sagitarii.core.types.NodeStatus;
+import br.cefetrj.sagitarii.core.types.NodeType;
 import br.cefetrj.sagitarii.misc.PathFinder;
 import br.cefetrj.sagitarii.misc.ZipUtil;
 import br.cefetrj.sagitarii.misc.json.NodeTasks;
@@ -24,7 +24,6 @@ import com.google.gson.Gson;
 public class NodesManager {
 	private List<Node> nodeList;
 	private static NodesManager cm;
-	private int lastQuant = 0;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 
 	public static NodesManager getInstance() {
@@ -138,7 +137,7 @@ public class NodesManager {
 	}
 	
 	public void refuseTask( String instanceId, String macAddress ) {
-		logger.debug( "node " + macAddress + " refused task in instance " + instanceId );
+		logger.error( "node " + macAddress + " refused task in instance " + instanceId );
 		Node clu = getNode(macAddress);
 		clu.setMessage(LogType.SYSTEM, "Cannot run task in instance " + instanceId, "" );
 		clu.resubmitInstanceToBuffer( instanceId );
@@ -156,7 +155,7 @@ public class NodesManager {
 		String instanceSerial = rd.getInstance().getSerial();
 		logger.debug( "receiving instance "+ instanceSerial +" close command from node " + rd.getMacAddress() );
 		
-		Node cl = tryToFindInstance( instanceSerial ); //getCluster( rd.getMacAddress() );
+		Node cl = tryToFindInstance( instanceSerial ); 
 		
 		if ( cl != null ) {
 			if ( !rd.getMacAddress().equals( cl.getmacAddress() ) ) {

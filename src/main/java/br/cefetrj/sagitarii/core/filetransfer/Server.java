@@ -181,13 +181,25 @@ public class Server {
 		
 		logger.debug("checking importers to remove...");
 		for ( FileImporter importer : getImporters() ) {
-			if ( importer.getStatus().equals("DONE") ) {
-				logger.debug(" > will remove " + importer.getName() );
+			try {
+				if ( importer.getStatus().equals("DONE") ) {
+					logger.debug(" > will remove " + importer.getName() );
+					importersToRemove.add( importer );
+				}
+			} catch ( Exception e ) {
+				e.printStackTrace();
 				importersToRemove.add( importer );
 			}
+			
+			
 		}
 		logger.debug("will clean " + importersToRemove.size() + " importers");
-		importers.removeAll( importersToRemove );
+		try {
+			importers.removeAll( importersToRemove );	
+		} catch ( Exception e ) {
+			e.printStackTrace();
+		}
+		
 		
 		logger.debug("done");
 		

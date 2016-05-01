@@ -90,11 +90,7 @@
 							<td colspan="3">${cluster.ipAddress}</td>
 						</tr>
 						<tr>
-							<td colspan="3"><c:if test="${cluster.type != 'MAIN'}">
-													${cluster.macAddress}
-												</c:if> <c:if test="${cluster.type == 'MAIN'}">
-													Internal Node
-												</c:if></td>
+							<td colspan="3">${cluster.macAddress}</td>
 						</tr>
 						<tr>
 							<td><span class="dicas" title="Status">${cluster.status}</span></td>

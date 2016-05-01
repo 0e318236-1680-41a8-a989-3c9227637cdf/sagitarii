@@ -1,5 +1,6 @@
 package br.cefetrj.sagitarii.persistence.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -38,7 +39,8 @@ public class LogService {
 	}
 
 	public void insertLogEntryList( List<LogEntry> list ) throws Exception {
-		for ( LogEntry logEntry : list ) {
+		List<LogEntry> newList = new ArrayList<LogEntry>( list ); // To avoid ConcurrentModificationException
+		for ( LogEntry logEntry : newList ) {
 			rep.newTransaction();
 			insertLogEntry(logEntry);
 		}

@@ -14,6 +14,7 @@ import br.cefetrj.sagitarii.core.Genesis;
 import br.cefetrj.sagitarii.core.Sagitarii;
 import br.cefetrj.sagitarii.core.types.ExperimentStatus;
 import br.cefetrj.sagitarii.misc.FragmentComparator;
+import br.cefetrj.sagitarii.persistence.HDFS;
 import br.cefetrj.sagitarii.persistence.entity.Activity;
 import br.cefetrj.sagitarii.persistence.entity.Experiment;
 import br.cefetrj.sagitarii.persistence.entity.Fragment;
@@ -269,19 +270,6 @@ public class ExperimentService {
 			rs.executeQuery( sql );
 			logger.debug("done.");
 			
-			/*
-			logger.debug("removing large objects...");
-			try {
-				sql = "delete from pg_catalog.pg_largeobject where loid in ( select file from " + 
-						" files where id_experiment = " + idExperiment + " )";
-				rs.executeQuery( sql );
-				logger.debug("done.");
-			} catch ( Exception e ) {
-				logger.error("cannot remove LOBs: " + e.getMessage() +": You MUST do it by yourself by running this query:" );
-				logger.error(" > " + sql);
-			}
-			*/
-
 			logger.debug("removing fragments and activities...");
 			
 			for ( Fragment frag : experiment.getFragments() ) {
@@ -321,6 +309,10 @@ public class ExperimentService {
 			Sagitarii.getInstance().removeExperiment( experiment );
 			Sagitarii.getInstance().resumeProcessing();
 			
+			logger.debug("will delete experiment files in HDFS...");
+			HDFS hdfs = new HDFS();
+			hdfs.deleteDirectory( "/" + experiment.getTagExec() );
+
 			if( experiment.getStatus() == ExperimentStatus.FINISHED ) {
 				Sagitarii.getInstance().updateSystemMetrics();
 			}

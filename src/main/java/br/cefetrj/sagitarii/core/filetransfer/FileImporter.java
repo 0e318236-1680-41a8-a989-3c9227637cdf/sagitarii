@@ -178,57 +178,9 @@ public class FileImporter extends Thread {
 				logger.debug("["+ sessionSerial + "] Empty session.");
 			}
 		} catch ( Exception e ) {
-			//
+			e.printStackTrace();
 		}
 	}
-	
-	/*
-	// TODO: Move to storage
-	private int importFile( String experimentSerial, String fileName, Activity activity, Instance instance ) {
-		log = "Storing file " + fileName + " to database";
-		logger.debug( log + " : Experiment " + experimentSerial + " Activity " + activity.getSerial() + " Instance " + instance.getSerial()  );
-		int response = -1;
-		try {
-			String fullFile = sessionContext + "/" + fileName;
-			File sourceFile = new File( fullFile + ".gz" );
-			if ( !sourceFile.exists() ) {
-				throw new Exception( "File " + fullFile + " not found." ); 
-			}
-			
-			ExperimentService ex = new ExperimentService();
-			Experiment experiment = ex.getExperiment( experimentSerial );
-			FileService fs = new FileService();
-
-			String storageTargetPath = PathFinder.getInstance().getPath() + "/storage/" ; 
-
-			br.cefetrj.sagitarii.persistence.entity.File file = new br.cefetrj.sagitarii.persistence.entity.File();
-			file.setExperiment(experiment);
-			file.setFileName( fileName );
-			file.setActivity( activity );
-			file.setInstance( instance );
-			file.setFilePath( storageTargetPath );
-			
-			fs.insertFile(file);
-			
-			response = file.getIdFile();
-
-			File fil = new File( storageTargetPath + response + "/" );
-			fil.mkdirs();
-			
-			File targetFile = new File( storageTargetPath + "/" + response + "/" + fileName + ".gz" );
-			Files.copy(sourceFile.toPath(), targetFile.toPath());
-			
-			importedFiles++;
-			
-			logger.debug( "ID " + response + " assigned to File "+fileName+" : Experiment " + experimentSerial + " Activity " + activity.getSerial() + " Instance " + instance.getSerial()  );
-			
-		} catch ( Exception e ) {
-			logger.error( e.getMessage() );
-		}
-		log = fileName + " stored.";
-		return response;
-	}
-	*/
 	
 	private Activity retrieveActivity( String activitySerial, String macAddress, Relation table ) throws Exception {
 		ActivityService as = new ActivityService();
@@ -275,11 +227,16 @@ public class FileImporter extends Thread {
 	}
 	
 	
-	private void storeToHdfs( String fullFilePath, String hdfsFileTargetFolder ) throws Exception {
-		HDFSUploadTask futHdfs = new HDFSUploadTask(fullFilePath, hdfsFileTargetFolder, hadoopConfigPath, sessionSerial);
-		FutureTask<Long> futureTaskHdfs = new FutureTask<Long>( futHdfs );
-		executor.execute( futureTaskHdfs );
-		futureTasks.add( futureTaskHdfs );
+	private void storeToHdfs( String fullFilePath, String hdfsFileTargetFolder ) {
+		try {
+			HDFSUploadTask futHdfs = new HDFSUploadTask(fullFilePath, hdfsFileTargetFolder, hadoopConfigPath, sessionSerial);
+			FutureTask<Long> futureTaskHdfs = new FutureTask<Long>( futHdfs );
+			executor.execute( futureTaskHdfs );
+			futureTasks.add( futureTaskHdfs );
+		} catch ( Exception e ) {
+			logger.error("Error storing " + fullFilePath + " to HDFS: " + e.getMessage() );
+			e.printStackTrace();
+		}
 		
 	}
 
@@ -382,35 +339,8 @@ public class FileImporter extends Thread {
 					columnContent = hdfsFileTargetFolder + "/" + columnContent;
 				}
 				
-				/*
-				if ( isFile(fileNameFromCSV) ) {
-					lastImportedFile = fileNameFromCSV;
-					if ( fileIds.get(fileNameFromCSV) == null ) {
-						// Its a new file to store. Send to database and store it's ID to a list
-						int fileId = importFile( csvDataFile.getExperimentSerial(), fileNameFromCSV, activity, instance );
-						fileIds.put( fileNameFromCSV, fileId );
-						fileNameFromCSV = String.valueOf( fileId );
-					} else {
-						// We've stored this file already! get it's ID from list
-						fileNameFromCSV = String.valueOf( fileIds.get(fileNameFromCSV) );
-					}
-				} else {
-					// This data value is not correspondent to any file we have.
-					// But is the column a file domain for this table ?
-					
-					
-						// Yes... set it as null
-						logger.warn("the domain column " + columnName + " in table " + relationName + " has received no file");
-						fileNameFromCSV = "null";
-					}
-				}
-				
-				*/
-				// **********************************************************************************
-				
 				sb.append( prefix + columnContent );
 				prefix = ",";
-				
 				
 			}
 
@@ -422,10 +352,6 @@ public class FileImporter extends Thread {
 		}
 		parser.close();
 		
-		// At this point, we have all files stored in database and CSV data contains its 
-		// key references instead its names.
-		// Its time to store all csv data into target table...
-
 		if ( contentLines.size() > 1 ) {
 			log = "Inserting CSV data into table " + csvDataFile.getTargetTable() + "...";
 			logger.debug("inserting "+contentLines.size()+" lines of CSV data into table " + table.getName() + "..." );

@@ -1,8 +1,12 @@
 package br.cefetrj.sagitarii.persistence;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.BlockLocation;
+import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
@@ -28,6 +32,28 @@ public class HDFS {
 			return hdfsUsed;
 		}
 		
+	}
+	
+	public List<String> getNodesStoringFile( String fileFullPath ) throws Exception {
+		List<String> result = new ArrayList<String>();
+		
+		Path path = new Path( fileFullPath );
+		
+		FileStatus fileStatus = fs.getFileStatus( path );
+		
+		BlockLocation[] blkLocations = fs.getFileBlockLocations(path, 0, fileStatus.getLen());
+		int blkCount = blkLocations.length;
+		for (int i=0; i < blkCount; i++) {
+			String[] hosts = blkLocations[i].getHosts();
+			for( String ss : hosts ) {
+				result.add( ss );
+			}
+		}
+		return result;
+	}
+	
+	public boolean deleteDirectory( String path ) throws Exception  {
+		return fs.delete( new Path ( path ), true );
 	}
 	
 	public HDFS() throws Exception {

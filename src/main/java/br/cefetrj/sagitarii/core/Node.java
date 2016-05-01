@@ -41,8 +41,13 @@ public class Node {
     private int processedPipes = 0;
     private String lastError = "";
     private String lostInstance = "";
+    
+    // Instances Sagitarii sent to Node
 	private List<Instance> runningInstances;
+	// Tasks ( Activities ) running on this node ( informed by node itself )
 	private List<NodeTask> tasks;
+	
+		
 	private List<String> log = new ArrayList<String>();
 	private List<LogEntry> logEntries = new ArrayList<LogEntry>();
 	private boolean restartSignal = false;
@@ -149,70 +154,9 @@ public class Node {
 		cleanWorkspaceSignal = true;
 	}
 
-	/*
-	public boolean isAskingForInstance() {
-		return askingForInstance;
-	}
-	*/
-	
 	public String getLostInstance() {
 		return lostInstance;
 	}
-	
-	/*
-	public void informReport( String instanceSerial, String status ) {
-		logger.debug( instanceSerial + " status is " + status );
-		askingForInstance = false;
-		lostInstance = "";
-		
-		cleanUp();
-		if( !isRunning( instanceSerial ) ) {
-			logger.debug("instance " + instanceSerial + " is not running. done.");
-			InstanceDeliveryControl.getInstance().cancelUnit( instanceSerial );
-			return;
-		}
-		
-		
-		if ( status.equals("NOT_FOUND") ) {
-			logger.debug("resubmiting instance " + instanceSerial + " to job queue");
-			resubmitInstanceToBuffer( instanceSerial );
-		} 
-		
-	}
-	
-	public void inform( String instanceSerial, boolean fromUser ) {
-		informRepeatCount++;
-		if ( !fromUser && (informRepeatCount < 20) ) {
-			logger.debug("too soon (" + informRepeatCount + "). will not ask anything until 20." );
-			return;
-		}
-		informRepeatCount = 0;
-		
-		logger.debug("asking Teapot for lost instance " + instanceSerial + " working at node " + macAddress );
-		
-		cleanUp();
-		if( !isRunning( instanceSerial ) ) {
-			logger.debug("instance " + instanceSerial + " is not running anymore. done.");
-			InstanceDeliveryControl.getInstance().cancelUnit( instanceSerial );
-			askingForInstance = false;
-			lostInstance = "";
-			return;
-		}
-		
-		if ( status == ClusterStatus.DEAD ) {
-			logger.debug("this node is DEAD. try to recover lost instance from output buffer");
-			informReport( instanceSerial, "NOT_FOUND");
-			return;
-		}
-		
-		if ( amILookingFor(instanceSerial) ) {
-			logger.debug("already waiting for instance " + lostInstance);
-		} else {
-			askingForInstance = true;
-			lostInstance = instanceSerial;
-		}
-	}
-	*/
 	
 	public void restart() {
 		setMessage(LogType.SYSTEM, "SIGNALED: Restart");
@@ -302,14 +246,6 @@ public class Node {
 		
 		setInstanceAsDone( instanceSerial, actvt, startTimeMillis, finishTimeMillis, cpuCost);
 		
-		/*
-		if ( amILookingFor(instanceSerial) ) {
-			logger.debug("was waiting instance " + instanceSerial + ". Will clear waiting flag." );
-			askingForInstance = false;
-			lostInstance = "";
-		}
-		*/
-		
 		cleanUp();
 		
 	}
@@ -373,22 +309,23 @@ public class Node {
 	
 	public synchronized void addInstance( Instance pipe ) {
 		logger.debug( macAddress + ": Adding Instance " + pipe.getSerial() + " to the running list");
+		pipe.setExecutedBy(macAddress);
 		runningInstances.add( pipe ); 
 	}
 
 	public void resubmitInstanceToBuffer( String instanceSerial ) {
-		logger.debug( macAddress + ": Resubmit Instance " + instanceSerial + " to Sagitarii buffer..." );
+		logger.error( macAddress + ": Resubmit Instance " + instanceSerial + " to Sagitarii buffer..." );
 		for ( Instance instance : getRunningInstances() ) {
 			if ( instance.getSerial().equalsIgnoreCase( instanceSerial ) ) {
 				instance.setStatus( InstanceStatus.PIPELINED );
 				runningInstances.remove( instance ); 
 				InstanceDeliveryControl.getInstance().cancelUnit( instanceSerial );
 				Sagitarii.getInstance().returnToBuffer(instance);
-				logger.debug("Instance " + instanceSerial + " found in this node buffer. Returned to Sagitarii output buffer");
+				logger.error("Instance " + instanceSerial + " found in this node buffer. Returned to Sagitarii output buffer");
 				return;
 			}
 		}
-		logger.debug( macAddress + ": Instance " + instanceSerial + " is not in Node buffer.");
+		logger.error( macAddress + ": Instance " + instanceSerial + " is not in Node buffer.");
 	}
 
 	public Node(NodeType type, String javaVersion, String soFamily, String macAddress, String ipAddress, String machineName, Double cpuLoad, 
@@ -433,14 +370,13 @@ public class Node {
 	public String getIpAddress() {
 		return ipAddress;
 	}
+	
 	public void setIpAddress(String ipAddress) {
 		this.ipAddress = ipAddress;
 	}
+	
 	public NodeStatus getStatus() {
 		return status;
-	}
-	public void setStatus(NodeStatus status) {
-		this.status = status;
 	}
 
 	public String getMachineName() {
@@ -475,11 +411,19 @@ public class Node {
 			this.status = NodeStatus.DEAD;
 			clearSignals();
 		} else { 
-			if ( runningInstances.size() == 0 ) {
+			if ( tasks.size() == 0 ) {
 				this.status = NodeStatus.IDLE;
 			}		
-			if ( runningInstances.size() > 0 ) {
+			if ( tasks.size() > 0 ) {
 				this.status = NodeStatus.ACTIVE;
+			}
+		}
+		
+		if ( ( runningInstances.size() > 0) && ( tasks.size() == 0 ) ) {
+			logger.error("Node " + macAddress + " have no tasks running but instances in buffer:");
+			setMessage( LogType.NODE_STATUS, "Inconsistent state!" );
+			for ( Instance ins : runningInstances ) {
+				logger.error(" > " + ins.getSerial() );
 			}
 		}
 		
