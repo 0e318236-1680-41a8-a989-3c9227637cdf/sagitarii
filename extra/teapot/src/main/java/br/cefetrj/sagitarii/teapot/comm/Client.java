@@ -54,8 +54,8 @@ public class Client {
 	public void sendFile( String fileName, String folder, String targetTable, String experimentSerial,  
 			String macAddress, Task task ) throws Exception {
 
-		List<String> filesToSend = new ArrayList<String>();
 		List<String> dataFilesList = new ArrayList<String>();
+		List<String> controlFilesList = new ArrayList<String>();
 		
 		String instanceSerial = "";
 		String activity = "";
@@ -97,13 +97,13 @@ public class Client {
 			logger.debug("[" + sessionSerial + "] CSV file " + fileName + " found.");
 			
 			xml.append("<file name=\""+fileName+"\" type=\"FILE_TYPE_CSV\" />\n");
-			dataFilesList.add( folder + "/" + fileName );
+			controlFilesList.add( folder + "/" + fileName );
 			
 			File filesFolder = new File( folder + "/" + "outbox" );
 		    for (final File fileEntry : filesFolder.listFiles() ) {
 		        if ( !fileEntry.isDirectory() ) {
-		    		xml.append("<file name=\""+fileEntry.getName()+"\" type=\"FILE_TYPE_FILE\" />\n");
-		    		filesToSend.add( folder + "/outbox/" + fileEntry.getName() );
+		    		//xml.append("<file name=\""+fileEntry.getName()+"\" type=\"FILE_TYPE_FILE\" />\n");
+		    		dataFilesList.add( folder + "/outbox/" + fileEntry.getName() );
 		        }
 		    }
 			
@@ -143,25 +143,29 @@ public class Client {
 	    xml.append("]]></execLog>");
 	    
 		xml.append("</session>\n");
-		dataFilesList.add( folder + "/" + "session.xml" );
+		controlFilesList.add( folder + "/" + "session.xml" );
 		
 		Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(folder + "/" + "session.xml"), "UTF-8"));
-		writer.write( xml.toString().replace("#TOTAL_FILES#", String.valueOf(filesToSend.size()) ) );
+		writer.write( xml.toString().replace("#TOTAL_FILES#", String.valueOf(dataFilesList.size()) ) );
 		writer.close();
 
-		logger.debug("need to send " + filesToSend.size() + " files to Sagitarii...");
-		uploadFiles( filesToSend, dataFilesList, targetTable, experimentSerial, sessionSerial, folderPath );
+		logger.debug("need to send " + dataFilesList.size() + " files to HDFS...");
+		uploadFiles( dataFilesList, controlFilesList, targetTable, experimentSerial, sessionSerial, folderPath );
 		
 		commit( macAddress );
 	}
 	
 
-	private void uploadFiles( List<String> fileNames, List<String> dataFilesList, String targetTable, 
+	private void uploadFiles( List<String> dataFilesList, List<String> controlFilesList, String targetTable, 
 			String experimentSerial, String sessionSerial, String sourcePath ) throws Exception {
 
+		// dataFilesList 	= Files in outbox folder
+		// controlFilesList	= session.xml and sagi_output.txt 
+		
 		logger.debug("starting Multithread Uploader for session " + sessionSerial + " with " + maxUploadThreads + " threads." );
+		logger.debug(" > Control files: " + controlFilesList.size() + " | Data Files: " + dataFilesList.size() );
 		MultiThreadUpload mtu = new MultiThreadUpload( maxUploadThreads, hadoopConfigPath );
-		mtu.upload(fileNames, dataFilesList, storageAddress, storagePort, 
+		mtu.upload(dataFilesList, controlFilesList, storageAddress, storagePort, 
 				targetTable, experimentSerial, sessionSerial, sourcePath);
 		
 	}

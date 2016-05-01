@@ -91,28 +91,14 @@ public class HDFSUploadTask implements Callable<Long> {
 		fs.setWorkingDirectory( root );
 		
 		Path pathSrc = new Path(source);
-		//Path pathDest = new Path(target);
-		
-		//String targetFolder = new File(target).getAbsolutePath();
-		
 		Path hdfsTargetFolder = new Path(target);
-		fs.mkdirs(hdfsTargetFolder);
+
 		logger.debug("create HDFS folder " + target );
+		fs.mkdirs(hdfsTargetFolder);
+		
 		fs.copyFromLocalFile(pathSrc, hdfsTargetFolder);  
 		logger.debug("all done. HDFS copy: " + source + " to " + hdfsTargetFolder );
 
-		/*
-		FileStatus fileStatus = fs.getFileStatus(pathDest);
-		BlockLocation[] blkLocations = fs.getFileBlockLocations(pathDest, 0, fileStatus.getLen());
-		int blkCount = blkLocations.length;
-		for (int i=0; i < blkCount; i++) {
-			String[] hosts = blkLocations[i].getHosts();
-			for( String ss : hosts ) {
-				System.out.println(" >>> " + ss );
-			}
-		}
-		*/			
-		
 	}
 	
 }

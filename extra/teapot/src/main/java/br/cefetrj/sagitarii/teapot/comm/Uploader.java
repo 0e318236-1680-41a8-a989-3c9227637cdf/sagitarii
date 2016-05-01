@@ -17,6 +17,7 @@ package br.cefetrj.sagitarii.teapot.comm;
  * 
  */
 
+import br.cefetrj.sagitarii.teapot.Activation;
 import br.cefetrj.sagitarii.teapot.Configurator;
 import br.cefetrj.sagitarii.teapot.LogManager;
 import br.cefetrj.sagitarii.teapot.Logger;
@@ -31,10 +32,13 @@ public class Uploader {
 		this.gf = gf;
 	}
 	
-	public void uploadCSV(String fileName, String relationName, String experimentSerial, 
-			String filesFolderName, Task task, SystemProperties tm) throws Exception {
+	public void uploadCSV(String fileName, Activation act, Task task, SystemProperties tm) throws Exception {
 
+		String relationName = act.getTargetTable();
+		String experimentSerial = act.getExperiment(); 
+		String filesFolderName = act.getNamespace();
 		String macAddress = tm.getMacAddress();
+		
 		logger.debug( "uploading " + fileName + " to " + relationName + " for experiment " + experimentSerial );
 		
 		Client client = new Client( gf );

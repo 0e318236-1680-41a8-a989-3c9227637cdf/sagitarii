@@ -26,29 +26,34 @@ public class MultiThreadUpload {
 		return totalBytes;
 	}
 	
-	public void upload( List<String> fileList, List<String> dataFilesList, String storageAddress, 
+	public void upload( List<String> dataFilesList, List<String> controlFilesList, String storageAddress, 
 			int storagePort, String targetTable, String experimentSerial, 
 			String sessionSerial, String sourcePath ) throws Exception {
+		
+		// dataFilesList 	= Files in outbox folder
+		// controlFilesList	= session.xml and sagi_output.txt		
 		
 		if ( maxThreadsRunning == 0 ) { maxThreadsRunning = 7; }
 		
 		List< FutureTask<Long> > futureTasks = new ArrayList< FutureTask<Long> >();
 		ExecutorService executor = Executors.newFixedThreadPool( maxThreadsRunning );
 
-		// Send CSV data and XML manifest to sagitarii via FTP
-		logger.debug(" > starting upload thread with " + dataFilesList.size() + " elements for session " + sessionSerial + 
+		// Send CSV data and XML manifest to sagitarii via FTP ( controlFilesList )
+		logger.debug(" > starting FTP upload thread with " + controlFilesList.size() + " elements for session " + sessionSerial + 
 				" / " + sourcePath);
-		FTPUploadTask fut = new FTPUploadTask(dataFilesList, storageAddress, storagePort, 
+		FTPUploadTask fut = new FTPUploadTask(controlFilesList, storageAddress, storagePort, 
 				targetTable, experimentSerial, sessionSerial, sourcePath);
 		FutureTask<Long> futureTask = new FutureTask<Long>( fut );
 		executor.execute( futureTask );
 		futureTasks.add( futureTask );
 		
 		
-		// Send Task files to HDFS
-		if ( fileList.size() > 0 ) {
-			List<List<String>> partitions = splitList( fileList );
-			int totalFiles = fileList.size();
+		// Send Task files to HDFS ( dataFilesList )
+		logger.debug(" > starting " + maxThreadsRunning + " HDFS upload threads with " + dataFilesList.size() + " elements for session " + sessionSerial + 
+				" / " + sourcePath);
+		if ( dataFilesList.size() > 0 ) {
+			List<List<String>> partitions = splitList( dataFilesList );
+			int totalFiles = dataFilesList.size();
 			
 			if( partitions.size() < maxThreadsRunning ) {
 				maxThreadsRunning = partitions.size(); 

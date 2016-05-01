@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.Callable;
 
 import org.apache.commons.net.ftp.FTP;
@@ -26,6 +27,7 @@ public class FTPUploadTask implements Callable<Long> {
 	private String sourcePath;
 	private int sendTry = 0;
 	private final int TRY_LIMIT = 5;
+	private String serial;
 	
 	public FTPUploadTask(List<String> fileNames, String storageAddress, 
 			int storagePort, String targetTable, String experimentSerial, 
@@ -37,11 +39,16 @@ public class FTPUploadTask implements Callable<Long> {
 		this.experimentSerial = experimentSerial;
 		this.sessionSerial = sessionSerial;
 		this.sourcePath = sourcePath;
-		logger.debug("create");
+		this.serial = UUID.randomUUID().toString().replace("-", "").substring(0,5);
+		debug("create " + serial);
+	}
+	
+	private void debug( String s ) {
+		logger.debug( "[" + serial + "] " + s );
 	}
 	
 	private long uploadFiles() {
-		logger.debug("sending " + fileNames.size() + " files to table " + targetTable + " in session " +
+		debug("sending data files to table " + targetTable + " in session " +
 					sessionSerial + " experiment " + experimentSerial + ": " + sourcePath );
 		boolean hasError = false;
 		long size = 0;
@@ -50,43 +57,43 @@ public class FTPUploadTask implements Callable<Long> {
  
             ftpClient.connect(storageAddress, storagePort);
             ftpClient.login(user, password);
-            logger.debug("FTP Response: " + ftpClient.getReplyString() );  
+            debug("FTP Response: " + ftpClient.getReplyString() );  
             
             ftpClient.setBufferSize(1048576);
             
 			int indexFile = 1;
 			for ( String fileName : fileNames ) {
-				logger.debug("[" + indexFile + "] will send " + fileName );
+				debug("[" + indexFile + "] will send " + fileName );
 				indexFile++;
 			
 				String newFileName = fileName + ".gz";
 				
-				logger.debug("compressing " + fileName + "...");
+				debug("compressing " + fileName + "...");
 				ZipUtil.compress(fileName, newFileName);
-				logger.debug("done compressing " + fileName + ".");
+				debug("done compressing " + fileName + ".");
 			
 				File localFile = new File(newFileName);
 				
 				size = size + localFile.length();
 				
-		        logger.debug("sending [" + sessionSerial + "] " + localFile.getName() + " with size of " + localFile.length() + " bytes..." );
-		        logger.debug("Strategy: FTP to " + user + "@" + storageAddress + ":" + storagePort);
+		        debug("sending [" + sessionSerial + "] " + localFile.getName() + " with size of " + localFile.length() + " bytes..." );
+		        debug("Strategy: FTP to " + user + "@" + storageAddress + ":" + storagePort);
 			
 	        	
 	            ftpClient.enterLocalPassiveMode();
-	            logger.debug("FTP Response: " +  ftpClient.getReplyString() );  
+	            debug("FTP Response: " +  ftpClient.getReplyString() );  
 	            ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
 	            
 	            String remoteFile = "/" + sessionSerial + "/" + localFile.getName();
-	            logger.debug("FTP copy " + newFileName + " to ftp://" + storageAddress + ":" + storagePort + remoteFile);            
+	            debug("FTP copy " + newFileName + " to ftp://" + storageAddress + ":" + storagePort + remoteFile);            
 	            
 	            InputStream inputStream = new FileInputStream( localFile );            
 	            boolean done = ftpClient.storeFile( remoteFile, inputStream );
-	            logger.debug("FTP Response: " + ftpClient.getReplyString() );  
+	            debug("FTP Response: " + ftpClient.getReplyString() );  
 	            
 	            inputStream.close();
 	            if ( done ) {
-	            	logger.debug("File [" + sessionSerial + "] " + localFile.getName()+" is uploaded successfully.");
+	            	debug("File [" + sessionSerial + "] " + localFile.getName()+" is uploaded successfully.");
 	            } else {
 	            	logger.error("Cant upload the file [" + sessionSerial + "] " + localFile.getName() );
 	            }
@@ -101,14 +108,14 @@ public class FTPUploadTask implements Callable<Long> {
         
     	try { 
     		ftpClient.disconnect();
-        	logger.debug("FTP client disconnected.");
+        	debug("FTP client disconnected.");
     	} catch ( Exception e ) { 
     		logger.error("cannot close FTP client: " + e.getMessage() );
     	}
     	
     	if( hasError && sendTry < TRY_LIMIT ) {
     		sendTry++;
-    		logger.debug("try " + sendTry + ". will try to send again.");
+    		debug("try " + sendTry + ". will try to send again.");
     		uploadFiles();
     	}
         
@@ -117,7 +124,7 @@ public class FTPUploadTask implements Callable<Long> {
 
 	@Override
 	public Long call() throws Exception {
-		logger.debug("start");
+		debug("start");
 		try {
 			uploadFiles();
 		} catch ( Exception e ) {
