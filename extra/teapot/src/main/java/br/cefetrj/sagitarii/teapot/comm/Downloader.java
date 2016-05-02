@@ -25,6 +25,7 @@ public class Downloader {
 		}
 		
 		logger.debug("downloading " + fileName + "... may take some time.");
+		logger.debug(" > " + from );
 		
 		URL link = new URL(from); 	
 		InputStream in = new BufferedInputStream(link.openStream());
