@@ -38,7 +38,6 @@ encoding//src/main/java/br/cefetrj/sagitarii/persistence/services/ConsumptionSer
 encoding//src/main/java/br/cefetrj/sagitarii/persistence/services/CustomQueryService.java=UTF-8
 encoding//src/main/java/br/cefetrj/sagitarii/persistence/services/ExecutorService.java=UTF-8
 encoding//src/main/java/br/cefetrj/sagitarii/persistence/services/ExperimentService.java=UTF-8
-encoding//src/main/java/br/cefetrj/sagitarii/persistence/services/FileService.java=UTF-8
 encoding//src/main/java/br/cefetrj/sagitarii/persistence/services/RelationService.java=UTF-8
 encoding//src/main/java/br/cefetrj/sagitarii/persistence/services/TimeControlService.java=UTF-8
 encoding//src/main/java/br/cefetrj/sagitarii/persistence/services/UserService.java=UTF-8
