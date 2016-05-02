@@ -62,7 +62,7 @@
 			<appender-ref ref="File"/> 
 		</Logger>
 		
-		<Logger name="br.cefetrj.sagitarii.core.filetransfer.FileImporter" level="error" additivity="false"> 
+		<Logger name="br.cefetrj.sagitarii.core.filetransfer.FileImporter" level="debug" additivity="false"> 
 			<appender-ref ref="File"/> 
 		</Logger>
 	

@@ -1,11 +1,14 @@
 
 package br.cefetrj.sagitarii.action;
 
+import java.io.File;
 import java.io.FileInputStream;
 
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
+
+import br.cefetrj.sagitarii.persistence.HDFS;
 
 @Action(value="getFile", results= {  
 	    @Result(name="ok", type="stream", params = {
@@ -19,31 +22,26 @@ import org.apache.struts2.convention.annotation.Result;
 @ParentPackage("default")
 public class GetFileAction extends BasicActionClass {
 	private String fileName;
-	private Integer idFile;
+	private String idFile;
 	private FileInputStream fileInputStream;
-	private String macAddress;
 	
 	public String execute () {
-		/*
 		try {
-			FileService fs = new FileService();
-			if ( (idFile != null) && ( idFile > -1 ) ) {
-				file = fs.getFile( idFile );
-				fileName = file.getFileName() + ".gz";
-				String theFile = file.getFilePath() + idFile + "/" + fileName;
-				File fil = new File( theFile );
-				fileInputStream = new FileInputStream( fil );
-			}
+			
+			File file = new File( idFile );
+			fileName = file.getName() + ".gz";
+			HDFS hdfs = new HDFS();
+			fileInputStream = hdfs.getFile( idFile );
+			
+			
 		} catch ( Exception e ) {
             e.printStackTrace();
 		}
-		*/
-		
 		return "ok";
 	}
 
 	
-	public void setIdFile(Integer idFile) {
+	public void setIdFile(String idFile) {
 		this.idFile = idFile;
 	}
 	
@@ -60,8 +58,5 @@ public class GetFileAction extends BasicActionClass {
 		this.fileName = fileName;
 	}
 	
-	public void setMacAddress(String macAddress) {
-		this.macAddress = macAddress;
-	}
 
 }

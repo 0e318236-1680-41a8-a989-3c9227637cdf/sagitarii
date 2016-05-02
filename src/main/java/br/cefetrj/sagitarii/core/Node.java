@@ -55,9 +55,6 @@ public class Node {
 	private boolean cleanWorkspaceSignal = false;
 	private boolean reloadWrappersSignal = false;
 	
-	// private boolean askingForInstance = false;
-	// private int informRepeatCount = 0;
-	
 	private long freeMemory;
 	private long freeDiskSpace;
 	private long totalMemory;
@@ -74,12 +71,6 @@ public class Node {
 	public void setMemoryPercent(double memoryPercent) {
 		this.memoryPercent = memoryPercent;
 	}
-	
-	/*
-	private boolean amILookingFor( String instanceSerial ) {
-		return lostInstance.equals( instanceSerial );
-	}
-	*/
 
 	public void saveMetricImages( String path ) throws Exception {
 		metrics.saveImage(path);
@@ -317,12 +308,24 @@ public class Node {
 		logger.error( macAddress + ": Resubmit Instance " + instanceSerial + " to Sagitarii buffer..." );
 		for ( Instance instance : getRunningInstances() ) {
 			if ( instance.getSerial().equalsIgnoreCase( instanceSerial ) ) {
-				instance.setStatus( InstanceStatus.PIPELINED );
-				runningInstances.remove( instance ); 
-				InstanceDeliveryControl.getInstance().cancelUnit( instanceSerial );
-				Sagitarii.getInstance().returnToBuffer(instance);
-				logger.error("Instance " + instanceSerial + " found in this node buffer. Returned to Sagitarii output buffer");
-				return;
+				
+				int timesTried = instance.getTimesTried();
+				if( timesTried > 5 ) {
+					logger.error( macAddress + ": Tried too much. Cancel instance " + instanceSerial + " execution." );
+					Sagitarii.getInstance().finishInstance( instance );
+					runningInstances.remove( instance );
+					InstanceDeliveryControl.getInstance().cancelUnit( instanceSerial );					
+					setMessage( LogType.ACTIVITY_ERROR, "Instance " + instanceSerial + " canceled due to errors. ");
+					return;
+				} else {
+					instance.setStatus( InstanceStatus.PIPELINED );
+					runningInstances.remove( instance ); 
+					InstanceDeliveryControl.getInstance().cancelUnit( instanceSerial );
+					Sagitarii.getInstance().returnToBuffer(instance);
+					logger.error("Instance " + instanceSerial + " found in this node buffer. Returned to Sagitarii output buffer");
+					setMessage( LogType.SYSTEM, "[" + timesTried + "] Instance " + instanceSerial + " returned to buffer due to errors.");
+					return;
+				}
 			}
 		}
 		logger.error( macAddress + ": Instance " + instanceSerial + " is not in Node buffer.");
@@ -403,7 +406,7 @@ public class Node {
 		return this.status == NodeStatus.DEAD;
 	}
 	
-	public void updateStatus() {
+	public void updateStatus( boolean useMetrics ) {
 		cleanUp();
 		NodeStatus oldStatus = this.status;
 		this.age++;
@@ -439,11 +442,13 @@ public class Node {
 			}
 		}
 
-		
-		try {
-			addMetrics( cpuLoad, memoryPercent, tasks.size());
-		} catch ( Exception e ) {
-			
+		if ( useMetrics ) {
+			try {
+				//System.out.println(macAddress + " | " + cpuLoad + " | " + memoryPercent + " | " + tasks.size() );
+				addMetrics( cpuLoad, memoryPercent, tasks.size() );
+			} catch ( Exception e ) {
+				
+			}
 		}
 
 	}

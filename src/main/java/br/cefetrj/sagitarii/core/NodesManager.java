@@ -99,19 +99,19 @@ public class NodesManager {
 		try {
 			Gson gson = new Gson();
 			NodeTasks tasks = gson.fromJson( data, NodeTasks.class );
-			Node cluster = getNode( tasks.getNodeId() );
+			Node node = getNode( tasks.getNodeId() );
 			
-			if ( cluster != null ) {
-				cluster.setLastAnnounce( Calendar.getInstance().getTime() );
-				cluster.setCpuLoad( tasks.getCpuLoad() );
-				cluster.setTotalMemory( tasks.getTotalMemory() );
-				cluster.setFreeMemory( tasks.getFreeMemory() );
-				cluster.setFreeDiskSpace( tasks.getFreeDiskSpace() );
-				cluster.setTotalDiskSpace( tasks.getTotalDiskSpace() );
-				cluster.setTasks( tasks.getData() );
-				cluster.setMemoryPercent( tasks.getMemoryPercent() );
-				cluster.setMaxAllowedTasks( tasks.getMaximunLimit() );
-				cluster.updateStatus();
+			if ( node != null ) {
+				node.setLastAnnounce( Calendar.getInstance().getTime() );
+				node.setCpuLoad( tasks.getCpuLoad() );
+				node.setTotalMemory( tasks.getTotalMemory() );
+				node.setFreeMemory( tasks.getFreeMemory() );
+				node.setFreeDiskSpace( tasks.getFreeDiskSpace() );
+				node.setTotalDiskSpace( tasks.getTotalDiskSpace() );
+				node.setTasks( tasks.getData() );
+				node.setMemoryPercent( tasks.getMemoryPercent() );
+				node.setMaxAllowedTasks( tasks.getMaximunLimit() );
+				node.updateStatus(  ( node.getStatus() == NodeStatus.ACTIVE ) );
 			}
 			
 		} catch ( Exception e ) {
@@ -218,30 +218,6 @@ public class NodesManager {
 		}
 	}
 
-	/*
-	public void inform(String macAddress, String instanceSerial, boolean fromUser ) {
-		logger.debug("Sagitarii needs to know about instance " + instanceSerial + " running on node " + macAddress );
-		Cluster cluster = getCluster(macAddress);
-		if ( cluster != null ) {
-			logger.debug("node " + macAddress + " found as connected. asking...");
-			cluster.inform( instanceSerial, fromUser );
-		} else {
-			logger.debug("cluster " + macAddress + " not connected.");
-		}
-		logger.debug("inform check done.");
-	}
-	
-	public void informReport( String macAddress, String status, String instanceSerial ) {
-		logger.debug("Teapot node " + macAddress + " informs instance " + instanceSerial + " status as " + status );
-		Cluster cluster = getCluster(macAddress);
-		if ( cluster != null ) {
-			cluster.informReport( instanceSerial, status );
-		} else {
-			logger.error("cluster " + macAddress + " not connected");
-		}
-	}
-	*/
-	
 	private String fillInstanceID( Instance instance ) {
 		String content = instance.getContent();
 		try {
@@ -364,7 +340,7 @@ public class NodesManager {
 
 	public void updateNodesStatus() {
 		for ( Node clu : nodeList  ) {
-			clu.updateStatus();
+			clu.updateStatus( false );
 		}
 		checkLazy();
 	}
@@ -394,7 +370,7 @@ public class NodesManager {
 			clu.setFreeMemory(freeMemory);
 			clu.setMemoryPercent( getMemoryPercent( freeMemory, totalMemory ) );
 			clu.setMaxAllowedTasks( maxAllowedTasks );
-			clu.updateStatus();
+			clu.updateStatus( ( clu.getStatus() == NodeStatus.IDLE ) );
 			retorno = clu;
 		} else {
 			Node c1 = new Node(type, javaVersion,soFamily,macAddress,ipAddress,machineName,

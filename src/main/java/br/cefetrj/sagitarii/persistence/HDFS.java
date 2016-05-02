@@ -1,11 +1,13 @@
 package br.cefetrj.sagitarii.persistence;
 
+import java.io.FileInputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.BlockLocation;
+import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -78,7 +80,13 @@ public class HDFS {
 	}
 	
 	
-	public String formatSize( long size ) {
+	public FileInputStream getFile( String file ) throws Exception {
+		Path inFile = new Path( "/" + file + ".gz");
+		FSDataInputStream fsd = fs.open(inFile);
+		return null;
+	}
+	
+	private String formatSize( long size ) {
 	    String hrSize = null;
 
 	    double b = size;
