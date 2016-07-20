@@ -39,6 +39,7 @@ public class Configurator {
 	private int useProxy;
 	private Document doc;
 	private int fileSenderDelay;
+	private String hadoopConfigPath;
 	private String storageHost;
 	private int storagePort;
 	private SystemProperties systemProperties;
@@ -64,6 +65,10 @@ public class Configurator {
 	
 	public String getStorageHost() {
 		return storageHost;
+	}
+
+	public String getHadoopConfigPath() {
+		return hadoopConfigPath;
 	}
 	
 	public int getStoragePort() {
@@ -131,6 +136,8 @@ public class Configurator {
 				fileSenderDelay = Integer.valueOf( getTagValue("fileSenderDelay", mpElement) );
 				useProxy = Integer.parseInt( getValue("proxy", "useProxy") );
 				maxUploadThreads = Integer.valueOf( getTagValue("maxUploadThreads", mpElement) );
+				
+				hadoopConfigPath = getTagValue("hadoopConfigPath", mpElement);
 				
 				if (useProxy == 1) {
 					proxyInfo = new ProxyInfo();

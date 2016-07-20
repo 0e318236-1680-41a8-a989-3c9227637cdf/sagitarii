@@ -34,17 +34,17 @@ import br.cefetrj.sagitarii.teapot.Configurator;
 
  
 public class Client {
-	private List<String> filesToSend;
 	private String storageAddress;
 	private int storagePort;
 	private String sessionSerial;
 	private String sagiHost;
+	private String hadoopConfigPath;
 	private int maxUploadThreads;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 
 	public Client( Configurator configurator ) {
-		filesToSend = new ArrayList<String>();
 		this.storageAddress = configurator.getStorageHost();
+		this.hadoopConfigPath = configurator.getHadoopConfigPath();
 		this.storagePort = configurator.getStoragePort();
 		this.maxUploadThreads = configurator.getMaxUploadThreads();
 		this.sagiHost = configurator.getHostURL();
@@ -52,7 +52,9 @@ public class Client {
 	
 	public void sendFile( String fileName, String folder, String targetTable, String experimentSerial,  
 			String macAddress) throws Exception {
-
+		List<String> dataFilesList = new ArrayList<String>();
+		List<String> controlFilesList = new ArrayList<String>();
+		
 		String instanceSerial = "";
 		String activity = "";
 		String fragment = "";
@@ -60,9 +62,9 @@ public class Client {
 		String exitCode = "0";
 		String startTimeMillis = "";
 		String finishTimeMillis = "";
+		String cpuCost = "0";
 		
-		
-		getSessionKey();
+		getSessionKey( );
 		
 		StringBuilder xml = new StringBuilder();
 		xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -70,33 +72,35 @@ public class Client {
 		xml.append("<session macAddress=\""+macAddress+"\" instance=\""+instanceSerial+
 				"\" activity=\""+activity+"\"  taskId=\""+taskId+"\" exitCode=\""+exitCode+"\" fragment=\""+fragment + 
 				"\" startTime=\""+startTimeMillis + "\" finishTime=\""+finishTimeMillis +
+				"\" cpuCost=\""+cpuCost +
 				"\" totalFiles=\"#TOTAL_FILES#\" experiment=\""+experimentSerial + "\" id=\""+sessionSerial+"\" targetTable=\""+targetTable+"\">\n");
 		
 		
 		File fil = new File(folder + "/" + fileName);
 		if ( fil.exists() ) {
+
+			logger.debug("[" + sessionSerial + "] CSV file " + fileName + " found.");
+			
 			xml.append("<file name=\""+fileName+"\" type=\"FILE_TYPE_CSV\" />\n");
-			filesToSend.add( folder + "/" + fileName );
+			controlFilesList.add( folder + "/" + fileName );
+			
+			File filesFolder = new File( folder + "/" + "outbox" );
+		    for (final File fileEntry : filesFolder.listFiles() ) {
+		        if ( !fileEntry.isDirectory() ) {
+		    		//xml.append("<file name=\""+fileEntry.getName()+"\" type=\"FILE_TYPE_FILE\" />\n");
+		    		dataFilesList.add( folder + "/outbox/" + fileEntry.getName() );
+		        }
+		    }
+			
 		} else {
 			logger.error("will not send sagi_output.txt in session.xml file: this activity instance produced no data");
 		}
 		
 
-		File filesFolder = new File( folder + "/" + "outbox" );
-	    for (final File fileEntry : filesFolder.listFiles() ) {
-	        if ( !fileEntry.isDirectory() ) {
-	        	//ZipUtil.compress( folder + "/" + "outbox/" + fileEntry.getName(), folder + "/" + "outbox/" + fileEntry.getName() + ".gz" );
-	    		xml.append("<file name=\""+fileEntry.getName()+"\" type=\"FILE_TYPE_FILE\" />\n");
-	    		filesToSend.add( folder + "/outbox/" + fileEntry.getName() );
-	        }
-	    }
-		
-		
 		File f = new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath() );
 		String storageRootFolder =  f.getAbsolutePath();
 		storageRootFolder = storageRootFolder.substring(0, storageRootFolder.lastIndexOf( File.separator ) + 1) + "namespaces/";
 		
-		//String folderName = "outbox";
 		String folderPath = folder.replace(storageRootFolder, "").replaceAll("/+", "/");
 		
 		logger.debug("sending content of folder:");
@@ -105,37 +109,41 @@ public class Client {
 	    xml.append("<file name=\"session.xml\" type=\"FILE_TYPE_SESSION\" />\n");
 	    
 	    xml.append("<console><![CDATA[");
+   		xml.append( "EMPTY CONSOLE DATA \n" );
 	    xml.append("]]></console>");
 
 	    
 	    xml.append("<execLog><![CDATA[");
-
+   		xml.append( "EMPTY LOG \n" );
 	    xml.append("]]></execLog>");
 	    
 		xml.append("</session>\n");
-		filesToSend.add( folder + "/" + "session.xml" );
+		controlFilesList.add( folder + "/" + "session.xml" );
 		
 		Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(folder + "/" + "session.xml"), "UTF-8"));
-		writer.write( xml.toString().replace("#TOTAL_FILES#", String.valueOf(filesToSend.size()) ) );
+		writer.write( xml.toString().replace("#TOTAL_FILES#", String.valueOf(dataFilesList.size()) ) );
 		writer.close();
 
-		// Send files
-		if ( filesToSend.size() > 0 ) {
-			logger.debug("need to send " + filesToSend.size() + " files to Sagitarii...");
-			uploadFiles( filesToSend, targetTable, experimentSerial, sessionSerial, folderPath );
-		}
+		logger.debug("need to send " + dataFilesList.size() + " files to HDFS...");
+		uploadFiles( dataFilesList, controlFilesList, targetTable, experimentSerial, sessionSerial, folderPath );
+
 		commit();
 	}
 	
-	private void uploadFiles( List<String> fileNames, String targetTable, 
+	private void uploadFiles( List<String> dataFilesList, List<String> controlFilesList, String targetTable, 
 			String experimentSerial, String sessionSerial, String sourcePath ) throws Exception {
 
+		// dataFilesList 	= Files in outbox folder
+		// controlFilesList	= session.xml and sagi_output.txt 
+		
 		logger.debug("starting Multithread Uploader for session " + sessionSerial + " with " + maxUploadThreads + " threads." );
-		MultiThreadUpload mtu = new MultiThreadUpload( maxUploadThreads );
-		mtu.upload(fileNames, storageAddress, storagePort, 
+		logger.debug(" > Control files: " + controlFilesList.size() + " | Data Files: " + dataFilesList.size() );
+		MultiThreadUpload mtu = new MultiThreadUpload( maxUploadThreads, hadoopConfigPath );
+		mtu.upload(dataFilesList, controlFilesList, storageAddress, storagePort, 
 				targetTable, experimentSerial, sessionSerial, sourcePath);
 		
-	}	
+	}
+
 	
 	private void commit() throws Exception {
 		URL url = new URL( sagiHost + "/sagitarii/transactionManager?command=commit&sessionSerial=" + sessionSerial );

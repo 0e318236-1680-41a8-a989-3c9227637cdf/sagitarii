@@ -14,45 +14,66 @@ import org.apache.logging.log4j.Logger;
 public class MultiThreadUpload {
 	private int maxThreadsRunning; 
 	private long totalBytes = 0;
+	private String hadoopConfigPath;
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
 	
-	public MultiThreadUpload( int maxThreadsRunning ) {
+	public MultiThreadUpload( int maxThreadsRunning, String hadoopConfigPath ) {
 		this.maxThreadsRunning = maxThreadsRunning;
+		this.hadoopConfigPath = hadoopConfigPath;
 	}
 	
 	public long getTotalBytes() {
 		return totalBytes;
 	}
 	
-	public void upload( List<String> fileList, String storageAddress, 
+	public void upload( List<String> dataFilesList, List<String> controlFilesList, String storageAddress, 
 			int storagePort, String targetTable, String experimentSerial, 
-			String sessionSerial, String sourcePath ) {
+			String sessionSerial, String sourcePath ) throws Exception {
+		
+		// dataFilesList 	= Files in outbox folder
+		// controlFilesList	= session.xml and sagi_output.txt		
 		
 		if ( maxThreadsRunning == 0 ) { maxThreadsRunning = 7; }
 		
-		List<List<String>> partitions = splitList( fileList );
-		int totalFiles = fileList.size();
-		
-		if( partitions.size() < maxThreadsRunning ) {
-			maxThreadsRunning = partitions.size(); 
-		}
-		
-		logger.debug("Multithread Uploader started to send " + totalFiles + " files splited in " + partitions.size() +
-				" partitions limited to " + maxThreadsRunning + " threads.");
-		
 		List< FutureTask<Long> > futureTasks = new ArrayList< FutureTask<Long> >();
 		ExecutorService executor = Executors.newFixedThreadPool( maxThreadsRunning );
+
+		// Send CSV data and XML manifest to sagitarii via FTP ( controlFilesList )
+		logger.debug(" > starting FTP upload thread with " + controlFilesList.size() + " elements for session " + sessionSerial + 
+				" / " + sourcePath);
+		FTPUploadTask fut = new FTPUploadTask(controlFilesList, storageAddress, storagePort, 
+				targetTable, experimentSerial, sessionSerial, sourcePath);
+		FutureTask<Long> futureTask = new FutureTask<Long>( fut );
+		executor.execute( futureTask );
+		futureTasks.add( futureTask );
 		
-		for( List<String> list : partitions ) {
-			logger.debug(" > starting upload thread with " + list.size() + " elements for session " + sessionSerial + 
-					" / " + sourcePath);
-			FTPUploadTask fut = new FTPUploadTask(list, storageAddress, storagePort, 
-					targetTable, experimentSerial, sessionSerial, sourcePath);
+		
+		// Send Task files to HDFS ( dataFilesList )
+		logger.debug(" > starting " + maxThreadsRunning + " HDFS upload threads with " + dataFilesList.size() + " elements for session " + sessionSerial + 
+				" / " + sourcePath);
+		if ( dataFilesList.size() > 0 ) {
+			List<List<String>> partitions = splitList( dataFilesList );
+			int totalFiles = dataFilesList.size();
 			
-			FutureTask<Long> futureTask = new FutureTask<Long>( fut );
-			executor.execute( futureTask );
-			futureTasks.add( futureTask );
+			if( partitions.size() < maxThreadsRunning ) {
+				maxThreadsRunning = partitions.size(); 
+			}
+			
+			logger.debug("Multithread Uploader started to send " + totalFiles + " files splited in " + partitions.size() +
+					" partitions limited to " + maxThreadsRunning + " threads.");
+			
+			for( List<String> list : partitions ) {
+				logger.debug(" > starting upload thread with " + list.size() + " elements for session " + sessionSerial + 
+						" / " + sourcePath);
+				
+				HDFSUploadTask futHdfs = new HDFSUploadTask(list, hadoopConfigPath, 
+						targetTable, experimentSerial, sessionSerial, sourcePath);
+				FutureTask<Long> futureTaskHdfs = new FutureTask<Long>( futHdfs );
+				executor.execute( futureTaskHdfs );
+				futureTasks.add( futureTaskHdfs );
+			}
 		}
+		
 		
 		logger.debug("waiting to all threads to finish...");
 		while ( true ) {
