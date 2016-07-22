@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import br.cefetrj.sagitarii.core.instances.InstanceGeneratorFactory;
+import br.cefetrj.sagitarii.core.types.ActivityType;
 import br.cefetrj.sagitarii.core.types.FragmentStatus;
 import br.cefetrj.sagitarii.misc.FragmentComparator;
 import br.cefetrj.sagitarii.persistence.entity.Activity;
@@ -93,6 +94,15 @@ public class FragmentInstancer {
 	
 	private boolean checkExperimentStartPoint( Activity activity ) {
 		if ( activity.getPreviousActivities().size() == 0 ) {
+			
+			// To fix issue #125
+			// We cannot guarantee the data before the experiment runs
+			// Assume the data is always available 
+			if( activity.getType() == ActivityType.SELECT ) {
+				return true;
+			}
+			// ============================
+			
 			// Is the Experiment start point. Check data availability.
 			logger.debug(activity.getTag() +  " is EXPERIMENT entrance point");
 			boolean finalResult = activity.getInputRelations().size() > 0;
