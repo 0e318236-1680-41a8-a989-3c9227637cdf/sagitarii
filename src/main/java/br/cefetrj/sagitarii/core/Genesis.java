@@ -9,6 +9,7 @@ package br.cefetrj.sagitarii.core;
 import java.util.Set;
 import java.util.TreeSet;
 
+import br.cefetrj.sagitarii.core.types.ActivityType;
 import br.cefetrj.sagitarii.misc.json.JsonElementConversor;
 import br.cefetrj.sagitarii.persistence.entity.Activity;
 import br.cefetrj.sagitarii.persistence.entity.Experiment;
@@ -41,13 +42,19 @@ public class Genesis {
 			for ( Activity act : activities  ) {
 				// Se for uma atividade de início de workflow (não há atividades anteriores)...
 				if ( act.getPreviousActivities().size() == 0 ) {
-					// Percorre as suas tabelas de entrada para ver se possuem dados.
-					for ( Relation rel : act.getInputRelations() ) {
-						String inputTable = rel.getName();
-						int count = rs.getCount( inputTable, "where id_experiment = " + experiment.getIdExperiment() );
-						rel.setSize( count );
-						if ( count == 0 ) {
-							canRun = false;
+					// To fix issue #125
+					// We cannot guarantee the data before the experiment runs
+					// Assume the data is always available 
+					if( act.getType() == ActivityType.SELECT ) {
+						canRun = true;
+					} else {
+						for ( Relation rel : act.getInputRelations() ) {
+							String inputTable = rel.getName();
+							int count = rs.getCount( inputTable, "where id_experiment = " + experiment.getIdExperiment() );
+							rel.setSize( count );
+							if ( count == 0 ) {
+								canRun = false;
+							}
 						}
 					}
 				}
