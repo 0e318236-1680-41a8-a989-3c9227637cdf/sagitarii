@@ -6,14 +6,6 @@
 	
  -->
 
-<!DOCTYPE configuration [
-	<!ELEMENT configuration (cluster,proxy) >
-	<!ELEMENT cluster (hostURL,poolIntervalMilliSeconds,rPath,activationShowConsole,clearDataAfterFinish,
-		CSVDelimiter,storageHost,storagePort,fileSenderDelay, useSpeedEqualizer, enforceTaskLimitToCores,
-		DLBFrequency,maximunRamToUse,maximunCPULimit,minimunCPULimit,maxUploadThreads)>
-	<!ELEMENT proxy (useProxy,proxy-host,proxy-port,proxy-password,proxy-user)>
-]>
-
 <configuration>
 	
 	<cluster>
@@ -24,7 +16,7 @@
 		<clearDataAfterFinish>false</clearDataAfterFinish>
 		<CSVDelimiter>,</CSVDelimiter>
 		<storageHost>192.168.1.30</storageHost>
-		<storagePort>3333</storagePort>
+		<storagePort>8139</storagePort>
 		<fileSenderDelay>200</fileSenderDelay>
 		<useSpeedEqualizer>false</useSpeedEqualizer>
 		<enforceTaskLimitToCores>false</enforceTaskLimitToCores>
@@ -33,6 +25,7 @@
 		<maximunCPULimit>85</maximunCPULimit>
 		<minimunCPULimit>70</minimunCPULimit>
 		<maxUploadThreads>7</maxUploadThreads>
+		<hadoopConfigPath>/opt/hadoop/hadoop/etc/hadoop/</hadoopConfigPath>
 	</cluster>
 
 	<proxy>

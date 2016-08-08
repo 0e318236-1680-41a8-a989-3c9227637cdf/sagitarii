@@ -6,7 +6,7 @@
   <classpathentry kind="var" path="M2_REPO/javax/xml/stream/stax-api/1.0-2/stax-api-1.0-2.jar"/>
   <classpathentry kind="var" path="M2_REPO/javax/activation/activation/1.1/activation-1.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/javax/servlet/servlet-api/2.5/servlet-api-2.5.jar"/>
-  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/hadoop/hadoop-client/2.6.4/hadoop-client-2.6.4.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/hadoop/hadoop-common/2.6.4/hadoop-common-2.6.4.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/hadoop/hadoop-annotations/2.6.4/hadoop-annotations-2.6.4.jar"/>
