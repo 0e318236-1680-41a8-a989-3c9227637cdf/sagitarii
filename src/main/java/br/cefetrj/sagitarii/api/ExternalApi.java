@@ -22,6 +22,7 @@ import br.cefetrj.sagitarii.persistence.entity.Fragment;
 import br.cefetrj.sagitarii.persistence.entity.Relation;
 import br.cefetrj.sagitarii.persistence.entity.User;
 import br.cefetrj.sagitarii.persistence.entity.Workflow;
+import br.cefetrj.sagitarii.persistence.services.ActivityService;
 import br.cefetrj.sagitarii.persistence.services.ExperimentService;
 import br.cefetrj.sagitarii.persistence.services.RelationService;
 import br.cefetrj.sagitarii.persistence.services.UserService;
@@ -265,7 +266,6 @@ public class ExternalApi {
 	}
 
 	private String getFilesExperiment( Map<String, Object> map ) {
-		/*
 		try {
 			String experimentSerial = (String)map.get("experimentSerial");
 			if( ( experimentSerial != null ) && (!experimentSerial.equals("") ) ) {
@@ -276,12 +276,22 @@ public class ExternalApi {
 				String rangeStart = (String)map.get("rangeStart");
 				String rangeEnd = (String)map.get("rangeEnd");
 				
-				FileService fs = new FileService();
-				Set<File> files = fs.getList( experiment.getIdExperiment(), activityTag, rangeStart, rangeEnd );
+				ActivityService as = new ActivityService();
+				Activity activity = as.getActivityByTag( activityTag );
+				
+				Relation relation = activity.getOutputRelation();
+				
+				
+				//RelationService rs = new RelationService();
+				//rs.executeQuery(query);
+				
+				
+				
 				
 				StringBuilder data = new StringBuilder();
 				String dataPrefix = "";
 				data.append("[");
+				/*
 				for ( File file : files ) {
 					data.append( dataPrefix + "{");
 					data.append( generateJsonPair( "fileName" , file.getFileName() ) + "," ); 
@@ -289,6 +299,7 @@ public class ExternalApi {
 					dataPrefix = ",";
 					data.append("}");
 				}
+				*/
 				data.append("]");
 				
 				StringBuilder sb = new StringBuilder();
@@ -306,8 +317,8 @@ public class ExternalApi {
 			logger.error( e.getMessage() );
 			return formatMessage( e.getMessage() );
 		}
-		*/
-		return formatMessage( "Feature disabled for now" );
+		
+		
 	}
 
 	private String getToken( Map<String, Object> map ) {

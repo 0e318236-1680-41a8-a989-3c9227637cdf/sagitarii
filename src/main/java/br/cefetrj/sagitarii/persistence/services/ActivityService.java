@@ -36,6 +36,11 @@ public class ActivityService {
 		rep.insertActivity( activity );
 		return 0;
 	}
+
+	public Activity getActivityByTag(String tag) throws NotFoundException{
+		Activity activity = rep.getActivityByTag( tag );
+		return activity;
+	}	
 	
 	public Activity getActivity(String serial) throws NotFoundException{
 		Activity activity = rep.getActivity( serial );

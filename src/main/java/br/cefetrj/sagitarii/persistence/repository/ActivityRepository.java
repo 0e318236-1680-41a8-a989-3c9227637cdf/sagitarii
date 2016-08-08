@@ -157,6 +157,23 @@ public class ActivityRepository extends BasicRepository {
 		logger.debug("done: " + activations.size() + " activities.");
 		return activations;
 	}
+
+	
+	public Activity getActivityByTag(String tag) throws NotFoundException {
+		logger.debug("retrieve Activity by tag " + tag + "..." );
+		DaoFactory<Activity> df = new DaoFactory<Activity>();
+		IDao<Activity> fm = df.getDao(this.session, Activity.class);
+		Activity activity = null;
+		try {
+			activity = fm.getList("select * from activities where tag = '" + tag + "'").get(0);
+		} catch ( Exception e ) {
+			closeSession();
+			throw e;
+		}
+		closeSession();
+		logger.debug("done.");
+		return activity;
+	}	
 	
 	public Activity getActivity(String serial) throws NotFoundException {
 		logger.debug("retrieve Activity by serial " + serial + "..." );
