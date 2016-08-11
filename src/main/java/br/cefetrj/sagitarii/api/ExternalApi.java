@@ -10,13 +10,18 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.gson.GsonBuilder;
+import com.opensymphony.xwork2.ActionContext;
+
 import br.cefetrj.sagitarii.core.DataReceiver;
 import br.cefetrj.sagitarii.core.Sagitarii;
 import br.cefetrj.sagitarii.core.TableAttribute;
+import br.cefetrj.sagitarii.core.UserTableEntity;
 import br.cefetrj.sagitarii.core.filetransfer.FileImporter;
 import br.cefetrj.sagitarii.core.filetransfer.FileReceiverManager;
 import br.cefetrj.sagitarii.misc.DateLibrary;
 import br.cefetrj.sagitarii.persistence.entity.Activity;
+import br.cefetrj.sagitarii.persistence.entity.Domain;
 import br.cefetrj.sagitarii.persistence.entity.Experiment;
 import br.cefetrj.sagitarii.persistence.entity.Fragment;
 import br.cefetrj.sagitarii.persistence.entity.Relation;
@@ -27,9 +32,6 @@ import br.cefetrj.sagitarii.persistence.services.ExperimentService;
 import br.cefetrj.sagitarii.persistence.services.RelationService;
 import br.cefetrj.sagitarii.persistence.services.UserService;
 import br.cefetrj.sagitarii.persistence.services.WorkflowService;
-
-import com.google.gson.GsonBuilder;
-import com.opensymphony.xwork2.ActionContext;
 
 public class ExternalApi {
 	private Logger logger = LogManager.getLogger( this.getClass().getName() );
@@ -280,11 +282,18 @@ public class ExternalApi {
 				Activity activity = as.getActivityByTag( activityTag );
 				
 				Relation relation = activity.getOutputRelation();
+				String tableName = relation.getName();
+				for ( Domain domain : relation.getDomains() ) {
+					
+				}
 				
-				
-				//RelationService rs = new RelationService();
-				//rs.executeQuery(query);
-				
+				String query = "select * from " + tableName + " where id_experiment = " + experiment.getIdExperiment() + 
+						" offset " + rangeStart + " limit " + rangeEnd;
+				RelationService rs = new RelationService();
+				Set<UserTableEntity> files = rs.genericFetchList( query );
+				for ( UserTableEntity ute : files ) {
+					String 
+				}
 				
 				
 				
