@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -28,6 +29,20 @@ public class Domain {
 	
 	@Column(length=250)
 	private String domainName;
+	
+	@Transient
+	public String getColumnName() {
+		if ( domainName == null || domainName.equals("") ) return null;
+		String[] spt = domainName.split(".");
+		return spt[1];
+	}
+	
+	@Transient
+	public String getTableName() {
+		if ( domainName == null || domainName.equals("") ) return null;
+		String[] spt = domainName.split(".");
+		return spt[0];
+	}
 
 	public int getIdDomain() {
 		return idDomain;
