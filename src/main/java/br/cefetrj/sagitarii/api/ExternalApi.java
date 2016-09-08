@@ -287,27 +287,25 @@ public class ExternalApi {
 				
 				Relation relation = activity.getOutputRelation();
 				String tableName = relation.getName();
+				
 				for ( Domain domain : relation.getDomains() ) {
+					
 					String columnName = domain.getColumnName();
 					if ( columnName != null ) {
 
 						String query = "select index_id, " + columnName + " from " + tableName + " where id_experiment = " + experiment.getIdExperiment() + 
 								" offset " + rangeStart + " limit " + rangeEnd;
 						
-						System.out.println("ExternalAPI: " + query );
-						
 						RelationService rs = new RelationService();
 						Set<UserTableEntity> files = rs.genericFetchList( query );
-						
-						System.out.println("ExternalAPI: " + files.size() + " elements");
 						
 						for ( UserTableEntity ute : files ) {
 							String fileName = ute.getData( columnName );
 							String id = ute.getData("index_id");
 							data.append( dataPrefix + "{");
 							data.append( generateJsonPair( "fileName" , fileName ) + "," ); 
-							data.append( generateJsonPair( "fileId", String.valueOf( id ) ) ); 
-							data.append( generateJsonPair( "tableName", tableName ) ); 
+							data.append( generateJsonPair( "fileId", String.valueOf( id ) ) + "," ); 
+							data.append( generateJsonPair( "tableName", tableName ) + "," ); 
 							data.append( generateJsonPair( "experimentId", String.valueOf( experiment.getIdExperiment() ) ) );
 							dataPrefix = ",";
 							data.append("}");

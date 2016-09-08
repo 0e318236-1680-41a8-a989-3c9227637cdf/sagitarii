@@ -33,8 +33,9 @@ public class Domain {
 	@Transient
 	public String getColumnName() {
 		if ( domainName == null || domainName.equals("") ) return null;
-		String[] spt = domainName.split(".");
-		return spt[1];
+		String[] spt = domainName.split("\\.");
+		if ( spt.length == 2 ) return spt[1];
+		return "";
 	}
 	
 	@Transient

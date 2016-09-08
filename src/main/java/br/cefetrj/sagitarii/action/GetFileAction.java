@@ -1,8 +1,7 @@
 
 package br.cefetrj.sagitarii.action;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.InputStream;
 
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.ParentPackage;
@@ -23,17 +22,13 @@ import br.cefetrj.sagitarii.persistence.HDFS;
 public class GetFileAction extends BasicActionClass {
 	private String fileName;
 	private String idFile;
-	private FileInputStream fileInputStream;
+	private InputStream fileInputStream;
 	
 	public String execute () {
 		try {
-			
-			File file = new File( idFile );
-			fileName = file.getName() + ".gz";
+			fileName = idFile.substring( idFile.lastIndexOf("/") + 1, idFile.length() ) + ".gz";
 			HDFS hdfs = new HDFS();
 			fileInputStream = hdfs.getFile( idFile );
-			
-			
 		} catch ( Exception e ) {
             e.printStackTrace();
 		}
@@ -50,7 +45,7 @@ public class GetFileAction extends BasicActionClass {
 	}
 	
 	
-	public FileInputStream getFileInputStream() {
+	public InputStream getFileInputStream() {
 		return fileInputStream;
 	}
 	
