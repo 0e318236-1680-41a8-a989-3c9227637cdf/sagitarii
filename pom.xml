@@ -227,7 +227,7 @@
 	</repositories>
 
 	
-	<build>
+	<build> 
 		<finalName>sagitarii</finalName>
 		<plugins>
 		
