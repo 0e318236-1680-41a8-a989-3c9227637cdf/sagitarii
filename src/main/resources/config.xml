@@ -23,8 +23,8 @@
 		
 		<databaseName>sagitarii</databaseName>
 
-		<userName>sagitarii</userName>
-		<password>Chiron2014!</password>
+		<userName>postgres</userName>
+		<password>admin</password>
 		
 		
 	</sagitarii>
